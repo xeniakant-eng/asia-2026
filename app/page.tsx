@@ -186,7 +186,7 @@ export default function TravelSite() {
   const dates = useMemo(() => buildDateRange(timelineStart, timelineEnd), [timelineStart, timelineEnd]);
 
   const xiaoliuqiuStart = getTimelinePercent(new Date(2026, 10, 20), timelineStart, timelineEnd);
-  const xiaoliuqiuEnd = getTimelinePercent(new Date(2026, 10, 24), timelineStart, timelineEnd);
+  const xiaoliuqiuEnd = getTimelinePercent(new Date(2026, 10, 23), timelineStart, timelineEnd);
   const onnaStart = getTimelinePercent(new Date(2026, 10, 27), timelineStart, timelineEnd);
   const onnaEnd = getTimelinePercent(new Date(2026, 10, 30), timelineStart, timelineEnd);
   const nagoStart = getTimelinePercent(new Date(2026, 10, 30), timelineStart, timelineEnd);
@@ -273,8 +273,24 @@ export default function TravelSite() {
   const countdownMinutes = Math.floor((countdownMs % (1000 * 60 * 60)) / (1000 * 60));
   const countdownSeconds = Math.floor((countdownMs % (1000 * 60)) / 1000);
 
+  const mobileTimelineItems = {
+    1: [
+      { id: "xiaoliuqiu", label: "Xiaoliuqiu", range: "Nov 20–23", color: "taiwan" },
+      { id: "taipei", label: "Taipei", range: "Nov 23–27", color: "taiwan" },
+      { id: "onna", label: "Onna", range: "Nov 27–30", color: "okinawa" },
+      { id: "nago", label: "Nago", range: "Nov 30–Dec 2", color: "okinawa" },
+      { id: "nanjo", label: "Nanjo", range: "Dec 2–4", color: "okinawa" },
+      { id: "naha", label: "Naha", range: "Dec 4–6", color: "okinawa" },
+    ],
+    2: [
+      { id: "yilan", label: "Yilan", range: "Dec 9–12", color: "taiwan" },
+    ],
+    3: [],
+    4: [],
+  };
+
   const Timeline = () => (
-    <div className="absolute bottom-4 left-0 w-full px-6">
+    <div className="absolute bottom-4 left-0 w-full px-4 md:px-6">
       <div className="mx-auto max-w-5xl">
         <div className="mb-2 flex items-center justify-between gap-3 px-2">
           <div className="flex flex-wrap items-center gap-1.5">
@@ -303,21 +319,59 @@ export default function TravelSite() {
             {activeTimelineSection.start.toLocaleDateString("en-US", { month: "short", day: "numeric" })} – {activeTimelineSection.end.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
           </span>
         </div>
+        <div className="mt-3 grid gap-2 md:hidden">
+          {(mobileTimelineItems[activeTimelineSection.id as keyof typeof mobileTimelineItems] || []).map((item) => {
+            const isTaiwan = item.color === "taiwan";
+            const isActive = hovered === item.id;
+
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onTouchStart={() => setHovered(item.id)}
+                onMouseEnter={() => setHovered(item.id)}
+                onMouseLeave={() => setHovered(null)}
+                className={`flex items-center justify-between rounded-2xl border px-4 py-3 text-left backdrop-blur-md transition ${
+                  isActive
+                    ? isTaiwan
+                      ? "border-[#FFD76A]/70 bg-[#FFD76A]/10"
+                      : "border-[#9EDCFF]/70 bg-[#9EDCFF]/10"
+                    : "border-white/10 bg-white/[0.04]"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div
+                    className="h-2.5 w-2.5 rounded-full"
+                    style={{ backgroundColor: isTaiwan ? TAIWAN_GOLD : BABY_BLUE }}
+                  />
+                  <span className="text-sm font-light tracking-wide text-white">
+                    {item.label}
+                  </span>
+                </div>
+
+                <span className="text-[10px] uppercase tracking-[0.18em] text-white/45">
+                  {item.range}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
         <div
           ref={timelineScrollRef}
-          className="relative overflow-x-auto overflow-y-hidden px-2 py-6 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="relative hidden overflow-x-auto overflow-y-hidden px-2 py-6 md:block [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           <div className="relative h-[2px] bg-white/30" style={{ width: `${timelineInnerWidthPercent}%` }}>
             <div
               className="absolute -top-5 h-10 cursor-pointer"
-              style={{ left: `${getSectionPercent(new Date(2026, 10, 20))}%`, width: `${getSectionPercent(new Date(2026, 10, 24)) - getSectionPercent(new Date(2026, 10, 20))}%` }}
+              style={{ left: `${getSectionPercent(new Date(2026, 10, 20))}%`, width: `${getSectionPercent(new Date(2026, 10, 23)) - getSectionPercent(new Date(2026, 10, 20))}%` }}
               onMouseEnter={() => setHovered("xiaoliuqiu")}
               onMouseLeave={() => setHovered(null)}
               onTouchStart={(event) => {
                 event.stopPropagation();
                 setHovered("xiaoliuqiu");
               }}
-              aria-label="Highlight Xiaoliuqiu Nov 20 to Nov 24"
+              aria-label="Highlight Xiaoliuqiu Nov 20 to Nov 23"
             />
 
             <div
@@ -402,7 +456,7 @@ export default function TravelSite() {
             {hovered === "xiaoliuqiu" && (
               <div
                 className="timeline-highlight top-0 h-[2px] text-[#FFD76A]"
-                style={{ left: `${getSectionPercent(new Date(2026, 10, 20))}%`, width: `${getSectionPercent(new Date(2026, 10, 24)) - getSectionPercent(new Date(2026, 10, 20))}%`, backgroundColor: TAIWAN_GOLD, boxShadow: TAIWAN_GOLD_SHADOW }}
+                style={{ left: `${getSectionPercent(new Date(2026, 10, 20))}%`, width: `${getSectionPercent(new Date(2026, 10, 23)) - getSectionPercent(new Date(2026, 10, 20))}%`, backgroundColor: TAIWAN_GOLD, boxShadow: TAIWAN_GOLD_SHADOW }}
               />
             )}
 
@@ -669,20 +723,8 @@ export default function TravelSite() {
   return (
     <div className="min-h-screen bg-black text-white">
       <style>{`
-        @keyframes timelineSweep {
-          from { transform: scaleX(0); opacity: 0.35; }
-          to { transform: scaleX(1); opacity: 1; }
-        }
-
-        @keyframes timelinePulse {
-          0%, 100% { opacity: 0.75; transform: translateY(-50%) scale(0.9); }
-          50% { opacity: 1; transform: translateY(-50%) scale(1.18); }
-        }
-
         .timeline-highlight {
           position: absolute;
-          transform-origin: left center;
-          animation: timelineSweep 520ms cubic-bezier(0.22, 1, 0.36, 1);
         }
 
         .timeline-highlight::after {
@@ -695,7 +737,7 @@ export default function TravelSite() {
           border-radius: 9999px;
           background: currentColor;
           box-shadow: 0 0 12px currentColor;
-          animation: timelinePulse 1.6s ease-in-out infinite;
+          transform: translateY(-50%);
         }
       `}</style>
 
@@ -740,8 +782,10 @@ export default function TravelSite() {
           </div>
         </div>
 
-        <div className="absolute bottom-44 z-20 flex items-center gap-6">
-          <h1 className="text-3xl font-light tracking-wide md:text-4xl">Taiwan · Okinawa Japan</h1>
+        <div className="absolute bottom-40 z-20 flex flex-col items-center gap-3 px-4 text-center md:bottom-44 md:flex-row md:gap-6">
+          <h1 className="text-2xl font-light leading-tight tracking-wide md:text-4xl">
+            Taiwan · Okinawa Japan
+          </h1>
 
           <div className="origin-center scale-75 rounded-3xl border border-white/10 bg-white/[0.04] px-4 py-2.5 backdrop-blur-md">
             <p className="mb-3 text-xs uppercase tracking-[0.3em] text-[#9EDCFF]">Countdown to Departure</p>
