@@ -1,10 +1,11 @@
 "use client";
+
 import React, { useEffect, useMemo, useState } from "react";
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
-function buildDateRange(start, end) {
-  const dates = [];
+function buildDateRange(start: Date, end: Date) {
+  const dates: Date[] = [];
   const current = new Date(start);
 
   while (current <= end) {
@@ -15,13 +16,33 @@ function buildDateRange(start, end) {
   return dates;
 }
 
-function getTimelinePercent(targetDate, timelineStart, timelineEnd) {
+function getTimelinePercent(targetDate: Date, timelineStart: Date, timelineEnd: Date) {
   const totalDays = (timelineEnd.getTime() - timelineStart.getTime()) / MS_PER_DAY;
   const dayOffset = (targetDate.getTime() - timelineStart.getTime()) / MS_PER_DAY;
   return (dayOffset / totalDays) * 100;
 }
 
-function Pin({ id, label, x, y, hovered, setHovered, leaveTo = null, activeColor, onClick }) {
+function Pin({
+  id,
+  label,
+  x,
+  y,
+  hovered,
+  setHovered,
+  leaveTo = null,
+  activeColor,
+  onClick,
+}: {
+  id: string;
+  label: string;
+  x: number;
+  y: number;
+  hovered: string | null;
+  setHovered: React.Dispatch<React.SetStateAction<string | null>>;
+  leaveTo?: string | null;
+  activeColor?: string;
+  onClick?: () => void;
+}) {
   return (
     <div
       className="absolute z-30 -translate-x-1/2 -translate-y-1/2"
@@ -60,7 +81,7 @@ function Pin({ id, label, x, y, hovered, setHovered, leaveTo = null, activeColor
 }
 
 export default function TravelSite() {
-  const [hovered, setHovered] = useState(null);
+  const [hovered, setHovered] = useState<string | null>(null);
   const [page, setPage] = useState("map");
   const [usdToJpy, setUsdToJpy] = useState("150");
   const [now, setNow] = useState(new Date());
