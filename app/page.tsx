@@ -64,7 +64,9 @@ function SvgPin({
   const pinGlow =
     activeColor === BABY_BLUE
       ? "drop-shadow(0 0 4px rgba(158,220,255,0.85)) drop-shadow(0 0 10px rgba(158,220,255,0.45))"
-      : "drop-shadow(0 0 4px rgba(255,255,255,0.75)) drop-shadow(0 0 10px rgba(255,255,255,0.35))";
+      : activeColor === TAIWAN_GOLD
+        ? "drop-shadow(0 0 4px rgba(255,215,106,0.9)) drop-shadow(0 0 10px rgba(255,215,106,0.55))"
+        : "drop-shadow(0 0 4px rgba(255,255,255,0.75)) drop-shadow(0 0 10px rgba(255,255,255,0.35))";
 
   return (
     <g
@@ -287,6 +289,13 @@ export default function TravelSite() {
   const countdownHours = Math.floor((countdownMs % MS_PER_DAY) / (1000 * 60 * 60));
   const countdownMinutes = Math.floor((countdownMs % (1000 * 60 * 60)) / (1000 * 60));
   const countdownSeconds = Math.floor((countdownMs % (1000 * 60)) / 1000);
+  const okinawaLocalTime = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Asia/Tokyo",
+    hour: "numeric",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true,
+  }).format(now);
 
   if (!isGuestConfirmed) {
     return (
@@ -718,8 +727,9 @@ export default function TravelSite() {
             </div>
             <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-center">
               <p className="mb-2 text-2xl">🕘</p>
-              <p className="text-xs text-gray-400">Time Zone</p>
-              <p className="mt-1 text-sm font-medium">JST (UTC+9)</p>
+              <p className="text-xs text-gray-400">Local Time</p>
+              <p className="mt-1 text-sm font-medium">{okinawaLocalTime}</p>
+              <p className="mt-1 text-[9px] text-gray-500">Okinawa · JST</p>
             </div>
             <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-center">
               <p className="mb-2 text-2xl">🌙</p>
@@ -743,12 +753,43 @@ export default function TravelSite() {
           <section className="space-y-8">
             <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
               <p className="mb-2 text-sm text-[#9EDCFF]">Friday, November 27, 2026</p>
-              <h2 className="mb-5 text-2xl font-light">Morning Arrival · Naha → Onna</h2>
-              <div className="space-y-3 text-sm leading-7 text-white/75">
+              <h2 className="mb-5 text-2xl font-light">Morning Arrival · Naha</h2>
+
+              <div className="space-y-4 text-sm leading-7 text-white/75">
                 <p>✈ EVA Air BR112 · Arrive 9:15 AM at Naha Airport</p>
-                <p>🚗 Pick up rental car, Rental Company TBD</p>
-                <p>🕛 Lunch at Senaga Island / Umikaji Terrace if weather is good and flight is on time.</p>
-                <p>MKCafe → ocean view, plane takeoffs/landings, and Mackerel Bitter Melon Burger 鯖魚苦瓜漢堡.</p>
+                <p>🚗 Pick up rental car · Rental Company TBD</p>
+
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <p className="mb-2 text-xs uppercase tracking-[0.2em] text-[#9EDCFF]">Lunch Stop</p>
+                  <p>🕛 Senaga Island · Umikaji Terrace stroll if weather is nice and flight is on time.</p>
+
+                  <img
+                    src="/umikaji-terrace.png"
+                    alt="Umikaji Terrace Okinawa"
+                    className="mt-4 h-56 w-full rounded-2xl object-cover object-center"
+                  />
+
+                  <p className="mt-4">
+                    MKCafe → ocean views, airplane takeoffs/landings, and the signature
+                    Mackerel Bitter Melon Burger 鯖魚苦瓜漢堡.
+                  </p>
+                </div>
+
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <p className="mb-2 text-xs uppercase tracking-[0.2em] text-[#FFD76A]">Afternoon · Option 1</p>
+                  <p>🛍 PARCO City · biggest shopping centre with indoor toddler facilities.</p>
+                  <p>☕ 港川外人住宅 Minatogawa State Side Town · Beans Store & canelé dessert.</p>
+                </div>
+
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <p className="mb-2 text-xs uppercase tracking-[0.2em] text-[#FFD76A]">Afternoon · Option 2</p>
+                  <p>🏖 Araha Beach Park playground if weather is nice.</p>
+                </div>
+
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <p>🛒 Aeon Mall Rycom for essentials & indoor play centre (rain backup).</p>
+                  <p>🚗 Drive to resort · approximately 45 minutes.</p>
+                </div>
               </div>
             </article>
 
@@ -779,19 +820,22 @@ export default function TravelSite() {
             <h2 className="mb-4 text-2xl font-light">Who's Joining Us Here</h2>
             <div className="grid gap-4 md:grid-cols-2">
               <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-                <p className="text-sm font-medium text-white">Xenia's Family</p>
+                <p className="text-sm font-medium text-white">Xenia & David</p>
                 <p className="text-xs text-gray-400">Nov 27 – Dec 6 · Okinawa</p>
               </div>
+
               <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-                <p className="text-sm font-medium text-white">Dave's Family</p>
+                <p className="text-sm font-medium text-white">Dave & Christina</p>
                 <p className="text-xs text-gray-400">Nov 27 – Dec 6 · Okinawa</p>
               </div>
+
               <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-                <p className="text-sm font-medium text-white">Steven</p>
+                <p className="text-sm font-medium text-white">Steven Wang</p>
                 <p className="text-xs text-gray-400">Nov 25 – Dec 6 · Okinawa</p>
               </div>
+
               <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-                <p className="text-sm font-medium text-white">Mark</p>
+                <p className="text-sm font-medium text-white">Mark Wang</p>
                 <p className="text-xs text-gray-400">Nov 25 – Nov 30 · Okinawa</p>
               </div>
             </div>
@@ -829,9 +873,9 @@ export default function TravelSite() {
           <div className="relative h-[300px] w-[147px] md:h-[495px] md:w-[243px]">
             <svg viewBox="0 0 140 260" className="h-full w-full object-contain opacity-90" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M110 0 L105 0 L94 12 L80 16 L69 24 L58 47 L47 57 L29 90 L10 117 L8 147 L0 173 L10 181 L16 205 L21 213 L43 230 L48 242 L47 254 L50 259 L61 254 L62 227 L68 210 L84 193 L98 163 L107 132 L113 96 L130 61 L127 36 L139 24 L134 15 L120 10 Z" />
-              <SvgPin id="taipei" scale={0.5} labelFontSize={8} labelOffset={12} label="Taipei" cx={108} cy={18} hovered={hovered} setHovered={setHovered} />
-              <SvgPin id="xiaoliuqiu" scale={0.5} labelFontSize={8} labelOffset={12} label="Xiaoliuqiu" cx={39} cy={234} hovered={hovered} setHovered={setHovered} />
-              <SvgPin id="yilan" scale={0.5} labelFontSize={8} labelOffset={12} label="Yilan" cx={120} cy={45} hovered={hovered} setHovered={setHovered} />
+              <SvgPin id="taipei" scale={0.5} labelFontSize={8} labelOffset={12} label="Taipei" cx={108} cy={18} hovered={hovered} setHovered={setHovered} activeColor={TAIWAN_GOLD} />
+              <SvgPin id="xiaoliuqiu" scale={0.5} labelFontSize={8} labelOffset={12} label="Xiaoliuqiu" cx={39} cy={234} hovered={hovered} setHovered={setHovered} activeColor={TAIWAN_GOLD} />
+              <SvgPin id="yilan" scale={0.5} labelFontSize={8} labelOffset={12} label="Yilan" cx={120} cy={45} hovered={hovered} setHovered={setHovered} activeColor={TAIWAN_GOLD} />
             </svg>
           </div>
 
