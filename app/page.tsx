@@ -8,7 +8,7 @@ const BABY_BLUE_SHADOW = "0 0 12px rgba(158,220,255,0.9)";
 const TAIWAN_GOLD = "#FFD76A";
 const TAIWAN_GOLD_SHADOW = "0 0 14px rgba(255,215,106,0.95)";
 
-type PageName = "map" | "onna" | "nago" | "nanjo" | "overlap";
+type PageName = "map" | "xiaoliuqiu" | "onna" | "nago" | "nanjo" | "naha" | "overlap";
 
 type SvgPinProps = {
   id: string;
@@ -164,6 +164,7 @@ export default function TravelSite() {
   const [hovered, setHovered] = useState<string | null>(null);
   const [page, setPage] = useState<PageName>("map");
   const [usdToJpy, setUsdToJpy] = useState("150");
+  const [usdToTwd, setUsdToTwd] = useState("32");
   const [now, setNow] = useState(new Date());
   const [selectedTimelineSectionId, setSelectedTimelineSectionId] = useState(1);
   const [guestName, setGuestName] = useState("");
@@ -190,6 +191,7 @@ export default function TravelSite() {
         const response = await fetch("https://open.er-api.com/v6/latest/USD");
         const data = await response.json();
         if (data?.rates?.JPY) setUsdToJpy(Math.round(data.rates.JPY).toString());
+        if (data?.rates?.TWD) setUsdToTwd(Math.round(data.rates.TWD).toString());
       } catch (error) {
         console.warn("Unable to fetch USD to JPY exchange rate. Using fallback.", error);
       }
@@ -268,9 +270,11 @@ export default function TravelSite() {
   };
 
   const openChapterForLocation = (id: string) => {
+    if (id === "xiaoliuqiu") setPage("xiaoliuqiu");
     if (id === "onna") setPage("onna");
     if (id === "nago") setPage("nago");
     if (id === "nanjo") setPage("nanjo");
+    if (id === "naha") setPage("naha");
   };
 
   const chapterNav = (current: PageName) => (
@@ -279,6 +283,11 @@ export default function TravelSite() {
         ← Back to Map
       </button>
       <div className="flex flex-wrap items-center justify-end gap-3">
+        {current === "xiaoliuqiu" && (
+          <button type="button" onClick={() => setPage("onna")} className="rounded-full border border-[#FFD76A]/30 bg-[#FFD76A]/10 px-4 py-2 text-sm text-[#FFD76A] transition hover:border-[#FFD76A]/60 hover:bg-[#FFD76A]/15">
+            Next Chapter →
+          </button>
+        )}
         {current === "nago" && (
           <button type="button" onClick={() => setPage("onna")} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white">
             ← Previous Chapter
@@ -286,6 +295,11 @@ export default function TravelSite() {
         )}
         {current === "nanjo" && (
           <button type="button" onClick={() => setPage("nago")} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white">
+            ← Previous Chapter
+          </button>
+        )}
+        {current === "naha" && (
+          <button type="button" onClick={() => setPage("nanjo")} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white">
             ← Previous Chapter
           </button>
         )}
@@ -299,19 +313,41 @@ export default function TravelSite() {
             Next Chapter →
           </button>
         )}
+        {current === "nanjo" && (
+          <button type="button" onClick={() => setPage("naha")} className="rounded-full border border-[#9EDCFF]/30 bg-[#9EDCFF]/10 px-4 py-2 text-sm text-[#9EDCFF] transition hover:border-[#9EDCFF]/60 hover:bg-[#9EDCFF]/15">
+            Next Chapter →
+          </button>
+        )}
       </div>
     </div>
   );
 
-  const infoWidgets = (monthLabel: string, nights: string, hotel: React.ReactNode) => (
-    <section className="mb-10 grid gap-4 md:grid-cols-5">
-      <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-center"><p className="mb-2 text-2xl">💴</p><p className="text-xs text-gray-400">Currency</p><p className="mt-1 text-sm font-medium">JPY ¥</p><p className="mt-1 text-xs text-gray-400">1 USD ≈ {usdToJpy} JPY</p><p className="mt-1 text-[9px] text-gray-500">Live rate · fallback 150</p></div>
-      <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-center"><p className="mb-2 text-2xl">🌤️</p><p className="text-xs text-gray-400">{monthLabel} Temp</p><p className="mt-1 text-sm font-medium">{monthLabel === "November" ? "22–26°C" : "20–24°C"}</p></div>
-      <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-center"><p className="mb-2 text-2xl">🕘</p><p className="text-xs text-gray-400">Local Time</p><p className="mt-1 text-sm font-medium">{okinawaLocalTime}</p><p className="mt-1 text-[9px] text-gray-500">Okinawa · JST</p></div>
-      <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-center"><p className="mb-2 text-2xl">🌙</p><p className="text-xs text-gray-400">Nights</p><p className="mt-1 text-sm font-medium">{nights}</p></div>
-      <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-center"><p className="mb-2 text-2xl">🏨</p><p className="text-xs text-gray-400">Hotel</p>{hotel}</div>
-    </section>
-  );
+  const infoWidgets = (
+    monthLabel: string,
+    nights: string,
+    hotel: React.ReactNode,
+    region: "japan" | "taiwan" = "japan"
+  ) => {
+    const isTaiwan = region === "taiwan";
+    const localTime = new Intl.DateTimeFormat("en-US", {
+      timeZone: isTaiwan ? "Asia/Taipei" : "Asia/Tokyo",
+      hour: "numeric",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true,
+    }).format(now);
+    const tempLabel = isTaiwan ? "24–28°C" : monthLabel === "November" ? "22–26°C" : "20–24°C";
+
+    return (
+      <section className="mb-10 grid gap-4 md:grid-cols-5">
+        <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-center"><p className="mb-2 text-2xl">{isTaiwan ? "💵" : "💴"}</p><p className="text-xs text-gray-400">Currency</p><p className="mt-1 text-sm font-medium">{isTaiwan ? "TWD NT$" : "JPY ¥"}</p><p className="mt-1 text-xs text-gray-400">{isTaiwan ? `1 USD ≈ ${usdToTwd} TWD` : `1 USD ≈ ${usdToJpy} JPY`}</p><p className="mt-1 text-[9px] text-gray-500">Live rate · fallback {isTaiwan ? "32" : "150"}</p></div>
+        <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-center"><p className="mb-2 text-2xl">🌤️</p><p className="text-xs text-gray-400">{monthLabel} Temp</p><p className="mt-1 text-sm font-medium">{tempLabel}</p></div>
+        <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-center"><p className="mb-2 text-2xl">🕘</p><p className="text-xs text-gray-400">Local Time</p><p className="mt-1 text-sm font-medium">{localTime}</p><p className="mt-1 text-[9px] text-gray-500">{isTaiwan ? "Taiwan · CST" : "Okinawa · JST"}</p></div>
+        <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-center"><p className="mb-2 text-2xl">🌙</p><p className="text-xs text-gray-400">Nights</p><p className="mt-1 text-sm font-medium">{nights}</p></div>
+        <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-center"><p className="mb-2 text-2xl">🏨</p><p className="text-xs text-gray-400">Hotel</p>{hotel}</div>
+      </section>
+    );
+  };
 
   const peopleCards = (people: [string, string][]) => (
     <section className="mt-12">
@@ -401,7 +437,7 @@ export default function TravelSite() {
                 <div className="absolute -top-5 h-10 cursor-pointer" style={{ left: `${getSectionPercent(new Date(2026, 10, 27))}%`, width: `${getSectionPercent(new Date(2026, 10, 30)) - getSectionPercent(new Date(2026, 10, 27))}%` }} onMouseEnter={() => setHovered("onna")} onMouseLeave={() => setHovered(null)} onClick={() => setPage("onna")} />
                 <div className="absolute -top-5 h-10 cursor-pointer" style={{ left: `${getSectionPercent(new Date(2026, 10, 30))}%`, width: `${getSectionPercent(new Date(2026, 11, 2)) - getSectionPercent(new Date(2026, 10, 30))}%` }} onMouseEnter={() => setHovered("nago")} onMouseLeave={() => setHovered(null)} onClick={() => setPage("nago")} />
                 <div className="absolute -top-5 h-10 cursor-pointer" style={{ left: `${getSectionPercent(new Date(2026, 11, 2))}%`, width: `${getSectionPercent(new Date(2026, 11, 4)) - getSectionPercent(new Date(2026, 11, 2))}%` }} onMouseEnter={() => setHovered("nanjo")} onMouseLeave={() => setHovered(null)} onClick={() => setPage("nanjo")} />
-                <div className="absolute -top-5 h-10 cursor-pointer" style={{ left: `${getSectionPercent(new Date(2026, 11, 4))}%`, width: `${getSectionPercent(new Date(2026, 11, 6)) - getSectionPercent(new Date(2026, 11, 4))}%` }} onMouseEnter={() => setHovered("naha")} onMouseLeave={() => setHovered(null)} />
+                <div className="absolute -top-5 h-10 cursor-pointer" style={{ left: `${getSectionPercent(new Date(2026, 11, 4))}%`, width: `${getSectionPercent(new Date(2026, 11, 6)) - getSectionPercent(new Date(2026, 11, 4))}%` }} onMouseEnter={() => setHovered("naha")} onMouseLeave={() => setHovered(null)} onClick={() => setPage("naha")} />
               </>
             )}
             {activeTimelineSection.id === 2 && (
@@ -533,6 +569,106 @@ export default function TravelSite() {
     );
   }
 
+  if (page === "xiaoliuqiu") {
+    return (
+      <div className="min-h-screen bg-black px-6 py-10 text-white">
+        {chapterNav("xiaoliuqiu")}
+        <main className="mx-auto max-w-5xl">
+          <p className="mb-3 text-sm uppercase tracking-[0.35em] text-[#FFD76A]">Taiwan · Xiaoliuqiu</p>
+          <h1 className="mb-6 text-4xl font-light tracking-wide md:text-6xl">Scuba Certification Chapter</h1>
+          {infoWidgets("November", "3 Nights", <p className="mt-1 text-sm font-medium text-[#FFD76A]">小琉球民宿 TBD</p>, "taiwan")}
+          <section className="space-y-8">
+            <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
+              <p className="mb-2 text-sm text-[#FFD76A]">Friday, November 20, 2026</p>
+              <h2 className="mb-5 text-2xl font-light">Arrival Day · Xiaoliuqiu</h2>
+              <div className="space-y-4 text-sm leading-7 text-white/75">
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <p>🌅 Anthony, Christine & Mark arriving Xiaoliuqiu</p>
+                  <p className="mt-2 text-white/50">高雄左營高鐵站 → 10:30 AM 客運 → 屏客東港總站 → 東港碼頭 → 11:50 AM 藍白船班</p>
+                  <a href="https://www.leucosapphire.com/" target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-[#FFD76A] hover:underline">Blue & White Ferry</a>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <p>🤿 Open Water Lesson</p>
+                  <ul className="ml-5 list-disc space-y-1 text-white/65">
+                    <li>裝備組裝介紹</li>
+                    <li>Close Water · Dive #1</li>
+                  </ul>
+                </div>
+              </div>
+            </article>
+
+            <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
+              <p className="mb-2 text-sm text-[#FFD76A]">Saturday, November 21, 2026</p>
+              <h2 className="mb-5 text-2xl font-light">Open Water Dive Day</h2>
+              <div className="space-y-4 text-sm leading-7 text-white/75">
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <p>🌊 Open Water Lessons</p>
+                  <p>Dive #2 & Dive #3</p>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <p>⛴ Xenia & David arriving Xiaoliuqiu</p>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <ul className="ml-5 list-disc space-y-1 text-white/65">
+                    <li>美人洞</li>
+                    <li>花瓶岩</li>
+                    <li>龍蝦洞</li>
+                  </ul>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <p>🍜 Group Dinner · Beef Noodle Place</p>
+                </div>
+              </div>
+            </article>
+
+            <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
+              <p className="mb-2 text-sm text-[#FFD76A]">Sunday, November 22, 2026</p>
+              <h2 className="mb-5 text-2xl font-light">Dive + Southern Island Day</h2>
+              <div className="space-y-4 text-sm leading-7 text-white/75">
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <p>🤿 Open Water Lessons</p>
+                  <p>Dive #4 & Dive #5</p>
+                  <p className="mt-2 text-white/50">David & Anthony may join fun dives with the OW group.</p>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <p>👶 Toddler Group · 小琉球海洋館</p>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <p>🌅 Southern Xiaoliuqiu Exploration</p>
+                  <ul className="ml-5 list-disc space-y-1 text-white/65">
+                    <li>琉行綠色隧道</li>
+                    <li>烏鬼洞</li>
+                    <li>落日亭 Sunset View</li>
+                  </ul>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <p>🦞 OW Celebration Dinner</p>
+                  <p className="text-white/50">Jim to reserve seafood restaurant.</p>
+                </div>
+              </div>
+            </article>
+
+            <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
+              <p className="mb-2 text-sm text-[#FFD76A]">Monday, November 23, 2026</p>
+              <h2 className="mb-5 text-2xl font-light">Departure to Taipei</h2>
+              <div className="space-y-4 text-sm leading-7 text-white/75">
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <p>⛴ Everyone leaving Xiaoliuqiu</p>
+                  <p>11:10 AM boat departure</p>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <p>🍣 Lunch · 東港漁市場</p>
+                  <p>🚄 Afternoon · 左營高鐵 back to Taipei</p>
+                </div>
+              </div>
+            </article>
+          </section>
+          {peopleCards([["Anthony & Christine", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Mark Wang", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Xenia & David", "Nov 21 – Nov 23 · Xiaoliuqiu"]])}
+        </main>
+      </div>
+    );
+  }
+
   if (page === "onna") {
     return (
       <div className="min-h-screen bg-black px-6 py-10 text-white">
@@ -587,6 +723,46 @@ export default function TravelSite() {
       </div>
     );
   }
+  if (page === "naha") {
+    return (
+      <div className="min-h-screen bg-black px-6 py-10 text-white">
+        {chapterNav("naha")}
+        <main className="mx-auto max-w-5xl">
+          <p className="mb-3 text-sm uppercase tracking-[0.35em] text-[#9EDCFF]">Okinawa · Naha</p>
+          <h1 className="mb-6 text-4xl font-light tracking-wide md:text-6xl">Final Naha Chapter</h1>
+          {infoWidgets("December", "2 Nights", <><p className="mt-1 text-sm font-medium text-[#9EDCFF]">Hotel Strata Naha</p><p className="mt-1 text-[9px] text-gray-500">or Hotel JAL City Naha</p></>)}
+          <section className="space-y-8">
+            <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
+              <p className="mb-2 text-sm text-[#9EDCFF]">Friday, December 4, 2026</p>
+              <h2 className="mb-5 text-2xl font-light">Nanjo → Naha</h2>
+              <div className="space-y-4 text-sm leading-7 text-white/75">
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🐟 Tomari Iyumachi Fish Market Brunch · 11:00 AM</p></div>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p className="mb-2 text-xs uppercase tracking-[0.2em] text-[#FFD76A]">Afternoon · Option 1</p><p>🏯 Shuri Castle</p><p className="text-white/50">If rebuilt and reopened by Fall 2026.</p></div>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p className="mb-2 text-xs uppercase tracking-[0.2em] text-[#FFD76A]">Afternoon · Option 2</p><ul className="ml-5 list-disc space-y-1 text-white/65"><li>Kokusai 國際通</li><li>Calbee Okinawa</li><li>御果子御殿</li><li>Tsuboya Pottery Street</li></ul></div>
+              </div>
+            </article>
+            <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
+              <p className="mb-2 text-sm text-[#9EDCFF]">Saturday, December 5, 2026</p>
+              <h2 className="mb-5 text-2xl font-light">Shopping + Aquarium Day</h2>
+              <div className="space-y-4 text-sm leading-7 text-white/75">
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🍳 Hotel breakfast buffet</p><p>🧳 Checkout at 11:00 AM</p></div>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><ul className="ml-5 list-disc space-y-1 text-white/65"><li>🐟 Itoman Fish Market 系滿農夫市集</li><li>🛍 Ashibinaa Outlet</li><li>🐠 DMM Kariyushi Aquarium (FunPass)</li></ul></div>
+              </div>
+            </article>
+            <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
+              <p className="mb-2 text-sm text-[#9EDCFF]">Sunday, December 6, 2026</p>
+              <h2 className="mb-5 text-2xl font-light">Departure Day</h2>
+              <div className="space-y-4 text-sm leading-7 text-white/75">
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🧳 Hotel checkout at 7:15 AM</p><p>✈️ Arrive Naha Airport around 8:00 AM</p><p className="text-white/50">~20 min drive + extra ~20 min return car processing</p></div>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>✈️ EVA Air BR113</p><p>OKA 10:15 → TPE 10:55</p></div>
+              </div>
+            </article>
+          </section>
+          {peopleCards([["Xenia & David", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 6 · Okinawa"], ["Mei & Emilia", "Nov 30 – Dec 6 · Okinawa"]])}
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -611,7 +787,7 @@ export default function TravelSite() {
           <div className="relative h-[300px] w-[147px] md:h-[495px] md:w-[243px]">
             <svg viewBox="0 0 140 260" className="h-full w-full object-contain opacity-90" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M110 0 L105 0 L94 12 L80 16 L69 24 L58 47 L47 57 L29 90 L10 117 L8 147 L0 173 L10 181 L16 205 L21 213 L43 230 L48 242 L47 254 L50 259 L61 254 L62 227 L68 210 L84 193 L98 163 L107 132 L113 96 L130 61 L127 36 L139 24 L134 15 L120 10 Z" />
-              {isSection1Visible && <><SvgPin id="taipei" scale={0.75} labelFontSize={8} labelOffset={12} label="Taipei" cx={108} cy={18} hovered={hovered} setHovered={setHovered} activeColor={TAIWAN_GOLD} /><SvgPin id="xiaoliuqiu" scale={0.75} labelFontSize={8} labelOffset={12} label="Xiaoliuqiu" cx={39} cy={234} hovered={hovered} setHovered={setHovered} activeColor={TAIWAN_GOLD} /></>}
+              {isSection1Visible && <><SvgPin id="taipei" scale={0.75} labelFontSize={8} labelOffset={12} label="Taipei" cx={108} cy={18} hovered={hovered} setHovered={setHovered} activeColor={TAIWAN_GOLD} /><SvgPin id="xiaoliuqiu" scale={0.75} labelFontSize={8} labelOffset={12} label="Xiaoliuqiu" cx={39} cy={234} hovered={hovered} setHovered={setHovered} activeColor={TAIWAN_GOLD} onDoubleClick={() => setPage("xiaoliuqiu")} /></>}
               {isSection2Visible && <SvgPin id="yilan" scale={0.75} labelFontSize={8} labelOffset={12} label="Yilan" cx={120} cy={45} hovered={hovered} setHovered={setHovered} activeColor={TAIWAN_GOLD} />}
             </svg>
           </div>
@@ -620,7 +796,7 @@ export default function TravelSite() {
             <div className="relative h-[220px] w-[220px] md:h-[335px] md:w-[335px]" style={{ transform: "translateY(-2.25rem)" }}>
               <svg viewBox="0 0 331 520" className="h-full w-full object-contain" fill="none" stroke={isOkinawaIslandHover ? BABY_BLUE : "white"} strokeWidth={isOkinawaIslandHover ? 4 : 3} style={{ opacity: isOkinawaIslandHover ? 1 : 0.9 }} strokeLinecap="round" strokeLinejoin="round">
                 <path onMouseEnter={() => setHovered("okinawa")} onMouseLeave={() => setHovered(null)} d="M291 5 L282 5 L280 12 L283 27 L277 42 L262 65 L257 79 L251 83 L242 82 L239 85 L238 90 L243 93 L243 97 L237 105 L223 112 L216 127 L222 134 L213 135 L212 144 L209 147 L196 150 L192 156 L180 154 L177 160 L169 160 L162 154 L164 149 L173 147 L181 151 L185 145 L176 133 L167 132 L167 125 L154 124 L142 115 L130 115 L121 120 L113 118 L106 120 L104 136 L111 144 L108 157 L110 173 L120 186 L134 182 L141 189 L158 192 L159 204 L124 235 L120 235 L115 244 L108 240 L99 244 L89 264 L80 273 L74 287 L62 285 L53 293 L40 288 L35 291 L36 314 L54 350 L53 358 L60 367 L60 377 L52 380 L47 389 L36 391 L27 407 L19 405 L17 418 L20 426 L8 425 L5 431 L4 441 L10 448 L10 456 L19 465 L19 468 L15 470 L15 479 L20 486 L19 507 L23 514 L32 516 L41 509 L51 507 L69 484 L85 479 L89 470 L103 459 L103 450 L97 438 L92 435 L85 437 L79 449 L68 431 L79 420 L80 408 L84 400 L94 391 L90 379 L97 374 L98 369 L107 367 L102 355 L112 346 L120 361 L132 374 L140 372 L139 361 L118 333 L115 321 L108 318 L95 298 L99 294 L99 289 L111 279 L138 279 L141 284 L147 282 L150 278 L149 272 L153 269 L162 269 L175 254 L172 245 L174 240 L182 241 L194 232 L196 224 L192 217 L195 214 L221 219 L229 211 L237 209 L240 204 L239 199 L245 189 L237 183 L236 179 L244 164 L253 161 L266 166 L277 159 L286 157 L290 153 L292 142 L304 129 L311 105 L325 84 L322 73 L327 59 L322 50 L320 35 L309 24 L310 18 L298 13 Z" style={isOkinawaIslandHover ? { filter: "drop-shadow(0 0 10px rgba(158,220,255,0.9))" } : undefined} />
-                <SvgPin id="naha" scale={2.25} labelFontSize={20} labelOffset={38} label="Naha" cx={34} cy={437} hovered={hovered} setHovered={setHovered} leaveTo={null} activeColor={BABY_BLUE} />
+                <SvgPin id="naha" scale={2.25} labelFontSize={20} labelOffset={38} label="Naha" cx={34} cy={437} hovered={hovered} setHovered={setHovered} leaveTo={null} activeColor={BABY_BLUE} onDoubleClick={() => setPage("naha")} />
                 <SvgPin id="onna" scale={2.25} labelFontSize={20} labelOffset={38} label="Onna" cx={50} cy={300} hovered={hovered} setHovered={setHovered} leaveTo={null} activeColor={BABY_BLUE} onDoubleClick={() => setPage("onna")} />
                 <SvgPin id="nago" scale={2.25} labelFontSize={20} labelOffset={38} label="Nago" cx={152} cy={172} hovered={hovered} setHovered={setHovered} leaveTo={null} activeColor={BABY_BLUE} onDoubleClick={() => setPage("nago")} />
                 <SvgPin id="nanjo" scale={2.25} labelFontSize={20} labelOffset={38} label="Nanjo" cx={70} cy={468} hovered={hovered} setHovered={setHovered} leaveTo={null} activeColor={BABY_BLUE} onDoubleClick={() => setPage("nanjo")} />
