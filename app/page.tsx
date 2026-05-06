@@ -607,7 +607,7 @@ export default function TravelSite() {
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
                   <p>⛴ Xenia & David arriving Xiaoliuqiu</p>
-                  <img src="/xlqmap.png" alt="Xiaoliuqiu map and ferry route" className="mt-4 h-auto w-full rounded-2xl object-contain bg-black/20 p-2" />
+                  <img src="/xlqmap.png" alt="Xiaoliuqiu map and ferry route" className="mt-4 h-auto w-1/2 rounded-2xl object-contain bg-black/20 p-2 mx-auto" />
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
                   <ul className="ml-5 list-disc space-y-1 text-white/65">
