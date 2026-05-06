@@ -154,6 +154,21 @@ export default function TravelSite() {
   const [usdToJpy, setUsdToJpy] = useState("150");
   const [now, setNow] = useState(new Date());
   const [selectedTimelineSectionId, setSelectedTimelineSectionId] = useState(1);
+  const [guestName, setGuestName] = useState("");
+  const guestOptions = [
+    "Xenia & David",
+    "Anthony & Christine",
+    "Jennifer & Hiroshi",
+    "Heather & Jack",
+    "Steven Wang",
+    "Mark Wang",
+    "Mei & Emilia",
+    "Julie & Adrian",
+    "Dave & Christina",
+    "I am just a random Guest",
+  ];
+  const [isGuestConfirmed, setIsGuestConfirmed] = useState(false);
+  const [showGuestActions, setShowGuestActions] = useState(false);
   const timelineScrollRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -272,6 +287,66 @@ export default function TravelSite() {
   const countdownHours = Math.floor((countdownMs % MS_PER_DAY) / (1000 * 60 * 60));
   const countdownMinutes = Math.floor((countdownMs % (1000 * 60 * 60)) / (1000 * 60));
   const countdownSeconds = Math.floor((countdownMs % (1000 * 60)) / 1000);
+
+  if (!isGuestConfirmed) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-black px-6 text-white">
+        <div className="w-full max-w-md rounded-[2rem] border border-white/10 bg-white/[0.04] p-8 text-center shadow-[0_0_40px_rgba(255,255,255,0.06)] backdrop-blur-xl">
+          <p className="mb-3 text-xs uppercase tracking-[0.35em] text-[#9EDCFF]">Private Group Event</p>
+          <h1 className="mb-4 text-3xl font-light tracking-wide">Welcome to XK Event 2026</h1>
+          <p className="mb-8 text-sm leading-6 text-white/55">
+            Please select your name to enter the group travel website.
+          </p>
+
+          <div className="mb-5 max-h-[280px] space-y-2 overflow-y-auto pr-1">
+            {guestOptions.map((guest) => {
+              const isSelected = guestName === guest;
+
+              return (
+                <button
+                  key={guest}
+                  type="button"
+                  onClick={() => {
+                    setGuestName(guest);
+                    setShowGuestActions(true);
+                  }}
+                  className={`w-full rounded-2xl border px-4 py-3 text-sm font-light tracking-wide transition ${
+                    isSelected
+                      ? "border-[#9EDCFF]/70 bg-[#9EDCFF]/10 text-white shadow-[0_0_16px_rgba(158,220,255,0.16)]"
+                      : "border-white/10 bg-white/[0.03] text-white/70 hover:border-white/30 hover:bg-white/[0.05]"
+                  }`}
+                >
+                  {guest}
+                </button>
+              );
+            })}
+          </div>
+
+          {showGuestActions && (
+            <div className="grid gap-3 sm:grid-cols-2">
+              <button
+                type="button"
+                disabled={!guestName.trim()}
+                onClick={() => setIsGuestConfirmed(true)}
+                className="rounded-full border border-[#9EDCFF]/50 bg-[#9EDCFF]/10 px-5 py-3 text-sm uppercase tracking-[0.22em] text-[#9EDCFF] transition hover:bg-[#9EDCFF]/15 disabled:cursor-not-allowed disabled:border-white/10 disabled:bg-white/[0.03] disabled:text-white/25"
+              >
+                Enter Trip Site
+              </button>
+
+              <button
+                type="button"
+                disabled={!guestName.trim()}
+                onClick={() => setPage("overlap")}
+                className="rounded-full border border-white/20 bg-white/[0.04] px-5 py-3 text-sm uppercase tracking-[0.22em] text-white/80 transition hover:border-white/40 hover:bg-white/[0.08] disabled:cursor-not-allowed disabled:border-white/10 disabled:bg-white/[0.03] disabled:text-white/25"
+              >
+                Generate My Itinerary
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   const mobileTimelineItems = {
     1: [
