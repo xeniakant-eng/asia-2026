@@ -584,8 +584,7 @@ export default function TravelSite() {
               <div className="space-y-4 text-sm leading-7 text-white/75">
                 <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
                   <p>🌅 Anthony, Christine & Mark arriving Xiaoliuqiu</p>
-                  <p className="mt-2 text-white/50">高雄左營高鐵站 → 10:30 AM 客運 → 屏客東港總站 → 東港碼頭 → 11:50 AM 藍白船班</p>
-                  <a href="https://www.leucosapphire.com/" target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-[#9EDCFF] hover:underline">Blue & White Ferry</a>
+                  <p className="mt-2 text-white/50">高雄左營高鐵站 → 10:30 AM 客運 → 屏客東港總站 → 步行10分鐘東港碼頭 → 11:50 AM <a href="https://www.leucosapphire.com/" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">藍白船班</a> → 與Jim碼頭集合</p>
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
                   <p>🤿 Open Water Lesson</p>
@@ -593,6 +592,9 @@ export default function TravelSite() {
                     <li>裝備組裝介紹</li>
                     <li>Close Water · Dive #1</li>
                   </ul>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <p>🍽 Dinner · TBD</p>
                 </div>
               </div>
             </article>
@@ -607,14 +609,17 @@ export default function TravelSite() {
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
                   <p>⛴ Xenia & David arriving Xiaoliuqiu</p>
-                  <img src="/xlqmap.png" alt="Xiaoliuqiu map and ferry route" className="mt-4 h-auto w-1/2 rounded-2xl object-contain bg-black/20 p-2 mx-auto" />
-                </div>
-                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-                  <ul className="ml-5 list-disc space-y-1 text-white/65">
-                    <li>美人洞</li>
-                    <li>花瓶岩</li>
-                    <li>龍蝦洞</li>
-                  </ul>
+                  <p className="mt-2 text-sm font-medium text-white/80">Northern XLQ Visits</p>
+                  <div className="mt-4 flex flex-col items-center gap-4 md:flex-row md:items-start">
+                    <div className="flex-1">
+                      <ul className="ml-5 list-disc space-y-2 text-white/65">
+                        <li>美人洞</li>
+                        <li>花瓶岩</li>
+                        <li>龍蝦洞</li>
+                      </ul>
+                    </div>
+                    <img src="/xlqmap.png" alt="Xiaoliuqiu map and ferry route" className="h-auto w-full rounded-2xl object-contain bg-black/20 p-2 md:w-1/2" />
+                  </div>
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
                   <p>🍜 Group Dinner · Beef Noodle Place</p>
@@ -632,7 +637,7 @@ export default function TravelSite() {
                   <p className="mt-2 text-white/50">David & Anthony may join fun dives with the OW group.</p>
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-                  <p>👶 Toddler Group · 小琉球海洋館</p>
+                  <p>👶 Toddler Group 小琉球海洋館</p>
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
                   <p>🌅 Southern Xiaoliuqiu Exploration</p>
@@ -659,7 +664,7 @@ export default function TravelSite() {
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
                   <p>🍣 Lunch · 東港漁市場</p>
-                  <p>🚄 Afternoon · 左營高鐵 back to Taipei</p>
+                  <p>🚄 Afternoon · 左營 → 台北</p>
                 </div>
               </div>
             </article>
