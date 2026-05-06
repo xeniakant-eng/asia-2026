@@ -284,7 +284,7 @@ export default function TravelSite() {
       </button>
       <div className="flex flex-wrap items-center justify-end gap-3">
         {current === "xiaoliuqiu" && (
-          <button type="button" onClick={() => setPage("onna")} className="rounded-full border border-[#FFD76A]/30 bg-[#FFD76A]/10 px-4 py-2 text-sm text-[#FFD76A] transition hover:border-[#FFD76A]/60 hover:bg-[#FFD76A]/15">
+          <button type="button" onClick={() => setPage("onna")} className="rounded-full border border-[#FFD76A]/30 bg-[#FFD76A]/10 px-4 py-2 text-sm text-[#9EDCFF] transition hover:border-[#FFD76A]/60 hover:bg-[#FFD76A]/15">
             Next Chapter →
           </button>
         )}
@@ -444,9 +444,9 @@ export default function TravelSite() {
               <div className="absolute -top-5 h-10 cursor-pointer" style={{ left: `${getSectionPercent(new Date(2026, 11, 9))}%`, width: `${getSectionPercent(new Date(2026, 11, 12)) - getSectionPercent(new Date(2026, 11, 9))}%` }} onMouseEnter={() => setHovered("yilan")} onMouseLeave={() => setHovered(null)} />
             )}
 
-            {hovered === "taipei" && <div className="timeline-highlight top-0 h-[2px] text-[#FFD76A]" style={{ left: `${getSectionPercent(new Date(2026, 10, 23))}%`, width: `${getSectionPercent(new Date(2026, 10, 27)) - getSectionPercent(new Date(2026, 10, 23))}%`, backgroundColor: TAIWAN_GOLD, boxShadow: TAIWAN_GOLD_SHADOW }} />}
-            {hovered === "xiaoliuqiu" && <div className="timeline-highlight top-0 h-[2px] text-[#FFD76A]" style={{ left: `${getSectionPercent(new Date(2026, 10, 20))}%`, width: `${getSectionPercent(new Date(2026, 10, 23)) - getSectionPercent(new Date(2026, 10, 20))}%`, backgroundColor: TAIWAN_GOLD, boxShadow: TAIWAN_GOLD_SHADOW }} />}
-            {hovered === "yilan" && <div className="timeline-highlight top-0 h-[2px] text-[#FFD76A]" style={{ left: `${getSectionPercent(new Date(2026, 11, 9))}%`, width: `${getSectionPercent(new Date(2026, 11, 12)) - getSectionPercent(new Date(2026, 11, 9))}%`, backgroundColor: TAIWAN_GOLD, boxShadow: TAIWAN_GOLD_SHADOW }} />}
+            {hovered === "taipei" && <div className="timeline-highlight top-0 h-[2px] text-[#9EDCFF]" style={{ left: `${getSectionPercent(new Date(2026, 10, 23))}%`, width: `${getSectionPercent(new Date(2026, 10, 27)) - getSectionPercent(new Date(2026, 10, 23))}%`, backgroundColor: TAIWAN_GOLD, boxShadow: TAIWAN_GOLD_SHADOW }} />}
+            {hovered === "xiaoliuqiu" && <div className="timeline-highlight top-0 h-[2px] text-[#9EDCFF]" style={{ left: `${getSectionPercent(new Date(2026, 10, 20))}%`, width: `${getSectionPercent(new Date(2026, 10, 23)) - getSectionPercent(new Date(2026, 10, 20))}%`, backgroundColor: TAIWAN_GOLD, boxShadow: TAIWAN_GOLD_SHADOW }} />}
+            {hovered === "yilan" && <div className="timeline-highlight top-0 h-[2px] text-[#9EDCFF]" style={{ left: `${getSectionPercent(new Date(2026, 11, 9))}%`, width: `${getSectionPercent(new Date(2026, 11, 12)) - getSectionPercent(new Date(2026, 11, 9))}%`, backgroundColor: TAIWAN_GOLD, boxShadow: TAIWAN_GOLD_SHADOW }} />}
             {isOkinawaIslandHover && <div className="timeline-highlight top-0 h-[2px] text-[#9EDCFF]" style={{ left: `${getSectionPercent(new Date(2026, 10, 27))}%`, width: `${getSectionPercent(new Date(2026, 11, 6)) - getSectionPercent(new Date(2026, 10, 27))}%`, backgroundColor: BABY_BLUE, boxShadow: BABY_BLUE_SHADOW }} />}
             {isOnnaHover && <div className="timeline-highlight top-0 h-[2px] text-[#9EDCFF]" style={{ left: `${getSectionPercent(new Date(2026, 10, 27))}%`, width: `${getSectionPercent(new Date(2026, 10, 30)) - getSectionPercent(new Date(2026, 10, 27))}%`, backgroundColor: BABY_BLUE, boxShadow: BABY_BLUE_SHADOW }} />}
             {isNagoHover && <div className="timeline-highlight top-0 h-[2px] text-[#9EDCFF]" style={{ left: `${getSectionPercent(new Date(2026, 10, 30))}%`, width: `${getSectionPercent(new Date(2026, 11, 2)) - getSectionPercent(new Date(2026, 10, 30))}%`, backgroundColor: BABY_BLUE, boxShadow: BABY_BLUE_SHADOW }} />}
@@ -469,7 +469,7 @@ export default function TravelSite() {
               return (
                 <div key={`${date.getMonth()}-${date.getDate()}`} className="absolute top-1/2 -translate-y-1/2" style={{ left: `${(index / (sectionDates.length - 1)) * 100}%` }}>
                   <div className={`h-2 w-px ${highlight ? "" : "bg-white/50"}`} style={highlightTaiwan ? { backgroundColor: TAIWAN_GOLD } : highlightOkinawa ? { backgroundColor: BABY_BLUE } : undefined} />
-                  <div className={`mt-2 -translate-x-1/2 whitespace-nowrap text-[8px] transition-all ${highlight ? "font-semibold" : "text-gray-500"}`} style={highlightTaiwan ? { color: TAIWAN_GOLD } : highlightOkinawa ? { color: BABY_BLUE } : undefined}>
+                  <div className={`mt-2 -translate-x-1/2 whitespace-nowrap text-[12px] transition-all ${highlight ? "font-semibold" : "text-gray-500"}`} style={highlightTaiwan ? { color: TAIWAN_GOLD } : highlightOkinawa ? { color: BABY_BLUE } : undefined}>
                     {monthLabel} {date.getDate()}
                   </div>
                 </div>
@@ -574,18 +574,18 @@ export default function TravelSite() {
       <div className="min-h-screen bg-black px-6 py-10 text-white">
         {chapterNav("xiaoliuqiu")}
         <main className="mx-auto max-w-5xl">
-          <p className="mb-3 text-sm uppercase tracking-[0.35em] text-[#FFD76A]">Taiwan · Xiaoliuqiu</p>
+          <p className="mb-3 text-sm uppercase tracking-[0.35em] text-[#9EDCFF]">Taiwan · Xiaoliuqiu</p>
           <h1 className="mb-6 text-4xl font-light tracking-wide md:text-6xl">Scuba Dive Chapter</h1>
-          {infoWidgets("November", "3 Nights", <p className="mt-1 text-sm font-medium text-[#FFD76A]">小琉球民宿 TBD</p>, "taiwan")}
+          {infoWidgets("November", "3 Nights", <p className="mt-1 text-sm font-medium text-[#9EDCFF]">小琉球民宿 TBD</p>, "taiwan")}
           <section className="space-y-8">
             <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
-              <p className="mb-2 text-sm text-[#FFD76A]">Friday, November 20, 2026</p>
+              <p className="mb-2 text-sm text-[#9EDCFF]">Friday, November 20, 2026</p>
               <h2 className="mb-5 text-2xl font-light">Arrival Day · Xiaoliuqiu</h2>
               <div className="space-y-4 text-sm leading-7 text-white/75">
                 <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
                   <p>🌅 Anthony, Christine & Mark arriving Xiaoliuqiu</p>
                   <p className="mt-2 text-white/50">高雄左營高鐵站 → 10:30 AM 客運 → 屏客東港總站 → 東港碼頭 → 11:50 AM 藍白船班</p>
-                  <a href="https://www.leucosapphire.com/" target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-[#FFD76A] hover:underline">Blue & White Ferry</a>
+                  <a href="https://www.leucosapphire.com/" target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-[#9EDCFF] hover:underline">Blue & White Ferry</a>
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
                   <p>🤿 Open Water Lesson</p>
@@ -598,7 +598,7 @@ export default function TravelSite() {
             </article>
 
             <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
-              <p className="mb-2 text-sm text-[#FFD76A]">Saturday, November 21, 2026</p>
+              <p className="mb-2 text-sm text-[#9EDCFF]">Saturday, November 21, 2026</p>
               <h2 className="mb-5 text-2xl font-light">Open Water Dive Day</h2>
               <div className="space-y-4 text-sm leading-7 text-white/75">
                 <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
@@ -607,6 +607,7 @@ export default function TravelSite() {
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
                   <p>⛴ Xenia & David arriving Xiaoliuqiu</p>
+                  <img src="/xlqmap.png" alt="Xiaoliuqiu map and ferry route" className="mt-4 h-auto w-full rounded-2xl object-contain bg-black/20 p-2" />
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
                   <ul className="ml-5 list-disc space-y-1 text-white/65">
@@ -622,7 +623,7 @@ export default function TravelSite() {
             </article>
 
             <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
-              <p className="mb-2 text-sm text-[#FFD76A]">Sunday, November 22, 2026</p>
+              <p className="mb-2 text-sm text-[#9EDCFF]">Sunday, November 22, 2026</p>
               <h2 className="mb-5 text-2xl font-light">Dive + Southern Island Day</h2>
               <div className="space-y-4 text-sm leading-7 text-white/75">
                 <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
@@ -649,7 +650,7 @@ export default function TravelSite() {
             </article>
 
             <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
-              <p className="mb-2 text-sm text-[#FFD76A]">Monday, November 23, 2026</p>
+              <p className="mb-2 text-sm text-[#9EDCFF]">Monday, November 23, 2026</p>
               <h2 className="mb-5 text-2xl font-light">Departure to Taipei</h2>
               <div className="space-y-4 text-sm leading-7 text-white/75">
                 <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
@@ -678,9 +679,39 @@ export default function TravelSite() {
           <h1 className="mb-6 text-4xl font-light tracking-wide md:text-6xl">Wedding Resort Chapter</h1>
           {infoWidgets("November", "3 Nights", <a href="https://www.hotelmonterey.co.jp/en/okinawa/" target="_blank" rel="noopener noreferrer" className="mt-1 block text-sm font-medium text-[#9EDCFF] hover:underline">Hotel Monterey Okinawa</a>)}
           <section className="space-y-8">
-            <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md"><p className="mb-2 text-sm text-[#9EDCFF]">Friday, November 27, 2026</p><h2 className="mb-5 text-2xl font-light">Morning Arrival · Naha</h2><div className="space-y-4 text-sm leading-7 text-white/75"><p>✈ EVA Air BR112 · Arrive 9:15 AM at Naha Airport</p><p>🚗 Pick up rental car · Rental Company TBD</p><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p className="mb-2 text-xs uppercase tracking-[0.2em] text-[#9EDCFF]">Lunch Stop</p><p>🕛 Senaga Island · Umikaji Terrace stroll if weather is nice and flight is on time.</p><img src="/umikaji-terrace.png" alt="Umikaji Terrace Okinawa" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /><p className="mt-4">MKCafe → ocean views, airplane takeoffs/landings, and the signature Mackerel Bitter Melon Burger 鯖魚苦瓜漢堡.</p></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p className="mb-2 text-xs uppercase tracking-[0.2em] text-[#FFD76A]">Afternoon · Option 1</p><p>🛍 PARCO City · biggest shopping centre with indoor toddler facilities.</p><p>☕ 港川外人住宅 Minatogawa State Side Town · Beans Store & canelé dessert.</p></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p className="mb-2 text-xs uppercase tracking-[0.2em] text-[#FFD76A]">Afternoon · Option 2</p><p>🏖 Araha Beach Park playground if weather is nice.</p></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🛒 Aeon Mall Rycom for essentials & indoor play centre (rain backup).</p><p>🚗 Drive to resort · approximately 45 minutes.</p></div></div></article>
-            <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md"><p className="mb-2 text-sm text-[#9EDCFF]">Saturday, November 28, 2026</p><h2 className="mb-5 text-2xl font-light">Resort Day · Beach / Culture / Blue Cave</h2><div className="space-y-3 text-sm leading-7 text-white/75"><p>Breakfast · Hotel buffet</p><p>Option 1 · Resort & beach activities</p><p>Option 2 · Ryukyu Mura with FunPass</p><p>Option 3 · Blue Cave dive / snorkel 青之洞窟潛水 if weather permits</p><p>Afternoon · Resort free time</p><p>Dinner · TBD</p></div></article>
-            <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md"><p className="mb-2 text-sm text-[#9EDCFF]">Sunday, November 29, 2026</p><h2 className="mb-5 text-2xl font-light">Albert & Quinn Wedding Day</h2><div className="space-y-3 text-sm leading-7 text-white/75"><p>Breakfast · Hotel buffet</p><p>💍 Albert & Quinn Wedding at Hotel Monterey Okinawa Spa & Resort</p></div></article>
+            <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md"><p className="mb-2 text-sm text-[#9EDCFF]">Friday, November 27, 2026</p><h2 className="mb-5 text-2xl font-light">Morning Arrival · Naha</h2><div className="space-y-4 text-sm leading-7 text-white/75"><p>✈ EVA Air BR112 · Arrive 9:15 AM at Naha Airport</p><p>🚗 Pick up rental car · Rental Company TBD</p><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p className="mb-2 text-xs uppercase tracking-[0.2em] text-[#9EDCFF]">Lunch Stop</p><p>🕛 Senaga Island · Umikaji Terrace stroll if weather is nice and flight is on time.</p><img src="/umikaji-terrace.png" alt="Umikaji Terrace Okinawa" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /><p className="mt-4">MKCafe → ocean views, airplane takeoffs/landings, and the signature Mackerel Bitter Melon Burger 鯖魚苦瓜漢堡.</p></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p className="mb-2 text-xs uppercase tracking-[0.2em] text-[#9EDCFF]">Afternoon · PART I</p><p>🛍 PARCO City · biggest shopping centre with indoor toddler facilities.</p><p className="mt-2">☕ 港川外人住宅 Minatogawa State Side Town · Beans Store & canelé dessert.</p></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p className="mb-2 text-xs uppercase tracking-[0.2em] text-[#9EDCFF]">Afternoon · PART II</p><p>🏖 Araha Beach Park playground (sunny day)</p><p className="mt-2">🛒 Aeon Mall Rycom for indoor play centre (rainy day) + picking up essentials and possible quick dinner.</p><p className="mt-3">🚗 Drive to resort · approximately 45 minutes.</p></div></div></article>
+            <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
+              <p className="mb-2 text-sm text-[#9EDCFF]">Saturday, November 28, 2026</p>
+              <h2 className="mb-5 text-2xl font-light">Resort Day · Beach / Culture / Blue Cave</h2>
+              <div className="space-y-4 text-sm leading-7 text-white/75">
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <p>🍳 Breakfast · Hotel buffet</p>
+                </div>
+
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <p className="mb-2 text-xs uppercase tracking-[0.2em] text-[#9EDCFF]">Morning · Option 1</p>
+                  <p>🤿 Blue Cave dive & snorkel 青之洞窟潛水</p>
+                  <p className="text-white/50">Weather dependent</p>
+                  <img src="/bluecave.png" alt="Blue Cave Okinawa" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" />
+                </div>
+
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <p className="mb-2 text-xs uppercase tracking-[0.2em] text-[#9EDCFF]">Morning · Option 2</p>
+                  <a href="https://www.ryukyumura.co.jp/" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">🏯 Ryukyu Mura with FunPass</a>
+                </div>
+
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <p className="mb-2 text-xs uppercase tracking-[0.2em] text-[#9EDCFF]">Afternoon</p>
+                  <a href="https://www.hotelmonterey.co.jp/en/okinawa/activity/" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">🏖 Resort & Beach Activities</a>
+                  <img src="/hotel.png" alt="Hotel Monterey Okinawa" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" />
+                </div>
+
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <p>🍽 Dinner · TBD</p>
+                </div>
+              </div>
+            </article>
+            <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md"><p className="mb-2 text-sm text-[#9EDCFF]">Sunday, November 29, 2026</p><h2 className="mb-5 text-2xl font-light">Albert & Quinn Wedding Day</h2><div className="space-y-3 text-sm leading-7 text-white/75"><p>Breakfast · Hotel buffet</p><p>💍 Albert & Quinn Wedding at Hotel Monterey Okinawa Spa & Resort</p><img src="/chapel.png" alt="Wedding Chapel Okinawa" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></div></article>
           </section>
           {peopleCards([["Xenia & David", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 6 · Okinawa"], ["Mark Wang", "Nov 25 – Nov 30 · Okinawa"], ["Mei & Emilia", "Nov 30 – Dec 6 · Okinawa"]])}
         </main>
@@ -737,8 +768,8 @@ export default function TravelSite() {
               <h2 className="mb-5 text-2xl font-light">Nanjo → Naha</h2>
               <div className="space-y-4 text-sm leading-7 text-white/75">
                 <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🐟 Tomari Iyumachi Fish Market Brunch · 11:00 AM</p></div>
-                <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p className="mb-2 text-xs uppercase tracking-[0.2em] text-[#FFD76A]">Afternoon · Option 1</p><p>🏯 Shuri Castle</p><p className="text-white/50">If rebuilt and reopened by Fall 2026.</p></div>
-                <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p className="mb-2 text-xs uppercase tracking-[0.2em] text-[#FFD76A]">Afternoon · Option 2</p><ul className="ml-5 list-disc space-y-1 text-white/65"><li>Kokusai 國際通</li><li>Calbee Okinawa</li><li>御果子御殿</li><li>Tsuboya Pottery Street</li></ul></div>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p className="mb-2 text-xs uppercase tracking-[0.2em] text-[#9EDCFF]">Afternoon · Option 1</p><p>🏯 Shuri Castle</p><p className="text-white/50">If rebuilt and reopened by Fall 2026.</p></div>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p className="mb-2 text-xs uppercase tracking-[0.2em] text-[#9EDCFF]">Afternoon · Option 2</p><ul className="ml-5 list-disc space-y-1 text-white/65"><li>Kokusai 國際通</li><li>Calbee Okinawa</li><li>御果子御殿</li><li>Tsuboya Pottery Street</li></ul></div>
               </div>
             </article>
             <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
