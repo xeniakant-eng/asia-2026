@@ -365,24 +365,30 @@ export default function TravelSite() {
   };
 
   const Timeline = () => (
-    <div className="absolute bottom-4 left-0 w-full px-4 md:px-6">
+    <div className="relative z-20 mt-5 w-full px-4 md:absolute md:bottom-4 md:left-0 md:mt-0 md:px-6">
       <div className="mx-auto max-w-5xl">
         <div className="mb-2 flex items-center justify-between gap-3 px-2">
           <div className="flex flex-wrap items-center gap-1.5">
             {timelineSections.map((section) => {
               const isActive = activeTimelineSection.id === section.id;
+              const isDisabled = section.id === 3 || section.id === 4;
+
               return (
                 <button
                   key={section.id}
                   type="button"
+                  disabled={isDisabled}
                   onClick={() => {
+                    if (isDisabled) return;
                     setHovered(null);
                     setSelectedTimelineSectionId(section.id);
                   }}
                   className={`rounded-full border px-2.5 py-1 text-[9px] uppercase tracking-[0.16em] transition ${
-                    isActive
-                      ? "border-white/70 bg-white/10 text-white shadow-[0_0_12px_rgba(255,255,255,0.22)]"
-                      : "border-white/15 bg-black/20 text-white/35 hover:border-white/35 hover:text-white/70"
+                    isDisabled
+                      ? "cursor-not-allowed border-white/5 bg-black/10 text-white/15"
+                      : isActive
+                        ? "border-white/70 bg-white/10 text-white shadow-[0_0_12px_rgba(255,255,255,0.22)]"
+                        : "border-white/15 bg-black/20 text-white/35 hover:border-white/35 hover:text-white/70"
                   }`}
                 >
                   {section.label}
@@ -816,11 +822,11 @@ export default function TravelSite() {
         }
       `}</style>
 
-      <section className="relative flex h-[90vh] items-center justify-center overflow-hidden px-6">
+      <section className="relative flex min-h-screen flex-col items-center justify-start overflow-visible px-6 pb-10 pt-16 md:h-[90vh] md:min-h-0 md:justify-center md:overflow-hidden md:pt-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.06),transparent_55%)]" />
 
-        <div className="relative z-10 flex w-full max-w-5xl items-center justify-center gap-10 md:gap-20">
-          <div className="relative h-[426px] w-[208px] md:h-[495px] md:w-[243px]">
+        <div className="relative z-10 flex w-full max-w-5xl items-center justify-center gap-6 md:gap-20">
+          <div className="relative h-[300px] w-[147px] md:h-[495px] md:w-[243px]">
             <svg viewBox="0 0 140 260" className="h-full w-full object-contain opacity-90" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M110 0 L105 0 L94 12 L80 16 L69 24 L58 47 L47 57 L29 90 L10 117 L8 147 L0 173 L10 181 L16 205 L21 213 L43 230 L48 242 L47 254 L50 259 L61 254 L62 227 L68 210 L84 193 L98 163 L107 132 L113 96 L130 61 L127 36 L139 24 L134 15 L120 10 Z" />
               <SvgPin id="taipei" scale={0.5} labelFontSize={8} labelOffset={12} label="Taipei" cx={108} cy={18} hovered={hovered} setHovered={setHovered} />
@@ -830,8 +836,8 @@ export default function TravelSite() {
           </div>
 
           <div
-            className="relative h-[275px] w-[275px] md:h-[335px] md:w-[335px]"
-            style={{ transform: "translateY(-5.5rem)" }}
+            className="relative h-[220px] w-[220px] md:h-[335px] md:w-[335px]"
+            style={{ transform: "translateY(-2.25rem)" }}
           >
             <svg
               viewBox="0 0 331 520"
@@ -857,7 +863,7 @@ export default function TravelSite() {
           </div>
         </div>
 
-        <div className="absolute bottom-40 z-20 flex flex-col items-center gap-3 px-4 text-center md:bottom-44 md:flex-row md:gap-6">
+        <div className="relative z-20 mt-2 flex flex-col items-center gap-3 px-4 text-center md:absolute md:bottom-44 md:mt-0 md:flex-row md:gap-6">
           <h1 className="text-2xl font-light leading-tight tracking-wide md:text-4xl">
             Taiwan · Okinawa Japan
           </h1>
