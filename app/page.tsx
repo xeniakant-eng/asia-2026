@@ -575,7 +575,7 @@ export default function TravelSite() {
         {chapterNav("xiaoliuqiu")}
         <main className="mx-auto max-w-5xl">
           <p className="mb-3 text-sm uppercase tracking-[0.35em] text-[#FFD76A]">Taiwan · Xiaoliuqiu</p>
-          <h1 className="mb-6 text-4xl font-light tracking-wide md:text-6xl">Scuba Certification Chapter</h1>
+          <h1 className="mb-6 text-4xl font-light tracking-wide md:text-6xl">Scuba Dive Chapter</h1>
           {infoWidgets("November", "3 Nights", <p className="mt-1 text-sm font-medium text-[#FFD76A]">小琉球民宿 TBD</p>, "taiwan")}
           <section className="space-y-8">
             <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
