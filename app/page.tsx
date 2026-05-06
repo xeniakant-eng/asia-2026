@@ -406,6 +406,8 @@ export default function TravelSite() {
                 type="button"
                 onClick={() => {
                   setHovered(item.id);
+                }}
+                onDoubleClick={() => {
                   openChapterForLocation(item.id);
                 }}
                 onMouseEnter={() => setHovered(item.id)}
@@ -432,7 +434,7 @@ export default function TravelSite() {
           <div className="relative h-[2px] bg-white/30" style={{ width: "100%" }}>
             {activeTimelineSection.id === 1 && (
               <>
-                <div className="absolute -top-5 h-10 cursor-pointer" style={{ left: `${getSectionPercent(new Date(2026, 10, 20))}%`, width: `${getSectionPercent(new Date(2026, 10, 23)) - getSectionPercent(new Date(2026, 10, 20))}%` }} onMouseEnter={() => setHovered("xiaoliuqiu")} onMouseLeave={() => setHovered(null)} />
+                <div className="absolute -top-5 h-10 cursor-pointer" style={{ left: `${getSectionPercent(new Date(2026, 10, 20))}%`, width: `${getSectionPercent(new Date(2026, 10, 23)) - getSectionPercent(new Date(2026, 10, 20))}%` }} onMouseEnter={() => setHovered("xiaoliuqiu")} onMouseLeave={() => setHovered(null)} onClick={() => setPage("xiaoliuqiu")} />
                 <div className="absolute -top-5 h-10 cursor-pointer" style={{ left: `${getSectionPercent(new Date(2026, 10, 23))}%`, width: `${getSectionPercent(new Date(2026, 10, 27)) - getSectionPercent(new Date(2026, 10, 23))}%` }} onMouseEnter={() => setHovered("taipei")} onMouseLeave={() => setHovered(null)} />
                 <div className="absolute -top-5 h-10 cursor-pointer" style={{ left: `${getSectionPercent(new Date(2026, 10, 27))}%`, width: `${getSectionPercent(new Date(2026, 10, 30)) - getSectionPercent(new Date(2026, 10, 27))}%` }} onMouseEnter={() => setHovered("onna")} onMouseLeave={() => setHovered(null)} onClick={() => setPage("onna")} />
                 <div className="absolute -top-5 h-10 cursor-pointer" style={{ left: `${getSectionPercent(new Date(2026, 10, 30))}%`, width: `${getSectionPercent(new Date(2026, 11, 2)) - getSectionPercent(new Date(2026, 10, 30))}%` }} onMouseEnter={() => setHovered("nago")} onMouseLeave={() => setHovered(null)} onClick={() => setPage("nago")} />
