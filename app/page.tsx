@@ -825,8 +825,8 @@ export default function TravelSite() {
           <div className="relative h-[300px] w-[147px] md:h-[495px] md:w-[243px]">
             <svg viewBox="0 0 140 260" className="h-full w-full object-contain opacity-90" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M110 0 L105 0 L94 12 L80 16 L69 24 L58 47 L47 57 L29 90 L10 117 L8 147 L0 173 L10 181 L16 205 L21 213 L43 230 L48 242 L47 254 L50 259 L61 254 L62 227 L68 210 L84 193 L98 163 L107 132 L113 96 L130 61 L127 36 L139 24 L134 15 L120 10 Z" />
-              {isSection1Visible && <><SvgPin id="taipei" scale={0.75} labelFontSize={8} labelOffset={12} label="Taipei" cx={108} cy={18} hovered={hovered} setHovered={setHovered} activeColor={TAIWAN_GOLD} /><SvgPin id="xiaoliuqiu" scale={0.75} labelFontSize={8} labelOffset={12} label="Xiaoliuqiu" cx={39} cy={234} hovered={hovered} setHovered={setHovered} activeColor={TAIWAN_GOLD} onDoubleClick={() => setPage("xiaoliuqiu")} /></>}
-              {isSection2Visible && <SvgPin id="yilan" scale={0.75} labelFontSize={8} labelOffset={12} label="Yilan" cx={120} cy={45} hovered={hovered} setHovered={setHovered} activeColor={TAIWAN_GOLD} />}
+              {isSection1Visible && <><SvgPin id="taipei" scale={0.9} labelFontSize={8} labelOffset={12} label="Taipei" cx={108} cy={18} hovered={hovered} setHovered={setHovered} activeColor={TAIWAN_GOLD} /><SvgPin id="xiaoliuqiu" scale={0.9} labelFontSize={8} labelOffset={12} label="Xiaoliuqiu" cx={39} cy={234} hovered={hovered} setHovered={setHovered} activeColor={TAIWAN_GOLD} onDoubleClick={() => setPage("xiaoliuqiu")} /></>}
+              {isSection2Visible && <SvgPin id="yilan" scale={0.9} labelFontSize={8} labelOffset={12} label="Yilan" cx={120} cy={45} hovered={hovered} setHovered={setHovered} activeColor={TAIWAN_GOLD} />}
             </svg>
           </div>
 
