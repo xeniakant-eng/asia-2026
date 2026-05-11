@@ -207,10 +207,10 @@ export default function TravelSite() {
 
   const timelineSections = useMemo(
     () => [
-      { id: 1, label: "Section 1", start: new Date(2026, 10, 20), end: new Date(2026, 11, 8) },
-      { id: 2, label: "Section 2", start: new Date(2026, 11, 8), end: new Date(2026, 11, 26) },
-      { id: 3, label: "Section 3", start: new Date(2026, 11, 26), end: new Date(2027, 0, 13) },
-      { id: 4, label: "Section 4", start: new Date(2027, 0, 13), end: new Date(2027, 0, 31) },
+      { id: 1, label: "Section 1", start: new Date(2026, 10, 20), end: new Date(2026, 11, 6) },
+      { id: 2, label: "Section 2", start: new Date(2026, 11, 6), end: new Date(2026, 11, 23) },
+      { id: 3, label: "Section 3", start: new Date(2026, 11, 23), end: new Date(2027, 0, 8) },
+      { id: 4, label: "Section 4", start: new Date(2027, 0, 8), end: new Date(2027, 0, 25) },
     ],
     []
   );
@@ -362,11 +362,14 @@ export default function TravelSite() {
   };
 
   const peopleCards = (people: [string, string][]) => (
-    <section className="mt-12">
-      <h2 className="mb-4 text-2xl font-light">Who's Joining Us Here</h2>
-      <div className="grid gap-4 md:grid-cols-2">
+    <section className="mb-10 rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
+      <div className="mb-5 flex items-center justify-between">
+        <h2 className="text-2xl font-light">Who's Here</h2>
+        <p className="text-[10px] uppercase tracking-[0.24em] text-white/35">Current Trip Segment</p>
+      </div>
+      <div className="grid gap-3 md:grid-cols-2">
         {people.map(([name, date]) => (
-          <div key={name} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4"><p className="text-sm font-medium text-white">{name}</p><p className="text-[10px] text-gray-400 md:text-xs">{date}</p></div>
+          <div key={name} className="rounded-2xl border border-white/10 bg-black/20 p-4"><p className="text-sm font-medium text-white">{name}</p><p className="text-[10px] text-gray-400 md:text-xs">{date}</p></div>
         ))}
       </div>
     </section>
@@ -630,6 +633,7 @@ export default function TravelSite() {
           <p className="mb-3 text-sm uppercase tracking-[0.35em] text-[#9EDCFF]">Taiwan · Xiaoliuqiu</p>
           <h1 className="mb-6 text-4xl font-light tracking-wide md:text-6xl">Scuba Dive Chapter</h1>
           {infoWidgets("November", "3 Nights", <p className="mt-1 text-sm font-medium text-[#9EDCFF]">小琉球民宿 TBD</p>, "taiwan")}
+          {peopleCards([["Anthony & Christine", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Mark Wang", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Xenia & David", "Nov 21 – Nov 23 · Xiaoliuqiu"]])}
           <section className="space-y-8">
             <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
               <p className="mb-2 text-sm text-[#9EDCFF]">Friday, November 20, 2026</p>
@@ -722,7 +726,6 @@ export default function TravelSite() {
               </div>
             </article>
           </section>
-          {peopleCards([["Anthony & Christine", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Mark Wang", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Xenia & David", "Nov 21 – Nov 23 · Xiaoliuqiu"]])}
         </main>
       </div>
     );
@@ -736,42 +739,69 @@ export default function TravelSite() {
           <p className="mb-3 text-sm uppercase tracking-[0.35em] text-[#9EDCFF]">Okinawa · Onna</p>
           <h1 className="mb-6 text-4xl font-light tracking-wide md:text-6xl">Wedding Resort Chapter</h1>
           {infoWidgets("November", "3 Nights", <a href="https://www.hotelmonterey.co.jp/en/okinawa/" target="_blank" rel="noopener noreferrer" className="mt-1 block text-sm font-medium text-[#9EDCFF] hover:underline">Hotel Monterey Okinawa</a>)}
+          {peopleCards([["Xenia & David", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 6 · Okinawa"], ["Mark Wang", "Nov 25 – Nov 30 · Okinawa"], ["Mei & Emilia", "Nov 29 – Dec 6 · Okinawa"]])}
+
           <section className="space-y-8">
-            <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md"><p className="mb-2 text-sm text-[#9EDCFF]">Friday, November 27, 2026</p><h2 className="mb-5 text-2xl font-light">Morning Arrival · Naha</h2><div className="space-y-4 text-sm leading-7 text-white/75"><p>✈ EVA Air BR112 · Arrive 9:15 AM at Naha Airport</p><p>🚗 Pick up rental car · Rental Company TBD</p><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p className="mb-2 text-xs uppercase tracking-[0.2em] text-[#9EDCFF]">Lunch Stop</p><p>🕛 <a href="https://maps.google.com/?q=Senaga+Island+Umikaji+Terrace" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">Senaga Island · Umikaji Terrace</a> stroll if weather is nice and flight is on time.</p><img src="/umikaji-terrace.png" alt="Umikaji Terrace Okinawa" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /><p className="mt-4">MKCafe → ocean views, airplane takeoffs/landings, and the signature Mackerel Bitter Melon Burger 鯖魚苦瓜漢堡.</p></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p className="mb-2 text-xs uppercase tracking-[0.2em] text-[#9EDCFF]">Afternoon · PART I</p><p>🛍 <a href="https://maps.google.com/?q=San-A+PARCO+CITY+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">PARCO City</a> · biggest shopping centre with indoor toddler facilities.</p><p className="mt-2">☕ <a href="https://maps.google.com/?q=Minatogawa+Stateside+Town+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">港川外人住宅 Minatogawa State Side Town</a> · Beans Store & canelé dessert.</p></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p className="mb-2 text-xs uppercase tracking-[0.2em] text-[#9EDCFF]">Afternoon · PART II</p><p>🏖 <a href="https://maps.google.com/?q=Araha+Beach+Park+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">Araha Beach Park</a> playground (sunny day)</p><p className="mt-2">🛒 <a href="https://maps.google.com/?q=AEON+Mall+Rycom+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">Aeon Mall Rycom</a> for indoor play centre (rainy day) + picking up essentials and possible quick dinner.</p><p className="mt-3">🚗 <a href="https://maps.google.com/?q=Hotel+Monterey+Okinawa+Spa+%26+Resort" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">Drive to resort</a> · approximately 45 minutes.</p></div></div></article>
+            <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
+              <p className="mb-2 text-sm text-[#9EDCFF]">Friday, November 27, 2026</p>
+              <h2 className="mb-5 text-2xl font-light">Morning Arrival · Naha</h2>
+              <div className="space-y-4 text-sm leading-7 text-white/75">
+                <p>✈ EVA Air BR112 · Arrive 9:15 AM at Naha Airport</p>
+                <p>🚗 Pick up rental car · Rental Company TBD</p>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <p className="mb-2 text-xs uppercase tracking-[0.2em] text-[#9EDCFF]">Lunch Stop</p>
+                  <p>🕛 <a href="https://maps.google.com/?q=Senaga+Island+Umikaji+Terrace" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">Senaga Island · Umikaji Terrace</a> stroll if weather is nice and flight is on time.</p>
+                  <img src="/umikaji-terrace.png" alt="Umikaji Terrace Okinawa" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" />
+                  <p className="mt-4">MKCafe → ocean views, airplane takeoffs/landings, and the signature Mackerel Bitter Melon Burger 鯖魚苦瓜漢堡.</p>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <p className="mb-2 text-xs uppercase tracking-[0.2em] text-[#9EDCFF]">Afternoon · PART I</p>
+                  <p>🛍 <a href="https://maps.google.com/?q=San-A+PARCO+CITY+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">PARCO City</a> · biggest shopping centre with indoor toddler facilities.</p>
+                  <p className="mt-2">☕ <a href="https://maps.google.com/?q=Minatogawa+Stateside+Town+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">港川外人住宅 Minatogawa State Side Town</a> · Beans Store & canelé dessert.</p>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <p className="mb-2 text-xs uppercase tracking-[0.2em] text-[#9EDCFF]">Afternoon · PART II</p>
+                  <p>🏖 <a href="https://maps.google.com/?q=Araha+Beach+Park+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">Araha Beach Park</a> playground (sunny day)</p>
+                  <p className="mt-2">🛒 <a href="https://maps.google.com/?q=AEON+Mall+Rycom+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">Aeon Mall Rycom</a> for indoor play centre (rainy day) + picking up essentials and possible quick dinner.</p>
+                  <p className="mt-3">🚗 <a href="https://maps.google.com/?q=Hotel+Monterey+Okinawa+Spa+%26+Resort" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">Drive to resort</a> · approximately 45 minutes.</p>
+                </div>
+              </div>
+            </article>
+
             <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
               <p className="mb-2 text-sm text-[#9EDCFF]">Saturday, November 28, 2026</p>
               <h2 className="mb-5 text-2xl font-light">Resort Day · Beach / Culture / Blue Cave</h2>
               <div className="space-y-4 text-sm leading-7 text-white/75">
-                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-                  <p>🍳 Breakfast · Hotel buffet</p>
-                </div>
-
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🍳 Breakfast · Hotel buffet</p></div>
                 <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
                   <p className="mb-2 text-xs uppercase tracking-[0.2em] text-[#9EDCFF]">Morning · Option 1</p>
                   <p>🤿 Blue Cave dive & snorkel 青之洞窟潛水</p>
                   <p className="text-white/50">Weather dependent</p>
                   <img src="/bluecave.png" alt="Blue Cave Okinawa" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" />
                 </div>
-
                 <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
                   <p className="mb-2 text-xs uppercase tracking-[0.2em] text-[#9EDCFF]">Morning · Option 2</p>
                   <a href="https://www.ryukyumura.co.jp/" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">🏯 Ryukyu Mura with FunPass</a>
                 </div>
-
                 <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
                   <p className="mb-2 text-xs uppercase tracking-[0.2em] text-[#9EDCFF]">Afternoon</p>
                   <a href="https://www.hotelmonterey.co.jp/en/okinawa/activity/" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">🏖 Resort & Beach Activities</a>
                   <img src="/hotel.png" alt="Hotel Monterey Okinawa" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" />
                 </div>
-
-                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-                  <p>🍽 Dinner · TBD</p>
-                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🍽 Dinner · TBD</p></div>
               </div>
             </article>
-            <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md"><p className="mb-2 text-sm text-[#9EDCFF]">Sunday, November 29, 2026</p><h2 className="mb-5 text-2xl font-light">Albert & Quinn Wedding Day</h2><div className="space-y-3 text-sm leading-7 text-white/75"><p>Breakfast · Hotel buffet</p><p>💍 Albert & Quinn Wedding at Hotel Monterey Okinawa Spa & Resort</p><img src="/chapel.png" alt="Wedding Chapel Okinawa" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></div></article>
+
+            <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
+              <p className="mb-2 text-sm text-[#9EDCFF]">Sunday, November 29, 2026</p>
+              <h2 className="mb-5 text-2xl font-light">Albert & Quinn Wedding Day</h2>
+              <div className="space-y-3 text-sm leading-7 text-white/75">
+                <p>Breakfast · Hotel buffet</p>
+                <p>💍 Albert & Quinn Wedding at Hotel Monterey Okinawa Spa & Resort</p>
+                <img src="/chapel.png" alt="Wedding Chapel Okinawa" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" />
+              </div>
+            </article>
           </section>
-          {peopleCards([["Xenia & David", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 6 · Okinawa"], ["Mark Wang", "Nov 25 – Nov 30 · Okinawa"], ["Mei & Emilia", "Nov 29 – Dec 6 · Okinawa"]])}
         </main>
       </div>
     );
@@ -785,11 +815,51 @@ export default function TravelSite() {
           <p className="mb-3 text-sm uppercase tracking-[0.35em] text-[#9EDCFF]">Okinawa · Nago</p>
           <h1 className="mb-6 text-4xl font-light tracking-wide md:text-6xl">Northern Okinawa Chapter</h1>
           {infoWidgets("December", "2 Nights", <p className="mt-1 text-sm font-medium text-[#9EDCFF]">TBD</p>)}
-          <section className="space-y-8">
-            <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md"><p className="mb-2 text-sm text-[#9EDCFF]">Monday, November 30, 2026</p><h2 className="mb-5 text-2xl font-light">Onna → Nago</h2><div className="space-y-4 text-sm leading-7 text-white/75"><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🍳 Breakfast · Hotel buffet</p><p>🧳 Checkout at 10:00 AM</p><a href="https://maps.google.com/?q=Cape+Manzamo+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">🌊 Cape Manzamo quick stop (~40 min drive)</a><img src="/cape.png" alt="Cape Manzamo Okinawa" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /><p className="text-white/50">If weather is not ideal, this can be swapped to the returning drive day on December 2.</p></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><a href="https://maps.google.com/?q=Busena+Marine+Park+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">🌊 Busena Marine Park Underwater Observatory + Glass Boat</a><img src="/busena.png" alt="Busena Marine Park Okinawa" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /><p>🍽 Lunch Options:</p><ul className="ml-5 list-disc space-y-1 text-white/65"><li>Nakamura Soba / Kintiti Soba Onna Branch 金月そば 恩納店</li><li>Nuchigusui ぬちぐすい Okinawa Cuisine</li><li>Nagumagai Restaurant 名護曲</li></ul></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><a href="https://maps.google.com/?q=Orion+Happy+Park+Nago" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">🍺 14:00 – 16:00 Orion Happy Park</a><img src="/orion.png" alt="Orion Happy Park" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /><ul className="ml-5 list-disc space-y-1 text-white/65"><li>參觀啤酒製作過程</li><li>了解沖繩啤酒歷史</li><li>免費試飲 Orion Beer</li></ul><p className="mt-2 text-white/50">Factory tour reservation recommended · ¥1000/person · Japanese guided tour with Chinese materials.</p></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🥩 Dinner · <a href="https://share.google/nhtDdtE6vYP48ws81" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">Restaurant Flipper</a></p><p>🛍 Optional late night shopping at MEGA Don Quijote Nago</p></div></div></article>
-            <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md"><p className="mb-2 text-sm text-[#9EDCFF]">Tuesday, December 1, 2026</p><h2 className="mb-5 text-2xl font-light">Aquarium + Kouri Island</h2><div className="space-y-4 text-sm leading-7 text-white/75"><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🚗 8:45 Leave Nago Hotel</p><p>🐠 9:30 – 13:00 Churaumi Aquarium (FunPass)</p><ul className="ml-5 list-disc space-y-1 text-white/65"><li>Whale shark mega tank</li><li>Coral reef exhibits</li><li>Dolphin area outside</li><li>Ocean Expo Park seaside lawns</li></ul></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🍽 Ocean Blue Cafe lunch beside the whale shark tank</p><p className="text-white/50">Put reservation name on the waitlist immediately upon arrival.</p></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🌳 Bise Fukugi Tree Road</p><p>Traditional Okinawan village scenery · ideal for photos & walking.</p></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🌉 Kouri Island</p><ul className="ml-5 list-disc space-y-1 text-white/65"><li>Kouri Bridge scenic drive</li><li>Café stop</li><li>Beach walk & sunset</li><li>Optional · Kouri Ocean Tower</li></ul></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🍽 Dinner · Yakiniku Kochan 焼肉こうちゃん</p></div></div></article>
-          </section>
           {peopleCards([["Xenia & David", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 6 · Okinawa"], ["Mei & Emilia", "Nov 29 – Dec 6 · Okinawa"]])}
+
+          <section className="space-y-8">
+            <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
+              <p className="mb-2 text-sm text-[#9EDCFF]">Monday, November 30, 2026</p>
+              <h2 className="mb-5 text-2xl font-light">Onna → Nago</h2>
+              <div className="space-y-4 text-sm leading-7 text-white/75">
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <p>🍳 Breakfast · Hotel buffet</p>
+                  <p>🧳 Checkout at 10:00 AM</p>
+                  <a href="https://maps.google.com/?q=Cape+Manzamo+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">🌊 Cape Manzamo quick stop (~40 min drive)</a>
+                  <img src="/cape.png" alt="Cape Manzamo Okinawa" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" />
+                  <p className="text-white/50">If weather is not ideal, this can be swapped to the returning drive day on December 2.</p>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <a href="https://maps.google.com/?q=Busena+Marine+Park+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">🌊 Busena Marine Park Underwater Observatory + Glass Boat</a>
+                  <img src="/busena.png" alt="Busena Marine Park Okinawa" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" />
+                  <p>🍽 Lunch Options:</p>
+                  <ul className="ml-5 list-disc space-y-1 text-white/65"><li>Nakamura Soba / Kintiti Soba Onna Branch 金月そば 恩納店</li><li>Nuchigusui ぬちぐすい Okinawa Cuisine</li><li>Nagumagai Restaurant 名護曲</li></ul>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <a href="https://maps.google.com/?q=Orion+Happy+Park+Nago" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">🍺 14:00 – 16:00 Orion Happy Park</a>
+                  <img src="/orion.png" alt="Orion Happy Park" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" />
+                  <ul className="ml-5 list-disc space-y-1 text-white/65"><li>參觀啤酒製作過程</li><li>了解沖繩啤酒歷史</li><li>免費試飲 Orion Beer</li></ul>
+                  <p className="mt-2 text-white/50">Factory tour reservation recommended · ¥1000/person · Japanese guided tour with Chinese materials.</p>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <p>🥩 Dinner · <a href="https://share.google/nhtDdtE6vYP48ws81" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">Restaurant Flipper</a></p>
+                  <p>🛍 Optional late night shopping at MEGA Don Quijote Nago</p>
+                </div>
+              </div>
+            </article>
+
+            <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
+              <p className="mb-2 text-sm text-[#9EDCFF]">Tuesday, December 1, 2026</p>
+              <h2 className="mb-5 text-2xl font-light">Aquarium + Kouri Island</h2>
+              <div className="space-y-4 text-sm leading-7 text-white/75">
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🚗 8:45 Leave Nago Hotel</p><p>🐠 9:30 – 13:00 Churaumi Aquarium (FunPass)</p><ul className="ml-5 list-disc space-y-1 text-white/65"><li>Whale shark mega tank</li><li>Coral reef exhibits</li><li>Dolphin area outside</li><li>Ocean Expo Park seaside lawns</li></ul></div>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🍽 Ocean Blue Cafe lunch beside the whale shark tank</p><p className="text-white/50">Put reservation name on the waitlist immediately upon arrival.</p></div>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🌳 Bise Fukugi Tree Road</p><p>Traditional Okinawan village scenery · ideal for photos & walking.</p></div>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🌉 Kouri Island</p><ul className="ml-5 list-disc space-y-1 text-white/65"><li>Kouri Bridge scenic drive</li><li>Café stop</li><li>Beach walk & sunset</li><li>Optional · Kouri Ocean Tower</li></ul></div>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🍽 Dinner · Yakiniku Kochan 焼肉こうちゃん</p></div>
+              </div>
+            </article>
+          </section>
         </main>
       </div>
     );
@@ -803,11 +873,11 @@ export default function TravelSite() {
           <p className="mb-3 text-sm uppercase tracking-[0.35em] text-[#9EDCFF]">Okinawa · Nanjo</p>
           <h1 className="mb-6 text-4xl font-light tracking-wide md:text-6xl">Southern Okinawa Chapter</h1>
           {infoWidgets("December", "2 Nights", <><a href="https://www.yuinchi.jp/heal/hot-spring/" target="_blank" rel="noopener noreferrer" className="mt-1 block text-sm font-medium text-[#9EDCFF] hover:underline">Yuinchi Hotel Nanjo</a><p className="mt-1 text-[9px] text-gray-500">Apeman Spa Natural Hot Spring</p></>)}
+          {peopleCards([["Xenia & David", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 6 · Okinawa"], ["Mei & Emilia", "Nov 29 – Dec 6 · Okinawa"]])}
           <section className="space-y-8">
             <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md"><p className="mb-2 text-sm text-[#9EDCFF]">Wednesday, December 2, 2026</p><h2 className="mb-5 text-2xl font-light">Nago → Nanjo</h2><div className="space-y-4 text-sm leading-7 text-white/75"><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🎢 Kids 4+ & adults · Junglia Park</p><a href="https://junglia.jp/en" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">junglia.jp/en</a></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🍍 Morning backup for kids under 4 · Nago Pineapple Park OR Neo Park Zoo (FunPass)</p></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🌊 Late Afternoon · Miyagi Coast & American Village (~1 hr drive)</p><ul className="ml-5 list-disc space-y-1 text-white/65"><li>Blue Seal Ice Cream (FunPass)</li><li>Zhyvago Coffee Roastery · great vibes</li><li>Chatan Burger Base Atabii's · burgers right on the water</li></ul></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🍽 Dinner · Taco Rice Cafe Kijimuna</p><p className="text-white/50">Famous for Omutaco（蛋包塔可飯）— taco rice topped with fluffy omelet, usually a big hit with kids.</p></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🚗 Evening drive toward Nanjo (~40 min)</p><p>🛒 Optional stop · Costco Okinawa</p></div></div></article>
             <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md"><p className="mb-2 text-sm text-[#9EDCFF]">Thursday, December 3, 2026</p><h2 className="mb-5 text-2xl font-light">Nanjo · Okinawa World + Gangala Valley</h2><div className="space-y-4 text-sm leading-7 text-white/75"><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🍳 Breakfast · Hotel buffet</p><p>🌏 Okinawa World（玉泉洞）· FunPass · ~10 min drive from hotel</p><ul className="ml-5 list-disc space-y-1 text-white/65"><li>玉泉洞鐘乳石洞</li><li>琉球文化村</li><li>太鼓舞表演</li></ul></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🌿 Gangala Valley</p><p>Navigate to Cave Cafe or Gangala Valley. Free parking available.</p><p className="mt-2 text-white/50">A famous natural valley formed by ancient limestone cave collapse, known for forest scenery, the Minatogawa people archaeological site, and the Cave Cafe. Guided tour reservation required, approximately ¥2,500/person.</p><a href="https://book.gangala.com/?lng=zh-TW" target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-[#9EDCFF] hover:underline">Gangala Valley reservation</a></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🍽 Dinner · Hotel Japanese Dinner Buffet</p><p className="text-white/50">Alternative: private event can be arranged for Hotel Observation Lounge catering experience up to 10 people.</p></div></div></article>
           </section>
-          {peopleCards([["Xenia & David", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 6 · Okinawa"], ["Mei & Emilia", "Nov 29 – Dec 6 · Okinawa"]])}
         </main>
       </div>
     );
@@ -820,6 +890,7 @@ export default function TravelSite() {
           <p className="mb-3 text-sm uppercase tracking-[0.35em] text-[#9EDCFF]">Okinawa · Naha</p>
           <h1 className="mb-6 text-4xl font-light tracking-wide md:text-6xl">Final Naha Chapter</h1>
           {infoWidgets("December", "2 Nights", <><p className="mt-1 text-sm font-medium text-[#9EDCFF]">Hotel Strata Naha</p><p className="mt-1 text-[9px] text-gray-500">or Hotel JAL City Naha</p></>)}
+          {peopleCards([["Xenia & David", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 6 · Okinawa"], ["Mei & Emilia", "Nov 29 – Dec 6 · Okinawa"]])}
           <section className="space-y-8">
             <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
               <p className="mb-2 text-sm text-[#9EDCFF]">Friday, December 4, 2026</p>
@@ -847,7 +918,6 @@ export default function TravelSite() {
               </div>
             </article>
           </section>
-          {peopleCards([["Xenia & David", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 6 · Okinawa"], ["Mei & Emilia", "Nov 29 – Dec 6 · Okinawa"]])}
         </main>
       </div>
     );
