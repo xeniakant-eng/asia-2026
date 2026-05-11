@@ -173,6 +173,7 @@ export default function TravelSite() {
   const timelineScrollRef = useRef<HTMLDivElement | null>(null);
 
   const guestOptions = [
+    "I am just a random Guest",
     "Xenia & David",
     "Anthony & Christine",
     "Jennifer & Hiroshi",
@@ -182,7 +183,6 @@ export default function TravelSite() {
     "Mei & Emilia",
     "Julie & Adrian",
     "Dave & Christina",
-    "I am just a random Guest",
   ];
 
   useEffect(() => {
@@ -278,10 +278,22 @@ export default function TravelSite() {
   };
 
   const chapterNav = (current: PageName) => (
-    <div className="mb-10 flex items-center justify-between gap-4">
-      <button type="button" onClick={() => setPage("map")} className="rounded-full border border-white/30 px-4 py-2 text-sm text-white/80 transition hover:border-white hover:text-white">
-        ← Back to Map
-      </button>
+    <div className="mb-10 flex items-start justify-between gap-4">
+      <div className="flex flex-col items-start gap-3">
+        <button type="button" onClick={() => setPage("map")} className="rounded-full border border-white/30 px-4 py-2 text-sm text-white/80 transition hover:border-white hover:text-white">
+          ← Back to Map
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setIsGuestConfirmed(false);
+            setShowGuestActions(true);
+          }}
+          className="rounded-full border border-[#9EDCFF]/25 bg-[#9EDCFF]/5 px-4 py-2 text-sm text-[#9EDCFF]/80 transition hover:border-[#9EDCFF]/50 hover:bg-[#9EDCFF]/10 hover:text-[#9EDCFF]"
+        >
+          ← Back to Dashboard
+        </button>
+      </div>
       <div className="flex flex-wrap items-center justify-end gap-3">
         {current === "xiaoliuqiu" && (
           <button type="button" onClick={() => setPage("onna")} className="rounded-full border border-[#FFD76A]/30 bg-[#FFD76A]/10 px-4 py-2 text-sm text-[#9EDCFF] transition hover:border-[#FFD76A]/60 hover:bg-[#FFD76A]/15">
@@ -502,6 +514,11 @@ export default function TravelSite() {
                       type="button"
                       onClick={() => {
                         setGuestName(guest);
+                        if (guest === "I am just a random Guest") {
+                          setIsGuestConfirmed(true);
+                          setPage("map");
+                          return;
+                        }
                         setShowGuestActions(true);
                       }}
                       className={`w-full rounded-2xl border px-4 py-3 text-sm font-light tracking-wide transition ${
@@ -518,20 +535,54 @@ export default function TravelSite() {
             </>
           ) : (
             <>
-              <p className="mb-8 text-sm leading-6 text-white/55">Hello, {guestName}</p>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <button type="button" onClick={() => setIsGuestConfirmed(true)} className="rounded-full border border-[#9EDCFF]/50 bg-[#9EDCFF]/10 px-5 py-3 text-sm uppercase tracking-[0.22em] text-[#9EDCFF] transition hover:bg-[#9EDCFF]/15">
-                  Enter Trip Site
-                </button>
-                <button type="button" disabled className="cursor-not-allowed rounded-full border border-white/10 bg-white/[0.02] px-5 py-3 text-sm uppercase tracking-[0.22em] text-white/25 opacity-60">
-                  My Itinerary Summary
-                </button>
-                <button type="button" disabled className="cursor-not-allowed rounded-full border border-white/10 bg-white/[0.02] px-5 py-3 text-sm uppercase tracking-[0.22em] text-white/25 opacity-60">
-                  Where We Going Today?
-                </button>
-                <button type="button" disabled className="cursor-not-allowed rounded-full border border-white/10 bg-white/[0.02] px-5 py-3 text-sm uppercase tracking-[0.22em] text-white/25 opacity-60">
-                  What's Tomorrow?
-                </button>
+              <div className="mb-8 rounded-3xl border border-[#9EDCFF]/20 bg-[#9EDCFF]/5 p-6 text-left shadow-[0_0_30px_rgba(158,220,255,0.08)]">
+                <p className="text-sm uppercase tracking-[0.28em] text-[#9EDCFF]">Welcome</p>
+                <h2 className="mt-2 text-3xl font-light tracking-wide text-white">Hello {guestName} 👋</h2>
+                {guestName === "Mark Wang" && (
+                  <div className="mt-5 space-y-3 text-sm leading-7 text-white/70">
+                    <p className="text-xs uppercase tracking-[0.22em] text-white/35">You are joining:</p>
+                    <button type="button" onClick={() => { setIsGuestConfirmed(true); setPage("xiaoliuqiu"); }} className="w-full rounded-2xl border border-[#FFD76A]/20 bg-[#FFD76A]/5 px-4 py-3 text-left transition hover:border-[#FFD76A]/50 hover:bg-[#FFD76A]/10">
+                      <p className="font-medium text-[#FFD76A]">Nov 20–23 · Xiaoliuqiu</p>
+                    </button>
+                    <button type="button" onClick={() => { setIsGuestConfirmed(true); setPage("onna"); }} className="w-full rounded-2xl border border-[#9EDCFF]/20 bg-[#9EDCFF]/5 px-4 py-3 text-left transition hover:border-[#9EDCFF]/50 hover:bg-[#9EDCFF]/10">
+                      <p className="font-medium text-[#9EDCFF]">Nov 26–30 · Onna</p>
+                    </button>
+                  </div>
+                )}
+              </div>
+              <div className="space-y-5">
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPage("map");
+                      setIsGuestConfirmed(true);
+                    }}
+                    className="rounded-full border border-[#9EDCFF]/50 bg-[#9EDCFF]/10 px-5 py-3 text-sm uppercase tracking-[0.22em] text-[#9EDCFF] transition hover:bg-[#9EDCFF]/15"
+                  >
+                    Enter Trip Site
+                  </button>
+
+                  <button type="button" disabled className="cursor-not-allowed rounded-full border border-[#FFD76A]/15 bg-[#FFD76A]/5 px-5 py-3 text-sm uppercase tracking-[0.22em] text-[#FFD76A]/35 opacity-70">
+                    My Checklist
+                  </button>
+                </div>
+
+                <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-4 text-left">
+                  <p className="mb-4 whitespace-nowrap text-[10px] uppercase tracking-[0.18em] text-white/35 sm:text-xs sm:tracking-[0.24em]">
+                    Buttons become active once trip begins
+                  </p>
+
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <button type="button" disabled className="cursor-not-allowed rounded-full border border-white/10 bg-white/[0.02] px-5 py-3 text-sm uppercase tracking-[0.22em] text-white/25 opacity-60">
+                      What's Today?
+                    </button>
+
+                    <button type="button" disabled className="cursor-not-allowed rounded-full border border-white/10 bg-white/[0.02] px-5 py-3 text-sm uppercase tracking-[0.22em] text-white/25 opacity-60">
+                      What's Tomorrow?
+                    </button>
+                  </div>
+                </div>
               </div>
             </>
           )}
@@ -720,7 +771,7 @@ export default function TravelSite() {
             </article>
             <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md"><p className="mb-2 text-sm text-[#9EDCFF]">Sunday, November 29, 2026</p><h2 className="mb-5 text-2xl font-light">Albert & Quinn Wedding Day</h2><div className="space-y-3 text-sm leading-7 text-white/75"><p>Breakfast · Hotel buffet</p><p>💍 Albert & Quinn Wedding at Hotel Monterey Okinawa Spa & Resort</p><img src="/chapel.png" alt="Wedding Chapel Okinawa" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></div></article>
           </section>
-          {peopleCards([["Xenia & David", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 6 · Okinawa"], ["Mark Wang", "Nov 25 – Nov 30 · Okinawa"], ["Mei & Emilia", "Nov 30 – Dec 6 · Okinawa"]])}
+          {peopleCards([["Xenia & David", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 6 · Okinawa"], ["Mark Wang", "Nov 25 – Nov 30 · Okinawa"], ["Mei & Emilia", "Nov 29 – Dec 6 · Okinawa"]])}
         </main>
       </div>
     );
@@ -738,7 +789,7 @@ export default function TravelSite() {
             <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md"><p className="mb-2 text-sm text-[#9EDCFF]">Monday, November 30, 2026</p><h2 className="mb-5 text-2xl font-light">Onna → Nago</h2><div className="space-y-4 text-sm leading-7 text-white/75"><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🍳 Breakfast · Hotel buffet</p><p>🧳 Checkout at 10:00 AM</p><a href="https://maps.google.com/?q=Cape+Manzamo+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">🌊 Cape Manzamo quick stop (~40 min drive)</a><img src="/cape.png" alt="Cape Manzamo Okinawa" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /><p className="text-white/50">If weather is not ideal, this can be swapped to the returning drive day on December 2.</p></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><a href="https://maps.google.com/?q=Busena+Marine+Park+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">🌊 Busena Marine Park Underwater Observatory + Glass Boat</a><img src="/busena.png" alt="Busena Marine Park Okinawa" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /><p>🍽 Lunch Options:</p><ul className="ml-5 list-disc space-y-1 text-white/65"><li>Nakamura Soba / Kintiti Soba Onna Branch 金月そば 恩納店</li><li>Nuchigusui ぬちぐすい Okinawa Cuisine</li><li>Nagumagai Restaurant 名護曲</li></ul></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><a href="https://maps.google.com/?q=Orion+Happy+Park+Nago" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">🍺 14:00 – 16:00 Orion Happy Park</a><img src="/orion.png" alt="Orion Happy Park" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /><ul className="ml-5 list-disc space-y-1 text-white/65"><li>參觀啤酒製作過程</li><li>了解沖繩啤酒歷史</li><li>免費試飲 Orion Beer</li></ul><p className="mt-2 text-white/50">Factory tour reservation recommended · ¥1000/person · Japanese guided tour with Chinese materials.</p></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🥩 Dinner · <a href="https://share.google/nhtDdtE6vYP48ws81" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">Restaurant Flipper</a></p><p>🛍 Optional late night shopping at MEGA Don Quijote Nago</p></div></div></article>
             <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md"><p className="mb-2 text-sm text-[#9EDCFF]">Tuesday, December 1, 2026</p><h2 className="mb-5 text-2xl font-light">Aquarium + Kouri Island</h2><div className="space-y-4 text-sm leading-7 text-white/75"><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🚗 8:45 Leave Nago Hotel</p><p>🐠 9:30 – 13:00 Churaumi Aquarium (FunPass)</p><ul className="ml-5 list-disc space-y-1 text-white/65"><li>Whale shark mega tank</li><li>Coral reef exhibits</li><li>Dolphin area outside</li><li>Ocean Expo Park seaside lawns</li></ul></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🍽 Ocean Blue Cafe lunch beside the whale shark tank</p><p className="text-white/50">Put reservation name on the waitlist immediately upon arrival.</p></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🌳 Bise Fukugi Tree Road</p><p>Traditional Okinawan village scenery · ideal for photos & walking.</p></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🌉 Kouri Island</p><ul className="ml-5 list-disc space-y-1 text-white/65"><li>Kouri Bridge scenic drive</li><li>Café stop</li><li>Beach walk & sunset</li><li>Optional · Kouri Ocean Tower</li></ul></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🍽 Dinner · Yakiniku Kochan 焼肉こうちゃん</p></div></div></article>
           </section>
-          {peopleCards([["Xenia & David", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 6 · Okinawa"], ["Mei & Emilia", "Nov 30 – Dec 6 · Okinawa"]])}
+          {peopleCards([["Xenia & David", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 6 · Okinawa"], ["Mei & Emilia", "Nov 29 – Dec 6 · Okinawa"]])}
         </main>
       </div>
     );
@@ -756,7 +807,7 @@ export default function TravelSite() {
             <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md"><p className="mb-2 text-sm text-[#9EDCFF]">Wednesday, December 2, 2026</p><h2 className="mb-5 text-2xl font-light">Nago → Nanjo</h2><div className="space-y-4 text-sm leading-7 text-white/75"><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🎢 Kids 4+ & adults · Junglia Park</p><a href="https://junglia.jp/en" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">junglia.jp/en</a></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🍍 Morning backup for kids under 4 · Nago Pineapple Park OR Neo Park Zoo (FunPass)</p></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🌊 Late Afternoon · Miyagi Coast & American Village (~1 hr drive)</p><ul className="ml-5 list-disc space-y-1 text-white/65"><li>Blue Seal Ice Cream (FunPass)</li><li>Zhyvago Coffee Roastery · great vibes</li><li>Chatan Burger Base Atabii's · burgers right on the water</li></ul></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🍽 Dinner · Taco Rice Cafe Kijimuna</p><p className="text-white/50">Famous for Omutaco（蛋包塔可飯）— taco rice topped with fluffy omelet, usually a big hit with kids.</p></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🚗 Evening drive toward Nanjo (~40 min)</p><p>🛒 Optional stop · Costco Okinawa</p></div></div></article>
             <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md"><p className="mb-2 text-sm text-[#9EDCFF]">Thursday, December 3, 2026</p><h2 className="mb-5 text-2xl font-light">Nanjo · Okinawa World + Gangala Valley</h2><div className="space-y-4 text-sm leading-7 text-white/75"><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🍳 Breakfast · Hotel buffet</p><p>🌏 Okinawa World（玉泉洞）· FunPass · ~10 min drive from hotel</p><ul className="ml-5 list-disc space-y-1 text-white/65"><li>玉泉洞鐘乳石洞</li><li>琉球文化村</li><li>太鼓舞表演</li></ul></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🌿 Gangala Valley</p><p>Navigate to Cave Cafe or Gangala Valley. Free parking available.</p><p className="mt-2 text-white/50">A famous natural valley formed by ancient limestone cave collapse, known for forest scenery, the Minatogawa people archaeological site, and the Cave Cafe. Guided tour reservation required, approximately ¥2,500/person.</p><a href="https://book.gangala.com/?lng=zh-TW" target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-[#9EDCFF] hover:underline">Gangala Valley reservation</a></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🍽 Dinner · Hotel Japanese Dinner Buffet</p><p className="text-white/50">Alternative: private event can be arranged for Hotel Observation Lounge catering experience up to 10 people.</p></div></div></article>
           </section>
-          {peopleCards([["Xenia & David", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 6 · Okinawa"], ["Mei & Emilia", "Nov 30 – Dec 6 · Okinawa"]])}
+          {peopleCards([["Xenia & David", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 6 · Okinawa"], ["Mei & Emilia", "Nov 29 – Dec 6 · Okinawa"]])}
         </main>
       </div>
     );
@@ -796,7 +847,7 @@ export default function TravelSite() {
               </div>
             </article>
           </section>
-          {peopleCards([["Xenia & David", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 6 · Okinawa"], ["Mei & Emilia", "Nov 30 – Dec 6 · Okinawa"]])}
+          {peopleCards([["Xenia & David", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 6 · Okinawa"], ["Mei & Emilia", "Nov 29 – Dec 6 · Okinawa"]])}
         </main>
       </div>
     );
