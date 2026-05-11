@@ -351,12 +351,12 @@ export default function TravelSite() {
     const tempLabel = isTaiwan ? "24–28°C" : monthLabel === "November" ? "22–26°C" : "20–24°C";
 
     return (
-      <section className="mb-10 grid gap-4 md:grid-cols-5">
-        <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-center"><p className="mb-2 text-2xl">{isTaiwan ? "💵" : "💴"}</p><p className="text-xs text-gray-400">Currency</p><p className="mt-1 text-sm font-medium">{isTaiwan ? "TWD NT$" : "JPY ¥"}</p><p className="mt-1 text-xs text-gray-400">{isTaiwan ? `1 USD ≈ ${usdToTwd} TWD` : `1 USD ≈ ${usdToJpy} JPY`}</p><p className="mt-1 text-[9px] text-gray-500">Live rate · fallback {isTaiwan ? "32" : "150"}</p></div>
-        <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-center"><p className="mb-2 text-2xl">🌤️</p><p className="text-xs text-gray-400">{monthLabel} Temp</p><p className="mt-1 text-sm font-medium">{tempLabel}</p></div>
-        <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-center"><p className="mb-2 text-2xl">🕘</p><p className="text-xs text-gray-400">Local Time</p><p className="mt-1 text-sm font-medium">{localTime}</p><p className="mt-1 text-[9px] text-gray-500">{isTaiwan ? "Taiwan · CST" : "Okinawa · JST"}</p></div>
-        <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-center"><p className="mb-2 text-2xl">🌙</p><p className="text-xs text-gray-400">Nights</p><p className="mt-1 text-sm font-medium">{nights}</p></div>
-        <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-center"><p className="mb-2 text-2xl">🏨</p><p className="text-xs text-gray-400">Hotel</p>{hotel}</div>
+      <section className="mb-10 grid grid-cols-2 gap-3 md:grid-cols-5">
+        <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:mb-2 md:text-2xl">{isTaiwan ? "💵" : "💴"}</p><p className="text-[10px] text-gray-400 md:text-xs">Currency</p><p className="mt-1 text-xs font-medium md:text-sm">{isTaiwan ? "TWD NT$" : "JPY ¥"}</p><p className="mt-1 text-xs text-gray-400">{isTaiwan ? `1 USD ≈ ${usdToTwd} TWD` : `1 USD ≈ ${usdToJpy} JPY`}</p><p className="mt-1 text-[9px] text-gray-500">Live rate · fallback {isTaiwan ? "32" : "150"}</p></div>
+        <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:mb-2 md:text-2xl">🌤️</p><p className="text-[10px] text-gray-400 md:text-xs">{monthLabel} Temp</p><p className="mt-1 text-xs font-medium md:text-sm">{tempLabel}</p></div>
+        <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:mb-2 md:text-2xl">🕘</p><p className="text-[10px] text-gray-400 md:text-xs">Local Time</p><p className="mt-1 text-xs font-medium md:text-sm">{localTime}</p><p className="mt-1 text-[9px] text-gray-500">{isTaiwan ? "Taiwan · CST" : "Okinawa · JST"}</p></div>
+        <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:mb-2 md:text-2xl">🌙</p><p className="text-[10px] text-gray-400 md:text-xs">Nights</p><p className="mt-1 text-xs font-medium md:text-sm">{nights}</p></div>
+        <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:mb-2 md:text-2xl">🏨</p><p className="text-[10px] text-gray-400 md:text-xs">Hotel</p>{hotel}</div>
       </section>
     );
   };
@@ -366,7 +366,7 @@ export default function TravelSite() {
       <h2 className="mb-4 text-2xl font-light">Who's Joining Us Here</h2>
       <div className="grid gap-4 md:grid-cols-2">
         {people.map(([name, date]) => (
-          <div key={name} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4"><p className="text-sm font-medium text-white">{name}</p><p className="text-xs text-gray-400">{date}</p></div>
+          <div key={name} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4"><p className="text-sm font-medium text-white">{name}</p><p className="text-[10px] text-gray-400 md:text-xs">{date}</p></div>
         ))}
       </div>
     </section>
