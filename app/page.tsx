@@ -351,12 +351,11 @@ export default function TravelSite() {
     const tempLabel = isTaiwan ? "24–28°C" : monthLabel === "November" ? "22–26°C" : "20–24°C";
 
     return (
-      <section className="mb-10 grid grid-cols-2 gap-3 md:grid-cols-5">
+      <section className="mb-10 grid grid-cols-2 gap-3 md:grid-cols-4">
         <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:mb-2 md:text-2xl">{isTaiwan ? "💵" : "💴"}</p><p className="text-[10px] text-gray-400 md:text-xs">Currency</p><p className="mt-1 text-xs font-medium md:text-sm">{isTaiwan ? "TWD NT$" : "JPY ¥"}</p><p className="mt-1 text-xs text-gray-400">{isTaiwan ? `1 USD ≈ ${usdToTwd} TWD` : `1 USD ≈ ${usdToJpy} JPY`}</p><p className="mt-1 text-[9px] text-gray-500">Live rate · fallback {isTaiwan ? "32" : "150"}</p></div>
         <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:mb-2 md:text-2xl">🌤️</p><p className="text-[10px] text-gray-400 md:text-xs">{monthLabel} Temp</p><p className="mt-1 text-xs font-medium md:text-sm">{tempLabel}</p></div>
         <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:mb-2 md:text-2xl">🕘</p><p className="text-[10px] text-gray-400 md:text-xs">Local Time</p><p className="mt-1 text-xs font-medium md:text-sm">{localTime}</p><p className="mt-1 text-[9px] text-gray-500">{isTaiwan ? "Taiwan · CST" : "Okinawa · JST"}</p></div>
-        <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:mb-2 md:text-2xl">🌙</p><p className="text-[10px] text-gray-400 md:text-xs">Nights</p><p className="mt-1 text-xs font-medium md:text-sm">{nights}</p></div>
-        <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:mb-2 md:text-2xl">🏨</p><p className="text-[10px] text-gray-400 md:text-xs">Hotel</p>{hotel}</div>
+        <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:mb-2 md:text-2xl">🌙 🏨</p><p className="text-[10px] text-gray-400 md:text-xs">Stay</p><p className="mt-1 text-xs font-medium md:text-sm">{nights}</p>{hotel}</div>
       </section>
     );
   };
@@ -633,7 +632,6 @@ export default function TravelSite() {
           <p className="mb-3 text-sm uppercase tracking-[0.35em] text-[#9EDCFF]">Taiwan · Xiaoliuqiu</p>
           <h1 className="mb-6 text-4xl font-light tracking-wide md:text-6xl">Scuba Dive Chapter</h1>
           {infoWidgets("November", "3 Nights", <p className="mt-1 text-sm font-medium text-[#9EDCFF]">小琉球民宿 TBD</p>, "taiwan")}
-          {peopleCards([["Anthony & Christine", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Mark Wang", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Xenia & David", "Nov 21 – Nov 23 · Xiaoliuqiu"]])}
           <section className="space-y-8">
             <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
               <p className="mb-2 text-sm text-[#9EDCFF]">Friday, November 20, 2026</p>
@@ -726,6 +724,7 @@ export default function TravelSite() {
               </div>
             </article>
           </section>
+          {peopleCards([["Anthony & Christine", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Mark Wang", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Xenia & David", "Nov 21 – Nov 23 · Xiaoliuqiu"]])}
         </main>
       </div>
     );
@@ -739,8 +738,6 @@ export default function TravelSite() {
           <p className="mb-3 text-sm uppercase tracking-[0.35em] text-[#9EDCFF]">Okinawa · Onna</p>
           <h1 className="mb-6 text-4xl font-light tracking-wide md:text-6xl">Wedding Resort Chapter</h1>
           {infoWidgets("November", "3 Nights", <a href="https://www.hotelmonterey.co.jp/en/okinawa/" target="_blank" rel="noopener noreferrer" className="mt-1 block text-sm font-medium text-[#9EDCFF] hover:underline">Hotel Monterey Okinawa</a>)}
-          {peopleCards([["Xenia & David", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 6 · Okinawa"], ["Mark Wang", "Nov 25 – Nov 30 · Okinawa"], ["Mei & Emilia", "Nov 29 – Dec 6 · Okinawa"]])}
-
           <section className="space-y-8">
             <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
               <p className="mb-2 text-sm text-[#9EDCFF]">Friday, November 27, 2026</p>
@@ -802,6 +799,7 @@ export default function TravelSite() {
               </div>
             </article>
           </section>
+          {peopleCards([["Xenia & David", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 6 · Okinawa"], ["Mark Wang", "Nov 25 – Nov 30 · Okinawa"], ["Mei & Emilia", "Nov 29 – Dec 6 · Okinawa"]])}
         </main>
       </div>
     );
@@ -815,8 +813,6 @@ export default function TravelSite() {
           <p className="mb-3 text-sm uppercase tracking-[0.35em] text-[#9EDCFF]">Okinawa · Nago</p>
           <h1 className="mb-6 text-4xl font-light tracking-wide md:text-6xl">Northern Okinawa Chapter</h1>
           {infoWidgets("December", "2 Nights", <p className="mt-1 text-sm font-medium text-[#9EDCFF]">TBD</p>)}
-          {peopleCards([["Xenia & David", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 6 · Okinawa"], ["Mei & Emilia", "Nov 29 – Dec 6 · Okinawa"]])}
-
           <section className="space-y-8">
             <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
               <p className="mb-2 text-sm text-[#9EDCFF]">Monday, November 30, 2026</p>
@@ -873,7 +869,6 @@ export default function TravelSite() {
           <p className="mb-3 text-sm uppercase tracking-[0.35em] text-[#9EDCFF]">Okinawa · Nanjo</p>
           <h1 className="mb-6 text-4xl font-light tracking-wide md:text-6xl">Southern Okinawa Chapter</h1>
           {infoWidgets("December", "2 Nights", <><a href="https://www.yuinchi.jp/heal/hot-spring/" target="_blank" rel="noopener noreferrer" className="mt-1 block text-sm font-medium text-[#9EDCFF] hover:underline">Yuinchi Hotel Nanjo</a><p className="mt-1 text-[9px] text-gray-500">Apeman Spa Natural Hot Spring</p></>)}
-          {peopleCards([["Xenia & David", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 6 · Okinawa"], ["Mei & Emilia", "Nov 29 – Dec 6 · Okinawa"]])}
           <section className="space-y-8">
             <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md"><p className="mb-2 text-sm text-[#9EDCFF]">Wednesday, December 2, 2026</p><h2 className="mb-5 text-2xl font-light">Nago → Nanjo</h2><div className="space-y-4 text-sm leading-7 text-white/75"><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🎢 Kids 4+ & adults · Junglia Park</p><a href="https://junglia.jp/en" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">junglia.jp/en</a></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🍍 Morning backup for kids under 4 · Nago Pineapple Park OR Neo Park Zoo (FunPass)</p></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🌊 Late Afternoon · Miyagi Coast & American Village (~1 hr drive)</p><ul className="ml-5 list-disc space-y-1 text-white/65"><li>Blue Seal Ice Cream (FunPass)</li><li>Zhyvago Coffee Roastery · great vibes</li><li>Chatan Burger Base Atabii's · burgers right on the water</li></ul></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🍽 Dinner · Taco Rice Cafe Kijimuna</p><p className="text-white/50">Famous for Omutaco（蛋包塔可飯）— taco rice topped with fluffy omelet, usually a big hit with kids.</p></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🚗 Evening drive toward Nanjo (~40 min)</p><p>🛒 Optional stop · Costco Okinawa</p></div></div></article>
             <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md"><p className="mb-2 text-sm text-[#9EDCFF]">Thursday, December 3, 2026</p><h2 className="mb-5 text-2xl font-light">Nanjo · Okinawa World + Gangala Valley</h2><div className="space-y-4 text-sm leading-7 text-white/75"><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🍳 Breakfast · Hotel buffet</p><p>🌏 Okinawa World（玉泉洞）· FunPass · ~10 min drive from hotel</p><ul className="ml-5 list-disc space-y-1 text-white/65"><li>玉泉洞鐘乳石洞</li><li>琉球文化村</li><li>太鼓舞表演</li></ul></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🌿 Gangala Valley</p><p>Navigate to Cave Cafe or Gangala Valley. Free parking available.</p><p className="mt-2 text-white/50">A famous natural valley formed by ancient limestone cave collapse, known for forest scenery, the Minatogawa people archaeological site, and the Cave Cafe. Guided tour reservation required, approximately ¥2,500/person.</p><a href="https://book.gangala.com/?lng=zh-TW" target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-[#9EDCFF] hover:underline">Gangala Valley reservation</a></div><div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🍽 Dinner · Hotel Japanese Dinner Buffet</p><p className="text-white/50">Alternative: private event can be arranged for Hotel Observation Lounge catering experience up to 10 people.</p></div></div></article>
@@ -890,7 +885,6 @@ export default function TravelSite() {
           <p className="mb-3 text-sm uppercase tracking-[0.35em] text-[#9EDCFF]">Okinawa · Naha</p>
           <h1 className="mb-6 text-4xl font-light tracking-wide md:text-6xl">Final Naha Chapter</h1>
           {infoWidgets("December", "2 Nights", <><p className="mt-1 text-sm font-medium text-[#9EDCFF]">Hotel Strata Naha</p><p className="mt-1 text-[9px] text-gray-500">or Hotel JAL City Naha</p></>)}
-          {peopleCards([["Xenia & David", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 6 · Okinawa"], ["Mei & Emilia", "Nov 29 – Dec 6 · Okinawa"]])}
           <section className="space-y-8">
             <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
               <p className="mb-2 text-sm text-[#9EDCFF]">Friday, December 4, 2026</p>
