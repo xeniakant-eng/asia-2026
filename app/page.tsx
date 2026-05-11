@@ -8,7 +8,7 @@ const BABY_BLUE_SHADOW = "0 0 12px rgba(158,220,255,0.9)";
 const TAIWAN_GOLD = "#FFD76A";
 const TAIWAN_GOLD_SHADOW = "0 0 14px rgba(255,215,106,0.95)";
 
-type PageName = "map" | "xiaoliuqiu" | "onna" | "nago" | "nanjo" | "naha" | "overlap";
+type PageName = "map" | "xiaoliuqiu" | "onna" | "nago" | "nanjo" | "naha" | "checklist" | "overlap";
 
 type SvgPinProps = {
   id: string;
@@ -170,6 +170,7 @@ export default function TravelSite() {
   const [guestName, setGuestName] = useState("");
   const [isGuestConfirmed, setIsGuestConfirmed] = useState(false);
   const [showGuestActions, setShowGuestActions] = useState(false);
+  const [checkedPackingItems, setCheckedPackingItems] = useState<Record<string, boolean>>({});
   const timelineScrollRef = useRef<HTMLDivElement | null>(null);
 
   const guestOptions = [
@@ -358,6 +359,158 @@ export default function TravelSite() {
         <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:mb-2 md:text-2xl">🌙 🏨</p><p className="text-[10px] text-gray-400 md:text-xs">Stay</p><p className="mt-1 text-xs font-medium md:text-sm">{nights}</p>{hotel}</div>
       </section>
     );
+  };
+
+  type PackingSection = {
+    title: string;
+    items: string[];
+  };
+
+  type PackingChecklist = {
+    title: string;
+    sections: PackingSection[];
+  };
+
+  const getPackingChecklist = (guest: string): PackingChecklist => {
+    const essentials = [
+      "Passport / travel documents",
+      "Travel insurance documents",
+      "Credit cards + cash",
+      "International/local eSIM or roaming setup",
+    ];
+
+    const clothes = [
+      "Underwear",
+      "Socks",
+      "Shirts",
+      "Jeans + shorts",
+      "Light jacket / rain gear",
+      "Walking shoes + sandals",
+      "Slippers or flipflops",
+      "Swimsuit",
+    ];
+
+    const personal = [
+      "Phone charger + power bank",
+      "Headphones",
+      "Sunglasses / hat",
+      "Laptop/Tablet + charger",
+      "Toiletries (toothbrush, toothpaste, hairbrush, skincare, nailcare, shaving supplies)",
+      "Reusable water bottle",
+      "Sunscreen",
+      "Medications",
+      "Contact lenses",
+    ];
+
+    const xiaoliuqiuDive = ["Dry bag",
+      "Dive certification / course documents",
+      "Motion sickness medicine",
+      "Scuba mask",
+      "Dive computer + charger",
+      "Action camera + charger",
+    ];
+
+    const okinawaSegment = [
+      "Wedding attire",
+      "Resort casual outfit",
+      "International driving permit / car documents",
+    ];
+
+    const babyToddlerItems = [
+      "Formula / milk / snacks",
+      "Diapers / wipes / rash cream / small plastic bags",
+      "Baby Tylenol, medications, thermometer, band-aids",
+      "Pack 2 outfits per day + 2–3 extra outfits (including socks)",
+      "Light jackets & vests",
+      "Swimsuit + swim diapers",
+      "Walking shoes + water shoes + sandals",
+      "Sippy cup, bottles",
+      "Favorite toy, blanket, pacifier",
+      "Sunscreen and sun hat",
+      "Car seat, stroller, carrier",
+      "Portable travel water kettle",
+      "Baby utensils and bottle detergent / cleaning brush",
+      "Portable fan",
+      "Tablet charged & loaded with offline videos",
+      "Baby shower gel & shampoo",
+      "Small bottle of baby laundry detergent",
+    ];
+
+    const standardSections: PackingSection[] = [
+      { title: "Essentials", items: essentials },
+      { title: "Clothes", items: clothes },
+      { title: "Personal", items: personal },
+    ];
+
+    if (guest === "Mark Wang") {
+      return {
+        title: "Mark's Packing Checklist",
+        sections: [
+          ...standardSections,
+          { title: "Xiaoliuqiu Dive Segment", items: xiaoliuqiuDive },
+          { title: "Okinawa Wedding Segment", items: okinawaSegment },
+        ],
+      };
+    }
+
+    if (["Xenia & David", "Dave & Christina", "Heather & Jack"].includes(guest)) {
+      return {
+        title: `${guest} Packing Checklist`,
+        sections: [
+          ...standardSections,
+          { title: "Okinawa Segment", items: okinawaSegment },
+          { title: "Baby / Toddler Items", items: babyToddlerItems },
+        ],
+      };
+    }
+
+    if (guest === "Mei & Emilia") {
+      return {
+        title: `${guest} Packing Checklist`,
+        sections: [
+          ...standardSections,
+        ],
+      };
+    }
+
+    if (guest === "Jennifer & Hiroshi") {
+      return {
+        title: `${guest} Packing Checklist`,
+        sections: [
+          ...standardSections,
+          { title: "Baby / Toddler Items", items: babyToddlerItems },
+        ],
+      };
+    }
+
+    if (guest === "Julie & Adrian") {
+      return {
+        title: `${guest} Packing Checklist`,
+        sections: [
+          ...standardSections,
+          { title: "Baby / Toddler Items", items: babyToddlerItems },
+        ],
+      };
+    }
+
+    if (guest === "Anthony & Christine") {
+      return {
+        title: `${guest} Packing Checklist`,
+        sections: [
+          ...standardSections,
+          { title: "Xiaoliuqiu Dive Segment", items: xiaoliuqiuDive },
+          { title: "Baby / Toddler Items", items: babyToddlerItems },
+        ],
+      };
+    }
+
+    return {
+      title: `${guest || "Guest"} Packing Checklist`,
+      sections: [
+        ...standardSections,
+        { title: "Trip Items", items: okinawaSegment },
+      ],
+    };
   };
 
   const peopleCards = (people: [string, string][]) => (
@@ -560,19 +713,26 @@ export default function TravelSite() {
                       setPage("map");
                       setIsGuestConfirmed(true);
                     }}
-                    className="rounded-full border border-[#9EDCFF]/50 bg-[#9EDCFF]/10 px-5 py-3 text-sm uppercase tracking-[0.22em] text-[#9EDCFF] transition hover:bg-[#9EDCFF]/15"
+                    className="rounded-full border border-white/30 bg-white/[0.05] px-5 py-3 text-sm uppercase tracking-[0.22em] text-white transition hover:border-white/60 hover:bg-white/[0.08]"
                   >
                     Enter Trip Site
                   </button>
 
-                  <button type="button" disabled className="cursor-not-allowed rounded-full border border-[#FFD76A]/15 bg-[#FFD76A]/5 px-5 py-3 text-sm uppercase tracking-[0.22em] text-[#FFD76A]/35 opacity-70">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPage("checklist");
+                      setIsGuestConfirmed(true);
+                    }}
+                    className="rounded-full border border-white/30 bg-white/[0.05] px-5 py-3 text-sm uppercase tracking-[0.22em] text-white transition hover:border-white/60 hover:bg-white/[0.08]"
+                  >
                     My Checklist
                   </button>
                 </div>
 
                 <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-4 text-left">
                   <p className="mb-4 whitespace-nowrap text-[10px] uppercase tracking-[0.18em] text-white/35 sm:text-xs sm:tracking-[0.24em]">
-                    Buttons become active once trip begins
+                    Active once trip begins
                   </p>
 
                   <div className="grid gap-3 sm:grid-cols-2">
@@ -589,6 +749,69 @@ export default function TravelSite() {
             </>
           )}
         </div>
+      </div>
+    );
+  }
+
+  if (page === "checklist") {
+    const checklist = getPackingChecklist(guestName);
+    const totalItems = checklist.sections.reduce((sum, section) => sum + section.items.length, 0);
+    const completedItems = checklist.sections.reduce((sum, section) => sum + section.items.filter((item) => checkedPackingItems[`${guestName}-${section.title}-${item}`]).length, 0);
+
+    return (
+      <div className="min-h-screen bg-black px-6 py-10 text-white">
+        <div className="mb-10 flex items-start justify-between gap-4">
+          <div className="flex flex-col items-start gap-3">
+            <button type="button" onClick={() => setPage("map")} className="rounded-full border border-white/30 px-4 py-2 text-sm text-white/80 transition hover:border-white hover:text-white">
+              ← Back to Map
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setIsGuestConfirmed(false);
+                setShowGuestActions(true);
+              }}
+              className="rounded-full border border-[#9EDCFF]/25 bg-[#9EDCFF]/5 px-4 py-2 text-sm text-[#9EDCFF]/80 transition hover:border-[#9EDCFF]/50 hover:bg-[#9EDCFF]/10 hover:text-[#9EDCFF]"
+            >
+              ← Back to Dashboard
+            </button>
+          </div>
+        </div>
+
+        <main className="mx-auto max-w-4xl">
+          <p className="mb-3 text-sm uppercase tracking-[0.35em] text-[#FFD76A]">Personal Travel Prep</p>
+          <h1 className="mb-4 text-4xl font-light tracking-wide md:text-6xl">{checklist.title}</h1>
+          <p className="mb-8 text-sm text-white/50">{completedItems} of {totalItems} items packed</p>
+
+          <div className="mb-10 h-2 overflow-hidden rounded-full bg-white/10">
+            <div className="h-full rounded-full bg-[#FFD76A] transition-all" style={{ width: `${totalItems ? (completedItems / totalItems) * 100 : 0}%` }} />
+          </div>
+
+          <section className="space-y-6">
+            {checklist.sections.map((section) => (
+              <article key={section.title} className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
+                <h2 className="mb-5 text-2xl font-light">{section.title}</h2>
+                <div className="grid gap-3">
+                  {section.items.map((item) => {
+                    const key = `${guestName}-${section.title}-${item}`;
+                    const checked = Boolean(checkedPackingItems[key]);
+                    return (
+                      <button
+                        key={key}
+                        type="button"
+                        onClick={() => setCheckedPackingItems((current) => ({ ...current, [key]: !checked }))}
+                        className={`flex items-center gap-3 rounded-2xl border px-4 py-3 text-left transition ${checked ? "border-[#FFD76A]/50 bg-[#FFD76A]/10 text-white" : "border-white/10 bg-black/20 text-white/70 hover:border-white/25"}`}
+                      >
+                        <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-xs ${checked ? "border-[#FFD76A] bg-[#FFD76A] text-black" : "border-white/25 text-transparent"}`}>✓</span>
+                        <span className={checked ? "text-white line-through decoration-[#FFD76A]/70" : "text-white/75"}>{item}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </article>
+            ))}
+          </section>
+        </main>
       </div>
     );
   }
@@ -839,7 +1062,7 @@ export default function TravelSite() {
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
                   <p>🥩 Dinner · <a href="https://share.google/nhtDdtE6vYP48ws81" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">Restaurant Flipper</a></p>
-                  <p>🛍 Optional late night shopping at MEGA Don Quijote Nago</p>
+                  <p>🛍 Optional late night shopping at <a href="https://maps.google.com/?q=MEGA+Don+Quijote+Nago" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">MEGA Don Quijote Nago</a></p>
                 </div>
               </div>
             </article>
@@ -848,11 +1071,11 @@ export default function TravelSite() {
               <p className="mb-2 text-sm text-[#9EDCFF]">Tuesday, December 1, 2026</p>
               <h2 className="mb-5 text-2xl font-light">Aquarium + Kouri Island</h2>
               <div className="space-y-4 text-sm leading-7 text-white/75">
-                <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🚗 8:45 Leave Nago Hotel</p><p>🐠 9:30 – 13:00 Churaumi Aquarium (FunPass)</p><ul className="ml-5 list-disc space-y-1 text-white/65"><li>Whale shark mega tank</li><li>Coral reef exhibits</li><li>Dolphin area outside</li><li>Ocean Expo Park seaside lawns</li></ul></div>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🚗 8:45 Leave Nago Hotel</p><p><a href="https://maps.google.com/?q=Okinawa+Churaumi+Aquarium" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">🐠 9:30 – 13:00 Churaumi Aquarium (FunPass)</a></p><img src="/aquarium.png" alt="Churaumi Aquarium" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /><ul className="mt-4 ml-5 list-disc space-y-1 text-white/65"><li>Whale shark mega tank</li><li>Coral reef exhibits</li><li>Dolphin area outside</li><li>Ocean Expo Park seaside lawns</li></ul></div>
                 <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🍽 Ocean Blue Cafe lunch beside the whale shark tank</p><p className="text-white/50">Put reservation name on the waitlist immediately upon arrival.</p></div>
-                <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🌳 Bise Fukugi Tree Road</p><p>Traditional Okinawan village scenery · ideal for photos & walking.</p></div>
-                <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🌉 Kouri Island</p><ul className="ml-5 list-disc space-y-1 text-white/65"><li>Kouri Bridge scenic drive</li><li>Café stop</li><li>Beach walk & sunset</li><li>Optional · Kouri Ocean Tower</li></ul></div>
-                <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🍽 Dinner · Yakiniku Kochan 焼肉こうちゃん</p></div>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p><a href="https://maps.google.com/?q=Bise+Fukugi+Tree+Road+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">🌳 Bise Fukugi Tree Road</a></p><img src="/tree.png" alt="Bise Fukugi Tree Road" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /><p className="mt-4">Traditional Okinawan village scenery · ideal for photos & walking.</p></div>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p><a href="https://maps.google.com/?q=Kouri+Island+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">🌉 Kouri Island</a></p><img src="/kouri.png" alt="Kouri Island Okinawa" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /><ul className="mt-4 ml-5 list-disc space-y-1 text-white/65"><li>Kouri Bridge scenic drive</li><li>Café stop</li><li>Beach walk & sunset</li><li>Optional · Kouri Ocean Tower</li></ul></div>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p>🍽 Dinner · <a href="https://maps.google.com/?q=Yakiniku+Kochan+Nago" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">Yakiniku Kochan 焼肉こうちゃん</a></p></div>
               </div>
             </article>
           </section>
