@@ -6,7 +6,7 @@ const MS_PER_DAY = 1000 * 60 * 60 * 24;
 const BABY_BLUE = "#9EDCFF";
 const TAIWAN_GOLD = "#FFD76A";
 
-type PageName = "map" | "xiaoliuqiu" | "onna" | "nago" | "nanjo" | "naha" | "checklist";
+type PageName = "map" | "xiaoliuqiu" | "onna" | "nago" | "nanjo" | "naha" | "yilan" | "checklist";
 type Region = "japan" | "taiwan";
 
 type TimelineItem = {
@@ -196,7 +196,7 @@ export default function TravelSite() {
   };
 
   const openChapterForLocation = (id: string) => {
-    if (["xiaoliuqiu", "onna", "nago", "nanjo", "naha"].includes(id)) setPage(id as PageName);
+    if (["xiaoliuqiu", "onna", "nago", "nanjo", "naha", "yilan"].includes(id)) setPage(id as PageName);
   };
 
   const getPackingChecklist = (guest: string): PackingChecklist => {
@@ -264,7 +264,7 @@ export default function TravelSite() {
     if (guest === "Mark Wang") {
       return { title: "Mark's Packing Checklist", sections: [...standardSections, { title: "Xiaoliuqiu Dive Segment", items: xiaoliuqiuDive }, { title: "Okinawa Wedding Segment", items: okinawaSegment }] };
     }
-    if (["Xenia & David", "Dave & Christina", "Heather & Jack"].includes(guest)) {
+    if (["Xenia & David", "Dave & Christina", "Heather & Jack", "Mei & Emilia"].includes(guest)) {
       return { title: `${guest} Packing Checklist`, sections: [...standardSections, { title: "Okinawa Segment", items: okinawaSegment }, { title: "Baby / Toddler Items", items: babyToddlerItems }] };
     }
     if (guest === "Mei & Emilia") return { title: `${guest} Packing Checklist`, sections: standardSections };
@@ -278,15 +278,16 @@ export default function TravelSite() {
       <div className="flex flex-col items-start gap-3">
         <button type="button" onClick={() => setPage("map")} className="rounded-full border border-white/30 px-4 py-2 text-sm text-white/80 transition hover:border-white hover:text-white">← Back to Map</button>
         {guestName && guestName !== "I am just a random Guest" && (
-          <button type="button" onClick={() => { setIsGuestConfirmed(false); setShowGuestActions(true); }} className="rounded-full border border-[#9EDCFF]/25 bg-[#9EDCFF]/5 px-4 py-2 text-sm text-[#9EDCFF]/80 transition hover:border-[#9EDCFF]/50 hover:bg-[#9EDCFF]/10">← Back to Dashboard</button>
+          <button type="button" onClick={() => { setIsGuestConfirmed(false); setShowGuestActions(true); }} className="rounded-full border border-[#72E49A]/25 bg-[#72E49A]/5 px-4 py-2 text-sm text-[#72E49A]/80 transition hover:border-[#72E49A]/50 hover:bg-[#72E49A]/10">← Back to Dashboard</button>
         )}
       </div>
       <div className="flex flex-wrap justify-end gap-3">
         {current === "xiaoliuqiu" && <button type="button" onClick={() => setPage("onna")} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70">Next Chapter →</button>}
-        {current === "onna" && <button type="button" onClick={() => setPage("nago")} className="rounded-full border border-[#9EDCFF]/30 bg-[#9EDCFF]/10 px-4 py-2 text-sm text-[#9EDCFF]">Next Chapter →</button>}
-        {current === "nago" && <><button type="button" onClick={() => setPage("onna")} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70">← Previous Chapter</button><button type="button" onClick={() => setPage("nanjo")} className="rounded-full border border-[#9EDCFF]/30 bg-[#9EDCFF]/10 px-4 py-2 text-sm text-[#9EDCFF]">Next Chapter →</button></>}
-        {current === "nanjo" && <><button type="button" onClick={() => setPage("nago")} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70">← Previous Chapter</button><button type="button" onClick={() => setPage("naha")} className="rounded-full border border-[#9EDCFF]/30 bg-[#9EDCFF]/10 px-4 py-2 text-sm text-[#9EDCFF]">Next Chapter →</button></>}
+        {current === "onna" && <button type="button" onClick={() => setPage("nago")} className="rounded-full border border-[#72E49A]/30 bg-[#72E49A]/10 px-4 py-2 text-sm text-[#72E49A]">Next Chapter →</button>}
+        {current === "nago" && <><button type="button" onClick={() => setPage("onna")} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70">← Previous Chapter</button><button type="button" onClick={() => setPage("nanjo")} className="rounded-full border border-[#72E49A]/30 bg-[#72E49A]/10 px-4 py-2 text-sm text-[#72E49A]">Next Chapter →</button></>}
+        {current === "nanjo" && <><button type="button" onClick={() => setPage("nago")} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70">← Previous Chapter</button><button type="button" onClick={() => setPage("naha")} className="rounded-full border border-[#72E49A]/30 bg-[#72E49A]/10 px-4 py-2 text-sm text-[#72E49A]">Next Chapter →</button></>}
         {current === "naha" && <button type="button" onClick={() => setPage("nanjo")} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70">← Previous Chapter</button>}
+        {current === "yilan" && <button type="button" onClick={() => setPage("map")} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70">← Back to Timeline</button>}
       </div>
     </div>
   );
@@ -305,10 +306,10 @@ export default function TravelSite() {
     );
   };
 
-  const memoryMaker = (albumName: string) => (
+  const memoryMaker = (albumName: string, accentColor: string = "#72E49A") => (
     <section className="mb-10 rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
       <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
-        <div><p className="mb-2 text-xs uppercase tracking-[0.3em] text-[#9EDCFF]">Memory Maker</p><h2 className="text-2xl font-light">📸 {albumName} Memories</h2><p className="mt-2 text-sm text-white/45">Shared photo book album. Upload and album features coming soon.</p></div>
+        <div><p className="mb-2 text-xs uppercase tracking-[0.3em]" style={{ color: accentColor }}>Memory Maker</p><h2 className="text-2xl font-light">📸 {albumName} Memories</h2><p className="mt-2 text-sm text-white/45">Shared photo book album. Upload and album features coming soon.</p></div>
         <div className="grid gap-3 sm:grid-cols-2 md:min-w-[300px]"><button type="button" disabled className="cursor-not-allowed rounded-full border border-white/10 bg-white/[0.02] px-5 py-3 text-sm uppercase tracking-[0.18em] text-white/25 opacity-60">Upload Photos</button><button type="button" disabled className="cursor-not-allowed rounded-full border border-white/10 bg-white/[0.02] px-5 py-3 text-sm uppercase tracking-[0.18em] text-white/25 opacity-60">View Album</button></div>
       </div>
     </section>
@@ -367,22 +368,25 @@ export default function TravelSite() {
                   const active = hovered === segment.id;
                   return (
                     <div key={segment.id}>
-                      <div
-                        className="pointer-events-none absolute top-1/2 h-[5px] -translate-y-1/2 rounded-full transition-all duration-150"
-                        style={{
-                          left: `${left}%`,
-                          width: `${width}%`,
-                          backgroundColor: active ? segment.color : "transparent",
-                          boxShadow: active ? `0 0 14px ${segment.color}` : "none",
-                        }}
-                      />
-                      <div
-                        className="absolute -top-5 h-10 cursor-pointer"
-                        style={{ left: `${left}%`, width: `${width}%` }}
-                        onMouseEnter={() => setHovered(segment.id)}
-                        onMouseLeave={() => setHovered(null)}
-                        onClick={() => setPage(segment.page as PageName)}
-                      />
+                      <div className="pointer-events-none absolute top-1/2 h-[5px] -translate-y-1/2 rounded-full transition-all duration-150" style={{ left: `${left}%`, width: `${width}%`, backgroundColor: active ? segment.color : "transparent", boxShadow: active ? `0 0 14px ${segment.color}` : "none" }} />
+                      <div className="absolute -top-5 h-10 cursor-pointer" style={{ left: `${left}%`, width: `${width}%` }} onMouseEnter={() => setHovered(segment.id)} onMouseLeave={() => setHovered(null)} onClick={() => setPage(segment.page as PageName)} />
+                    </div>
+                  );
+                })}
+              </>
+            )}
+            {selectedTimelineSectionId === 2 && (
+              <>
+                {[
+                  { id: "yilan", page: "yilan", start: new Date(2026, 11, 8), end: new Date(2026, 11, 11), color: "#72E49A" },
+                ].map((segment) => {
+                  const left = getSectionPercent(segment.start);
+                  const width = getSectionPercent(segment.end) - left;
+                  const active = hovered === segment.id;
+                  return (
+                    <div key={segment.id}>
+                      <div className="pointer-events-none absolute top-1/2 h-[5px] -translate-y-1/2 rounded-full transition-all duration-150" style={{ left: `${left}%`, width: `${width}%`, backgroundColor: active ? segment.color : "transparent", boxShadow: active ? `0 0 14px ${segment.color}` : "none" }} />
+                      <div className="absolute -top-5 h-10 cursor-pointer" style={{ left: `${left}%`, width: `${width}%` }} onMouseEnter={() => setHovered(segment.id)} onMouseLeave={() => setHovered(null)} onClick={() => setPage("yilan")} />
                     </div>
                   );
                 })}
@@ -399,7 +403,7 @@ export default function TravelSite() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-black px-6 text-white">
         <div className="w-full max-w-md rounded-[2rem] border border-white/10 bg-white/[0.04] p-8 text-center shadow-[0_0_40px_rgba(255,255,255,0.06)] backdrop-blur-xl">
-          <p className="mb-3 text-xs uppercase tracking-[0.35em] text-[#9EDCFF]">Private Group Event</p>
+          <p className="mb-3 text-xs uppercase tracking-[0.35em] text-[#72E49A]">Private Group Event</p>
           <h1 className="mb-4 text-3xl font-light tracking-wide">Welcome to XK Event 2026</h1>
           {!showGuestActions ? (
             <>
@@ -410,13 +414,13 @@ export default function TravelSite() {
             </>
           ) : (
             <>
-              <div className="mb-8 rounded-3xl border border-[#9EDCFF]/20 bg-[#9EDCFF]/5 p-6 text-left shadow-[0_0_30px_rgba(158,220,255,0.08)]">
-                <p className="text-sm uppercase tracking-[0.28em] text-[#9EDCFF]">Welcome</p>
+              <div className="mb-8 rounded-3xl border border-[#72E49A]/20 bg-[#72E49A]/5 p-6 text-left shadow-[0_0_30px_rgba(158,220,255,0.08)]">
+                <p className="text-sm uppercase tracking-[0.28em] text-[#72E49A]">Welcome</p>
                 <h2 className="mt-2 text-3xl font-light tracking-wide text-white">Hello {guestName} 👋</h2>
-                {guestName === "Xenia & David" && <SegmentButtons segments={[{ label: "Nov 21–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
+                {guestName === "Xenia & David" && <SegmentButtons segments={[{ label: "Nov 21–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Mark Wang" && <SegmentButtons segments={[{ label: "Nov 20–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }, { label: "Nov 26–30 · Onna", page: "onna", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Anthony & Christine" && <SegmentButtons segments={[{ label: "Nov 20–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
-                {guestName === "Mei & Emilia" && <SegmentButtons segments={[{ label: "Nov 29–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
+                {guestName === "Mei & Emilia" && <SegmentButtons segments={[{ label: "Nov 29–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {!["Xenia & David", "Mark Wang", "Anthony & Christine", "Mei & Emilia"].includes(guestName) && (
                   <div className="mt-5 rounded-2xl border border-amber-300/20 bg-amber-300/5 p-4">
                     <p className="text-sm leading-6 text-amber-100/80">
@@ -450,9 +454,9 @@ export default function TravelSite() {
           <p className="mb-3 text-sm uppercase tracking-[0.35em] text-[#FFD76A]">Personal Travel Prep</p>
           <h1 className="mb-4 text-4xl font-light tracking-wide md:text-6xl">{checklist.title}</h1>
           <p className="mb-8 text-sm text-white/50">{completedItems} of {totalItems} items packed</p>
-          <div className="mb-10 h-2 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full bg-[#FFD76A] transition-all" style={{ width: `${totalItems ? (completedItems / totalItems) * 100 : 0}%` }} /></div>
+          <div className="mb-10 h-2 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full bg-[#72E49A] transition-all" style={{ width: `${totalItems ? (completedItems / totalItems) * 100 : 0}%` }} /></div>
           <section className="space-y-6">
-            {checklist.sections.map((section) => <article key={section.title} className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md"><h2 className="mb-5 text-2xl font-light">{section.title}</h2><div className="grid gap-3">{section.items.map((item) => { const key = `${guestName}-${section.title}-${item}`; const checked = Boolean(checkedPackingItems[key]); return <button key={key} type="button" onClick={() => setCheckedPackingItems((current) => ({ ...current, [key]: !checked }))} className={`flex items-center gap-3 rounded-2xl border px-4 py-3 text-left transition ${checked ? "border-[#FFD76A]/50 bg-[#FFD76A]/10 text-white" : "border-white/10 bg-black/20 text-white/70 hover:border-white/25"}`}><span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-xs ${checked ? "border-[#FFD76A] bg-[#FFD76A] text-black" : "border-white/25 text-transparent"}`}>✓</span><span className={checked ? "text-white line-through decoration-[#FFD76A]/70" : "text-white/75"}>{item}</span></button>; })}</div></article>)}
+            {checklist.sections.map((section) => <article key={section.title} className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md"><h2 className="mb-5 text-2xl font-light">{section.title}</h2><div className="grid gap-3">{section.items.map((item) => { const key = `${guestName}-${section.title}-${item}`; const checked = Boolean(checkedPackingItems[key]); return <button key={key} type="button" onClick={() => setCheckedPackingItems((current) => ({ ...current, [key]: !checked }))} className={`flex items-center gap-3 rounded-2xl border px-4 py-3 text-left transition ${checked ? "border-[#72E49A]/50 bg-[#72E49A]/10 text-white" : "border-white/10 bg-black/20 text-white/70 hover:border-white/25"}`}><span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-xs ${checked ? "border-[#72E49A] bg-[#72E49A] text-black" : "border-white/25 text-transparent"}`}>✓</span><span className={checked ? "text-white line-through decoration-[#72E49A]/70" : "text-white/75"}>{item}</span></button>; })}</div></article>)}
           </section>
         </main>
       </div>
@@ -462,6 +466,7 @@ export default function TravelSite() {
   const chapterPeople: Record<PageName, Person[]> = {
     map: [],
     checklist: [],
+    yilan: [["Xenia & David", "Dec 8 – Dec 11 · Yilan"], ["Mei & Emilia", "Dec 8 – Dec 11 · Yilan"], ["Dave & Christina", "Dec 8 – Dec 11 · Yilan"]],
     xiaoliuqiu: [["Anthony & Christine", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Mark Wang", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Xenia & David", "Nov 21 – Nov 23 · Xiaoliuqiu"]],
     onna: [["Xenia & David", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 6 · Okinawa"], ["Mark Wang", "Nov 25 – Nov 30 · Okinawa"], ["Mei & Emilia", "Nov 29 – Dec 6 · Okinawa"]],
     nago: [["Xenia & David", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 6 · Okinawa"], ["Mei & Emilia", "Nov 29 – Dec 6 · Okinawa"]],
@@ -469,13 +474,13 @@ export default function TravelSite() {
     naha: [["Xenia & David", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 6 · Okinawa"], ["Mei & Emilia", "Nov 29 – Dec 6 · Okinawa"]],
   };
 
-  const renderChapter = (chapter: PageName, eyebrow: string, title: string, album: string, month: string, nights: string, hotel: React.ReactNode, region: Region, children: React.ReactNode) => (
-    <div className="min-h-screen bg-black px-6 py-10 text-white">
+  const renderChapter = (chapter: PageName, eyebrow: string, title: string, album: string, month: string, nights: string, hotel: React.ReactNode, region: Region, accentColor: string, children: React.ReactNode) => (
+    <div className="min-h-screen bg-black px-6 py-10 text-white" style={{ "--chapter-accent": accentColor } as React.CSSProperties}>
       {chapterNav(chapter)}
       <main className="mx-auto max-w-5xl">
-        <p className="mb-3 text-sm uppercase tracking-[0.35em] text-[#9EDCFF]">{eyebrow}</p>
+        <p className="mb-3 text-sm uppercase tracking-[0.35em]" style={{ color: accentColor }}>{eyebrow}</p>
         <h1 className="mb-6 text-4xl font-light tracking-wide md:text-6xl">{title}</h1>
-        {memoryMaker(album)}
+        {memoryMaker(album, accentColor)}
         {infoWidgets(month, nights, hotel, region)}
         <section className="space-y-8">{children}</section>
         {peopleCards(chapterPeople[chapter])}
@@ -483,15 +488,19 @@ export default function TravelSite() {
     </div>
   );
 
-  if (page === "xiaoliuqiu") return renderChapter("xiaoliuqiu", "Taiwan · Xiaoliuqiu", "Scuba Dive Chapter", "Taiwan November", "November", "3 Nights", <p className="mt-1 text-sm font-medium text-[#9EDCFF]">小琉球民宿 TBD</p>, "taiwan", <XiaoliuqiuContent card={card} />);
-  if (page === "onna") return renderChapter("onna", "Okinawa · Onna", "Wedding Resort Chapter", "Okinawa Japan", "November", "3 Nights", <a href="https://www.hotelmonterey.co.jp/en/okinawa/" target="_blank" rel="noopener noreferrer" className="mt-1 block text-sm font-medium text-[#9EDCFF] hover:underline">Hotel Monterey Okinawa</a>, "japan", <OnnaContent card={card} linkedImage={linkedImage} />);
-  if (page === "nago") return renderChapter("nago", "Okinawa · Nago", "Northern Okinawa Chapter", "Okinawa Japan", "December", "2 Nights", <p className="mt-1 text-sm font-medium text-[#9EDCFF]">TBD</p>, "japan", <NagoContent card={card} linkedImage={linkedImage} />);
-  if (page === "nanjo") return renderChapter("nanjo", "Okinawa · Nanjo", "Southern Okinawa Chapter", "Okinawa Japan", "December", "2 Nights", <><a href="https://www.yuinchi.jp/heal/hot-spring/" target="_blank" rel="noopener noreferrer" className="mt-1 block text-sm font-medium text-[#9EDCFF] hover:underline">Yuinchi Hotel Nanjo</a><p className="mt-1 text-[9px] text-gray-500">Apeman Spa Natural Hot Spring</p></>, "japan", <NanjoContent card={card} />);
-  if (page === "naha") return renderChapter("naha", "Okinawa · Naha", "Final Naha Chapter", "Okinawa Japan", "December", "2 Nights", <><p className="mt-1 text-sm font-medium text-[#9EDCFF]">Hotel Strata Naha</p><p className="mt-1 text-[9px] text-gray-500">or Hotel JAL City Naha</p></>, "japan", <NahaContent card={card} />);
+  if (page === "xiaoliuqiu") return renderChapter("xiaoliuqiu", "Taiwan · Xiaoliuqiu", "Scuba Dive Chapter", "Taiwan November", "November", "3 Nights", <p className="mt-1 text-sm font-medium" style={{ color: TAIWAN_GOLD }}>小琉球民宿 TBD</p>, "taiwan", TAIWAN_GOLD, <XiaoliuqiuContent card={card} />);
+  if (page === "onna") return renderChapter("onna", "Okinawa · Onna", "Wedding Resort Chapter", "Okinawa Japan", "November", "3 Nights", <a href="https://www.hotelmonterey.co.jp/en/okinawa/" target="_blank" rel="noopener noreferrer" className="mt-1 block text-sm font-medium hover:underline" style={{ color: BABY_BLUE }}>Hotel Monterey Okinawa</a>, "japan", BABY_BLUE, <OnnaContent card={card} linkedImage={linkedImage} />);
+  if (page === "nago") return renderChapter("nago", "Okinawa · Nago", "Northern Okinawa Chapter", "Okinawa Japan", "December", "2 Nights", <p className="mt-1 text-sm font-medium" style={{ color: BABY_BLUE }}>TBD</p>, "japan", BABY_BLUE, <NagoContent card={card} linkedImage={linkedImage} />);
+  if (page === "nanjo") return renderChapter("nanjo", "Okinawa · Nanjo", "Southern Okinawa Chapter", "Okinawa Japan", "December", "2 Nights", <><a href="https://www.yuinchi.jp/heal/hot-spring/" target="_blank" rel="noopener noreferrer" className="mt-1 block text-sm font-medium hover:underline" style={{ color: BABY_BLUE }}>Yuinchi Hotel Nanjo</a><p className="mt-1 text-[9px] text-gray-500">Apeman Spa Natural Hot Spring</p></>, "japan", BABY_BLUE, <NanjoContent card={card} />);
+  if (page === "naha") return renderChapter("naha", "Okinawa · Naha", "Final Naha Chapter", "Okinawa Japan", "December", "2 Nights", <><p className="mt-1 text-sm font-medium" style={{ color: BABY_BLUE }}>Hotel Strata Naha</p><p className="mt-1 text-[9px] text-gray-500">or Hotel JAL City Naha</p></>, "japan", BABY_BLUE, <NahaContent card={card} />);
+  if (page === "yilan") return renderChapter("yilan", "Taiwan · Yilan", "Yilan Family Chapter", "Taiwan December", "December", "3 Nights", <><p className="mt-1 text-sm font-medium text-[#72E49A]">瓏山林蘇澳冷熱泉度假飯店 (1)</p><p className="mt-1 text-sm font-medium text-[#72E49A]">礁溪寒沐酒店 (2)</p></>, "taiwan", "#72E49A", <YilanContent card={card} />);
 
   const departureDate = new Date(2026, 10, 19);
   const diff = Math.max(departureDate.getTime() - now.getTime(), 0);
   const countdownDays = Math.floor(diff / MS_PER_DAY);
+  const countdownHours = Math.floor((diff % MS_PER_DAY) / (1000 * 60 * 60));
+  const countdownMinutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const countdownSeconds = Math.floor((diff % (1000 * 60)) / 1000);
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -502,11 +511,23 @@ export default function TravelSite() {
           <svg viewBox="0 0 140 260" className="h-[300px] w-[147px] opacity-90 md:h-[495px] md:w-[243px]" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M110 0 L105 0 L94 12 L80 16 L69 24 L58 47 L47 57 L29 90 L10 117 L8 147 L0 173 L10 181 L16 205 L21 213 L43 230 L48 242 L47 254 L50 259 L61 254 L62 227 L68 210 L84 193 L98 163 L107 132 L113 96 L130 61 L127 36 L139 24 L134 15 L120 10 Z" />
             {selectedTimelineSectionId === 1 && <><SvgPin id="taipei" label="Taipei" cx={108} cy={18} hovered={hovered} setHovered={setHovered} activeColor={TAIWAN_GOLD} scale={0.9} labelFontSize={8} labelOffset={12} /><SvgPin id="xiaoliuqiu" label="Xiaoliuqiu" cx={39} cy={234} hovered={hovered} setHovered={setHovered} activeColor={TAIWAN_GOLD} scale={0.9} labelFontSize={8} labelOffset={12} onDoubleClick={() => setPage("xiaoliuqiu")} /></>}
-            {selectedTimelineSectionId === 2 && <SvgPin id="yilan" label="Yilan" cx={120} cy={45} hovered={hovered} setHovered={setHovered} activeColor={TAIWAN_GOLD} scale={0.9} labelFontSize={8} labelOffset={12} />}
+            {selectedTimelineSectionId === 2 && <SvgPin id="yilan" label="Yilan" cx={120} cy={45} hovered={hovered} setHovered={setHovered} activeColor="#72E49A" scale={0.9} labelFontSize={8} labelOffset={12} onDoubleClick={() => setPage("yilan")} />}
           </svg>
           {selectedTimelineSectionId === 1 && <svg viewBox="0 0 331 520" className="h-[220px] w-[220px] md:h-[335px] md:w-[335px]" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M291 5 L282 5 L280 12 L283 27 L277 42 L262 65 L257 79 L251 83 L242 82 L239 85 L238 90 L243 93 L243 97 L237 105 L223 112 L216 127 L222 134 L213 135 L212 144 L209 147 L196 150 L192 156 L180 154 L177 160 L169 160 L162 154 L164 149 L173 147 L181 151 L185 145 L176 133 L167 132 L167 125 L154 124 L142 115 L130 115 L121 120 L113 118 L106 120 L104 136 L111 144 L108 157 L110 173 L120 186 L134 182 L141 189 L158 192 L159 204 L124 235 L120 235 L115 244 L108 240 L99 244 L89 264 L80 273 L74 287 L62 285 L53 293 L40 288 L35 291 L36 314 L54 350 L53 358 L60 367 L60 377 L52 380 L47 389 L36 391 L27 407 L19 405 L17 418 L20 426 L8 425 L5 431 L4 441 L10 448 L10 456 L19 465 L19 468 L15 470 L15 479 L20 486 L19 507 L23 514 L32 516 L41 509 L51 507 L69 484 L85 479 L89 470 L103 459 L103 450 L97 438 L92 435 L85 437 L79 449 L68 431 L79 420 L80 408 L84 400 L94 391 L90 379 L97 374 L98 369 L107 367 L102 355 L112 346 L120 361 L132 374 L140 372 L139 361 L118 333 L115 321 L108 318 L95 298 L99 294 L99 289 L111 279 L138 279 L141 284 L147 282 L150 278 L149 272 L153 269 L162 269 L175 254 L172 245 L174 240 L182 241 L194 232 L196 224 L192 217 L195 214 L221 219 L229 211 L237 209 L240 204 L239 199 L245 189 L237 183 L236 179 L244 164 L253 161 L266 166 L277 159 L286 157 L290 153 L292 142 L304 129 L311 105 L325 84 L322 73 L327 59 L322 50 L320 35 L309 24 L310 18 L298 13 Z" /><SvgPin id="naha" label="Naha" cx={34} cy={437} hovered={hovered} setHovered={setHovered} activeColor={BABY_BLUE} scale={2.25} labelFontSize={20} labelOffset={38} onDoubleClick={() => setPage("naha")} /><SvgPin id="onna" label="Onna" cx={50} cy={300} hovered={hovered} setHovered={setHovered} activeColor={BABY_BLUE} scale={2.25} labelFontSize={20} labelOffset={38} onDoubleClick={() => setPage("onna")} /><SvgPin id="nago" label="Nago" cx={152} cy={172} hovered={hovered} setHovered={setHovered} activeColor={BABY_BLUE} scale={2.25} labelFontSize={20} labelOffset={38} onDoubleClick={() => setPage("nago")} /><SvgPin id="nanjo" label="Nanjo" cx={70} cy={468} hovered={hovered} setHovered={setHovered} activeColor={BABY_BLUE} scale={2.25} labelFontSize={20} labelOffset={38} onDoubleClick={() => setPage("nanjo")} /></svg>}
         </div>
-        <div className="relative z-20 mt-2 flex flex-col items-center gap-3 px-4 text-center md:absolute md:bottom-44 md:mt-0 md:flex-row md:gap-6"><h1 className="text-2xl font-light leading-tight tracking-wide md:text-4xl">Taiwan · Okinawa Japan</h1><div className="rounded-3xl border border-white/10 bg-white/[0.04] px-4 py-2.5 backdrop-blur-md"><p className="mb-2 text-xs uppercase tracking-[0.3em] text-[#9EDCFF]">Countdown to Departure</p><p className="text-2xl font-light">{countdownDays} Days</p><p className="mt-1 text-xs text-gray-400">Nov 19 · YYZ → TPE</p></div></div>
+        <div className="relative z-20 mt-2 flex flex-col items-center gap-3 px-4 text-center md:absolute md:bottom-44 md:mt-0 md:flex-row md:gap-6">
+          <h1 className="text-2xl font-light leading-tight tracking-wide md:text-4xl">Taiwan · Okinawa Japan</h1>
+          <div className="rounded-3xl border border-white/10 bg-white/[0.04] px-4 py-2.5 backdrop-blur-md">
+            <p className="mb-2 text-xs uppercase tracking-[0.3em] text-[#72E49A]">Countdown to Departure</p>
+            <div className="grid grid-cols-4 gap-3 text-center">
+              <div><p className="text-2xl font-light">{countdownDays}</p><p className="text-[10px] text-gray-400">Days</p></div>
+              <div><p className="text-2xl font-light">{countdownHours}</p><p className="text-[10px] text-gray-400">Hours</p></div>
+              <div><p className="text-2xl font-light">{countdownMinutes}</p><p className="text-[10px] text-gray-400">Min</p></div>
+              <div><p className="text-2xl font-light">{countdownSeconds}</p><p className="text-[10px] text-gray-400">Sec</p></div>
+            </div>
+            <p className="mt-2 text-xs text-gray-400">Nov 19 · YYZ → TPE</p>
+          </div>
+        </div>
         <Timeline />
       </section>
     </div>
@@ -518,23 +539,52 @@ function SegmentButtons({ segments, setIsGuestConfirmed, setPage }: { segments: 
 }
 
 function DayArticle({ date, title, children }: { date: string; title: string; children: React.ReactNode }) {
-  return <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md"><p className="mb-2 text-sm text-[#9EDCFF]">{date}</p><h2 className="mb-5 text-2xl font-light">{title}</h2><div className="space-y-4 text-sm leading-7 text-white/75">{children}</div></article>;
+  return <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md"><p className="mb-2 text-sm text-[var(--chapter-accent)]">{date}</p><h2 className="mb-5 text-2xl font-light">{title}</h2><div className="space-y-4 text-sm leading-7 text-white/75">{children}</div></article>;
 }
 
 function XiaoliuqiuContent({ card }: { card: (children: React.ReactNode) => React.ReactNode }) {
-  return <><DayArticle date="Friday, November 20, 2026" title="Arrival Day · Xiaoliuqiu">{card(<><p>🌅 Anthony, Christine & Mark arriving Xiaoliuqiu</p><p className="mt-2 text-white/50">高雄左營高鐵站 → 10:30 AM 客運 → 屏客東港總站 → 步行10分鐘東港碼頭 → 11:50 AM <a href="https://www.leucosapphire.com/" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">藍白船班</a> → 與Jim碼頭集合</p></>)}{card(<><p>🤿 Open Water Lesson</p><ul className="ml-5 list-disc text-white/65"><li>裝備組裝介紹</li><li>Close Water · Dive #1</li></ul></>)}{card(<p>🍽 Dinner · TBD</p>)}</DayArticle><DayArticle date="Saturday, November 21, 2026" title="Open Water Dive Day">{card(<><p>🌊 Open Water Lessons</p><p>Dive #2 & Dive #3</p></>)}{card(<><p>⛴ Xenia & David arriving Xiaoliuqiu</p><p className="mt-2 text-sm font-medium text-white/80">Northern XLQ Visits</p><div className="mt-4 flex flex-col gap-4 md:flex-row"><ul className="ml-5 flex-1 list-disc space-y-2 text-white/65"><li>美人洞</li><li>花瓶岩</li><li>龍蝦洞</li></ul><img src="/xlqmap.png" alt="Xiaoliuqiu map" className="h-auto w-full rounded-2xl object-contain bg-black/20 p-2 md:w-1/2" /></div></>)}</DayArticle><DayArticle date="Sunday, November 22, 2026" title="Dive + Southern Island Day">{card(<><p>🤿 Open Water Lessons</p><p>Dive #4 & Dive #5</p><p className="mt-2 text-white/50">David & Anthony may join fun dives with the OW group.</p></>)}{card(<p>👶 Toddler Group 小琉球海洋館</p>)}{card(<><p>🌅 Southern Xiaoliuqiu Exploration</p><ul className="ml-5 list-disc text-white/65"><li>琉行綠色隧道</li><li>烏鬼洞</li><li>落日亭 Sunset View</li></ul></>)}</DayArticle><DayArticle date="Monday, November 23, 2026" title="Departure to Taipei">{card(<><p>⛴ Everyone leaving Xiaoliuqiu · 11:10 AM boat</p><p>🍣 Lunch · 東港漁市場</p><p>🚄 Afternoon · 左營 → 台北</p></>)}</DayArticle></>;
+  return <><DayArticle date="Friday, November 20, 2026" title="Arrival Day · Xiaoliuqiu">{card(<><p>🌅 Anthony, Christine & Mark arriving Xiaoliuqiu</p><p className="mt-2 text-white/50">高雄左營高鐵站 → 10:30 AM 客運 → 屏客東港總站 → 步行10分鐘東港碼頭 → 11:50 AM <a href="https://www.leucosapphire.com/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">藍白船班</a> → 與Jim碼頭集合</p></>)}{card(<><p>🤿 Open Water Lesson</p><ul className="ml-5 list-disc text-white/65"><li>裝備組裝介紹</li><li>Close Water · Dive #1</li></ul></>)}{card(<p>🍽 Dinner · TBD</p>)}</DayArticle><DayArticle date="Saturday, November 21, 2026" title="Open Water Dive Day">{card(<><p>🌊 Open Water Lessons</p><p>Dive #2 & Dive #3</p></>)}{card(<><p>⛴ Xenia & David arriving Xiaoliuqiu</p><p className="mt-2 text-sm font-medium text-white/80">Northern XLQ Visits</p><div className="mt-4 flex flex-col gap-4 md:flex-row"><ul className="ml-5 flex-1 list-disc space-y-2 text-white/65"><li>美人洞</li><li>花瓶岩</li><li>龍蝦洞</li></ul><img src="/xlqmap.png" alt="Xiaoliuqiu map" className="h-auto w-full rounded-2xl object-contain bg-black/20 p-2 md:w-1/2" /></div></>)}</DayArticle><DayArticle date="Sunday, November 22, 2026" title="Dive + Southern Island Day">{card(<><p>🤿 Open Water Lessons</p><p>Dive #4 & Dive #5</p><p className="mt-2 text-white/50">David & Anthony may join fun dives with the OW group.</p></>)}{card(<p>👶 Toddler Group 小琉球海洋館</p>)}{card(<><p>🌅 Southern Xiaoliuqiu Exploration</p><ul className="ml-5 list-disc text-white/65"><li>琉行綠色隧道</li><li>烏鬼洞</li><li>落日亭 Sunset View</li></ul></>)}</DayArticle><DayArticle date="Monday, November 23, 2026" title="Departure to Taipei">{card(<><p>⛴ Everyone leaving Xiaoliuqiu · 11:10 AM boat</p><p>🍣 Lunch · 東港漁市場</p><p>🚄 Afternoon · 左營 → 台北</p></>)}</DayArticle></>;
 }
 
 function OnnaContent({ card, linkedImage }: { card: (children: React.ReactNode) => React.ReactNode; linkedImage: (src: string, alt: string) => React.ReactNode }) {
-  return <><DayArticle date="Friday, November 27, 2026" title="Morning Arrival · Naha">{card(<><p>✈ EVA Air BR112 · Arrive 9:15 AM at Naha Airport</p><p>🚗 Pick up rental car · Rental Company TBD</p></>)}{card(<><p>🕛 <a href="https://maps.google.com/?q=Senaga+Island+Umikaji+Terrace" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">Senaga Island · Umikaji Terrace</a></p>{linkedImage("/umikaji-terrace.png", "Umikaji Terrace Okinawa")}<p className="mt-4">MKCafe → ocean views and Mackerel Bitter Melon Burger.</p></>)}{card(<><p className="text-[#9EDCFF]">Afternoon · PART I</p><p>🛍 <a href="https://maps.google.com/?q=San-A+PARCO+CITY+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">PARCO City</a></p><p>☕ <a href="https://maps.google.com/?q=Minatogawa+Stateside+Town+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">港川外人住宅 Minatogawa State Side Town</a></p></>)}{card(<><p className="text-[#9EDCFF]">Afternoon · PART II</p><p>🏖 <a href="https://maps.google.com/?q=Araha+Beach+Park+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">Araha Beach Park</a></p><p>🛒 <a href="https://maps.google.com/?q=AEON+Mall+Rycom+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">Aeon Mall Rycom</a></p><p>🚗 <a href="https://maps.google.com/?q=Hotel+Monterey+Okinawa+Spa+%26+Resort" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">Drive to resort</a> · approximately 45 minutes.</p></>)}</DayArticle><DayArticle date="Saturday, November 28, 2026" title="Resort Day · Beach / Culture / Blue Cave">{card(<p>🍳 Breakfast · Hotel buffet</p>)}{card(<><p>🤿 Blue Cave dive & snorkel 青之洞窟潛水</p><p className="text-white/50">Weather dependent</p>{linkedImage("/bluecave.png", "Blue Cave Okinawa")}</>)}{card(<a href="https://www.ryukyumura.co.jp/" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">🏯 Ryukyu Mura with FunPass</a>)}{card(<><a href="https://www.hotelmonterey.co.jp/en/okinawa/activity/" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">🏖 Resort & Beach Activities</a>{linkedImage("/hotel.png", "Hotel Monterey Okinawa")}</>)}{card(<p>🍽 Dinner · TBD</p>)}</DayArticle><DayArticle date="Sunday, November 29, 2026" title="Albert & Quinn Wedding Day">{card(<><p>Breakfast · Hotel buffet</p><p>💍 Albert & Quinn Wedding at Hotel Monterey Okinawa Spa & Resort</p>{linkedImage("/chapel.png", "Wedding Chapel Okinawa")}</>)}</DayArticle></>;
+  return <><DayArticle date="Friday, November 27, 2026" title="Morning Arrival · Naha">{card(<><p>✈ EVA Air BR112 · Arrive 9:15 AM at Naha Airport</p><p>🚗 Pick up rental car · Rental Company TBD</p></>)}{card(<><p>🕛 <a href="https://maps.google.com/?q=Senaga+Island+Umikaji+Terrace" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Senaga Island · Umikaji Terrace</a></p>{linkedImage("/umikaji-terrace.png", "Umikaji Terrace Okinawa")}<p className="mt-4">MKCafe → ocean views and Mackerel Bitter Melon Burger.</p></>)}{card(<><p className="text-[var(--chapter-accent)]">Afternoon · PART I</p><p>🛍 <a href="https://maps.google.com/?q=San-A+PARCO+CITY+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">PARCO City</a></p><p>☕ <a href="https://maps.google.com/?q=Minatogawa+Stateside+Town+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">港川外人住宅 Minatogawa State Side Town</a></p></>)}{card(<><p className="text-[var(--chapter-accent)]">Afternoon · PART II</p><p>🏖 <a href="https://maps.google.com/?q=Araha+Beach+Park+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Araha Beach Park</a></p><p>🛒 <a href="https://maps.google.com/?q=AEON+Mall+Rycom+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Aeon Mall Rycom</a></p><p>🚗 <a href="https://maps.google.com/?q=Hotel+Monterey+Okinawa+Spa+%26+Resort" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Drive to resort</a> · approximately 45 minutes.</p></>)}</DayArticle><DayArticle date="Saturday, November 28, 2026" title="Resort Day · Beach / Culture / Blue Cave">{card(<p>🍳 Breakfast · Hotel buffet</p>)}{card(<><p>🤿 Blue Cave dive & snorkel 青之洞窟潛水</p><p className="text-white/50">Weather dependent</p>{linkedImage("/bluecave.png", "Blue Cave Okinawa")}</>)}{card(<a href="https://www.ryukyumura.co.jp/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🏯 Ryukyu Mura with FunPass</a>)}{card(<><a href="https://www.hotelmonterey.co.jp/en/okinawa/activity/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🏖 Resort & Beach Activities</a>{linkedImage("/hotel.png", "Hotel Monterey Okinawa")}</>)}{card(<p>🍽 Dinner · TBD</p>)}</DayArticle><DayArticle date="Sunday, November 29, 2026" title="Albert & Quinn Wedding Day">{card(<><p>Breakfast · Hotel buffet</p><p>💍 Albert & Quinn Wedding at Hotel Monterey Okinawa Spa & Resort</p>{linkedImage("/chapel.png", "Wedding Chapel Okinawa")}</>)}</DayArticle></>;
 }
 
 function NagoContent({ card, linkedImage }: { card: (children: React.ReactNode) => React.ReactNode; linkedImage: (src: string, alt: string) => React.ReactNode }) {
-  return <><DayArticle date="Monday, November 30, 2026" title="Onna → Nago">{card(<><p>🍳 Breakfast · Hotel buffet</p><p>🧳 Checkout at 10:00 AM</p><a href="https://maps.google.com/?q=Cape+Manzamo+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">🌊 Cape Manzamo quick stop</a>{linkedImage("/cape.png", "Cape Manzamo Okinawa")}</>)}{card(<><a href="https://maps.google.com/?q=Busena+Marine+Park+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">🌊 Busena Marine Park Underwater Observatory + Glass Boat</a>{linkedImage("/busena.png", "Busena Marine Park")}</>)}{card(<><a href="https://maps.google.com/?q=Orion+Happy+Park+Nago" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">🍺 14:00 – 16:00 Orion Happy Park</a>{linkedImage("/orion.png", "Orion Happy Park")}</>)}{card(<><p>🥩 Dinner · <a href="https://share.google/nhtDdtE6vYP48ws81" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">Restaurant Flipper</a></p><p>🛍 <a href="https://maps.google.com/?q=MEGA+Don+Quijote+Nago" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">MEGA Don Quijote Nago</a></p></>)}</DayArticle><DayArticle date="Tuesday, December 1, 2026" title="Aquarium + Kouri Island">{card(<><p><a href="https://maps.google.com/?q=Okinawa+Churaumi+Aquarium" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">🐠 9:30 – 13:00 Churaumi Aquarium</a></p>{linkedImage("/aquarium.png", "Churaumi Aquarium")}</>)}{card(<><p><a href="https://maps.google.com/?q=Bise+Fukugi+Tree+Road+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">🌳 Bise Fukugi Tree Road</a></p>{linkedImage("/tree.png", "Bise Fukugi Tree Road")}</>)}{card(<><p><a href="https://maps.google.com/?q=Kouri+Island+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">🌉 Kouri Island</a></p>{linkedImage("/kouri.png", "Kouri Island")}</>)}{card(<p>🍽 Dinner · <a href="https://maps.google.com/?q=Yakiniku+Kochan+Nago" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">Yakiniku Kochan 焼肉こうちゃん</a></p>)}</DayArticle></>;
+  return <><DayArticle date="Monday, November 30, 2026" title="Onna → Nago">{card(<><p>🍳 Breakfast · Hotel buffet</p><p>🧳 Checkout at 10:00 AM</p><a href="https://maps.google.com/?q=Cape+Manzamo+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🌊 Cape Manzamo quick stop</a>{linkedImage("/cape.png", "Cape Manzamo Okinawa")}</>)}{card(<><a href="https://maps.google.com/?q=Busena+Marine+Park+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🌊 Busena Marine Park Underwater Observatory + Glass Boat</a>{linkedImage("/busena.png", "Busena Marine Park")}</>)}{card(<><a href="https://maps.google.com/?q=Orion+Happy+Park+Nago" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🍺 14:00 – 16:00 Orion Happy Park</a>{linkedImage("/orion.png", "Orion Happy Park")}</>)}{card(<><p>🥩 Dinner · <a href="https://share.google/nhtDdtE6vYP48ws81" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Restaurant Flipper</a></p><p>🛍 <a href="https://maps.google.com/?q=MEGA+Don+Quijote+Nago" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">MEGA Don Quijote Nago</a></p></>)}</DayArticle><DayArticle date="Tuesday, December 1, 2026" title="Aquarium + Kouri Island">{card(<><p><a href="https://maps.google.com/?q=Okinawa+Churaumi+Aquarium" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🐠 9:30 – 13:00 Churaumi Aquarium</a></p>{linkedImage("/aquarium.png", "Churaumi Aquarium")}</>)}{card(<><p><a href="https://maps.google.com/?q=Bise+Fukugi+Tree+Road+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🌳 Bise Fukugi Tree Road</a></p>{linkedImage("/tree.png", "Bise Fukugi Tree Road")}</>)}{card(<><p><a href="https://maps.google.com/?q=Kouri+Island+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🌉 Kouri Island</a></p>{linkedImage("/kouri.png", "Kouri Island")}</>)}{card(<p>🍽 Dinner · <a href="https://maps.google.com/?q=Yakiniku+Kochan+Nago" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Yakiniku Kochan 焼肉こうちゃん</a></p>)}</DayArticle></>;
+}
+
+function YilanContent({ card }: { card: (children: React.ReactNode) => React.ReactNode }) {
+  return (
+    <>
+      <DayArticle date="Tuesday, December 8, 2026" title="Taipei → Yilan South 蘇澳">
+        {card(<><p>🚗 10:00 AM 台北出發前往宜蘭 · 約 1.5 小時車程</p><p>🦆 Lunch · <a href="https://maps.google.com/?q=鴨寮故事館" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">鴨寮故事館 Duck Shack Museum</a></p><p className="text-white/50">桌菜須先電話預約 03-9504646</p><img src="/yaya.png" alt="Duck Shack Museum" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}
+        {card(<><p>🖍️ Afternoon · <a href="https://luckyart.com.tw/art/guide" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">蠟藝蠟筆城堡</a></p><p>Optional · 南方澳觀景臺 & 宜蘭赫蒂法莊</p><img src="/crayon.png" alt="Crayon Castle" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}
+        {card(<><p>🏨 Hotel · <a href="https://suao.rslhotel.com/fac/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">瓏山林蘇澳冷熱泉度假飯店</a></p></>)}
+      </DayArticle>
+
+      <DayArticle date="Wednesday, December 9, 2026" title="Yilan Central 羅東">
+        {card(<><p>🍳 Breakfast · Hotel buffet</p><p>🧳 Checkout</p></>)}
+        {card(<><p>Morning & Lunch · <a href="https://www.anyomuseum.com/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">安永心食館</a></p></>)}
+        {card(<><p>🐐 Afternoon · <a href="https://zhangmeiama.weebly.com/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">張美阿嬤農場</a></p><p>Rain option · <a href="https://maps.google.com/?q=宜蘭木育森林" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">宜蘭木育森林</a></p><img src="/ama.png" alt="Zhang Mei Ama Farm" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}
+        {card(<><p>🍽 Dinner · <a href="https://maps.google.com/?q=羅東夜市" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">羅東夜市</a></p><p>🏨 Hotel · 礁溪寒沐酒店</p></>)}
+      </DayArticle>
+
+      <DayArticle date="Thursday, December 10, 2026" title="Yilan North 礁溪">
+        {card(<><p>🍳 Breakfast · Hotel buffet</p><ul className="ml-5 list-disc text-white/65"><li><a href="https://maps.google.com/?q=龍潭湖風景區" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">龍潭湖風景區</a></li><li>大碗公溜滑梯</li><li>Herbelle Tea 湖畔茶屋</li><li>環湖步道</li><li>觀眺望平台步道</li><li>龍潭湖畔悠活園區</li><li>Optional · 潭酵天地</li></ul><img src="/long.png" alt="Longtan Lake" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}
+        {card(<><p>Rain option · <a href="https://maps.google.com/?q=九號溫泉魚釣蝦池" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">九號溫泉魚釣蝦池</a> / <a href="https://maps.google.com/?q=金車生物科技水產養殖研發中心" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">金車生物科技水產養殖研發中心</a></p><p>Late Afternoon · Enjoy hotel facilities</p><p>🍽 Dinner · Hotel restaurant</p><p>🏨 Hotel · 礁溪寒沐酒店</p></>)}
+      </DayArticle>
+
+      <DayArticle date="Friday, December 11, 2026" title="Yilan 頭城 → Taipei 內湖">
+        {card(<><p>🍳 Breakfast · Hotel buffet</p><p>🧳 Checkout</p><p>Morning · <a href="https://maps.google.com/?q=二龍之心親子公園" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">二龍之心親子公園</a> or ♨️ <a href="https://maps.google.com/?q=礁溪溫泉公園" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">礁溪溫泉公園</a></p><img src="/yilannorth.png" alt="Yilan North Morning" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}
+        {card(<><p>Lunch & Afternoon · <a href="https://maps.google.com/?q=頭城老街" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">頭城老街</a></p><img src="/tou.png" alt="Toucheng Old Street" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /><p>🚗 頭城 → 內湖 · 約 50 分鐘車程</p><p>🏨 Hotel · 內湖區</p></>)}
+      </DayArticle>
+    </>
+  );
 }
 
 function NanjoContent({ card }: { card: (children: React.ReactNode) => React.ReactNode }) {
-  return <><DayArticle date="Wednesday, December 2, 2026" title="Nago → Nanjo">{card(<><p>🎢 Kids 4+ & adults · <a href="https://junglia.jp/en" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">Junglia Park</a></p><p>🍍 Nago Pineapple Park OR Neo Park Zoo backup.</p></>)}{card(<><p>🌊 Miyagi Coast & American Village</p><p>🍽 Dinner · Taco Rice Cafe Kijimuna</p><p>🚗 Evening drive toward Nanjo</p></>)}</DayArticle><DayArticle date="Thursday, December 3, 2026" title="Nanjo · Okinawa World + Gangala Valley">{card(<><p>🍳 Breakfast · Hotel buffet</p><p>🌏 Okinawa World（玉泉洞）· FunPass</p></>)}{card(<><p>🌿 Gangala Valley</p><a href="https://book.gangala.com/?lng=zh-TW" target="_blank" rel="noopener noreferrer" className="text-[#9EDCFF] hover:underline">Gangala Valley reservation</a></>)}</DayArticle></>;
+  return <><DayArticle date="Wednesday, December 2, 2026" title="Nago → Nanjo">{card(<><p>🎢 Kids 4+ & adults · <a href="https://junglia.jp/en" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Junglia Park</a></p><p>🍍 Nago Pineapple Park OR Neo Park Zoo backup.</p></>)}{card(<><p>🌊 Miyagi Coast & American Village</p><p>🍽 Dinner · Taco Rice Cafe Kijimuna</p><p>🚗 Evening drive toward Nanjo</p></>)}</DayArticle><DayArticle date="Thursday, December 3, 2026" title="Nanjo · Okinawa World + Gangala Valley">{card(<><p>🍳 Breakfast · Hotel buffet</p><p>🌏 Okinawa World（玉泉洞）· FunPass</p></>)}{card(<><p>🌿 Gangala Valley</p><a href="https://book.gangala.com/?lng=zh-TW" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Gangala Valley reservation</a></>)}</DayArticle></>;
 }
 
 function NahaContent({ card }: { card: (children: React.ReactNode) => React.ReactNode }) {
