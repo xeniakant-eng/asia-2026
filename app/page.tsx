@@ -128,11 +128,21 @@ export default function TravelSite() {
   const [guestName, setGuestName] = useState("");
   const [isGuestConfirmed, setIsGuestConfirmed] = useState(false);
   const [showGuestActions, setShowGuestActions] = useState(false);
+  const [selectedTrip, setSelectedTrip] = useState<"" | "septOct" | "novDec">("");
   const [checkedPackingItems, setCheckedPackingItems] = useState<Record<string, boolean>>({});
   const [now, setNow] = useState(new Date());
   const [usdToJpy, setUsdToJpy] = useState("150");
   const [usdToTwd, setUsdToTwd] = useState("32");
   const [selectedTimelineSectionId, setSelectedTimelineSectionId] = useState(1);
+
+  const septOctGuestOptions = [
+    "I am just a random Guest",
+    "Xenia & David",
+    "Jeff & Irene",
+    "Gladys",
+    "Vicky",
+    "Dylan & Sharon",
+  ];
 
   const guestOptions = [
     "I am just a random Guest",
@@ -405,9 +415,32 @@ export default function TravelSite() {
       <div className="flex min-h-screen items-center justify-center bg-black px-6 text-white">
         <div className="w-full max-w-md rounded-[2rem] border border-white/10 bg-white/[0.04] p-8 text-center shadow-[0_0_40px_rgba(255,255,255,0.06)] backdrop-blur-xl">
           <p className="mb-3 text-xs uppercase tracking-[0.35em] text-white/70">Private Group Event</p>
-          <h1 className="mb-4 text-3xl font-light tracking-wide">Welcome to XK Event 2026</h1>
-          {!showGuestActions ? (
+          {!selectedTrip ? (
             <>
+              <h1 className="mb-4 text-3xl font-light tracking-wide">Welcome to XK Event 2026</h1>
+              <p className="mb-8 text-sm leading-6 text-white/55">Please select your trip.</p>
+              <div className="space-y-3">
+                <button type="button" onClick={() => setSelectedTrip("septOct")} className="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm font-light tracking-wide text-white/75 transition hover:border-white/30 hover:bg-white/[0.05]">Sept/Oct 2026</button>
+                <button type="button" onClick={() => setSelectedTrip("novDec")} className="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm font-light tracking-wide text-white/75 transition hover:border-white/30 hover:bg-white/[0.05]">Nov/Dec 2026</button>
+              </div>
+            </>
+          ) : selectedTrip === "septOct" ? (
+            <>
+              <button type="button" onClick={() => setSelectedTrip("")} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">← Back</button>
+              <h1 className="mb-4 text-3xl font-light tracking-wide">Welcome to TBD 2026</h1>
+              <p className="mb-8 text-sm leading-6 text-white/55">Party selection placeholders will become active later.</p>
+              <div className="mb-5 max-h-[280px] space-y-2 overflow-y-auto pr-1">
+                {septOctGuestOptions.map((guest) => (
+                  <button key={guest} type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-3 text-sm font-light tracking-wide text-white/25 opacity-60">
+                    {guest}
+                  </button>
+                ))}
+              </div>
+            </>
+          ) : !showGuestActions ? (
+            <>
+              <button type="button" onClick={() => { setSelectedTrip(""); setShowGuestActions(false); setGuestName(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">← Back</button>
+              <h1 className="mb-4 text-3xl font-light tracking-wide">Welcome to Taiwan/Japan 2026</h1>
               <p className="mb-8 text-sm leading-6 text-white/55">Please select your party to continue.</p>
               <div className="mb-5 max-h-[280px] space-y-2 overflow-y-auto pr-1">
                 {guestOptions.map((guest) => <button key={guest} type="button" onClick={() => { setGuestName(guest); if (guest === "I am just a random Guest") { setIsGuestConfirmed(true); setPage("map"); return; } setShowGuestActions(true); }} className="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm font-light tracking-wide text-white/70 transition hover:border-white/30 hover:bg-white/[0.05]">{guest}</button>)}
