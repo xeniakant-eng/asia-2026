@@ -81,12 +81,13 @@ function SvgPin({
       }}
       style={{ cursor: onDoubleClick ? "pointer" : "default" }}
     >
-      <circle cx={cx} cy={cy} r={11 * scale} fill="transparent" />
+      <circle cx={cx} cy={cy} r={11 * scale} fill="transparent" stroke="none" />
       <circle
         cx={cx}
         cy={cy}
         r={5.2 * scale}
         fill={active ? activeColor : "white"}
+        stroke="none"
         style={{
           filter: active ? `drop-shadow(0 0 8px ${activeColor})` : "none",
           transition: "all 160ms ease-out",
@@ -101,6 +102,7 @@ function SvgPin({
             height={labelFontSize + 16}
             rx={8}
             fill="rgba(0,0,0,0.84)"
+            stroke="none"
           />
           <text
             x={cx}
@@ -109,7 +111,8 @@ function SvgPin({
             dominantBaseline="middle"
             fontSize={labelFontSize}
             fill="#F3F4F6"
-            style={{ fontWeight: 300, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, Arial, sans-serif" }}
+            stroke="none"
+            style={{ fontWeight: 400, letterSpacing: "0.01em", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, Arial, sans-serif" }}
           >
             {label}
           </text>
@@ -348,15 +351,41 @@ export default function TravelSite() {
           })}
         </div>
 
-        <div className="relative hidden overflow-x-auto px-2 py-6 md:block">
+        <div className="relative hidden overflow-visible px-2 py-6 md:block">
           <div className="relative h-[2px] bg-white/30">
             {selectedTimelineSectionId === 1 && (
               <>
-                <div className="absolute -top-5 h-10 cursor-pointer" style={{ left: `${getSectionPercent(new Date(2026, 10, 20))}%`, width: `${getSectionPercent(new Date(2026, 10, 23)) - getSectionPercent(new Date(2026, 10, 20))}%` }} onMouseEnter={() => setHovered("xiaoliuqiu")} onMouseLeave={() => setHovered(null)} onClick={() => setPage("xiaoliuqiu")} />
-                <div className="absolute -top-5 h-10 cursor-pointer" style={{ left: `${getSectionPercent(new Date(2026, 10, 27))}%`, width: `${getSectionPercent(new Date(2026, 10, 30)) - getSectionPercent(new Date(2026, 10, 27))}%` }} onMouseEnter={() => setHovered("onna")} onMouseLeave={() => setHovered(null)} onClick={() => setPage("onna")} />
-                <div className="absolute -top-5 h-10 cursor-pointer" style={{ left: `${getSectionPercent(new Date(2026, 10, 30))}%`, width: `${getSectionPercent(new Date(2026, 11, 2)) - getSectionPercent(new Date(2026, 10, 30))}%` }} onMouseEnter={() => setHovered("nago")} onMouseLeave={() => setHovered(null)} onClick={() => setPage("nago")} />
-                <div className="absolute -top-5 h-10 cursor-pointer" style={{ left: `${getSectionPercent(new Date(2026, 11, 2))}%`, width: `${getSectionPercent(new Date(2026, 11, 4)) - getSectionPercent(new Date(2026, 11, 2))}%` }} onMouseEnter={() => setHovered("nanjo")} onMouseLeave={() => setHovered(null)} onClick={() => setPage("nanjo")} />
-                <div className="absolute -top-5 h-10 cursor-pointer" style={{ left: `${getSectionPercent(new Date(2026, 11, 4))}%`, width: `${getSectionPercent(new Date(2026, 11, 6)) - getSectionPercent(new Date(2026, 11, 4))}%` }} onMouseEnter={() => setHovered("naha")} onMouseLeave={() => setHovered(null)} onClick={() => setPage("naha")} />
+                {[
+                  { id: "xiaoliuqiu", page: "xiaoliuqiu", start: new Date(2026, 10, 20), end: new Date(2026, 10, 23), color: TAIWAN_GOLD },
+                  { id: "onna", page: "onna", start: new Date(2026, 10, 27), end: new Date(2026, 10, 30), color: BABY_BLUE },
+                  { id: "nago", page: "nago", start: new Date(2026, 10, 30), end: new Date(2026, 11, 2), color: BABY_BLUE },
+                  { id: "nanjo", page: "nanjo", start: new Date(2026, 11, 2), end: new Date(2026, 11, 4), color: BABY_BLUE },
+                  { id: "naha", page: "naha", start: new Date(2026, 11, 4), end: new Date(2026, 11, 6), color: BABY_BLUE },
+                ].map((segment) => {
+                  const left = getSectionPercent(segment.start);
+                  const width = getSectionPercent(segment.end) - left;
+                  const active = hovered === segment.id;
+                  return (
+                    <div key={segment.id}>
+                      <div
+                        className="pointer-events-none absolute top-1/2 h-[5px] -translate-y-1/2 rounded-full transition-all duration-150"
+                        style={{
+                          left: `${left}%`,
+                          width: `${width}%`,
+                          backgroundColor: active ? segment.color : "transparent",
+                          boxShadow: active ? `0 0 14px ${segment.color}` : "none",
+                        }}
+                      />
+                      <div
+                        className="absolute -top-5 h-10 cursor-pointer"
+                        style={{ left: `${left}%`, width: `${width}%` }}
+                        onMouseEnter={() => setHovered(segment.id)}
+                        onMouseLeave={() => setHovered(null)}
+                        onClick={() => setPage(segment.page as PageName)}
+                      />
+                    </div>
+                  );
+                })}
               </>
             )}
             {sectionDates.map((date, index) => <div key={`${date.getMonth()}-${date.getDate()}`} className="absolute top-1/2 -translate-y-1/2" style={{ left: `${(index / Math.max(sectionDates.length - 1, 1)) * 100}%` }}><div className="h-2 w-px bg-white/50" /><div className="mt-2 -translate-x-1/2 whitespace-nowrap text-[12px] text-gray-500">{date.toLocaleDateString("en-US", { month: "short", day: "numeric" })}</div></div>)}
