@@ -13,7 +13,7 @@ type TimelineItem = {
   id: PageName | "taipei" | "yilan";
   label: string;
   range: string;
-  color: "taiwan" | "okinawa";
+  color: "taiwan" | "okinawa" | "yilan";
 };
 
 type PackingSection = {
@@ -190,7 +190,7 @@ export default function TravelSite() {
       { id: "nanjo", label: "Nanjo", range: "Dec 2–4", color: "okinawa" },
       { id: "naha", label: "Naha", range: "Dec 4–6", color: "okinawa" },
     ],
-    2: [{ id: "yilan", label: "Yilan", range: "Dec 9–12", color: "taiwan" }],
+    2: [{ id: "yilan", label: "Yilan", range: "Dec 9–12", color: "yilan" }],
     3: [],
     4: [],
   };
@@ -278,14 +278,14 @@ export default function TravelSite() {
       <div className="flex flex-col items-start gap-3">
         <button type="button" onClick={() => setPage("map")} className="rounded-full border border-white/30 px-4 py-2 text-sm text-white/80 transition hover:border-white hover:text-white">← Back to Map</button>
         {guestName && guestName !== "I am just a random Guest" && (
-          <button type="button" onClick={() => { setIsGuestConfirmed(false); setShowGuestActions(true); }} className="rounded-full border border-[#72E49A]/25 bg-[#72E49A]/5 px-4 py-2 text-sm text-[#72E49A]/80 transition hover:border-[#72E49A]/50 hover:bg-[#72E49A]/10">← Back to Dashboard</button>
+          <button type="button" onClick={() => { setIsGuestConfirmed(false); setShowGuestActions(true); }} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70 transition hover:border-white/40 hover:bg-white/[0.08] hover:text-white">← Back to Dashboard</button>
         )}
       </div>
       <div className="flex flex-wrap justify-end gap-3">
         {current === "xiaoliuqiu" && <button type="button" onClick={() => setPage("onna")} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70">Next Chapter →</button>}
-        {current === "onna" && <button type="button" onClick={() => setPage("nago")} className="rounded-full border border-[#72E49A]/30 bg-[#72E49A]/10 px-4 py-2 text-sm text-[#72E49A]">Next Chapter →</button>}
-        {current === "nago" && <><button type="button" onClick={() => setPage("onna")} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70">← Previous Chapter</button><button type="button" onClick={() => setPage("nanjo")} className="rounded-full border border-[#72E49A]/30 bg-[#72E49A]/10 px-4 py-2 text-sm text-[#72E49A]">Next Chapter →</button></>}
-        {current === "nanjo" && <><button type="button" onClick={() => setPage("nago")} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70">← Previous Chapter</button><button type="button" onClick={() => setPage("naha")} className="rounded-full border border-[#72E49A]/30 bg-[#72E49A]/10 px-4 py-2 text-sm text-[#72E49A]">Next Chapter →</button></>}
+        {current === "onna" && <button type="button" onClick={() => setPage("nago")} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70">Next Chapter →</button>}
+        {current === "nago" && <><button type="button" onClick={() => setPage("onna")} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70">← Previous Chapter</button><button type="button" onClick={() => setPage("nanjo")} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70">Next Chapter →</button></>}
+        {current === "nanjo" && <><button type="button" onClick={() => setPage("nago")} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70">← Previous Chapter</button><button type="button" onClick={() => setPage("naha")} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70">Next Chapter →</button></>}
         {current === "naha" && <button type="button" onClick={() => setPage("nanjo")} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70">← Previous Chapter</button>}
         {current === "yilan" && <button type="button" onClick={() => setPage("map")} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70">← Back to Timeline</button>}
       </div>
@@ -342,10 +342,11 @@ export default function TravelSite() {
         <div className="mt-3 grid gap-2 md:hidden">
           {(mobileTimelineItems[selectedTimelineSectionId] || []).map((item) => {
             const isTaiwan = item.color === "taiwan";
+            const isYilan = item.color === "yilan";
             const active = hovered === item.id;
             return (
-              <button key={item.id} type="button" onClick={() => setHovered(item.id)} onDoubleClick={() => openChapterForLocation(item.id)} className={`flex items-center justify-between rounded-2xl border px-4 py-3 text-left transition ${active ? isTaiwan ? "border-[#FFD76A]/70 bg-[#FFD76A]/10" : "border-[#9EDCFF]/70 bg-[#9EDCFF]/10" : "border-white/10 bg-white/[0.04]"}`}>
-                <span className="flex items-center gap-3"><span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: isTaiwan ? TAIWAN_GOLD : BABY_BLUE }} /><span className="text-sm font-light tracking-wide text-white">{item.label}</span></span>
+              <button key={item.id} type="button" onClick={() => setHovered(item.id)} onDoubleClick={() => openChapterForLocation(item.id)} className={`flex items-center justify-between rounded-2xl border px-4 py-3 text-left transition ${active ? isYilan ? "border-[#72E49A]/70 bg-[#72E49A]/10" : isTaiwan ? "border-[#FFD76A]/70 bg-[#FFD76A]/10" : "border-[#9EDCFF]/70 bg-[#9EDCFF]/10" : "border-white/10 bg-white/[0.04]"}`}>
+                <span className="flex items-center gap-3"><span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: isYilan ? "#72E49A" : isTaiwan ? TAIWAN_GOLD : BABY_BLUE }} /><span className="text-sm font-light tracking-wide text-white">{item.label}</span></span>
                 <span className="text-[10px] uppercase tracking-[0.18em] text-white/45">{item.range}</span>
               </button>
             );
@@ -403,7 +404,7 @@ export default function TravelSite() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-black px-6 text-white">
         <div className="w-full max-w-md rounded-[2rem] border border-white/10 bg-white/[0.04] p-8 text-center shadow-[0_0_40px_rgba(255,255,255,0.06)] backdrop-blur-xl">
-          <p className="mb-3 text-xs uppercase tracking-[0.35em] text-[#72E49A]">Private Group Event</p>
+          <p className="mb-3 text-xs uppercase tracking-[0.35em] text-white/70">Private Group Event</p>
           <h1 className="mb-4 text-3xl font-light tracking-wide">Welcome to XK Event 2026</h1>
           {!showGuestActions ? (
             <>
@@ -414,8 +415,8 @@ export default function TravelSite() {
             </>
           ) : (
             <>
-              <div className="mb-8 rounded-3xl border border-[#72E49A]/20 bg-[#72E49A]/5 p-6 text-left shadow-[0_0_30px_rgba(158,220,255,0.08)]">
-                <p className="text-sm uppercase tracking-[0.28em] text-[#72E49A]">Welcome</p>
+              <div className="mb-8 rounded-3xl border border-white/10 bg-white/[0.04] p-6 text-left shadow-[0_0_30px_rgba(255,255,255,0.05)]">
+                <p className="text-sm uppercase tracking-[0.28em] text-white/70">Welcome</p>
                 <h2 className="mt-2 text-3xl font-light tracking-wide text-white">Hello {guestName} 👋</h2>
                 {guestName === "Xenia & David" && <SegmentButtons segments={[{ label: "Nov 21–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Mark Wang" && <SegmentButtons segments={[{ label: "Nov 20–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }, { label: "Nov 26–30 · Onna", page: "onna", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
@@ -518,7 +519,7 @@ export default function TravelSite() {
         <div className="relative z-20 mt-2 flex flex-col items-center gap-3 px-4 text-center md:absolute md:bottom-44 md:mt-0 md:flex-row md:gap-6">
           <h1 className="text-2xl font-light leading-tight tracking-wide md:text-4xl">Taiwan · Okinawa Japan</h1>
           <div className="rounded-3xl border border-white/10 bg-white/[0.04] px-4 py-2.5 backdrop-blur-md">
-            <p className="mb-2 text-xs uppercase tracking-[0.3em] text-[#72E49A]">Countdown to Departure</p>
+            <p className="mb-2 text-xs uppercase tracking-[0.3em] text-white/70">Countdown to Departure</p>
             <div className="grid grid-cols-4 gap-3 text-center">
               <div><p className="text-2xl font-light">{countdownDays}</p><p className="text-[10px] text-gray-400">Days</p></div>
               <div><p className="text-2xl font-light">{countdownHours}</p><p className="text-[10px] text-gray-400">Hours</p></div>
