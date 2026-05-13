@@ -6,7 +6,7 @@ const MS_PER_DAY = 1000 * 60 * 60 * 24;
 const BABY_BLUE = "#9EDCFF";
 const TAIWAN_GOLD = "#FFD76A";
 
-type PageName = "map" | "xiaoliuqiu" | "onna" | "nago" | "nanjo" | "naha" | "yilan" | "checklist";
+type PageName = "map" | "xiaoliuqiu" | "onna" | "nago" | "nanjo" | "naha" | "nahaearly" | "yilan" | "checklist";
 type Region = "japan" | "taiwan";
 
 type TimelineItem = {
@@ -206,7 +206,22 @@ export default function TravelSite() {
   };
 
   const openChapterForLocation = (id: string) => {
-    if (["xiaoliuqiu", "onna", "nago", "nanjo", "naha", "yilan"].includes(id)) setPage(id as PageName);
+    if (["xiaoliuqiu", "nahaearly", "onna", "nago", "nanjo", "naha", "yilan"].includes(id)) setPage(id as PageName);
+  };
+
+  const getGuestChapterOrder = (guest: string): PageName[] => {
+    const fullOrder: PageName[] = ["xiaoliuqiu", "nahaearly", "onna", "nago", "nanjo", "naha", "yilan"];
+    const guestRoutes: Record<string, PageName[]> = {
+      "I am just a random Guest": fullOrder,
+      "Xenia & David & Naomi (3)": ["xiaoliuqiu", "onna", "nago", "nanjo", "naha", "yilan"],
+      "Anthony & Christine & Mona (1)": ["xiaoliuqiu"],
+      "Heather & Jack & Aizen (8) & Kaien (3)": ["onna", "nago", "yilan"],
+      "Steven Wang": ["nahaearly", "onna", "nago"],
+      "Mark Wang": ["xiaoliuqiu", "nahaearly", "onna"],
+      "Mei & Emilia (8)": ["nago", "nanjo", "naha", "yilan"],
+      "Dave & Christina & Xixi (2)": ["onna", "nago", "nanjo", "naha", "yilan"],
+    };
+    return guestRoutes[guest] || [];
   };
 
   const getPackingChecklist = (guest: string): PackingChecklist => {
@@ -274,8 +289,11 @@ export default function TravelSite() {
     if (guest === "Mark Wang") {
       return { title: "Mark's Packing Checklist", sections: [...standardSections, { title: "Xiaoliuqiu Dive Segment", items: xiaoliuqiuDive }, { title: "Okinawa Wedding Segment", items: okinawaSegment }] };
     }
-    if (["Xenia & David & Naomi (3)", "Heather & Jack & Aizen (8) & Kaien (3)", "Mei & Emilia (8)"].includes(guest)) {
+    if (["Xenia & David & Naomi (3)", "Heather & Jack & Aizen (8) & Kaien (3)"].includes(guest)) {
       return { title: `${guest} Packing Checklist`, sections: [...standardSections, { title: "Okinawa Segment", items: okinawaSegment }, { title: "Baby / Toddler Items", items: babyToddlerItems }] };
+    }
+    if (guest === "Mei & Emilia (8)") {
+      return { title: `${guest} Packing Checklist`, sections: standardSections };
     }
     if (guest === "Dave & Christina & Xixi (2)") {
       return { title: `${guest} Packing Checklist`, sections: [...standardSections, { title: "Baby / Toddler Items", items: babyToddlerItems }] };
@@ -286,24 +304,43 @@ export default function TravelSite() {
     return { title: `${guest || "Guest"} Packing Checklist`, sections: [...standardSections, { title: "Trip Items", items: okinawaSegment }] };
   };
 
-  const chapterNav = (current: PageName) => (
-    <div className="mb-10 flex items-start justify-between gap-4">
-      <div className="flex flex-col items-start gap-3">
-        <button type="button" onClick={() => setPage("map")} className="rounded-full border border-white/30 px-4 py-2 text-sm text-white/80 transition hover:border-white hover:text-white">← Back to Map</button>
-        {guestName && guestName !== "I am just a random Guest" && (
-          <button type="button" onClick={() => { setIsGuestConfirmed(false); setShowGuestActions(true); }} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70 transition hover:border-white/40 hover:bg-white/[0.08] hover:text-white">← Back to Dashboard</button>
-        )}
+  const chapterNav = (current: PageName) => {
+    const chapterOrder = getGuestChapterOrder(guestName || "I am just a random Guest");
+    const currentIndex = chapterOrder.indexOf(current);
+    const previousChapter = currentIndex > 0 ? chapterOrder[currentIndex - 1] : null;
+    const nextChapter = currentIndex >= 0 && currentIndex < chapterOrder.length - 1 ? chapterOrder[currentIndex + 1] : null;
+    const chapterLabels: Partial<Record<PageName, string>> = {
+      xiaoliuqiu: "Scuba Dive",
+      nahaearly: "Naha + Okinawa World",
+      onna: "Onna",
+      nago: "Nago",
+      nanjo: "Nanjo",
+      naha: "Naha",
+      yilan: "Yilan",
+    };
+
+    return (
+      <div className="mb-10 flex items-start justify-between gap-4">
+        <div className="flex flex-col items-start gap-3">
+          <button type="button" onClick={() => setPage("map")} className="rounded-full border border-white/30 px-4 py-2 text-sm text-white/80 transition hover:border-white hover:text-white">← Back to Map</button>
+          {guestName && guestName !== "I am just a random Guest" && (
+            <button type="button" onClick={() => { setIsGuestConfirmed(false); setShowGuestActions(true); }} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70 transition hover:border-white/40 hover:bg-white/[0.08] hover:text-white">← Back to Dashboard</button>
+          )}
+        </div>
+        <div className="flex flex-wrap justify-end gap-3">
+          {previousChapter && (
+            <button type="button" onClick={() => setPage(previousChapter)} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70">← Previous Chapter<span className="hidden sm:inline"> · {chapterLabels[previousChapter]}</span></button>
+          )}
+          {nextChapter && (
+            <button type="button" onClick={() => setPage(nextChapter)} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70">Next Chapter<span className="hidden sm:inline"> · {chapterLabels[nextChapter]}</span> →</button>
+          )}
+          {!previousChapter && !nextChapter && current !== "checklist" && (
+            <button type="button" onClick={() => setPage("map")} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70">← Back to Timeline</button>
+          )}
+        </div>
       </div>
-      <div className="flex flex-wrap justify-end gap-3">
-        {current === "xiaoliuqiu" && <button type="button" onClick={() => setPage("onna")} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70">Next Chapter →</button>}
-        {current === "onna" && <button type="button" onClick={() => setPage("nago")} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70">Next Chapter →</button>}
-        {current === "nago" && <><button type="button" onClick={() => setPage("onna")} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70">← Previous Chapter</button><button type="button" onClick={() => setPage("nanjo")} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70">Next Chapter →</button></>}
-        {current === "nanjo" && <><button type="button" onClick={() => setPage("nago")} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70">← Previous Chapter</button><button type="button" onClick={() => setPage("naha")} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70">Next Chapter →</button></>}
-        {current === "naha" && <button type="button" onClick={() => setPage("nanjo")} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70">← Previous Chapter</button>}
-        {current === "yilan" && <button type="button" onClick={() => setPage("map")} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70">← Back to Timeline</button>}
-      </div>
-    </div>
-  );
+    );
+  };
 
   const infoWidgets = (monthLabel: string, nights: string, hotel: React.ReactNode, region: Region = "japan") => {
     const isTaiwan = region === "taiwan";
@@ -455,12 +492,13 @@ export default function TravelSite() {
                 <p className="text-sm uppercase tracking-[0.28em] text-white/70">Welcome</p>
                 <h2 className="mt-2 text-3xl font-light tracking-wide text-white">Hello {guestName} 👋</h2>
                 {guestName === "Xenia & David & Naomi (3)" && <SegmentButtons segments={[{ label: "Nov 21–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
-                {guestName === "Mark Wang" && <SegmentButtons segments={[{ label: "Nov 20–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
+                {guestName === "Mark Wang" && <SegmentButtons segments={[{ label: "Nov 20–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }, { label: "Nov 25–27 · Naha + Okinawa World", page: "nahaearly", color: BABY_BLUE }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Anthony & Christine & Mona (1)" && <SegmentButtons segments={[{ label: "Nov 20–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Mei & Emilia (8)" && <SegmentButtons segments={[{ label: "Nov 29–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
-                {guestName === "Steven Wang" && <SegmentButtons segments={[{ label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
+                {guestName === "Steven Wang" && <SegmentButtons segments={[{ label: "Nov 25–27 · Naha + Okinawa World", page: "nahaearly", color: BABY_BLUE }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Dave & Christina & Xixi (2)" && <SegmentButtons segments={[{ label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
-                {!["Xenia & David & Naomi (3)", "Mark Wang", "Anthony & Christine & Mona (1)", "Mei & Emilia (8)", "Steven Wang", "Dave & Christina & Xixi (2)"].includes(guestName) && (
+                {guestName === "Heather & Jack & Aizen (8) & Kaien (3)" && <SegmentButtons segments={[{ label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
+                {!["Xenia & David & Naomi (3)", "Mark Wang", "Anthony & Christine & Mona (1)", "Mei & Emilia (8)", "Steven Wang", "Dave & Christina & Xixi (2)", "Heather & Jack & Aizen (8) & Kaien (3)"].includes(guestName) && (
                   <div className="mt-5 rounded-2xl border border-amber-300/20 bg-amber-300/5 p-4">
                     <p className="text-sm leading-6 text-amber-100/80">
                       No trip segment found, please confirm your trip with Xenia ASAP.
@@ -505,12 +543,13 @@ export default function TravelSite() {
   const chapterPeople: Record<PageName, Person[]> = {
     map: [],
     checklist: [],
-    yilan: [["Xenia & David & Naomi (3)", "Dec 8 – Dec 11 · Yilan"], ["Mei & Emilia (8)", "Dec 8 – Dec 11 · Yilan"], ["Dave & Christina & Xixi (2)", "Dec 8 – Dec 11 · Yilan"]],
+    yilan: [["Xenia & David & Naomi (3)", "Dec 8 – Dec 11 · Yilan"], ["Mei & Emilia (8)", "Dec 8 – Dec 11 · Yilan"], ["Dave & Christina & Xixi (2)", "Dec 8 – Dec 11 · Yilan"], ["Heather & Jack & Aizen (8) & Kaien (3)", "Dec 8 – Dec 11 · Yilan"]],
     xiaoliuqiu: [["Anthony & Christine & Mona (1)", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Mark Wang", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Xenia & David & Naomi (3)", "Nov 21 – Nov 23 · Xiaoliuqiu"]],
-    onna: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 4 · Okinawa"], ["Mark Wang", "Nov 25 – Nov 30 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"]],
-    nago: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 4 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"]],
-    nanjo: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 4 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"]],
+    onna: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 4 · Okinawa"], ["Mark Wang", "Nov 25 – Nov 30 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Jack & Aizen (8) & Kaien (3)", "Nov 26 – Dec 2 · Okinawa"]],
+    nago: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 4 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Jack & Aizen (8) & Kaien (3)", "Nov 26 – Dec 2 · Okinawa"]],
+    nanjo: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 27 – Dec 6 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"]],
     naha: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 27 – Dec 6 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"]],
+    nahaearly: [["Steven Wang", "Nov 25 – Dec 2 · Okinawa"], ["Mark Wang", "Nov 25 – Nov 30 · Okinawa"]],
   };
 
   const renderChapter = (chapter: PageName, eyebrow: string, title: string, album: string, month: string, nights: string, hotel: React.ReactNode, region: Region, accentColor: string, children: React.ReactNode) => (
@@ -532,6 +571,7 @@ export default function TravelSite() {
   if (page === "nago") return renderChapter("nago", "Okinawa · Nago", "Northern Okinawa Chapter", "Okinawa Japan", "December", "2 Nights", <p className="mt-1 text-sm font-medium" style={{ color: BABY_BLUE }}>TBD</p>, "japan", BABY_BLUE, <NagoContent card={card} linkedImage={linkedImage} />);
   if (page === "nanjo") return renderChapter("nanjo", "Okinawa · Nanjo", "Southern Okinawa Chapter", "Okinawa Japan", "December", "2 Nights", <><a href="https://www.yuinchi.jp/heal/hot-spring/" target="_blank" rel="noopener noreferrer" className="mt-1 block text-sm font-medium hover:underline" style={{ color: BABY_BLUE }}>Yuinchi Hotel Nanjo</a><p className="mt-1 text-[9px] text-gray-500">Apeman Spa Natural Hot Spring</p></>, "japan", BABY_BLUE, <NanjoContent card={card} />);
   if (page === "naha") return renderChapter("naha", "Okinawa · Naha", "Final Naha Chapter", "Okinawa Japan", "December", "2 Nights", <><p className="mt-1 text-sm font-medium" style={{ color: BABY_BLUE }}>Hotel Strata Naha</p><p className="mt-1 text-[9px] text-gray-500">or Hotel JAL City Naha</p></>, "japan", BABY_BLUE, <NahaContent card={card} />);
+  if (page === "nahaearly") return renderChapter("nahaearly", "Okinawa · Naha", "Naha + Okinawa World Chapter", "Okinawa Japan", "November", "2 Nights", <p className="mt-1 text-sm font-medium" style={{ color: BABY_BLUE }}>Hotel Strata Naha</p>, "japan", BABY_BLUE, <NahaEarlyContent card={card} linkedImage={linkedImage} />);
   if (page === "yilan") return renderChapter("yilan", "Taiwan · Yilan", "Yilan Family Chapter", "Taiwan December", "December", "3 Nights", <><p className="mt-1 text-sm font-medium text-[#72E49A]">瓏山林蘇澳冷熱泉度假飯店 (1)</p><p className="mt-1 text-sm font-medium text-[#72E49A]">礁溪寒沐酒店 (2)</p></>, "taiwan", "#72E49A", <YilanContent card={card} />);
 
   const departureDate = new Date(2026, 10, 19);
@@ -624,6 +664,10 @@ function YilanContent({ card }: { card: (children: React.ReactNode) => React.Rea
 
 function NanjoContent({ card }: { card: (children: React.ReactNode) => React.ReactNode }) {
   return <><DayArticle date="Wednesday, December 2, 2026" title="Nago → Nanjo">{card(<><p className="text-[var(--chapter-accent)]">Morning & Day</p><p>🎢 Option 1 · Kids age 4+ & adults</p><p><a href="https://junglia.jp/en" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Junglia Park</a></p><div className="mt-4" /><p>🦁 Option 2 · Kids age 1–3</p><p><a href="https://maps.google.com/?q=Nago+Pineapple+Park" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Nago Pineapple Park</a> or <a href="https://maps.google.com/?q=Neo+Park+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Neo Park Zoo</a></p></>)}{card(<><p className="text-[var(--chapter-accent)]">Afternoon · 3:00 PM</p><p>🚗 Leaving Nago and drive approximately 1 hour toward <a href="https://maps.google.com/?q=Miyagi+Coast+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Miyagi Coast</a> & American Village</p><img src="/america.png" alt="American Village Okinawa" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /><p className="mt-4">🍽 Dinner · <a href="https://maps.app.goo.gl/PXMBGjZ1AsTNkSVT9" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Taco Rice Cafe Kijimuna</a></p><p>🚗 Evening drive to hotel · <a href="https://maps.google.com/?q=Yuinchi+Hotel+Nanjo" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Yuinchi Hotel Nanjo</a></p></>)} </DayArticle><DayArticle date="Thursday, December 3, 2026" title="Nanjo · Okinawa World + Gangala Valley">{card(<><p>🍳 Breakfast · Hotel buffet</p><p>🌏 <a href="https://maps.google.com/?q=Okinawa+World" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Okinawa World（玉泉洞）</a> · FunPass</p><img src="/cave.png" alt="Okinawa World Cave" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}{card(<><p>🌿 Gangala Valley</p><img src="/gangala.png" alt="Gangala Valley" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /><a href="https://book.gangala.com/?lng=zh-TW" target="_blank" rel="noopener noreferrer" className="mt-4 inline-block text-[var(--chapter-accent)] hover:underline">Gangala Valley reservation</a></>)}</DayArticle></>;
+}
+
+function NahaEarlyContent({ card, linkedImage }: { card: (children: React.ReactNode) => React.ReactNode; linkedImage: (src: string, alt: string) => React.ReactNode }) {
+  return <><DayArticle date="Wednesday, November 25, 2026" title="Morning Arrival · Naha">{card(<><p>✈ EVA Air BR112 · Arrive 9:15 AM at Naha Airport</p><p>🚗 Pick up rental car</p></>)}{card(<><p>🕛 Lunch · <a href="https://okinawa.letsgojp.com/archives/405500/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Senaga Island · Umikaji Terrace</a></p><p>如果天氣好 + 飛機準時，可前往瀨長島散步。</p><p>🍔 MKCafe · Ocean view & Mackerel Bitter Melon Burger</p></>)}{card(<><p>🏯 Shuri Castle if reopened</p><p>🛍 Kokusai dori 國際通 · Calbee Okinawa · 御果子御殿 · Tsuboya Pottery Street</p><img src="/shop.png" alt="Naha Shopping" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)} </DayArticle><DayArticle date="Thursday, November 26, 2026" title="Okinawa World + Gangala Valley">{card(<><p>🐟 10:00 AM · Tomari Iyumachi Fish Market Brunch</p></>)}{card(<><p>🌏 <a href="https://maps.google.com/?q=Okinawa+World" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">沖繩世界（玉泉洞） Okinawa World</a> · Fun Pass</p><ul className="ml-5 list-disc text-white/65"><li>玉泉洞鐘乳石洞</li><li>琉球文化村</li><li>太鼓舞表演</li></ul><img src="/cave.png" alt="Okinawa World Cave" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}{card(<><p>🌿 Gangala之谷</p><p>導航可搜尋「Cave Cafe」或「Gangala之谷」，附免費停車場。</p><p className="text-white/60">沖繩南部熱門自然景點，以鐘乳石洞穴崩塌形成的森林山谷聞名。</p><p className="text-white/60">導覽需事先預約，每人約 2,500 日圓。</p><a href="https://book.gangala.com/?lng=zh-TW" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Gangala Valley Reservation</a><img src="/gangala.png" alt="Gangala Valley" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}{card(<p>🍽 Dinner · TBD</p>)} </DayArticle></>;
 }
 
 function NahaContent({ card }: { card: (children: React.ReactNode) => React.ReactNode }) {
