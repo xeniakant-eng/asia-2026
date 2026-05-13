@@ -274,8 +274,11 @@ export default function TravelSite() {
     if (guest === "Mark Wang") {
       return { title: "Mark's Packing Checklist", sections: [...standardSections, { title: "Xiaoliuqiu Dive Segment", items: xiaoliuqiuDive }, { title: "Okinawa Wedding Segment", items: okinawaSegment }] };
     }
-    if (["Xenia & David & Naomi (3)", "Dave & Christina & Xixi (2)", "Heather & Jack & Aizen (8) & Kaien (3)", "Mei & Emilia (8)"].includes(guest)) {
+    if (["Xenia & David & Naomi (3)", "Heather & Jack & Aizen (8) & Kaien (3)", "Mei & Emilia (8)"].includes(guest)) {
       return { title: `${guest} Packing Checklist`, sections: [...standardSections, { title: "Okinawa Segment", items: okinawaSegment }, { title: "Baby / Toddler Items", items: babyToddlerItems }] };
+    }
+    if (guest === "Dave & Christina & Xixi (2)") {
+      return { title: `${guest} Packing Checklist`, sections: [...standardSections, { title: "Baby / Toddler Items", items: babyToddlerItems }] };
     }
     if (guest === "Mei & Emilia (8)") return { title: `${guest} Packing Checklist`, sections: standardSections };
     if (["Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Julie & Adrian & Ethan (4) & Tyrell (1)"].includes(guest)) return { title: `${guest} Packing Checklist`, sections: [...standardSections, { title: "Baby / Toddler Items", items: babyToddlerItems }] };
@@ -456,7 +459,8 @@ export default function TravelSite() {
                 {guestName === "Anthony & Christine & Mona (1)" && <SegmentButtons segments={[{ label: "Nov 20–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Mei & Emilia (8)" && <SegmentButtons segments={[{ label: "Nov 29–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Steven Wang" && <SegmentButtons segments={[{ label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
-                {!["Xenia & David & Naomi (3)", "Mark Wang", "Anthony & Christine & Mona (1)", "Mei & Emilia (8)", "Steven Wang"].includes(guestName) && (
+                {guestName === "Dave & Christina & Xixi (2)" && <SegmentButtons segments={[{ label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
+                {!["Xenia & David & Naomi (3)", "Mark Wang", "Anthony & Christine & Mona (1)", "Mei & Emilia (8)", "Steven Wang", "Dave & Christina & Xixi (2)"].includes(guestName) && (
                   <div className="mt-5 rounded-2xl border border-amber-300/20 bg-amber-300/5 p-4">
                     <p className="text-sm leading-6 text-amber-100/80">
                       No trip segment found, please confirm your trip with Xenia ASAP.
