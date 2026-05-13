@@ -137,7 +137,7 @@ export default function TravelSite() {
 
   const septOctGuestOptions = [
     "I am just a random Guest",
-    "Xenia & David",
+    "Xenia & David & Naomi (3)",
     "Jeff & Irene",
     "Gladys",
     "Vicky",
@@ -146,15 +146,15 @@ export default function TravelSite() {
 
   const guestOptions = [
     "I am just a random Guest",
-    "Xenia & David",
-    "Anthony & Christine",
-    "Jennifer & Hiroshi",
-    "Heather & Jack",
+    "Xenia & David & Naomi (3)",
+    "Anthony & Christine & Mona (1)",
+    "Jenn & Hiroshi & Masashi (6) & Miyari (3)",
+    "Heather & Jack & Aizen (8) & Kaien (3)",
     "Steven Wang",
     "Mark Wang",
-    "Mei & Emilia",
-    "Julie & Adrian",
-    "Dave & Christina",
+    "Mei & Emilia (8)",
+    "Julie & Adrian & Ethan (4) & Tyrell (1)",
+    "Dave & Christina & Xixi (2)",
   ];
 
   useEffect(() => {
@@ -274,12 +274,12 @@ export default function TravelSite() {
     if (guest === "Mark Wang") {
       return { title: "Mark's Packing Checklist", sections: [...standardSections, { title: "Xiaoliuqiu Dive Segment", items: xiaoliuqiuDive }, { title: "Okinawa Wedding Segment", items: okinawaSegment }] };
     }
-    if (["Xenia & David", "Dave & Christina", "Heather & Jack", "Mei & Emilia"].includes(guest)) {
+    if (["Xenia & David & Naomi (3)", "Dave & Christina & Xixi (2)", "Heather & Jack & Aizen (8) & Kaien (3)", "Mei & Emilia (8)"].includes(guest)) {
       return { title: `${guest} Packing Checklist`, sections: [...standardSections, { title: "Okinawa Segment", items: okinawaSegment }, { title: "Baby / Toddler Items", items: babyToddlerItems }] };
     }
-    if (guest === "Mei & Emilia") return { title: `${guest} Packing Checklist`, sections: standardSections };
-    if (["Jennifer & Hiroshi", "Julie & Adrian"].includes(guest)) return { title: `${guest} Packing Checklist`, sections: [...standardSections, { title: "Baby / Toddler Items", items: babyToddlerItems }] };
-    if (guest === "Anthony & Christine") return { title: `${guest} Packing Checklist`, sections: [...standardSections, { title: "Xiaoliuqiu Dive Segment", items: xiaoliuqiuDive }, { title: "Baby / Toddler Items", items: babyToddlerItems }] };
+    if (guest === "Mei & Emilia (8)") return { title: `${guest} Packing Checklist`, sections: standardSections };
+    if (["Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Julie & Adrian & Ethan (4) & Tyrell (1)"].includes(guest)) return { title: `${guest} Packing Checklist`, sections: [...standardSections, { title: "Baby / Toddler Items", items: babyToddlerItems }] };
+    if (guest === "Anthony & Christine & Mona (1)") return { title: `${guest} Packing Checklist`, sections: [...standardSections, { title: "Xiaoliuqiu Dive Segment", items: xiaoliuqiuDive }, { title: "Baby / Toddler Items", items: babyToddlerItems }] };
     return { title: `${guest || "Guest"} Packing Checklist`, sections: [...standardSections, { title: "Trip Items", items: okinawaSegment }] };
   };
 
@@ -451,11 +451,12 @@ export default function TravelSite() {
               <div className="mb-8 rounded-3xl border border-white/10 bg-white/[0.04] p-6 text-left shadow-[0_0_30px_rgba(255,255,255,0.05)]">
                 <p className="text-sm uppercase tracking-[0.28em] text-white/70">Welcome</p>
                 <h2 className="mt-2 text-3xl font-light tracking-wide text-white">Hello {guestName} 👋</h2>
-                {guestName === "Xenia & David" && <SegmentButtons segments={[{ label: "Nov 21–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
-                {guestName === "Mark Wang" && <SegmentButtons segments={[{ label: "Nov 20–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }, { label: "Nov 26–30 · Onna", page: "onna", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
-                {guestName === "Anthony & Christine" && <SegmentButtons segments={[{ label: "Nov 20–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
-                {guestName === "Mei & Emilia" && <SegmentButtons segments={[{ label: "Nov 29–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
-                {!["Xenia & David", "Mark Wang", "Anthony & Christine", "Mei & Emilia"].includes(guestName) && (
+                {guestName === "Xenia & David & Naomi (3)" && <SegmentButtons segments={[{ label: "Nov 21–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
+                {guestName === "Mark Wang" && <SegmentButtons segments={[{ label: "Nov 20–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
+                {guestName === "Anthony & Christine & Mona (1)" && <SegmentButtons segments={[{ label: "Nov 20–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
+                {guestName === "Mei & Emilia (8)" && <SegmentButtons segments={[{ label: "Nov 29–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
+                {guestName === "Steven Wang" && <SegmentButtons segments={[{ label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
+                {!["Xenia & David & Naomi (3)", "Mark Wang", "Anthony & Christine & Mona (1)", "Mei & Emilia (8)", "Steven Wang"].includes(guestName) && (
                   <div className="mt-5 rounded-2xl border border-amber-300/20 bg-amber-300/5 p-4">
                     <p className="text-sm leading-6 text-amber-100/80">
                       No trip segment found, please confirm your trip with Xenia ASAP.
@@ -500,12 +501,12 @@ export default function TravelSite() {
   const chapterPeople: Record<PageName, Person[]> = {
     map: [],
     checklist: [],
-    yilan: [["Xenia & David", "Dec 8 – Dec 11 · Yilan"], ["Mei & Emilia", "Dec 8 – Dec 11 · Yilan"], ["Dave & Christina", "Dec 8 – Dec 11 · Yilan"]],
-    xiaoliuqiu: [["Anthony & Christine", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Mark Wang", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Xenia & David", "Nov 21 – Nov 23 · Xiaoliuqiu"]],
-    onna: [["Xenia & David", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 6 · Okinawa"], ["Mark Wang", "Nov 25 – Nov 30 · Okinawa"], ["Mei & Emilia", "Nov 29 – Dec 6 · Okinawa"]],
-    nago: [["Xenia & David", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 6 · Okinawa"], ["Mei & Emilia", "Nov 29 – Dec 6 · Okinawa"]],
-    nanjo: [["Xenia & David", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 6 · Okinawa"], ["Mei & Emilia", "Nov 29 – Dec 6 · Okinawa"]],
-    naha: [["Xenia & David", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 6 · Okinawa"], ["Mei & Emilia", "Nov 29 – Dec 6 · Okinawa"]],
+    yilan: [["Xenia & David & Naomi (3)", "Dec 8 – Dec 11 · Yilan"], ["Mei & Emilia (8)", "Dec 8 – Dec 11 · Yilan"], ["Dave & Christina & Xixi (2)", "Dec 8 – Dec 11 · Yilan"]],
+    xiaoliuqiu: [["Anthony & Christine & Mona (1)", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Mark Wang", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Xenia & David & Naomi (3)", "Nov 21 – Nov 23 · Xiaoliuqiu"]],
+    onna: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 4 · Okinawa"], ["Mark Wang", "Nov 25 – Nov 30 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"]],
+    nago: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 4 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"]],
+    nanjo: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 4 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"]],
+    naha: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 27 – Dec 6 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"]],
   };
 
   const renderChapter = (chapter: PageName, eyebrow: string, title: string, album: string, month: string, nights: string, hotel: React.ReactNode, region: Region, accentColor: string, children: React.ReactNode) => (
@@ -577,7 +578,7 @@ function DayArticle({ date, title, children }: { date: string; title: string; ch
 }
 
 function XiaoliuqiuContent({ card }: { card: (children: React.ReactNode) => React.ReactNode }) {
-  return <><DayArticle date="Friday, November 20, 2026" title="Arrival Day · Xiaoliuqiu">{card(<><p>🌅 Anthony, Christine & Mark arriving Xiaoliuqiu</p><p className="mt-2 text-white/50">高雄左營高鐵站 → 10:30 AM 客運 → 屏客東港總站 → 步行10分鐘東港碼頭 → 11:50 AM <a href="https://www.leucosapphire.com/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">藍白船班</a> → 與Jim碼頭集合</p></>)}{card(<><p>🤿 Open Water Lesson</p><ul className="ml-5 list-disc text-white/65"><li>裝備組裝介紹</li><li>Close Water · Dive #1</li></ul></>)}{card(<p>🍽 Dinner · TBD</p>)}</DayArticle><DayArticle date="Saturday, November 21, 2026" title="Open Water Dive Day">{card(<><p>🌊 Open Water Lessons</p><p>Dive #2 & Dive #3</p></>)}{card(<><p>⛴ Xenia & David arriving Xiaoliuqiu</p><p className="mt-2 text-sm font-medium text-white/80">Northern XLQ Visits</p><div className="mt-4 flex flex-col gap-4 md:flex-row"><ul className="ml-5 flex-1 list-disc space-y-2 text-white/65"><li>美人洞</li><li>花瓶岩</li><li>龍蝦洞</li></ul><img src="/xlqmap.png" alt="Xiaoliuqiu map" className="h-auto w-full rounded-2xl object-contain bg-black/20 p-2 md:w-1/2" /></div></>)}</DayArticle><DayArticle date="Sunday, November 22, 2026" title="Dive + Southern Island Day">{card(<><p>🤿 Open Water Lessons</p><p>Dive #4 & Dive #5</p><p className="mt-2 text-white/50">David & Anthony may join fun dives with the OW group.</p></>)}{card(<p>👶 Toddler Group 小琉球海洋館</p>)}{card(<><p>🌅 Southern Xiaoliuqiu Exploration</p><ul className="ml-5 list-disc text-white/65"><li>琉行綠色隧道</li><li>烏鬼洞</li><li>落日亭 Sunset View</li></ul></>)}</DayArticle><DayArticle date="Monday, November 23, 2026" title="Departure to Taipei">{card(<><p>⛴ Everyone leaving Xiaoliuqiu · 11:10 AM boat</p><p>🍣 Lunch · 東港漁市場</p><p>🚄 Afternoon · 左營 → 台北</p></>)}</DayArticle></>;
+  return <><DayArticle date="Friday, November 20, 2026" title="Arrival Day · Xiaoliuqiu">{card(<><p>🌅 Anthony, Christine, Mona & Mark arriving Xiaoliuqiu</p><p className="mt-2 text-white/50">高雄左營高鐵站 → 10:30 AM 客運 → 屏客東港總站 → 步行10分鐘東港碼頭 → 11:50 AM <a href="https://www.leucosapphire.com/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">藍白船班</a> → 與Jim碼頭集合</p></>)}{card(<><p>🤿 Open Water Lesson</p><ul className="ml-5 list-disc text-white/65"><li>裝備組裝介紹</li><li>Close Water · Dive #1</li></ul></>)}{card(<p>🍽 Dinner · TBD</p>)}</DayArticle><DayArticle date="Saturday, November 21, 2026" title="Open Water Dive Day">{card(<><p>🌊 Open Water Lessons</p><p>Dive #2 & Dive #3</p></>)}{card(<><p>⛴ Xenia, David & Naomi arriving Xiaoliuqiu</p><p className="mt-2 text-sm font-medium text-white/80">Northern XLQ Visits</p><div className="mt-4 flex flex-col gap-4 md:flex-row"><ul className="ml-5 flex-1 list-disc space-y-2 text-white/65"><li>美人洞</li><li>花瓶岩</li><li>龍蝦洞</li></ul><img src="/xlqmap.png" alt="Xiaoliuqiu map" className="h-auto w-full rounded-2xl object-contain bg-black/20 p-2 md:w-1/2" /></div></>)}</DayArticle><DayArticle date="Sunday, November 22, 2026" title="Dive + Southern Island Day">{card(<><p>🤿 Open Water Lessons</p><p>Dive #4 & Dive #5</p><p className="mt-2 text-white/50">David & Anthony may join fun dives with the OW group.</p></>)}{card(<p>👶 Toddler Group 小琉球海洋館</p>)}{card(<><p>🌅 Southern Xiaoliuqiu Exploration</p><ul className="ml-5 list-disc text-white/65"><li>琉行綠色隧道</li><li>烏鬼洞</li><li>落日亭 Sunset View</li></ul></>)}</DayArticle><DayArticle date="Monday, November 23, 2026" title="Departure to Taipei">{card(<><p>⛴ Everyone leaving Xiaoliuqiu · 11:10 AM boat</p><p>🍣 Lunch · 東港漁市場</p><p>🚄 Afternoon · 左營 → 台北</p></>)}</DayArticle></>;
 }
 
 function OnnaContent({ card, linkedImage }: { card: (children: React.ReactNode) => React.ReactNode; linkedImage: (src: string, alt: string) => React.ReactNode }) {
@@ -618,9 +619,9 @@ function YilanContent({ card }: { card: (children: React.ReactNode) => React.Rea
 }
 
 function NanjoContent({ card }: { card: (children: React.ReactNode) => React.ReactNode }) {
-  return <><DayArticle date="Wednesday, December 2, 2026" title="Nago → Nanjo">{card(<><p>🎢 Kids 4+ & adults · <a href="https://junglia.jp/en" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Junglia Park</a></p><p>🍍 Nago Pineapple Park OR Neo Park Zoo backup.</p></>)}{card(<><p>🌊 Miyagi Coast & American Village</p><p>🍽 Dinner · Taco Rice Cafe Kijimuna</p><p>🚗 Evening drive toward Nanjo</p></>)}</DayArticle><DayArticle date="Thursday, December 3, 2026" title="Nanjo · Okinawa World + Gangala Valley">{card(<><p>🍳 Breakfast · Hotel buffet</p><p>🌏 Okinawa World（玉泉洞）· FunPass</p></>)}{card(<><p>🌿 Gangala Valley</p><a href="https://book.gangala.com/?lng=zh-TW" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Gangala Valley reservation</a></>)}</DayArticle></>;
+  return <><DayArticle date="Wednesday, December 2, 2026" title="Nago → Nanjo">{card(<><p className="text-[var(--chapter-accent)]">Morning & Day</p><p>🎢 Option 1 · Kids age 4+ & adults</p><p><a href="https://junglia.jp/en" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Junglia Park</a></p><div className="mt-4" /><p>🦁 Option 2 · Kids age 1–3</p><p><a href="https://maps.google.com/?q=Nago+Pineapple+Park" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Nago Pineapple Park</a> or <a href="https://maps.google.com/?q=Neo+Park+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Neo Park Zoo</a></p></>)}{card(<><p className="text-[var(--chapter-accent)]">Afternoon · 3:00 PM</p><p>🚗 Leaving Nago and drive approximately 1 hour toward <a href="https://maps.google.com/?q=Miyagi+Coast+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Miyagi Coast</a> & American Village</p><img src="/america.png" alt="American Village Okinawa" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /><p className="mt-4">🍽 Dinner · <a href="https://maps.app.goo.gl/PXMBGjZ1AsTNkSVT9" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Taco Rice Cafe Kijimuna</a></p><p>🚗 Evening drive to hotel · <a href="https://maps.google.com/?q=Yuinchi+Hotel+Nanjo" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Yuinchi Hotel Nanjo</a></p></>)} </DayArticle><DayArticle date="Thursday, December 3, 2026" title="Nanjo · Okinawa World + Gangala Valley">{card(<><p>🍳 Breakfast · Hotel buffet</p><p>🌏 <a href="https://maps.google.com/?q=Okinawa+World" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Okinawa World（玉泉洞）</a> · FunPass</p><img src="/cave.png" alt="Okinawa World Cave" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}{card(<><p>🌿 Gangala Valley</p><img src="/gangala.png" alt="Gangala Valley" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /><a href="https://book.gangala.com/?lng=zh-TW" target="_blank" rel="noopener noreferrer" className="mt-4 inline-block text-[var(--chapter-accent)] hover:underline">Gangala Valley reservation</a></>)}</DayArticle></>;
 }
 
 function NahaContent({ card }: { card: (children: React.ReactNode) => React.ReactNode }) {
-  return <><DayArticle date="Friday, December 4, 2026" title="Nanjo → Naha">{card(<p>🐟 Tomari Iyumachi Fish Market Brunch · 11:00 AM</p>)}{card(<><p>🏯 Shuri Castle if reopened</p><p>Kokusai 國際通 · Calbee Okinawa · 御果子御殿 · Tsuboya Pottery Street</p></>)}</DayArticle><DayArticle date="Saturday, December 5, 2026" title="Shopping + Aquarium Day">{card(<><p>🍳 Hotel breakfast buffet</p><p>🧳 Checkout at 11:00 AM</p><p>🐟 Itoman Fish Market · Ashibinaa Outlet · DMM Kariyushi Aquarium</p></>)}</DayArticle><DayArticle date="Sunday, December 6, 2026" title="Departure Day">{card(<><p>🧳 Hotel checkout at 7:15 AM</p><p>✈️ EVA Air BR113 · OKA 10:15 → TPE 10:55</p></>)}</DayArticle></>;
+  return <><DayArticle date="Friday, December 4, 2026" title="Nanjo → Naha">{card(<><p>🧳 9:00 AM · Checkout hotel</p><p>🚗 Drive from Nanjo → Naha · approximately 30 min</p><p>✈️ Drop off Steven at <a href="https://maps.google.com/?q=Naha+Airport" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Naha Airport</a></p></>)}{card(<><p>🐟 11:00 AM · Tomari Iyumachi Fish Market Brunch</p></>)}{card(<><p>🏯 Shuri Castle if reopened</p><p>🛍 Kokusai dori 國際通 · Calbee Okinawa · 御果子御殿 · Tsuboya Pottery Street</p><img src="/shop.png" alt="Kokusai Dori Shopping" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)} </DayArticle><DayArticle date="Saturday, December 5, 2026" title="Shopping + Aquarium Day">{card(<><p>🍳 Hotel breakfast buffet</p><p>🧳 Checkout at 11:00 AM</p><p>🐟 Itoman Fish Market · Ashibinaa Outlet · DMM Kariyushi Aquarium</p></>)}</DayArticle><DayArticle date="Sunday, December 6, 2026" title="Departure Day">{card(<><p>🧳 Hotel checkout at 7:15 AM</p><p>✈️ EVA Air BR113 · OKA 10:15 → TPE 10:55</p></>)}</DayArticle></>;
 }
