@@ -71,6 +71,32 @@ async function createTripSignup(tripKey: SignupTripKey, name: string): Promise<s
   }
 }
 
+async function fetchChecklistProgress(guest: string): Promise<Record<string, boolean> | null> {
+  if (!guest || guest === "I am just a random Guest") return null;
+  try {
+    const response = await fetch(`/api/checklist-progress?guest=${encodeURIComponent(guest)}`);
+    if (!response.ok) return null;
+    const data = await response.json();
+    return data.progress && typeof data.progress === "object" ? data.progress : {};
+  } catch {
+    return null;
+  }
+}
+
+async function saveChecklistProgress(guest: string, itemKey: string, checked: boolean): Promise<boolean> {
+  if (!guest || guest === "I am just a random Guest") return false;
+  try {
+    const response = await fetch("/api/checklist-progress", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ guest, itemKey, checked }),
+    });
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
 function SvgPin({
   id,
   label,
@@ -244,6 +270,27 @@ export default function TravelSite() {
     }
     loadTripSignups();
   }, []);
+
+  useEffect(() => {
+    if (!guestName) return;
+    const storageKey = `checklistProgress-${guestName}`;
+    try {
+      const localProgress = JSON.parse(window.localStorage.getItem(storageKey) || "{}");
+      if (localProgress && typeof localProgress === "object") {
+        setCheckedPackingItems((current) => ({ ...current, ...localProgress }));
+      }
+    } catch {
+      // Keep the default empty checklist when local data is malformed.
+    }
+
+    async function loadChecklistProgress() {
+      const savedProgress = await fetchChecklistProgress(guestName);
+      if (savedProgress) {
+        setCheckedPackingItems((current) => ({ ...current, ...savedProgress }));
+      }
+    }
+    loadChecklistProgress();
+  }, [guestName]);
 
   useEffect(() => {
     window.localStorage.setItem("moroccoInterestedNames", JSON.stringify(moroccoInterestedNames));
@@ -594,6 +641,22 @@ export default function TravelSite() {
     setShowFiveStansNameInput(false);
   };
 
+  const togglePackingItem = (itemKey: string, checked: boolean) => {
+    const nextChecked = !checked;
+    setCheckedPackingItems((current) => ({ ...current, [itemKey]: nextChecked }));
+
+    if (guestName) {
+      const storageKey = `checklistProgress-${guestName}`;
+      try {
+        const localProgress = JSON.parse(window.localStorage.getItem(storageKey) || "{}");
+        window.localStorage.setItem(storageKey, JSON.stringify({ ...localProgress, [itemKey]: nextChecked }));
+      } catch {
+        window.localStorage.setItem(storageKey, JSON.stringify({ [itemKey]: nextChecked }));
+      }
+      saveChecklistProgress(guestName, itemKey, nextChecked);
+    }
+  };
+
   if (!isGuestConfirmed) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-black px-6 text-white">
@@ -812,7 +875,7 @@ export default function TravelSite() {
           <p className="mb-8 text-sm text-white/50">{completedItems} of {totalItems} items packed</p>
           <div className="mb-10 h-2 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full bg-[#72E49A] transition-all" style={{ width: `${totalItems ? (completedItems / totalItems) * 100 : 0}%` }} /></div>
           <section className="space-y-6">
-            {checklist.sections.map((section) => <article key={section.title} className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md"><h2 className="mb-5 text-2xl font-light">{section.title}</h2><div className="grid gap-3">{section.items.map((item) => { const key = `${guestName}-${section.title}-${item}`; const checked = Boolean(checkedPackingItems[key]); return <button key={key} type="button" onClick={() => setCheckedPackingItems((current) => ({ ...current, [key]: !checked }))} className={`flex items-center gap-3 rounded-2xl border px-4 py-3 text-left transition ${checked ? "border-[#72E49A]/50 bg-[#72E49A]/10 text-white" : "border-white/10 bg-black/20 text-white/70 hover:border-white/25"}`}><span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-xs ${checked ? "border-[#72E49A] bg-[#72E49A] text-black" : "border-white/25 text-transparent"}`}>✓</span><span className={checked ? "text-white line-through decoration-[#72E49A]/70" : "text-white/75"}>{item}</span></button>; })}</div></article>)}
+            {checklist.sections.map((section) => <article key={section.title} className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md"><h2 className="mb-5 text-2xl font-light">{section.title}</h2><div className="grid gap-3">{section.items.map((item) => { const key = `${guestName}-${section.title}-${item}`; const checked = Boolean(checkedPackingItems[key]); return <button key={key} type="button" onClick={() => togglePackingItem(key, checked)} className={`flex items-center gap-3 rounded-2xl border px-4 py-3 text-left transition ${checked ? "border-[#72E49A]/50 bg-[#72E49A]/10 text-white" : "border-white/10 bg-black/20 text-white/70 hover:border-white/25"}`}><span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-xs ${checked ? "border-[#72E49A] bg-[#72E49A] text-black" : "border-white/25 text-transparent"}`}>✓</span><span className={checked ? "text-white line-through decoration-[#72E49A]/70" : "text-white/75"}>{item}</span></button>; })}</div></article>)}
           </section>
         </main>
       </div>
