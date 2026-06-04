@@ -680,7 +680,7 @@ export default function TravelSite() {
               <h1 className="mb-4 text-3xl font-light tracking-wide">Morocco - Sept 2026</h1>
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary Summary</button>
-                <button type="button" onClick={() => setShowMoroccoNameInput(true)} className="w-full rounded-2xl border border-white/20 bg-white/[0.04] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/75 transition hover:border-white/40 hover:bg-white/[0.07]">I am interested</button>
+                <button type="button" onClick={() => setShowMoroccoNameInput(true)} className="w-full rounded-2xl border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#FF8FC7] transition hover:border-[#FF8FC7]/60 hover:bg-[#FF8FC7]/15">I am interested</button>
               </div>
 
               {showMoroccoNameInput && (
@@ -713,7 +713,7 @@ export default function TravelSite() {
               <h1 className="mb-4 text-3xl font-light tracking-wide">Azures Portugal - TBD</h1>
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary Summary</button>
-                <button type="button" onClick={() => setShowAzoresNameInput(true)} className="w-full rounded-2xl border border-white/20 bg-white/[0.04] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/75 transition hover:border-white/40 hover:bg-white/[0.07]">I am interested</button>
+                <button type="button" onClick={() => setShowAzoresNameInput(true)} className="w-full rounded-2xl border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#FF8FC7] transition hover:border-[#FF8FC7]/60 hover:bg-[#FF8FC7]/15">I am interested</button>
               </div>
 
               {showAzoresNameInput && (
@@ -746,7 +746,7 @@ export default function TravelSite() {
               <h1 className="mb-4 text-3xl font-light tracking-wide">Similan Thailand Liveaboard - March 2028</h1>
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary Summary</button>
-                <button type="button" onClick={() => setShowSimilanNameInput(true)} className="w-full rounded-2xl border border-white/20 bg-white/[0.04] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/75 transition hover:border-white/40 hover:bg-white/[0.07]">I am interested</button>
+                <button type="button" onClick={() => setShowSimilanNameInput(true)} className="w-full rounded-2xl border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#FF8FC7] transition hover:border-[#FF8FC7]/60 hover:bg-[#FF8FC7]/15">I am interested</button>
               </div>
 
               {showSimilanNameInput && (
@@ -779,7 +779,7 @@ export default function TravelSite() {
               <h1 className="mb-4 text-3xl font-light tracking-wide">The 5 Stans & Silk Road - TBD</h1>
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary Summary</button>
-                <button type="button" onClick={() => setShowFiveStansNameInput(true)} className="w-full rounded-2xl border border-white/20 bg-white/[0.04] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/75 transition hover:border-white/40 hover:bg-white/[0.07]">I am interested</button>
+                <button type="button" onClick={() => setShowFiveStansNameInput(true)} className="w-full rounded-2xl border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#FF8FC7] transition hover:border-[#FF8FC7]/60 hover:bg-[#FF8FC7]/15">I am interested</button>
               </div>
 
               {showFiveStansNameInput && (
