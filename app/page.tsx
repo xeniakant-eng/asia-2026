@@ -27,6 +27,7 @@ type PackingChecklist = {
 };
 
 type Person = [string, string];
+type SignupTripKey = "morocco" | "azoresPortugal" | "similanThailand" | "fiveStans";
 
 function buildDateRange(start: Date, end: Date): Date[] {
   const dates: Date[] = [];
@@ -42,6 +43,32 @@ function getTimelinePercent(targetDate: Date, start: Date, end: Date): number {
   const totalDays = (end.getTime() - start.getTime()) / MS_PER_DAY;
   const dayOffset = (targetDate.getTime() - start.getTime()) / MS_PER_DAY;
   return (dayOffset / totalDays) * 100;
+}
+
+async function fetchTripSignupNames(tripKey: SignupTripKey): Promise<string[] | null> {
+  try {
+    const response = await fetch(`/api/trip-signups?trip=${tripKey}`);
+    if (!response.ok) return null;
+    const data = await response.json();
+    return Array.isArray(data.names) ? data.names : [];
+  } catch {
+    return null;
+  }
+}
+
+async function createTripSignup(tripKey: SignupTripKey, name: string): Promise<string[] | null> {
+  try {
+    const response = await fetch("/api/trip-signups", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ trip: tripKey, name }),
+    });
+    if (!response.ok) return null;
+    const data = await response.json();
+    return Array.isArray(data.names) ? data.names : [];
+  } catch {
+    return null;
+  }
 }
 
 function SvgPin({
@@ -200,6 +227,22 @@ export default function TravelSite() {
   useEffect(() => {
     const timer = window.setInterval(() => setNow(new Date()), 1000);
     return () => window.clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    async function loadTripSignups() {
+      const [moroccoNames, azoresNames, similanNames, fiveStansNames] = await Promise.all([
+        fetchTripSignupNames("morocco"),
+        fetchTripSignupNames("azoresPortugal"),
+        fetchTripSignupNames("similanThailand"),
+        fetchTripSignupNames("fiveStans"),
+      ]);
+      if (moroccoNames) setMoroccoInterestedNames(moroccoNames);
+      if (azoresNames) setAzoresInterestedNames(azoresNames);
+      if (similanNames) setSimilanInterestedNames(similanNames);
+      if (fiveStansNames) setFiveStansInterestedNames(fiveStansNames);
+    }
+    loadTripSignups();
   }, []);
 
   useEffect(() => {
@@ -506,34 +549,47 @@ export default function TravelSite() {
     </div>
   );
 
-  const addMoroccoInterestedName = () => {
+  const saveInterestedName = async (
+    tripKey: SignupTripKey,
+    name: string,
+    setNames: React.Dispatch<React.SetStateAction<string[]>>
+  ) => {
+    const savedNames = await createTripSignup(tripKey, name);
+    if (savedNames) {
+      setNames(savedNames);
+      return;
+    }
+    setNames((current) => current.includes(name) ? current : [...current, name]);
+  };
+
+  const addMoroccoInterestedName = async () => {
     const nextName = moroccoNameInput.trim();
     if (!nextName) return;
-    setMoroccoInterestedNames((current) => current.includes(nextName) ? current : [...current, nextName]);
+    await saveInterestedName("morocco", nextName, setMoroccoInterestedNames);
     setMoroccoNameInput("");
     setShowMoroccoNameInput(false);
   };
 
-  const addAzoresInterestedName = () => {
+  const addAzoresInterestedName = async () => {
     const nextName = azoresNameInput.trim();
     if (!nextName) return;
-    setAzoresInterestedNames((current) => current.includes(nextName) ? current : [...current, nextName]);
+    await saveInterestedName("azoresPortugal", nextName, setAzoresInterestedNames);
     setAzoresNameInput("");
     setShowAzoresNameInput(false);
   };
 
-  const addSimilanInterestedName = () => {
+  const addSimilanInterestedName = async () => {
     const nextName = similanNameInput.trim();
     if (!nextName) return;
-    setSimilanInterestedNames((current) => current.includes(nextName) ? current : [...current, nextName]);
+    await saveInterestedName("similanThailand", nextName, setSimilanInterestedNames);
     setSimilanNameInput("");
     setShowSimilanNameInput(false);
   };
 
-  const addFiveStansInterestedName = () => {
+  const addFiveStansInterestedName = async () => {
     const nextName = fiveStansNameInput.trim();
     if (!nextName) return;
-    setFiveStansInterestedNames((current) => current.includes(nextName) ? current : [...current, nextName]);
+    await saveInterestedName("fiveStans", nextName, setFiveStansInterestedNames);
     setFiveStansNameInput("");
     setShowFiveStansNameInput(false);
   };
