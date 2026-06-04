@@ -1,6 +1,6 @@
 create table if not exists public.trip_signups (
   id uuid primary key default gen_random_uuid(),
-  trip_key text not null check (trip_key in ('morocco', 'azoresPortugal', 'similanThailand', 'fiveStans')),
+  trip_key text not null check (trip_key in ('morocco', 'houston', 'azoresPortugal', 'similanThailand', 'fiveStans')),
   name text not null,
   created_at timestamptz not null default now(),
   unique (trip_key, name)
