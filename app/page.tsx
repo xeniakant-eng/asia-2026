@@ -128,7 +128,47 @@ export default function TravelSite() {
   const [guestName, setGuestName] = useState("");
   const [isGuestConfirmed, setIsGuestConfirmed] = useState(false);
   const [showGuestActions, setShowGuestActions] = useState(false);
-  const [selectedTrip, setSelectedTrip] = useState<"" | "septOct" | "novDec">("");
+  const [selectedTrip, setSelectedTrip] = useState<"" | "morocco" | "okinawaTaiwan" | "azoresPortugal" | "similanThailand" | "fiveStans">("");
+  const [moroccoInterestedNames, setMoroccoInterestedNames] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      return JSON.parse(window.localStorage.getItem("moroccoInterestedNames") || "[]");
+    } catch {
+      return [];
+    }
+  });
+  const [showMoroccoNameInput, setShowMoroccoNameInput] = useState(false);
+  const [moroccoNameInput, setMoroccoNameInput] = useState("");
+  const [azoresInterestedNames, setAzoresInterestedNames] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      return JSON.parse(window.localStorage.getItem("azoresInterestedNames") || "[]");
+    } catch {
+      return [];
+    }
+  });
+  const [showAzoresNameInput, setShowAzoresNameInput] = useState(false);
+  const [azoresNameInput, setAzoresNameInput] = useState("");
+  const [similanInterestedNames, setSimilanInterestedNames] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      return JSON.parse(window.localStorage.getItem("similanInterestedNames") || "[]");
+    } catch {
+      return [];
+    }
+  });
+  const [showSimilanNameInput, setShowSimilanNameInput] = useState(false);
+  const [similanNameInput, setSimilanNameInput] = useState("");
+  const [fiveStansInterestedNames, setFiveStansInterestedNames] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      return JSON.parse(window.localStorage.getItem("fiveStansInterestedNames") || "[]");
+    } catch {
+      return [];
+    }
+  });
+  const [showFiveStansNameInput, setShowFiveStansNameInput] = useState(false);
+  const [fiveStansNameInput, setFiveStansNameInput] = useState("");
   const [checkedPackingItems, setCheckedPackingItems] = useState<Record<string, boolean>>({});
   const [now, setNow] = useState(new Date());
   const [usdToJpy, setUsdToJpy] = useState("150");
@@ -161,6 +201,22 @@ export default function TravelSite() {
     const timer = window.setInterval(() => setNow(new Date()), 1000);
     return () => window.clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem("moroccoInterestedNames", JSON.stringify(moroccoInterestedNames));
+  }, [moroccoInterestedNames]);
+
+  useEffect(() => {
+    window.localStorage.setItem("azoresInterestedNames", JSON.stringify(azoresInterestedNames));
+  }, [azoresInterestedNames]);
+
+  useEffect(() => {
+    window.localStorage.setItem("similanInterestedNames", JSON.stringify(similanInterestedNames));
+  }, [similanInterestedNames]);
+
+  useEffect(() => {
+    window.localStorage.setItem("fiveStansInterestedNames", JSON.stringify(fiveStansInterestedNames));
+  }, [fiveStansInterestedNames]);
 
   useEffect(() => {
     async function fetchRates() {
@@ -450,6 +506,38 @@ export default function TravelSite() {
     </div>
   );
 
+  const addMoroccoInterestedName = () => {
+    const nextName = moroccoNameInput.trim();
+    if (!nextName) return;
+    setMoroccoInterestedNames((current) => current.includes(nextName) ? current : [...current, nextName]);
+    setMoroccoNameInput("");
+    setShowMoroccoNameInput(false);
+  };
+
+  const addAzoresInterestedName = () => {
+    const nextName = azoresNameInput.trim();
+    if (!nextName) return;
+    setAzoresInterestedNames((current) => current.includes(nextName) ? current : [...current, nextName]);
+    setAzoresNameInput("");
+    setShowAzoresNameInput(false);
+  };
+
+  const addSimilanInterestedName = () => {
+    const nextName = similanNameInput.trim();
+    if (!nextName) return;
+    setSimilanInterestedNames((current) => current.includes(nextName) ? current : [...current, nextName]);
+    setSimilanNameInput("");
+    setShowSimilanNameInput(false);
+  };
+
+  const addFiveStansInterestedName = () => {
+    const nextName = fiveStansNameInput.trim();
+    if (!nextName) return;
+    setFiveStansInterestedNames((current) => current.includes(nextName) ? current : [...current, nextName]);
+    setFiveStansNameInput("");
+    setShowFiveStansNameInput(false);
+  };
+
   if (!isGuestConfirmed) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-black px-6 text-white">
@@ -457,14 +545,149 @@ export default function TravelSite() {
           <p className="mb-3 text-xs uppercase tracking-[0.35em] text-white/70">Private Group Event</p>
           {!selectedTrip ? (
             <>
-              <h1 className="mb-4 text-3xl font-light tracking-wide">Welcome to XK Event 2026</h1>
+              <h1 className="mb-4 text-3xl font-light tracking-wide">Welcome to XK Events</h1>
               <p className="mb-8 text-sm leading-6 text-white/55">Please select your trip.</p>
               <div className="space-y-3">
-                <button type="button" onClick={() => setSelectedTrip("septOct")} className="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm font-light tracking-wide text-white/75 transition hover:border-white/30 hover:bg-white/[0.05]">Sept/Oct 2026</button>
-                <button type="button" onClick={() => setSelectedTrip("novDec")} className="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm font-light tracking-wide text-white/75 transition hover:border-white/30 hover:bg-white/[0.05]">Nov/Dec 2026</button>
+                <button type="button" onClick={() => setSelectedTrip("morocco")} className="flex w-full items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-left text-sm font-light tracking-wide text-white/75 transition hover:border-white/30 hover:bg-white/[0.05]"><span>Morocco - Sept 2026</span><span className="shrink-0 rounded-full border border-[#FFD76A]/35 bg-[#FFD76A]/10 px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-[#FFD76A]">Planning</span></button>
+                <button type="button" onClick={() => setSelectedTrip("okinawaTaiwan")} className="flex w-full items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-left text-sm font-light tracking-wide text-white/75 transition hover:border-white/30 hover:bg-white/[0.05]"><span>Okinawa & Taiwan - Nov/Dec 2026</span><span className="shrink-0 rounded-full border border-[#72E49A]/35 bg-[#72E49A]/10 px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-[#72E49A]">Confirmed</span></button>
+                <button type="button" onClick={() => setSelectedTrip("azoresPortugal")} className="flex w-full items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-left text-sm font-light tracking-wide text-white/75 transition hover:border-white/30 hover:bg-white/[0.05]"><span>Azures Portugal - TBD</span><span className="shrink-0 rounded-full border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-[#FF8FC7]">Dreaming</span></button>
+                <button type="button" onClick={() => setSelectedTrip("similanThailand")} className="flex w-full items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-left text-sm font-light tracking-wide text-white/75 transition hover:border-white/30 hover:bg-white/[0.05]"><span>Similan Thailand Liveaboard - March 2028</span><span className="shrink-0 rounded-full border border-[#FFD76A]/35 bg-[#FFD76A]/10 px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-[#FFD76A]">Planning</span></button>
+                <button type="button" onClick={() => setSelectedTrip("fiveStans")} className="flex w-full items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-left text-sm font-light tracking-wide text-white/75 transition hover:border-white/30 hover:bg-white/[0.05]"><span>The 5 Stans & Silk Road - TBD</span><span className="shrink-0 rounded-full border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-[#FF8FC7]">Dreaming</span></button>
               </div>
             </>
-          ) : selectedTrip === "septOct" ? (
+          ) : selectedTrip === "morocco" ? (
+            <>
+              <button type="button" onClick={() => { setSelectedTrip(""); setShowMoroccoNameInput(false); setMoroccoNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
+              <h1 className="mb-4 text-3xl font-light tracking-wide">Morocco - Sept 2026</h1>
+              <div className="space-y-3">
+                <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary Summary</button>
+                <button type="button" onClick={() => setShowMoroccoNameInput(true)} className="w-full rounded-2xl border border-white/20 bg-white/[0.04] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/75 transition hover:border-white/40 hover:bg-white/[0.07]">I am interested</button>
+              </div>
+
+              {showMoroccoNameInput && (
+                <form onSubmit={(event) => { event.preventDefault(); addMoroccoInterestedName(); }} className="mt-5 rounded-3xl border border-white/10 bg-white/[0.03] p-4 text-left">
+                  <label className="mb-2 block text-xs uppercase tracking-[0.22em] text-white/45" htmlFor="morocco-interest-name">Name</label>
+                  <input id="morocco-interest-name" value={moroccoNameInput} onChange={(event) => setMoroccoNameInput(event.target.value)} autoFocus className="mb-3 w-full rounded-2xl border border-white/15 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-white/40" placeholder="Enter your name" />
+                  <button type="submit" className="w-full rounded-2xl border border-[#72E49A]/35 bg-[#72E49A]/10 px-4 py-3 text-sm uppercase tracking-[0.18em] text-[#72E49A] transition hover:bg-[#72E49A]/15">Add to list</button>
+                </form>
+              )}
+
+              <section className="mt-6 rounded-3xl border border-white/10 bg-black/20 p-5 text-left">
+                <div className="mb-4 flex items-center justify-between gap-3">
+                  <h2 className="text-sm uppercase tracking-[0.24em] text-white/55">Who signed up</h2>
+                  <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-white/45">{moroccoInterestedNames.length}</span>
+                </div>
+                {moroccoInterestedNames.length ? (
+                  <div className="space-y-2">
+                    {moroccoInterestedNames.map((name) => (
+                      <p key={name} className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/75">{name}</p>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm text-white/35">No names added yet.</p>
+                )}
+              </section>
+            </>
+          ) : selectedTrip === "azoresPortugal" ? (
+            <>
+              <button type="button" onClick={() => { setSelectedTrip(""); setShowAzoresNameInput(false); setAzoresNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
+              <h1 className="mb-4 text-3xl font-light tracking-wide">Azures Portugal - TBD</h1>
+              <div className="space-y-3">
+                <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary Summary</button>
+                <button type="button" onClick={() => setShowAzoresNameInput(true)} className="w-full rounded-2xl border border-white/20 bg-white/[0.04] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/75 transition hover:border-white/40 hover:bg-white/[0.07]">I am interested</button>
+              </div>
+
+              {showAzoresNameInput && (
+                <form onSubmit={(event) => { event.preventDefault(); addAzoresInterestedName(); }} className="mt-5 rounded-3xl border border-white/10 bg-white/[0.03] p-4 text-left">
+                  <label className="mb-2 block text-xs uppercase tracking-[0.22em] text-white/45" htmlFor="azores-interest-name">Name</label>
+                  <input id="azores-interest-name" value={azoresNameInput} onChange={(event) => setAzoresNameInput(event.target.value)} autoFocus className="mb-3 w-full rounded-2xl border border-white/15 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-white/40" placeholder="Enter your name" />
+                  <button type="submit" className="w-full rounded-2xl border border-[#72E49A]/35 bg-[#72E49A]/10 px-4 py-3 text-sm uppercase tracking-[0.18em] text-[#72E49A] transition hover:bg-[#72E49A]/15">Add to list</button>
+                </form>
+              )}
+
+              <section className="mt-6 rounded-3xl border border-white/10 bg-black/20 p-5 text-left">
+                <div className="mb-4 flex items-center justify-between gap-3">
+                  <h2 className="text-sm uppercase tracking-[0.24em] text-white/55">Who signed up</h2>
+                  <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-white/45">{azoresInterestedNames.length}</span>
+                </div>
+                {azoresInterestedNames.length ? (
+                  <div className="space-y-2">
+                    {azoresInterestedNames.map((name) => (
+                      <p key={name} className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/75">{name}</p>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm text-white/35">No names added yet.</p>
+                )}
+              </section>
+            </>
+          ) : selectedTrip === "similanThailand" ? (
+            <>
+              <button type="button" onClick={() => { setSelectedTrip(""); setShowSimilanNameInput(false); setSimilanNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
+              <h1 className="mb-4 text-3xl font-light tracking-wide">Similan Thailand Liveaboard - March 2028</h1>
+              <div className="space-y-3">
+                <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary Summary</button>
+                <button type="button" onClick={() => setShowSimilanNameInput(true)} className="w-full rounded-2xl border border-white/20 bg-white/[0.04] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/75 transition hover:border-white/40 hover:bg-white/[0.07]">I am interested</button>
+              </div>
+
+              {showSimilanNameInput && (
+                <form onSubmit={(event) => { event.preventDefault(); addSimilanInterestedName(); }} className="mt-5 rounded-3xl border border-white/10 bg-white/[0.03] p-4 text-left">
+                  <label className="mb-2 block text-xs uppercase tracking-[0.22em] text-white/45" htmlFor="similan-interest-name">Name</label>
+                  <input id="similan-interest-name" value={similanNameInput} onChange={(event) => setSimilanNameInput(event.target.value)} autoFocus className="mb-3 w-full rounded-2xl border border-white/15 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-white/40" placeholder="Enter your name" />
+                  <button type="submit" className="w-full rounded-2xl border border-[#72E49A]/35 bg-[#72E49A]/10 px-4 py-3 text-sm uppercase tracking-[0.18em] text-[#72E49A] transition hover:bg-[#72E49A]/15">Add to list</button>
+                </form>
+              )}
+
+              <section className="mt-6 rounded-3xl border border-white/10 bg-black/20 p-5 text-left">
+                <div className="mb-4 flex items-center justify-between gap-3">
+                  <h2 className="text-sm uppercase tracking-[0.24em] text-white/55">Who signed up</h2>
+                  <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-white/45">{similanInterestedNames.length}</span>
+                </div>
+                {similanInterestedNames.length ? (
+                  <div className="space-y-2">
+                    {similanInterestedNames.map((name) => (
+                      <p key={name} className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/75">{name}</p>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm text-white/35">No names added yet.</p>
+                )}
+              </section>
+            </>
+          ) : selectedTrip === "fiveStans" ? (
+            <>
+              <button type="button" onClick={() => { setSelectedTrip(""); setShowFiveStansNameInput(false); setFiveStansNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
+              <h1 className="mb-4 text-3xl font-light tracking-wide">The 5 Stans & Silk Road - TBD</h1>
+              <div className="space-y-3">
+                <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary Summary</button>
+                <button type="button" onClick={() => setShowFiveStansNameInput(true)} className="w-full rounded-2xl border border-white/20 bg-white/[0.04] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/75 transition hover:border-white/40 hover:bg-white/[0.07]">I am interested</button>
+              </div>
+
+              {showFiveStansNameInput && (
+                <form onSubmit={(event) => { event.preventDefault(); addFiveStansInterestedName(); }} className="mt-5 rounded-3xl border border-white/10 bg-white/[0.03] p-4 text-left">
+                  <label className="mb-2 block text-xs uppercase tracking-[0.22em] text-white/45" htmlFor="five-stans-interest-name">Name</label>
+                  <input id="five-stans-interest-name" value={fiveStansNameInput} onChange={(event) => setFiveStansNameInput(event.target.value)} autoFocus className="mb-3 w-full rounded-2xl border border-white/15 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-white/40" placeholder="Enter your name" />
+                  <button type="submit" className="w-full rounded-2xl border border-[#72E49A]/35 bg-[#72E49A]/10 px-4 py-3 text-sm uppercase tracking-[0.18em] text-[#72E49A] transition hover:bg-[#72E49A]/15">Add to list</button>
+                </form>
+              )}
+
+              <section className="mt-6 rounded-3xl border border-white/10 bg-black/20 p-5 text-left">
+                <div className="mb-4 flex items-center justify-between gap-3">
+                  <h2 className="text-sm uppercase tracking-[0.24em] text-white/55">Who signed up</h2>
+                  <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-white/45">{fiveStansInterestedNames.length}</span>
+                </div>
+                {fiveStansInterestedNames.length ? (
+                  <div className="space-y-2">
+                    {fiveStansInterestedNames.map((name) => (
+                      <p key={name} className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/75">{name}</p>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm text-white/35">No names added yet.</p>
+                )}
+              </section>
+            </>
+          ) : selectedTrip !== "okinawaTaiwan" ? (
             <>
               <button type="button" onClick={() => setSelectedTrip("")} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">← Back</button>
               <h1 className="mb-4 text-3xl font-light tracking-wide">Welcome to TBD 2026</h1>
