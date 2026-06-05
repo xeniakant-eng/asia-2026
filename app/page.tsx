@@ -29,6 +29,49 @@ type PackingChecklist = {
 type Person = [string, string];
 type SignupTripKey = "morocco" | "skiMyoko" | "skiDeerValley" | "skiBig3" | "houston" | "azoresPortugal" | "similanThailand" | "disneyWorld" | "fiveStans";
 
+type TripStatus = "Planning" | "Confirmed" | "Dreaming";
+
+function TripButton({
+  location,
+  subtitle,
+  date,
+  status,
+  onClick,
+}: {
+  location: string;
+  subtitle?: string;
+  date: string;
+  status: TripStatus;
+  onClick: () => void;
+}) {
+  const statusStyles: Record<TripStatus, string> = {
+    Planning: "border-[#FFD76A]/35 bg-[#FFD76A]/10 text-[#FFD76A]",
+    Confirmed: "border-[#72E49A]/35 bg-[#72E49A]/10 text-[#72E49A]",
+    Dreaming: "border-[#FF8FC7]/35 bg-[#FF8FC7]/10 text-[#FF8FC7]",
+  };
+
+  return (
+    <button type="button" onClick={onClick} className="flex w-full items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-left text-sm font-light tracking-wide text-white/75 transition hover:border-white/30 hover:bg-white/[0.05]">
+      <span className="min-w-0">
+        <span className="block">{location}</span>
+        {subtitle && <span className="mt-1 block text-xs text-white/60">{subtitle}</span>}
+        <span className="mt-1 block text-xs text-white/45">{date}</span>
+      </span>
+      <span className={`shrink-0 rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.18em] ${statusStyles[status]}`}>{status}</span>
+    </button>
+  );
+}
+
+function TripPanelTitle({ location, subtitle, date }: { location: string; subtitle?: string; date: string }) {
+  return (
+    <h1 className="mb-4 text-3xl font-light tracking-wide">
+      <span className="block">{location}</span>
+      {subtitle && <span className="mt-2 block text-base text-white/60">{subtitle}</span>}
+      <span className="mt-2 block text-base text-white/45">{date}</span>
+    </h1>
+  );
+}
+
 function buildDateRange(start: Date, end: Date): Date[] {
   const dates: Date[] = [];
   const current = new Date(start);
@@ -787,22 +830,22 @@ export default function TravelSite() {
               <h1 className="mb-4 text-3xl font-light tracking-wide">Welcome to XK Events</h1>
               <p className="mb-8 text-sm leading-6 text-white/55">Please select your trip.</p>
               <div className="space-y-3">
-                <button type="button" onClick={() => setSelectedTrip("morocco")} className="flex w-full items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-left text-sm font-light tracking-wide text-white/75 transition hover:border-white/30 hover:bg-white/[0.05]"><span>Morocco - Sept 2026</span><span className="shrink-0 rounded-full border border-[#FFD76A]/35 bg-[#FFD76A]/10 px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-[#FFD76A]">Planning</span></button>
-                <button type="button" onClick={() => setSelectedTrip("okinawaTaiwan")} className="flex w-full items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-left text-sm font-light tracking-wide text-white/75 transition hover:border-white/30 hover:bg-white/[0.05]"><span>Okinawa & Taiwan - Nov/Dec 2026</span><span className="shrink-0 rounded-full border border-[#72E49A]/35 bg-[#72E49A]/10 px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-[#72E49A]">Confirmed</span></button>
-                <button type="button" onClick={() => setSelectedTrip("skiMyoko")} className="flex w-full items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-left text-sm font-light tracking-wide text-white/75 transition hover:border-white/30 hover:bg-white/[0.05]"><span>Ski Myoko Suginohara Japan - Jan 2027</span><span className="shrink-0 rounded-full border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-[#FF8FC7]">Dreaming</span></button>
-                <button type="button" onClick={() => setSelectedTrip("skiDeerValley")} className="flex w-full items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-left text-sm font-light tracking-wide text-white/75 transition hover:border-white/30 hover:bg-white/[0.05]"><span>Ski Deer Valley UT USA - Feb 2027</span><span className="shrink-0 rounded-full border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-[#FF8FC7]">Dreaming</span></button>
-                <button type="button" onClick={() => setSelectedTrip("skiBig3")} className="flex w-full items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-left text-sm font-light tracking-wide text-white/75 transition hover:border-white/30 hover:bg-white/[0.05]"><span>SkiBig3 AB Canada - Mar 2027</span><span className="shrink-0 rounded-full border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-[#FF8FC7]">Dreaming</span></button>
-                <button type="button" onClick={() => setSelectedTrip("houston")} className="flex w-full items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-left text-sm font-light tracking-wide text-white/75 transition hover:border-white/30 hover:bg-white/[0.05]"><span>Houston TX USA - Mar 2027</span><span className="shrink-0 rounded-full border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-[#FF8FC7]">Dreaming</span></button>
-                <button type="button" onClick={() => setSelectedTrip("similanThailand")} className="flex w-full items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-left text-sm font-light tracking-wide text-white/75 transition hover:border-white/30 hover:bg-white/[0.05]"><span>Similan Thailand Liveaboard - Mar 2028</span><span className="shrink-0 rounded-full border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-[#FF8FC7]">Dreaming</span></button>
-                <button type="button" onClick={() => setSelectedTrip("disneyWorld")} className="flex w-full items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-left text-sm font-light tracking-wide text-white/75 transition hover:border-white/30 hover:bg-white/[0.05]"><span>Disney World Orlando FL USA - Nov 2028</span><span className="shrink-0 rounded-full border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-[#FF8FC7]">Dreaming</span></button>
-                <button type="button" onClick={() => setSelectedTrip("azoresPortugal")} className="flex w-full items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-left text-sm font-light tracking-wide text-white/75 transition hover:border-white/30 hover:bg-white/[0.05]"><span>Azores Portugal - TBD</span><span className="shrink-0 rounded-full border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-[#FF8FC7]">Dreaming</span></button>
-                <button type="button" onClick={() => setSelectedTrip("fiveStans")} className="flex w-full items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-left text-sm font-light tracking-wide text-white/75 transition hover:border-white/30 hover:bg-white/[0.05]"><span>The 5 Stans & Silk Road - TBD</span><span className="shrink-0 rounded-full border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-[#FF8FC7]">Dreaming</span></button>
+                <TripButton location="Morocco" date="Sept 3 to Sept 12 2026" status="Planning" onClick={() => setSelectedTrip("morocco")} />
+                <TripButton location="Okinawa & Taiwan" date="Nov/Dec 2026" status="Confirmed" onClick={() => setSelectedTrip("okinawaTaiwan")} />
+                <TripButton location="Ski Myoko Suginohara Japan" date="Jan 2027" status="Dreaming" onClick={() => setSelectedTrip("skiMyoko")} />
+                <TripButton location="Ski Deer Valley UT USA" date="Feb 2027" status="Dreaming" onClick={() => setSelectedTrip("skiDeerValley")} />
+                <TripButton location="SkiBig3 AB Canada" date="Mar 2027" status="Dreaming" onClick={() => setSelectedTrip("skiBig3")} />
+                <TripButton location="Houston & Galveston TX USA" subtitle="FRC & Disney Cruise" date="April 28- May 6 2027" status="Dreaming" onClick={() => setSelectedTrip("houston")} />
+                <TripButton location="Azores Portugal" date="Sept 2027" status="Dreaming" onClick={() => setSelectedTrip("azoresPortugal")} />
+                <TripButton location="Similan & Phuket Thailand" subtitle="Scuba Diving Liveaboard" date="Mar 2028" status="Dreaming" onClick={() => setSelectedTrip("similanThailand")} />
+                <TripButton location="Orlando FL USA" subtitle="Disney World" date="Nov 2028" status="Dreaming" onClick={() => setSelectedTrip("disneyWorld")} />
+                <TripButton location="The 5 Stans & Silk Road" date="TBD" status="Dreaming" onClick={() => setSelectedTrip("fiveStans")} />
               </div>
             </>
           ) : selectedTrip === "morocco" ? (
             <>
               <button type="button" onClick={() => { setSelectedTrip(""); setShowMoroccoNameInput(false); setMoroccoNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
-              <h1 className="mb-4 text-3xl font-light tracking-wide">Morocco - Sept 2026</h1>
+              <TripPanelTitle location="Morocco" date="Sept 3 to Sept 12 2026" />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary Summary</button>
                 <button type="button" onClick={() => setShowMoroccoNameInput(true)} className="w-full rounded-2xl border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#FF8FC7] transition hover:border-[#FF8FC7]/60 hover:bg-[#FF8FC7]/15">I am interested</button>
@@ -835,7 +878,7 @@ export default function TravelSite() {
           ) : selectedTrip === "skiMyoko" ? (
             <>
               <button type="button" onClick={() => { setSelectedTrip(""); setShowSkiMyokoNameInput(false); setSkiMyokoNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
-              <h1 className="mb-4 text-3xl font-light tracking-wide">Ski Myoko Suginohara Japan - Jan 2027</h1>
+              <TripPanelTitle location="Ski Myoko Suginohara Japan" date="Jan 2027" />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary Summary</button>
                 <button type="button" onClick={() => setShowSkiMyokoNameInput(true)} className="w-full rounded-2xl border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#FF8FC7] transition hover:border-[#FF8FC7]/60 hover:bg-[#FF8FC7]/15">I am interested</button>
@@ -868,7 +911,7 @@ export default function TravelSite() {
           ) : selectedTrip === "skiDeerValley" ? (
             <>
               <button type="button" onClick={() => { setSelectedTrip(""); setShowSkiDeerValleyNameInput(false); setSkiDeerValleyNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
-              <h1 className="mb-4 text-3xl font-light tracking-wide">Ski Deer Valley UT USA - Feb 2027</h1>
+              <TripPanelTitle location="Ski Deer Valley UT USA" date="Feb 2027" />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary Summary</button>
                 <button type="button" onClick={() => setShowSkiDeerValleyNameInput(true)} className="w-full rounded-2xl border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#FF8FC7] transition hover:border-[#FF8FC7]/60 hover:bg-[#FF8FC7]/15">I am interested</button>
@@ -901,7 +944,7 @@ export default function TravelSite() {
           ) : selectedTrip === "skiBig3" ? (
             <>
               <button type="button" onClick={() => { setSelectedTrip(""); setShowSkiBig3NameInput(false); setSkiBig3NameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
-              <h1 className="mb-4 text-3xl font-light tracking-wide">SkiBig3 AB Canada - Mar 2027</h1>
+              <TripPanelTitle location="SkiBig3 AB Canada" date="Mar 2027" />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary Summary</button>
                 <button type="button" onClick={() => setShowSkiBig3NameInput(true)} className="w-full rounded-2xl border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#FF8FC7] transition hover:border-[#FF8FC7]/60 hover:bg-[#FF8FC7]/15">I am interested</button>
@@ -934,7 +977,7 @@ export default function TravelSite() {
           ) : selectedTrip === "houston" ? (
             <>
               <button type="button" onClick={() => { setSelectedTrip(""); setShowHoustonNameInput(false); setHoustonNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
-              <h1 className="mb-4 text-3xl font-light tracking-wide">Houston TX USA - Mar 2027</h1>
+              <TripPanelTitle location="Houston & Galveston TX USA" subtitle="FRC & Disney Cruise" date="April 28- May 6 2027" />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary Summary</button>
                 <button type="button" onClick={() => setShowHoustonNameInput(true)} className="w-full rounded-2xl border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#FF8FC7] transition hover:border-[#FF8FC7]/60 hover:bg-[#FF8FC7]/15">I am interested</button>
@@ -967,7 +1010,7 @@ export default function TravelSite() {
           ) : selectedTrip === "azoresPortugal" ? (
             <>
               <button type="button" onClick={() => { setSelectedTrip(""); setShowAzoresNameInput(false); setAzoresNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
-              <h1 className="mb-4 text-3xl font-light tracking-wide">Azores Portugal - TBD</h1>
+              <TripPanelTitle location="Azores Portugal" date="Sept 2027" />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary Summary</button>
                 <button type="button" onClick={() => setShowAzoresNameInput(true)} className="w-full rounded-2xl border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#FF8FC7] transition hover:border-[#FF8FC7]/60 hover:bg-[#FF8FC7]/15">I am interested</button>
@@ -1000,7 +1043,7 @@ export default function TravelSite() {
           ) : selectedTrip === "similanThailand" ? (
             <>
               <button type="button" onClick={() => { setSelectedTrip(""); setShowSimilanNameInput(false); setSimilanNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
-              <h1 className="mb-4 text-3xl font-light tracking-wide">Similan Thailand Liveaboard - Mar 2028</h1>
+              <TripPanelTitle location="Similan & Phuket Thailand" subtitle="Scuba Diving Liveaboard" date="Mar 2028" />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary Summary</button>
                 <button type="button" onClick={() => setShowSimilanNameInput(true)} className="w-full rounded-2xl border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#FF8FC7] transition hover:border-[#FF8FC7]/60 hover:bg-[#FF8FC7]/15">I am interested</button>
@@ -1033,7 +1076,7 @@ export default function TravelSite() {
           ) : selectedTrip === "disneyWorld" ? (
             <>
               <button type="button" onClick={() => { setSelectedTrip(""); setShowDisneyWorldNameInput(false); setDisneyWorldNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
-              <h1 className="mb-4 text-3xl font-light tracking-wide">Disney World Orlando FL USA - Nov 2028</h1>
+              <TripPanelTitle location="Orlando FL USA" subtitle="Disney World" date="Nov 2028" />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary Summary</button>
                 <button type="button" onClick={() => setShowDisneyWorldNameInput(true)} className="w-full rounded-2xl border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#FF8FC7] transition hover:border-[#FF8FC7]/60 hover:bg-[#FF8FC7]/15">I am interested</button>
@@ -1066,7 +1109,7 @@ export default function TravelSite() {
           ) : selectedTrip === "fiveStans" ? (
             <>
               <button type="button" onClick={() => { setSelectedTrip(""); setShowFiveStansNameInput(false); setFiveStansNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
-              <h1 className="mb-4 text-3xl font-light tracking-wide">The 5 Stans & Silk Road - TBD</h1>
+              <TripPanelTitle location="The 5 Stans & Silk Road" date="TBD" />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary Summary</button>
                 <button type="button" onClick={() => setShowFiveStansNameInput(true)} className="w-full rounded-2xl border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#FF8FC7] transition hover:border-[#FF8FC7]/60 hover:bg-[#FF8FC7]/15">I am interested</button>
