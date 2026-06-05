@@ -830,12 +830,12 @@ export default function TravelSite() {
               <h1 className="mb-4 text-3xl font-light tracking-wide">Welcome to XK Events</h1>
               <p className="mb-8 text-sm leading-6 text-white/55">Please select your trip.</p>
               <div className="space-y-3">
-                <TripButton location="Morocco" date="Sept 3 to Sept 12 2026" status="Planning" onClick={() => setSelectedTrip("morocco")} />
-                <TripButton location="Okinawa & Taiwan" date="Nov/Dec 2026" status="Confirmed" onClick={() => setSelectedTrip("okinawaTaiwan")} />
+                <TripButton location="Morocco" date="Sept 3 - Sept 12 2026" status="Planning" onClick={() => setSelectedTrip("morocco")} />
+                <TripButton location="Okinawa & Taiwan" date="Nov 21 - Dec 21 2026" status="Confirmed" onClick={() => setSelectedTrip("okinawaTaiwan")} />
                 <TripButton location="Ski Myoko Suginohara Japan" date="Jan 2027" status="Dreaming" onClick={() => setSelectedTrip("skiMyoko")} />
                 <TripButton location="Ski Deer Valley UT USA" date="Feb 2027" status="Dreaming" onClick={() => setSelectedTrip("skiDeerValley")} />
                 <TripButton location="SkiBig3 AB Canada" date="Mar 2027" status="Dreaming" onClick={() => setSelectedTrip("skiBig3")} />
-                <TripButton location="Houston & Galveston TX USA" subtitle="FRC & Disney Cruise" date="April 28- May 6 2027" status="Dreaming" onClick={() => setSelectedTrip("houston")} />
+                <TripButton location="Houston & Galveston TX USA" subtitle="FRC & Disney Cruise" date="April 28 - May 6 2027" status="Dreaming" onClick={() => setSelectedTrip("houston")} />
                 <TripButton location="Azores Portugal" date="Sept 2027" status="Dreaming" onClick={() => setSelectedTrip("azoresPortugal")} />
                 <TripButton location="Similan & Phuket Thailand" subtitle="Scuba Diving Liveaboard" date="Mar 2028" status="Dreaming" onClick={() => setSelectedTrip("similanThailand")} />
                 <TripButton location="Orlando FL USA" subtitle="Disney World" date="Nov 2028" status="Dreaming" onClick={() => setSelectedTrip("disneyWorld")} />
@@ -845,7 +845,7 @@ export default function TravelSite() {
           ) : selectedTrip === "morocco" ? (
             <>
               <button type="button" onClick={() => { setSelectedTrip(""); setShowMoroccoNameInput(false); setMoroccoNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
-              <TripPanelTitle location="Morocco" date="Sept 3 to Sept 12 2026" />
+              <TripPanelTitle location="Morocco" date="Sept 3 - Sept 12 2026" />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary Summary</button>
                 <button type="button" onClick={() => setShowMoroccoNameInput(true)} className="w-full rounded-2xl border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#FF8FC7] transition hover:border-[#FF8FC7]/60 hover:bg-[#FF8FC7]/15">I am interested</button>
@@ -977,7 +977,7 @@ export default function TravelSite() {
           ) : selectedTrip === "houston" ? (
             <>
               <button type="button" onClick={() => { setSelectedTrip(""); setShowHoustonNameInput(false); setHoustonNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
-              <TripPanelTitle location="Houston & Galveston TX USA" subtitle="FRC & Disney Cruise" date="April 28- May 6 2027" />
+              <TripPanelTitle location="Houston & Galveston TX USA" subtitle="FRC & Disney Cruise" date="April 28 - May 6 2027" />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary Summary</button>
                 <button type="button" onClick={() => setShowHoustonNameInput(true)} className="w-full rounded-2xl border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#FF8FC7] transition hover:border-[#FF8FC7]/60 hover:bg-[#FF8FC7]/15">I am interested</button>
