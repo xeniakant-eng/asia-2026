@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const VALID_TRIPS = new Set(["morocco", "houston", "azoresPortugal", "similanThailand", "fiveStans"]);
+const VALID_TRIPS = new Set(["morocco", "skiMyoko", "skiDeerValley", "skiBig3", "houston", "azoresPortugal", "similanThailand", "disneyWorld", "fiveStans"]);
 
 type SignupRow = {
   name: string;

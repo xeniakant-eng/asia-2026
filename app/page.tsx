@@ -27,7 +27,7 @@ type PackingChecklist = {
 };
 
 type Person = [string, string];
-type SignupTripKey = "morocco" | "houston" | "azoresPortugal" | "similanThailand" | "fiveStans";
+type SignupTripKey = "morocco" | "skiMyoko" | "skiDeerValley" | "skiBig3" | "houston" | "azoresPortugal" | "similanThailand" | "disneyWorld" | "fiveStans";
 
 function buildDateRange(start: Date, end: Date): Date[] {
   const dates: Date[] = [];
@@ -181,7 +181,7 @@ export default function TravelSite() {
   const [guestName, setGuestName] = useState("");
   const [isGuestConfirmed, setIsGuestConfirmed] = useState(false);
   const [showGuestActions, setShowGuestActions] = useState(false);
-  const [selectedTrip, setSelectedTrip] = useState<"" | "morocco" | "okinawaTaiwan" | "houston" | "azoresPortugal" | "similanThailand" | "fiveStans">("");
+  const [selectedTrip, setSelectedTrip] = useState<"" | "morocco" | "okinawaTaiwan" | "skiMyoko" | "skiDeerValley" | "skiBig3" | "houston" | "azoresPortugal" | "similanThailand" | "disneyWorld" | "fiveStans">("");
   const [moroccoInterestedNames, setMoroccoInterestedNames] = useState<string[]>(() => {
     if (typeof window === "undefined") return [];
     try {
@@ -192,6 +192,36 @@ export default function TravelSite() {
   });
   const [showMoroccoNameInput, setShowMoroccoNameInput] = useState(false);
   const [moroccoNameInput, setMoroccoNameInput] = useState("");
+  const [skiMyokoInterestedNames, setSkiMyokoInterestedNames] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      return JSON.parse(window.localStorage.getItem("skiMyokoInterestedNames") || "[]");
+    } catch {
+      return [];
+    }
+  });
+  const [showSkiMyokoNameInput, setShowSkiMyokoNameInput] = useState(false);
+  const [skiMyokoNameInput, setSkiMyokoNameInput] = useState("");
+  const [skiDeerValleyInterestedNames, setSkiDeerValleyInterestedNames] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      return JSON.parse(window.localStorage.getItem("skiDeerValleyInterestedNames") || "[]");
+    } catch {
+      return [];
+    }
+  });
+  const [showSkiDeerValleyNameInput, setShowSkiDeerValleyNameInput] = useState(false);
+  const [skiDeerValleyNameInput, setSkiDeerValleyNameInput] = useState("");
+  const [skiBig3InterestedNames, setSkiBig3InterestedNames] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      return JSON.parse(window.localStorage.getItem("skiBig3InterestedNames") || "[]");
+    } catch {
+      return [];
+    }
+  });
+  const [showSkiBig3NameInput, setShowSkiBig3NameInput] = useState(false);
+  const [skiBig3NameInput, setSkiBig3NameInput] = useState("");
   const [houstonInterestedNames, setHoustonInterestedNames] = useState<string[]>(() => {
     if (typeof window === "undefined") return [];
     try {
@@ -222,6 +252,16 @@ export default function TravelSite() {
   });
   const [showSimilanNameInput, setShowSimilanNameInput] = useState(false);
   const [similanNameInput, setSimilanNameInput] = useState("");
+  const [disneyWorldInterestedNames, setDisneyWorldInterestedNames] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      return JSON.parse(window.localStorage.getItem("disneyWorldInterestedNames") || "[]");
+    } catch {
+      return [];
+    }
+  });
+  const [showDisneyWorldNameInput, setShowDisneyWorldNameInput] = useState(false);
+  const [disneyWorldNameInput, setDisneyWorldNameInput] = useState("");
   const [fiveStansInterestedNames, setFiveStansInterestedNames] = useState<string[]>(() => {
     if (typeof window === "undefined") return [];
     try {
@@ -267,17 +307,25 @@ export default function TravelSite() {
 
   useEffect(() => {
     async function loadTripSignups() {
-      const [moroccoNames, houstonNames, azoresNames, similanNames, fiveStansNames] = await Promise.all([
+      const [moroccoNames, skiMyokoNames, skiDeerValleyNames, skiBig3Names, houstonNames, azoresNames, similanNames, disneyWorldNames, fiveStansNames] = await Promise.all([
         fetchTripSignupNames("morocco"),
+        fetchTripSignupNames("skiMyoko"),
+        fetchTripSignupNames("skiDeerValley"),
+        fetchTripSignupNames("skiBig3"),
         fetchTripSignupNames("houston"),
         fetchTripSignupNames("azoresPortugal"),
         fetchTripSignupNames("similanThailand"),
+        fetchTripSignupNames("disneyWorld"),
         fetchTripSignupNames("fiveStans"),
       ]);
       if (moroccoNames) setMoroccoInterestedNames(moroccoNames);
+      if (skiMyokoNames) setSkiMyokoInterestedNames(skiMyokoNames);
+      if (skiDeerValleyNames) setSkiDeerValleyInterestedNames(skiDeerValleyNames);
+      if (skiBig3Names) setSkiBig3InterestedNames(skiBig3Names);
       if (houstonNames) setHoustonInterestedNames(houstonNames);
       if (azoresNames) setAzoresInterestedNames(azoresNames);
       if (similanNames) setSimilanInterestedNames(similanNames);
+      if (disneyWorldNames) setDisneyWorldInterestedNames(disneyWorldNames);
       if (fiveStansNames) setFiveStansInterestedNames(fiveStansNames);
     }
     loadTripSignups();
@@ -309,6 +357,18 @@ export default function TravelSite() {
   }, [moroccoInterestedNames]);
 
   useEffect(() => {
+    window.localStorage.setItem("skiMyokoInterestedNames", JSON.stringify(skiMyokoInterestedNames));
+  }, [skiMyokoInterestedNames]);
+
+  useEffect(() => {
+    window.localStorage.setItem("skiDeerValleyInterestedNames", JSON.stringify(skiDeerValleyInterestedNames));
+  }, [skiDeerValleyInterestedNames]);
+
+  useEffect(() => {
+    window.localStorage.setItem("skiBig3InterestedNames", JSON.stringify(skiBig3InterestedNames));
+  }, [skiBig3InterestedNames]);
+
+  useEffect(() => {
     window.localStorage.setItem("houstonInterestedNames", JSON.stringify(houstonInterestedNames));
   }, [houstonInterestedNames]);
 
@@ -319,6 +379,10 @@ export default function TravelSite() {
   useEffect(() => {
     window.localStorage.setItem("similanInterestedNames", JSON.stringify(similanInterestedNames));
   }, [similanInterestedNames]);
+
+  useEffect(() => {
+    window.localStorage.setItem("disneyWorldInterestedNames", JSON.stringify(disneyWorldInterestedNames));
+  }, [disneyWorldInterestedNames]);
 
   useEffect(() => {
     window.localStorage.setItem("fiveStansInterestedNames", JSON.stringify(fiveStansInterestedNames));
@@ -633,6 +697,30 @@ export default function TravelSite() {
     setShowMoroccoNameInput(false);
   };
 
+  const addSkiMyokoInterestedName = async () => {
+    const nextName = skiMyokoNameInput.trim();
+    if (!nextName) return;
+    await saveInterestedName("skiMyoko", nextName, setSkiMyokoInterestedNames);
+    setSkiMyokoNameInput("");
+    setShowSkiMyokoNameInput(false);
+  };
+
+  const addSkiDeerValleyInterestedName = async () => {
+    const nextName = skiDeerValleyNameInput.trim();
+    if (!nextName) return;
+    await saveInterestedName("skiDeerValley", nextName, setSkiDeerValleyInterestedNames);
+    setSkiDeerValleyNameInput("");
+    setShowSkiDeerValleyNameInput(false);
+  };
+
+  const addSkiBig3InterestedName = async () => {
+    const nextName = skiBig3NameInput.trim();
+    if (!nextName) return;
+    await saveInterestedName("skiBig3", nextName, setSkiBig3InterestedNames);
+    setSkiBig3NameInput("");
+    setShowSkiBig3NameInput(false);
+  };
+
   const addHoustonInterestedName = async () => {
     const nextName = houstonNameInput.trim();
     if (!nextName) return;
@@ -655,6 +743,14 @@ export default function TravelSite() {
     await saveInterestedName("similanThailand", nextName, setSimilanInterestedNames);
     setSimilanNameInput("");
     setShowSimilanNameInput(false);
+  };
+
+  const addDisneyWorldInterestedName = async () => {
+    const nextName = disneyWorldNameInput.trim();
+    if (!nextName) return;
+    await saveInterestedName("disneyWorld", nextName, setDisneyWorldInterestedNames);
+    setDisneyWorldNameInput("");
+    setShowDisneyWorldNameInput(false);
   };
 
   const addFiveStansInterestedName = async () => {
@@ -693,8 +789,12 @@ export default function TravelSite() {
               <div className="space-y-3">
                 <button type="button" onClick={() => setSelectedTrip("morocco")} className="flex w-full items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-left text-sm font-light tracking-wide text-white/75 transition hover:border-white/30 hover:bg-white/[0.05]"><span>Morocco - Sept 2026</span><span className="shrink-0 rounded-full border border-[#FFD76A]/35 bg-[#FFD76A]/10 px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-[#FFD76A]">Planning</span></button>
                 <button type="button" onClick={() => setSelectedTrip("okinawaTaiwan")} className="flex w-full items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-left text-sm font-light tracking-wide text-white/75 transition hover:border-white/30 hover:bg-white/[0.05]"><span>Okinawa & Taiwan - Nov/Dec 2026</span><span className="shrink-0 rounded-full border border-[#72E49A]/35 bg-[#72E49A]/10 px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-[#72E49A]">Confirmed</span></button>
-                <button type="button" onClick={() => setSelectedTrip("houston")} className="flex w-full items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-left text-sm font-light tracking-wide text-white/75 transition hover:border-white/30 hover:bg-white/[0.05]"><span>Houston TX USA - Mar 2027</span><span className="shrink-0 rounded-full border border-[#FFD76A]/35 bg-[#FFD76A]/10 px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-[#FFD76A]">Planning</span></button>
-                <button type="button" onClick={() => setSelectedTrip("similanThailand")} className="flex w-full items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-left text-sm font-light tracking-wide text-white/75 transition hover:border-white/30 hover:bg-white/[0.05]"><span>Similan Thailand Liveaboard - Mar 2028</span><span className="shrink-0 rounded-full border border-[#FFD76A]/35 bg-[#FFD76A]/10 px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-[#FFD76A]">Planning</span></button>
+                <button type="button" onClick={() => setSelectedTrip("skiMyoko")} className="flex w-full items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-left text-sm font-light tracking-wide text-white/75 transition hover:border-white/30 hover:bg-white/[0.05]"><span>Ski Myoko Suginohara Japan - Jan 2027</span><span className="shrink-0 rounded-full border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-[#FF8FC7]">Dreaming</span></button>
+                <button type="button" onClick={() => setSelectedTrip("skiDeerValley")} className="flex w-full items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-left text-sm font-light tracking-wide text-white/75 transition hover:border-white/30 hover:bg-white/[0.05]"><span>Ski Deer Valley UT USA - Feb 2027</span><span className="shrink-0 rounded-full border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-[#FF8FC7]">Dreaming</span></button>
+                <button type="button" onClick={() => setSelectedTrip("skiBig3")} className="flex w-full items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-left text-sm font-light tracking-wide text-white/75 transition hover:border-white/30 hover:bg-white/[0.05]"><span>SkiBig3 AB Canada - Mar 2027</span><span className="shrink-0 rounded-full border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-[#FF8FC7]">Dreaming</span></button>
+                <button type="button" onClick={() => setSelectedTrip("houston")} className="flex w-full items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-left text-sm font-light tracking-wide text-white/75 transition hover:border-white/30 hover:bg-white/[0.05]"><span>Houston TX USA - Mar 2027</span><span className="shrink-0 rounded-full border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-[#FF8FC7]">Dreaming</span></button>
+                <button type="button" onClick={() => setSelectedTrip("similanThailand")} className="flex w-full items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-left text-sm font-light tracking-wide text-white/75 transition hover:border-white/30 hover:bg-white/[0.05]"><span>Similan Thailand Liveaboard - Mar 2028</span><span className="shrink-0 rounded-full border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-[#FF8FC7]">Dreaming</span></button>
+                <button type="button" onClick={() => setSelectedTrip("disneyWorld")} className="flex w-full items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-left text-sm font-light tracking-wide text-white/75 transition hover:border-white/30 hover:bg-white/[0.05]"><span>Disney World Orlando FL USA - Nov 2028</span><span className="shrink-0 rounded-full border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-[#FF8FC7]">Dreaming</span></button>
                 <button type="button" onClick={() => setSelectedTrip("azoresPortugal")} className="flex w-full items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-left text-sm font-light tracking-wide text-white/75 transition hover:border-white/30 hover:bg-white/[0.05]"><span>Azores Portugal - TBD</span><span className="shrink-0 rounded-full border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-[#FF8FC7]">Dreaming</span></button>
                 <button type="button" onClick={() => setSelectedTrip("fiveStans")} className="flex w-full items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-left text-sm font-light tracking-wide text-white/75 transition hover:border-white/30 hover:bg-white/[0.05]"><span>The 5 Stans & Silk Road - TBD</span><span className="shrink-0 rounded-full border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-[#FF8FC7]">Dreaming</span></button>
               </div>
@@ -724,6 +824,105 @@ export default function TravelSite() {
                 {moroccoInterestedNames.length ? (
                   <div className="space-y-2">
                     {moroccoInterestedNames.map((name) => (
+                      <p key={name} className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/75">{name}</p>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm text-white/35">No names added yet.</p>
+                )}
+              </section>
+            </>
+          ) : selectedTrip === "skiMyoko" ? (
+            <>
+              <button type="button" onClick={() => { setSelectedTrip(""); setShowSkiMyokoNameInput(false); setSkiMyokoNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
+              <h1 className="mb-4 text-3xl font-light tracking-wide">Ski Myoko Suginohara Japan - Jan 2027</h1>
+              <div className="space-y-3">
+                <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary Summary</button>
+                <button type="button" onClick={() => setShowSkiMyokoNameInput(true)} className="w-full rounded-2xl border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#FF8FC7] transition hover:border-[#FF8FC7]/60 hover:bg-[#FF8FC7]/15">I am interested</button>
+              </div>
+
+              {showSkiMyokoNameInput && (
+                <form onSubmit={(event) => { event.preventDefault(); addSkiMyokoInterestedName(); }} className="mt-5 rounded-3xl border border-white/10 bg-white/[0.03] p-4 text-left">
+                  <label className="mb-2 block text-xs uppercase tracking-[0.22em] text-white/45" htmlFor="ski-myoko-interest-name">Name</label>
+                  <input id="ski-myoko-interest-name" value={skiMyokoNameInput} onChange={(event) => setSkiMyokoNameInput(event.target.value)} autoFocus className="mb-3 w-full rounded-2xl border border-white/15 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-white/40" placeholder="Enter your name" />
+                  <button type="submit" className="w-full rounded-2xl border border-[#72E49A]/35 bg-[#72E49A]/10 px-4 py-3 text-sm uppercase tracking-[0.18em] text-[#72E49A] transition hover:bg-[#72E49A]/15">Add to list</button>
+                </form>
+              )}
+
+              <section className="mt-6 rounded-3xl border border-white/10 bg-black/20 p-5 text-left">
+                <div className="mb-4 flex items-center justify-between gap-3">
+                  <h2 className="text-sm uppercase tracking-[0.24em] text-white/55">Who signed up</h2>
+                  <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-white/45">{skiMyokoInterestedNames.length}</span>
+                </div>
+                {skiMyokoInterestedNames.length ? (
+                  <div className="space-y-2">
+                    {skiMyokoInterestedNames.map((name) => (
+                      <p key={name} className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/75">{name}</p>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm text-white/35">No names added yet.</p>
+                )}
+              </section>
+            </>
+          ) : selectedTrip === "skiDeerValley" ? (
+            <>
+              <button type="button" onClick={() => { setSelectedTrip(""); setShowSkiDeerValleyNameInput(false); setSkiDeerValleyNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
+              <h1 className="mb-4 text-3xl font-light tracking-wide">Ski Deer Valley UT USA - Feb 2027</h1>
+              <div className="space-y-3">
+                <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary Summary</button>
+                <button type="button" onClick={() => setShowSkiDeerValleyNameInput(true)} className="w-full rounded-2xl border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#FF8FC7] transition hover:border-[#FF8FC7]/60 hover:bg-[#FF8FC7]/15">I am interested</button>
+              </div>
+
+              {showSkiDeerValleyNameInput && (
+                <form onSubmit={(event) => { event.preventDefault(); addSkiDeerValleyInterestedName(); }} className="mt-5 rounded-3xl border border-white/10 bg-white/[0.03] p-4 text-left">
+                  <label className="mb-2 block text-xs uppercase tracking-[0.22em] text-white/45" htmlFor="ski-deer-valley-interest-name">Name</label>
+                  <input id="ski-deer-valley-interest-name" value={skiDeerValleyNameInput} onChange={(event) => setSkiDeerValleyNameInput(event.target.value)} autoFocus className="mb-3 w-full rounded-2xl border border-white/15 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-white/40" placeholder="Enter your name" />
+                  <button type="submit" className="w-full rounded-2xl border border-[#72E49A]/35 bg-[#72E49A]/10 px-4 py-3 text-sm uppercase tracking-[0.18em] text-[#72E49A] transition hover:bg-[#72E49A]/15">Add to list</button>
+                </form>
+              )}
+
+              <section className="mt-6 rounded-3xl border border-white/10 bg-black/20 p-5 text-left">
+                <div className="mb-4 flex items-center justify-between gap-3">
+                  <h2 className="text-sm uppercase tracking-[0.24em] text-white/55">Who signed up</h2>
+                  <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-white/45">{skiDeerValleyInterestedNames.length}</span>
+                </div>
+                {skiDeerValleyInterestedNames.length ? (
+                  <div className="space-y-2">
+                    {skiDeerValleyInterestedNames.map((name) => (
+                      <p key={name} className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/75">{name}</p>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm text-white/35">No names added yet.</p>
+                )}
+              </section>
+            </>
+          ) : selectedTrip === "skiBig3" ? (
+            <>
+              <button type="button" onClick={() => { setSelectedTrip(""); setShowSkiBig3NameInput(false); setSkiBig3NameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
+              <h1 className="mb-4 text-3xl font-light tracking-wide">SkiBig3 AB Canada - Mar 2027</h1>
+              <div className="space-y-3">
+                <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary Summary</button>
+                <button type="button" onClick={() => setShowSkiBig3NameInput(true)} className="w-full rounded-2xl border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#FF8FC7] transition hover:border-[#FF8FC7]/60 hover:bg-[#FF8FC7]/15">I am interested</button>
+              </div>
+
+              {showSkiBig3NameInput && (
+                <form onSubmit={(event) => { event.preventDefault(); addSkiBig3InterestedName(); }} className="mt-5 rounded-3xl border border-white/10 bg-white/[0.03] p-4 text-left">
+                  <label className="mb-2 block text-xs uppercase tracking-[0.22em] text-white/45" htmlFor="ski-big3-interest-name">Name</label>
+                  <input id="ski-big3-interest-name" value={skiBig3NameInput} onChange={(event) => setSkiBig3NameInput(event.target.value)} autoFocus className="mb-3 w-full rounded-2xl border border-white/15 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-white/40" placeholder="Enter your name" />
+                  <button type="submit" className="w-full rounded-2xl border border-[#72E49A]/35 bg-[#72E49A]/10 px-4 py-3 text-sm uppercase tracking-[0.18em] text-[#72E49A] transition hover:bg-[#72E49A]/15">Add to list</button>
+                </form>
+              )}
+
+              <section className="mt-6 rounded-3xl border border-white/10 bg-black/20 p-5 text-left">
+                <div className="mb-4 flex items-center justify-between gap-3">
+                  <h2 className="text-sm uppercase tracking-[0.24em] text-white/55">Who signed up</h2>
+                  <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-white/45">{skiBig3InterestedNames.length}</span>
+                </div>
+                {skiBig3InterestedNames.length ? (
+                  <div className="space-y-2">
+                    {skiBig3InterestedNames.map((name) => (
                       <p key={name} className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/75">{name}</p>
                     ))}
                   </div>
@@ -823,6 +1022,39 @@ export default function TravelSite() {
                 {similanInterestedNames.length ? (
                   <div className="space-y-2">
                     {similanInterestedNames.map((name) => (
+                      <p key={name} className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/75">{name}</p>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm text-white/35">No names added yet.</p>
+                )}
+              </section>
+            </>
+          ) : selectedTrip === "disneyWorld" ? (
+            <>
+              <button type="button" onClick={() => { setSelectedTrip(""); setShowDisneyWorldNameInput(false); setDisneyWorldNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
+              <h1 className="mb-4 text-3xl font-light tracking-wide">Disney World Orlando FL USA - Nov 2028</h1>
+              <div className="space-y-3">
+                <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary Summary</button>
+                <button type="button" onClick={() => setShowDisneyWorldNameInput(true)} className="w-full rounded-2xl border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#FF8FC7] transition hover:border-[#FF8FC7]/60 hover:bg-[#FF8FC7]/15">I am interested</button>
+              </div>
+
+              {showDisneyWorldNameInput && (
+                <form onSubmit={(event) => { event.preventDefault(); addDisneyWorldInterestedName(); }} className="mt-5 rounded-3xl border border-white/10 bg-white/[0.03] p-4 text-left">
+                  <label className="mb-2 block text-xs uppercase tracking-[0.22em] text-white/45" htmlFor="disney-world-interest-name">Name</label>
+                  <input id="disney-world-interest-name" value={disneyWorldNameInput} onChange={(event) => setDisneyWorldNameInput(event.target.value)} autoFocus className="mb-3 w-full rounded-2xl border border-white/15 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-white/40" placeholder="Enter your name" />
+                  <button type="submit" className="w-full rounded-2xl border border-[#72E49A]/35 bg-[#72E49A]/10 px-4 py-3 text-sm uppercase tracking-[0.18em] text-[#72E49A] transition hover:bg-[#72E49A]/15">Add to list</button>
+                </form>
+              )}
+
+              <section className="mt-6 rounded-3xl border border-white/10 bg-black/20 p-5 text-left">
+                <div className="mb-4 flex items-center justify-between gap-3">
+                  <h2 className="text-sm uppercase tracking-[0.24em] text-white/55">Who signed up</h2>
+                  <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-white/45">{disneyWorldInterestedNames.length}</span>
+                </div>
+                {disneyWorldInterestedNames.length ? (
+                  <div className="space-y-2">
+                    {disneyWorldInterestedNames.map((name) => (
                       <p key={name} className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/75">{name}</p>
                     ))}
                   </div>
