@@ -21,7 +21,6 @@ export default function MemoryMakerAlbumPage({ params }: { params: Promise<{ alb
   const { albumKey } = use(params);
   const [files, setFiles] = useState<MemoryMakerFile[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [deletingId, setDeletingId] = useState("");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [isBulkWorking, setIsBulkWorking] = useState(false);
   const [activePhotoIndex, setActivePhotoIndex] = useState<number | null>(null);
@@ -74,8 +73,7 @@ export default function MemoryMakerAlbumPage({ params }: { params: Promise<{ alb
     const password = window.prompt(`Enter the administrator password to delete ${ids.length === 1 ? "this photo" : "these photos"}:`);
     if (password === null) return;
 
-    if (ids.length === 1) setDeletingId(ids[0]);
-    else setIsBulkWorking(true);
+    setIsBulkWorking(true);
     setMessage("");
     try {
       const response = await fetch("/api/memory-maker", {
@@ -92,7 +90,6 @@ export default function MemoryMakerAlbumPage({ params }: { params: Promise<{ alb
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Unable to delete photos.");
     } finally {
-      setDeletingId("");
       setIsBulkWorking(false);
     }
   };
@@ -164,12 +161,11 @@ export default function MemoryMakerAlbumPage({ params }: { params: Promise<{ alb
         <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
           {files.map((file) => (
             <figure key={file.id} className={`relative overflow-hidden rounded-2xl border bg-white/[0.03] ${selectedIds.includes(file.id) ? "border-[#72E49A]/70" : "border-white/10"}`}>
-              <label className="absolute left-2 top-2 z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-white/25 bg-black/65 backdrop-blur-sm"><input type="checkbox" checked={selectedIds.includes(file.id)} onChange={(event) => setSelectedIds((current) => event.target.checked ? [...current, file.id] : current.filter((id) => id !== file.id))} className="h-4 w-4 accent-[#72E49A]" aria-label={`Select photo uploaded by ${file.uploader}`} /></label>
               <button type="button" onClick={() => setActivePhotoIndex(files.findIndex((candidate) => candidate.id === file.id))} className="block w-full"><img src={file.mediaUrl} alt={file.fileName} loading="lazy" className="aspect-square w-full object-cover transition hover:opacity-85" /></button>
               <figcaption className="p-3">
                 <div className="flex items-center justify-between gap-3">
                   <p className="min-w-0 truncate text-[10px] text-white/35">{file.uploader}</p>
-                  <button type="button" onClick={() => deletePhotos([file.id])} disabled={Boolean(deletingId) || isBulkWorking} className="shrink-0 text-[10px] uppercase tracking-[0.14em] text-red-200/45 transition hover:text-red-200 disabled:cursor-wait disabled:opacity-30">{deletingId === file.id ? "Deleting..." : "Delete"}</button>
+                  <label className="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/20 bg-black/30"><input type="checkbox" checked={selectedIds.includes(file.id)} onChange={(event) => setSelectedIds((current) => event.target.checked ? [...current, file.id] : current.filter((id) => id !== file.id))} className="h-4 w-4 accent-[#72E49A]" aria-label={`Select photo uploaded by ${file.uploader}`} /></label>
                 </div>
               </figcaption>
             </figure>

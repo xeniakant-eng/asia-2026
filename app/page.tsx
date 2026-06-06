@@ -225,7 +225,7 @@ function MemoryMaker({
     <section className="mb-10 rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
       <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
         <div>
-          <p className="mb-2 text-xs uppercase tracking-[0.3em]" style={{ color: accentColor }}>Memory Maker</p>
+          <p className="mb-2 text-xs uppercase tracking-[0.3em]" style={{ color: accentColor }}>Memory Maker (photo-only)</p>
           <h2 className="text-2xl font-light">📸 {albumName} Memories</h2>
           <p className="mt-2 text-sm text-white/45">Share photos with everyone joining this trip segment.</p>
         </div>
