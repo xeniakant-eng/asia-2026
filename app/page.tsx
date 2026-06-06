@@ -27,6 +27,7 @@ type PackingChecklist = {
 };
 
 type Person = [string, string];
+type DashboardSegment = { label: string; page: PageName; color: string };
 type SignupTripKey = "morocco" | "skiMyoko" | "skiDeerValley" | "skiBig3" | "houston" | "azoresPortugal" | "similanThailand" | "disneyWorld" | "fiveStans";
 type TripStatus = "Planning" | "Confirmed" | "Dreaming";
 type RentalCarArrangement = {
@@ -392,7 +393,7 @@ export default function TravelSite() {
   const [isGuestConfirmed, setIsGuestConfirmed] = useState(false);
   const [isInitialRouteReady, setIsInitialRouteReady] = useState(false);
   const [showGuestActions, setShowGuestActions] = useState(false);
-  const [selectedTrip, setSelectedTrip] = useState<"" | "morocco" | "okinawaTaiwan" | "skiMyoko" | "skiDeerValley" | "skiBig3" | "houston" | "azoresPortugal" | "similanThailand" | "disneyWorld" | "fiveStans">("");
+  const [selectedTrip, setSelectedTrip] = useState<"" | "morocco" | "taiwan" | "okinawaJapan" | "skiMyoko" | "skiDeerValley" | "skiBig3" | "houston" | "azoresPortugal" | "similanThailand" | "disneyWorld" | "fiveStans">("");
   const [moroccoInterestedNames, setMoroccoInterestedNames] = useState<string[]>(() => {
     if (typeof window === "undefined") return [];
     try {
@@ -511,6 +512,20 @@ export default function TravelSite() {
     "Dave & Christina & Xixi (2)",
   ];
 
+  const filterDashboardSegments = (segments: DashboardSegment[]) => {
+    if (selectedTrip === "taiwan") {
+      return segments.filter((segment) => ["xiaoliuqiu", "yilan"].includes(segment.page));
+    }
+    if (selectedTrip === "okinawaJapan") {
+      return segments.filter((segment) => ["nahaearly", "onna", "nago", "nanjo", "naha"].includes(segment.page));
+    }
+    return segments;
+  };
+
+  const CountrySegmentButtons = ({ segments, setIsGuestConfirmed, setPage }: { segments: DashboardSegment[]; setIsGuestConfirmed: React.Dispatch<React.SetStateAction<boolean>>; setPage: React.Dispatch<React.SetStateAction<PageName>> }) => (
+    <SegmentButtons segments={filterDashboardSegments(segments)} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />
+  );
+
   useEffect(() => {
     const timer = window.setInterval(() => setNow(new Date()), 1000);
     return () => window.clearInterval(timer);
@@ -523,7 +538,7 @@ export default function TravelSite() {
     if (["xiaoliuqiu", "onna", "nago", "nanjo", "naha", "nahaearly", "yilan"].includes(chapter || "")) {
       setPage(chapter as PageName);
       if (returningGuest) setGuestName(returningGuest);
-      setSelectedTrip("okinawaTaiwan");
+      setSelectedTrip(chapter === "xiaoliuqiu" || chapter === "yilan" ? "taiwan" : "okinawaJapan");
       setIsGuestConfirmed(true);
     }
     setIsInitialRouteReady(true);
@@ -671,7 +686,14 @@ export default function TravelSite() {
       "Mei & Emilia (8)": ["nago", "nanjo", "naha", "yilan"],
       "Dave & Christina & Xixi (2)": ["onna", "nago", "nanjo", "naha", "yilan"],
     };
-    return guestRoutes[guest] || [];
+    const guestRoute = guestRoutes[guest] || [];
+    if (selectedTrip === "taiwan") {
+      return guestRoute.filter((chapter) => ["xiaoliuqiu", "yilan"].includes(chapter));
+    }
+    if (selectedTrip === "okinawaJapan") {
+      return guestRoute.filter((chapter) => ["nahaearly", "onna", "nago", "nanjo", "naha"].includes(chapter));
+    }
+    return guestRoute;
   };
 
   const getPackingChecklist = (guest: string): PackingChecklist => {
@@ -1010,7 +1032,8 @@ export default function TravelSite() {
               <p className="mb-8 text-sm leading-6 text-white/55">Please select your trip.</p>
               <div className="space-y-3">
                 <TripButton location="Morocco" date="Sept 3 - Sept 12 2026" status="Planning" onClick={() => setSelectedTrip("morocco")} />
-                <TripButton location="Okinawa & Taiwan" date="Nov 21 - Dec 21 2026" status="Confirmed" onClick={() => setSelectedTrip("okinawaTaiwan")} />
+                <TripButton location="Taiwan" date="Nov 21 - Dec 21 2026" status="Confirmed" onClick={() => setSelectedTrip("taiwan")} />
+                <TripButton location="Okinawa Japan" date="Nov 25 - Dec 6 2026" status="Confirmed" onClick={() => setSelectedTrip("okinawaJapan")} />
                 <TripButton location="Ski Shiga Kogen & Nagano Japan" date="Jan 23 - Jan 31 2027" status="Dreaming" onClick={() => setSelectedTrip("skiMyoko")} />
                 <TripButton location="Ski Deer Valley UT USA" date="Feb 2027" status="Dreaming" onClick={() => setSelectedTrip("skiDeerValley")} />
                 <TripButton location="SkiBig3 AB Canada" date="Mar 2027" status="Dreaming" onClick={() => setSelectedTrip("skiBig3")} />
@@ -1318,7 +1341,7 @@ export default function TravelSite() {
                 )}
               </section>
             </>
-          ) : selectedTrip !== "okinawaTaiwan" ? (
+          ) : selectedTrip !== "taiwan" && selectedTrip !== "okinawaJapan" ? (
             <>
               <button type="button" onClick={() => setSelectedTrip("")} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">← Back</button>
               <h1 className="mb-4 text-3xl font-light tracking-wide">Welcome to TBD 2026</h1>
@@ -1334,10 +1357,15 @@ export default function TravelSite() {
           ) : !showGuestActions ? (
             <>
               <button type="button" onClick={() => { setSelectedTrip(""); setShowGuestActions(false); setGuestName(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">All Trips</button>
-              <h1 className="mb-4 text-3xl font-light tracking-wide">Okinawa & Taiwan 2026</h1>
+              <h1 className="mb-4 text-3xl font-light tracking-wide">{selectedTrip === "taiwan" ? "Taiwan 2026" : "Okinawa Japan 2026"}</h1>
               <p className="mb-8 text-sm leading-6 text-white/55">Please select your party to continue.</p>
               <div className="mb-5 max-h-[280px] space-y-2 overflow-y-auto pr-1">
-                {guestOptions.map((guest) => <button key={guest} type="button" onClick={() => { setGuestName(guest); if (guest === "I am just a random Guest") { setIsGuestConfirmed(true); setPage("map"); return; } setShowGuestActions(true); }} className="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm font-light tracking-wide text-white/70 transition hover:border-white/30 hover:bg-white/[0.05]">{guest}</button>)}
+                {guestOptions.filter((guest) => {
+                  if (guest === "I am just a random Guest") return false;
+                  if (selectedTrip === "taiwan") return guest !== "Steven Wang";
+                  if (selectedTrip === "okinawaJapan") return !["Anthony & Christine & Mona (1)", "Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Julie & Adrian & Ethan (4) & Tyrell (1)"].includes(guest);
+                  return true;
+                }).map((guest) => <button key={guest} type="button" onClick={() => { setGuestName(guest); if (guest === "I am just a random Guest") { setIsGuestConfirmed(true); setPage("map"); return; } setShowGuestActions(true); }} className="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm font-light tracking-wide text-white/70 transition hover:border-white/30 hover:bg-white/[0.05]">{guest}</button>)}
               </div>
             </>
           ) : (
@@ -1349,13 +1377,13 @@ export default function TravelSite() {
               <div className="mb-8 rounded-3xl border border-white/10 bg-white/[0.04] p-6 text-left shadow-[0_0_30px_rgba(255,255,255,0.05)]">
                 <p className="text-sm uppercase tracking-[0.28em] text-white/70">Welcome</p>
                 <h2 className="mt-2 text-3xl font-light tracking-wide text-white">Hello {guestName} 👋</h2>
-                {guestName === "Xenia & David & Naomi (3)" && <SegmentButtons segments={[{ label: "Nov 21–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
-                {guestName === "Mark Wang" && <SegmentButtons segments={[{ label: "Nov 20–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }, { label: "Nov 25–27 · Naha + Okinawa World", page: "nahaearly", color: BABY_BLUE }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
-                {guestName === "Anthony & Christine & Mona (1)" && <SegmentButtons segments={[{ label: "Nov 20–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
-                {guestName === "Mei & Emilia (8)" && <SegmentButtons segments={[{ label: "Nov 29–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
-                {guestName === "Steven Wang" && <SegmentButtons segments={[{ label: "Nov 25–27 · Naha + Okinawa World", page: "nahaearly", color: BABY_BLUE }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
-                {guestName === "Dave & Christina & Xixi (2)" && <SegmentButtons segments={[{ label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
-                {guestName === "Heather & Jack & Aizen (8) & Kaien (3)" && <SegmentButtons segments={[{ label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
+                {guestName === "Xenia & David & Naomi (3)" && <CountrySegmentButtons segments={[{ label: "Nov 21–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
+                {guestName === "Mark Wang" && <CountrySegmentButtons segments={[{ label: "Nov 20–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }, { label: "Nov 25–27 · Naha + Okinawa World", page: "nahaearly", color: BABY_BLUE }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
+                {guestName === "Anthony & Christine & Mona (1)" && <CountrySegmentButtons segments={[{ label: "Nov 20–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
+                {guestName === "Mei & Emilia (8)" && <CountrySegmentButtons segments={[{ label: "Nov 29–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
+                {guestName === "Steven Wang" && <CountrySegmentButtons segments={[{ label: "Nov 25–27 · Naha + Okinawa World", page: "nahaearly", color: BABY_BLUE }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
+                {guestName === "Dave & Christina & Xixi (2)" && <CountrySegmentButtons segments={[{ label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
+                {guestName === "Heather & Jack & Aizen (8) & Kaien (3)" && <CountrySegmentButtons segments={[{ label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {!["Xenia & David & Naomi (3)", "Mark Wang", "Anthony & Christine & Mona (1)", "Mei & Emilia (8)", "Steven Wang", "Dave & Christina & Xixi (2)", "Heather & Jack & Aizen (8) & Kaien (3)"].includes(guestName) && (
                   <div className="mt-5 rounded-2xl border border-amber-300/20 bg-amber-300/5 p-4">
                     <p className="text-sm leading-6 text-amber-100/80">
@@ -1366,7 +1394,7 @@ export default function TravelSite() {
               </div>
               <div className="space-y-5">
                 <div className="grid gap-3 sm:grid-cols-2">
-                  <button type="button" onClick={() => { setPage("map"); setIsGuestConfirmed(true); }} className="rounded-full border border-white/30 bg-white/[0.05] px-5 py-3 text-sm uppercase tracking-[0.22em] text-white transition hover:border-white/60 hover:bg-white/[0.08]">Enter Trip Site</button>
+                  <button type="button" onClick={() => { setPage("map"); setIsGuestConfirmed(true); }} className="rounded-full border border-white/30 bg-white/[0.05] px-5 py-3 text-sm uppercase tracking-[0.22em] text-white transition hover:border-white/60 hover:bg-white/[0.08]">Map View</button>
                   <button type="button" onClick={() => { setPage("checklist"); setIsGuestConfirmed(true); }} className="rounded-full border border-white/30 bg-white/[0.05] px-5 py-3 text-sm uppercase tracking-[0.22em] text-white transition hover:border-white/60 hover:bg-white/[0.08]">My Checklist</button>
                 </div>
                 <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-4 text-left"><p className="mb-4 whitespace-nowrap text-[10px] uppercase tracking-[0.18em] text-white/35 sm:text-xs sm:tracking-[0.24em]">Active once trip begins</p><div className="grid gap-3 sm:grid-cols-2"><button type="button" disabled className="cursor-not-allowed rounded-full border border-white/10 bg-white/[0.02] px-5 py-3 text-sm uppercase tracking-[0.22em] text-white/25 opacity-60">What's Today?</button><button type="button" disabled className="cursor-not-allowed rounded-full border border-white/10 bg-white/[0.02] px-5 py-3 text-sm uppercase tracking-[0.22em] text-white/25 opacity-60">What's Tomorrow?</button></div></div>
@@ -1416,7 +1444,7 @@ export default function TravelSite() {
       <main className="mx-auto max-w-5xl">
         <p className="mb-3 text-sm uppercase tracking-[0.35em]" style={{ color: accentColor }}>{eyebrow}</p>
         <h1 className="mb-6 text-4xl font-light tracking-wide md:text-6xl">{title}</h1>
-        <MemoryMaker albumKey={chapter === "xiaoliuqiu" ? "taiwanNovember" : chapter === "yilan" ? "taiwanDecember" : "japanNovember"} albumName={chapter === "xiaoliuqiu" ? "Taiwan November" : chapter === "yilan" ? "Taiwan December" : "Japan November"} accentColor={accentColor} guestName={guestName} returnChapter={chapter} />
+        <MemoryMaker key={chapter === "xiaoliuqiu" ? "taiwanNovember" : chapter === "yilan" ? "taiwanDecember" : "japanNovember"} albumKey={chapter === "xiaoliuqiu" ? "taiwanNovember" : chapter === "yilan" ? "taiwanDecember" : "japanNovember"} albumName={chapter === "xiaoliuqiu" ? "Taiwan November" : chapter === "yilan" ? "Taiwan December" : "Japan November"} accentColor={accentColor} guestName={guestName} returnChapter={chapter} />
         {infoWidgets(month, nights, hotel, region)}
         <section className="space-y-8">{children}</section>
         {peopleCards(chapterPeople[chapter])}
@@ -1432,7 +1460,20 @@ export default function TravelSite() {
   if (page === "nahaearly") return renderChapter("nahaearly", "Okinawa · Naha", "Naha + Okinawa World Chapter", "Okinawa Japan", "November", "2 Nights", <p className="mt-1 text-sm font-medium" style={{ color: BABY_BLUE }}>Hotel Strata Naha</p>, "japan", BABY_BLUE, <NahaEarlyContent card={card} linkedImage={linkedImage} />);
   if (page === "yilan") return renderChapter("yilan", "Taiwan · Yilan", "Yilan Family Chapter", "Taiwan December", "December", "3 Nights", <><p className="mt-1 text-sm font-medium text-[#72E49A]">瓏山林蘇澳冷熱泉度假飯店 (1)</p><p className="mt-1 text-sm font-medium text-[#72E49A]">礁溪寒沐酒店 (2)</p></>, "taiwan", "#72E49A", <YilanContent card={card} />);
 
-  const departureDate = new Date(2026, 10, 19);
+  const isTaiwanMap = selectedTrip === "taiwan";
+  const departureDate = isTaiwanMap ? new Date(2026, 10, 21) : new Date(2026, 10, 25);
+  const mapLocations: TimelineItem[] = isTaiwanMap
+    ? [
+        { id: "xiaoliuqiu", label: "Xiaoliuqiu", range: "Nov 21–23", color: "taiwan" },
+        { id: "taipei", label: "Taipei", range: "Nov 23–Dec 8", color: "taiwan" },
+        { id: "yilan", label: "Yilan", range: "Dec 8–11", color: "yilan" },
+      ]
+    : [
+        { id: "naha", label: "Naha", range: "Nov 25–27 · Dec 4–6", color: "okinawa" },
+        { id: "onna", label: "Onna", range: "Nov 27–30", color: "okinawa" },
+        { id: "nago", label: "Nago", range: "Nov 30–Dec 2", color: "okinawa" },
+        { id: "nanjo", label: "Nanjo", range: "Dec 2–4", color: "okinawa" },
+      ];
   const diff = Math.max(departureDate.getTime() - now.getTime(), 0);
   const countdownDays = Math.floor(diff / MS_PER_DAY);
   const countdownHours = Math.floor((diff % MS_PER_DAY) / (1000 * 60 * 60));
@@ -1446,15 +1487,16 @@ export default function TravelSite() {
         <button type="button" onClick={() => { setIsGuestConfirmed(false); setSelectedTrip(""); setShowGuestActions(false); setGuestName(""); setPage("map"); window.history.replaceState({}, "", "/"); }} className="absolute right-5 top-5 z-30 rounded-full border border-white/25 bg-black/30 px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/75 backdrop-blur-md transition hover:border-white/50 hover:bg-white/10">All Trips</button>
         {guestName && guestName !== "I am just a random Guest" && <button type="button" onClick={() => { setIsGuestConfirmed(false); setShowGuestActions(true); }} className="absolute left-5 top-5 z-30 rounded-full border border-white/25 bg-black/30 px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/75 backdrop-blur-md">← Back to Dashboard</button>}
         <div className="relative z-10 flex w-full max-w-5xl items-center justify-center gap-8 md:gap-20">
-          <svg viewBox="0 0 140 260" className="h-[300px] w-[147px] opacity-90 md:h-[495px] md:w-[243px]" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          {isTaiwanMap && <svg viewBox="0 0 140 260" className="h-[340px] w-[166px] opacity-90 md:h-[520px] md:w-[255px]" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M110 0 L105 0 L94 12 L80 16 L69 24 L58 47 L47 57 L29 90 L10 117 L8 147 L0 173 L10 181 L16 205 L21 213 L43 230 L48 242 L47 254 L50 259 L61 254 L62 227 L68 210 L84 193 L98 163 L107 132 L113 96 L130 61 L127 36 L139 24 L134 15 L120 10 Z" />
-            {selectedTimelineSectionId === 1 && <><SvgPin id="taipei" label="Taipei" cx={108} cy={18} hovered={hovered} setHovered={setHovered} activeColor={TAIWAN_GOLD} scale={0.9} labelFontSize={8} labelOffset={12} /><SvgPin id="xiaoliuqiu" label="Xiaoliuqiu" cx={39} cy={234} hovered={hovered} setHovered={setHovered} activeColor={TAIWAN_GOLD} scale={0.9} labelFontSize={8} labelOffset={12} onDoubleClick={() => setPage("xiaoliuqiu")} /></>}
-            {selectedTimelineSectionId === 2 && <SvgPin id="yilan" label="Yilan" cx={120} cy={45} hovered={hovered} setHovered={setHovered} activeColor="#72E49A" scale={0.9} labelFontSize={8} labelOffset={12} onDoubleClick={() => setPage("yilan")} />}
-          </svg>
-          {selectedTimelineSectionId === 1 && <svg viewBox="0 0 331 520" className="h-[220px] w-[220px] md:h-[335px] md:w-[335px]" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M291 5 L282 5 L280 12 L283 27 L277 42 L262 65 L257 79 L251 83 L242 82 L239 85 L238 90 L243 93 L243 97 L237 105 L223 112 L216 127 L222 134 L213 135 L212 144 L209 147 L196 150 L192 156 L180 154 L177 160 L169 160 L162 154 L164 149 L173 147 L181 151 L185 145 L176 133 L167 132 L167 125 L154 124 L142 115 L130 115 L121 120 L113 118 L106 120 L104 136 L111 144 L108 157 L110 173 L120 186 L134 182 L141 189 L158 192 L159 204 L124 235 L120 235 L115 244 L108 240 L99 244 L89 264 L80 273 L74 287 L62 285 L53 293 L40 288 L35 291 L36 314 L54 350 L53 358 L60 367 L60 377 L52 380 L47 389 L36 391 L27 407 L19 405 L17 418 L20 426 L8 425 L5 431 L4 441 L10 448 L10 456 L19 465 L19 468 L15 470 L15 479 L20 486 L19 507 L23 514 L32 516 L41 509 L51 507 L69 484 L85 479 L89 470 L103 459 L103 450 L97 438 L92 435 L85 437 L79 449 L68 431 L79 420 L80 408 L84 400 L94 391 L90 379 L97 374 L98 369 L107 367 L102 355 L112 346 L120 361 L132 374 L140 372 L139 361 L118 333 L115 321 L108 318 L95 298 L99 294 L99 289 L111 279 L138 279 L141 284 L147 282 L150 278 L149 272 L153 269 L162 269 L175 254 L172 245 L174 240 L182 241 L194 232 L196 224 L192 217 L195 214 L221 219 L229 211 L237 209 L240 204 L239 199 L245 189 L237 183 L236 179 L244 164 L253 161 L266 166 L277 159 L286 157 L290 153 L292 142 L304 129 L311 105 L325 84 L322 73 L327 59 L322 50 L320 35 L309 24 L310 18 L298 13 Z" /><SvgPin id="naha" label="Naha" cx={34} cy={437} hovered={hovered} setHovered={setHovered} activeColor={BABY_BLUE} scale={2.25} labelFontSize={20} labelOffset={38} onDoubleClick={() => setPage("naha")} /><SvgPin id="onna" label="Onna" cx={50} cy={300} hovered={hovered} setHovered={setHovered} activeColor={BABY_BLUE} scale={2.25} labelFontSize={20} labelOffset={38} onDoubleClick={() => setPage("onna")} /><SvgPin id="nago" label="Nago" cx={152} cy={172} hovered={hovered} setHovered={setHovered} activeColor={BABY_BLUE} scale={2.25} labelFontSize={20} labelOffset={38} onDoubleClick={() => setPage("nago")} /><SvgPin id="nanjo" label="Nanjo" cx={70} cy={468} hovered={hovered} setHovered={setHovered} activeColor={BABY_BLUE} scale={2.25} labelFontSize={20} labelOffset={38} onDoubleClick={() => setPage("nanjo")} /></svg>}
+            <SvgPin id="taipei" label="Taipei" cx={108} cy={18} hovered={hovered} setHovered={setHovered} activeColor={TAIWAN_GOLD} scale={0.9} labelFontSize={8} labelOffset={12} />
+            <SvgPin id="xiaoliuqiu" label="Xiaoliuqiu" cx={39} cy={234} hovered={hovered} setHovered={setHovered} activeColor={TAIWAN_GOLD} scale={0.9} labelFontSize={8} labelOffset={12} onDoubleClick={() => setPage("xiaoliuqiu")} />
+            <SvgPin id="yilan" label="Yilan" cx={120} cy={45} hovered={hovered} setHovered={setHovered} activeColor="#72E49A" scale={0.9} labelFontSize={8} labelOffset={12} onDoubleClick={() => setPage("yilan")} />
+          </svg>}
+          {!isTaiwanMap && <svg viewBox="0 0 331 520" className="h-[350px] w-[350px] md:h-[520px] md:w-[520px]" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M291 5 L282 5 L280 12 L283 27 L277 42 L262 65 L257 79 L251 83 L242 82 L239 85 L238 90 L243 93 L243 97 L237 105 L223 112 L216 127 L222 134 L213 135 L212 144 L209 147 L196 150 L192 156 L180 154 L177 160 L169 160 L162 154 L164 149 L173 147 L181 151 L185 145 L176 133 L167 132 L167 125 L154 124 L142 115 L130 115 L121 120 L113 118 L106 120 L104 136 L111 144 L108 157 L110 173 L120 186 L134 182 L141 189 L158 192 L159 204 L124 235 L120 235 L115 244 L108 240 L99 244 L89 264 L80 273 L74 287 L62 285 L53 293 L40 288 L35 291 L36 314 L54 350 L53 358 L60 367 L60 377 L52 380 L47 389 L36 391 L27 407 L19 405 L17 418 L20 426 L8 425 L5 431 L4 441 L10 448 L10 456 L19 465 L19 468 L15 470 L15 479 L20 486 L19 507 L23 514 L32 516 L41 509 L51 507 L69 484 L85 479 L89 470 L103 459 L103 450 L97 438 L92 435 L85 437 L79 449 L68 431 L79 420 L80 408 L84 400 L94 391 L90 379 L97 374 L98 369 L107 367 L102 355 L112 346 L120 361 L132 374 L140 372 L139 361 L118 333 L115 321 L108 318 L95 298 L99 294 L99 289 L111 279 L138 279 L141 284 L147 282 L150 278 L149 272 L153 269 L162 269 L175 254 L172 245 L174 240 L182 241 L194 232 L196 224 L192 217 L195 214 L221 219 L229 211 L237 209 L240 204 L239 199 L245 189 L237 183 L236 179 L244 164 L253 161 L266 166 L277 159 L286 157 L290 153 L292 142 L304 129 L311 105 L325 84 L322 73 L327 59 L322 50 L320 35 L309 24 L310 18 L298 13 Z" /><SvgPin id="naha" label="Naha" cx={34} cy={437} hovered={hovered} setHovered={setHovered} activeColor={BABY_BLUE} scale={2.25} labelFontSize={20} labelOffset={38} onDoubleClick={() => setPage("naha")} /><SvgPin id="onna" label="Onna" cx={50} cy={300} hovered={hovered} setHovered={setHovered} activeColor={BABY_BLUE} scale={2.25} labelFontSize={20} labelOffset={38} onDoubleClick={() => setPage("onna")} /><SvgPin id="nago" label="Nago" cx={152} cy={172} hovered={hovered} setHovered={setHovered} activeColor={BABY_BLUE} scale={2.25} labelFontSize={20} labelOffset={38} onDoubleClick={() => setPage("nago")} /><SvgPin id="nanjo" label="Nanjo" cx={70} cy={468} hovered={hovered} setHovered={setHovered} activeColor={BABY_BLUE} scale={2.25} labelFontSize={20} labelOffset={38} onDoubleClick={() => setPage("nanjo")} /></svg>}
         </div>
         <div className="relative z-20 mt-2 flex flex-col items-center gap-3 px-4 text-center md:absolute md:bottom-44 md:mt-0 md:flex-row md:gap-6">
-          <h1 className="text-2xl font-light leading-tight tracking-wide md:text-4xl">Taiwan · Okinawa Japan</h1>
+          <h1 className="text-2xl font-light leading-tight tracking-wide md:text-4xl">{isTaiwanMap ? "Taiwan" : "Okinawa Japan"}</h1>
           <div className="rounded-3xl border border-white/10 bg-white/[0.04] px-4 py-2.5 backdrop-blur-md">
             <p className="mb-2 text-xs uppercase tracking-[0.3em] text-white/70">Countdown to Departure</p>
             <div className="grid grid-cols-4 gap-3 text-center">
@@ -1463,10 +1505,12 @@ export default function TravelSite() {
               <div><p className="text-2xl font-light">{countdownMinutes}</p><p className="text-[10px] text-gray-400">Min</p></div>
               <div><p className="text-2xl font-light">{countdownSeconds}</p><p className="text-[10px] text-gray-400">Sec</p></div>
             </div>
-            <p className="mt-2 text-xs text-gray-400">Nov 19 · YYZ → TPE</p>
+            <p className="mt-2 text-xs text-gray-400">{isTaiwanMap ? "Nov 21 · Taiwan trip begins" : "Nov 25 · Okinawa trip begins"}</p>
           </div>
         </div>
-        <Timeline />
+        <div className="relative z-20 mt-5 grid w-full max-w-5xl gap-2 px-4 sm:grid-cols-2 md:absolute md:bottom-4 md:left-1/2 md:-translate-x-1/2 md:grid-cols-4 md:px-6">
+          {mapLocations.map((item) => <button key={item.id} type="button" onClick={() => item.id !== "taipei" && openChapterForLocation(item.id)} className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-left transition hover:border-white/30"><span className="flex items-center gap-3"><span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: item.color === "yilan" ? "#72E49A" : item.color === "taiwan" ? TAIWAN_GOLD : BABY_BLUE }} /><span className="text-sm font-light tracking-wide text-white">{item.label}</span></span><span className="text-[10px] uppercase tracking-[0.12em] text-white/45">{item.range}</span></button>)}
+        </div>
       </section>
     </div>
   );
@@ -1524,14 +1568,10 @@ function RentalCarPlanner({ date, dateLabel }: { date: string; dateLabel: string
             {!isLoading && !message && arrangements.length > 0 && (
               <div className="space-y-4">
                 {arrangements.map((arrangement) => {
-                  const driver = arrangement.occupants.find((occupant) => occupant.role === "driver");
                   return (
                     <section key={arrangement.id} className="rounded-xl border border-white/10 bg-white/[0.04] p-5">
                       <div className="mb-4 flex items-start justify-between gap-4">
-                        <div>
-                          <h4 className="text-lg font-medium text-white">{arrangement.carName}</h4>
-                          <p className="mt-1 text-sm text-white/55">Driver: {driver?.personName || "Not assigned"}</p>
-                        </div>
+                        <h4 className="text-lg font-medium text-white">{arrangement.carName}</h4>
                         <span className="shrink-0 rounded-full border border-white/10 px-3 py-1 text-xs text-white/45">{arrangement.occupants.length}/{arrangement.capacity} seats</span>
                       </div>
                       <div className="grid gap-2 sm:grid-cols-2">
