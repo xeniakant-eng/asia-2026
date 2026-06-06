@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useCallback, useEffect, useState } from "react";
+import { use, useCallback, useEffect, useRef, useState } from "react";
 
 type MemoryMakerFile = {
   id: string;
@@ -22,7 +22,11 @@ export default function MemoryMakerAlbumPage({ params }: { params: Promise<{ alb
   const [files, setFiles] = useState<MemoryMakerFile[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [deletingId, setDeletingId] = useState("");
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [isBulkWorking, setIsBulkWorking] = useState(false);
+  const [activePhotoIndex, setActivePhotoIndex] = useState<number | null>(null);
   const [message, setMessage] = useState("");
+  const touchStartX = useRef<number | null>(null);
 
   const loadFiles = useCallback(async () => {
     setIsLoading(true);
@@ -32,6 +36,7 @@ export default function MemoryMakerAlbumPage({ params }: { params: Promise<{ alb
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Unable to load album.");
       setFiles(Array.isArray(data.files) ? data.files : []);
+      setSelectedIds([]);
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Unable to load album.");
     } finally {
@@ -43,28 +48,79 @@ export default function MemoryMakerAlbumPage({ params }: { params: Promise<{ alb
     loadFiles();
   }, [loadFiles]);
 
+  const showPreviousPhoto = useCallback(() => {
+    setActivePhotoIndex((current) => current === null ? null : (current - 1 + files.length) % files.length);
+  }, [files.length]);
+
+  const showNextPhoto = useCallback(() => {
+    setActivePhotoIndex((current) => current === null ? null : (current + 1) % files.length);
+  }, [files.length]);
+
+  useEffect(() => {
+    if (activePhotoIndex === null) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setActivePhotoIndex(null);
+      if (event.key === "ArrowLeft") showPreviousPhoto();
+      if (event.key === "ArrowRight") showNextPhoto();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [activePhotoIndex, showNextPhoto, showPreviousPhoto]);
+
   const albumName = ALBUM_NAMES[albumKey] || "Trip";
-  const deletePhoto = async (file: MemoryMakerFile) => {
-    if (!window.confirm("Delete this photo permanently from the shared album?")) return;
-    const password = window.prompt("Enter the administrator password to delete this photo:");
+  const activePhoto = activePhotoIndex === null ? null : files[activePhotoIndex];
+  const deletePhotos = async (ids: string[]) => {
+    if (!ids.length || !window.confirm(`Delete ${ids.length === 1 ? "this photo" : `these ${ids.length} photos`} permanently from the shared album?`)) return;
+    const password = window.prompt(`Enter the administrator password to delete ${ids.length === 1 ? "this photo" : "these photos"}:`);
     if (password === null) return;
 
-    setDeletingId(file.id);
+    if (ids.length === 1) setDeletingId(ids[0]);
+    else setIsBulkWorking(true);
     setMessage("");
     try {
       const response = await fetch("/api/memory-maker", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: file.id, album: albumKey, password }),
+        body: JSON.stringify({ ids, album: albumKey, password }),
       });
-      const data = await response.json().catch(() => null) as { error?: string } | null;
-      if (!response.ok) throw new Error(data?.error || "Unable to delete photo.");
-      setFiles((currentFiles) => currentFiles.filter((currentFile) => currentFile.id !== file.id));
-      setMessage("Photo deleted.");
+      const data = await response.json().catch(() => null) as { error?: string; deletedIds?: string[] } | null;
+      if (!response.ok) throw new Error(data?.error || "Unable to delete photos.");
+      const deletedIds = data?.deletedIds || ids;
+      setFiles((currentFiles) => currentFiles.filter((currentFile) => !deletedIds.includes(currentFile.id)));
+      setSelectedIds((currentIds) => currentIds.filter((id) => !deletedIds.includes(id)));
+      setMessage(`${deletedIds.length} ${deletedIds.length === 1 ? "photo" : "photos"} deleted.`);
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Unable to delete photo.");
+      setMessage(error instanceof Error ? error.message : "Unable to delete photos.");
     } finally {
       setDeletingId("");
+      setIsBulkWorking(false);
+    }
+  };
+
+  const downloadSelectedPhotos = async () => {
+    const selectedFiles = files.filter((file) => selectedIds.includes(file.id));
+    if (!selectedFiles.length) return;
+    setIsBulkWorking(true);
+    setMessage(`Preparing ${selectedFiles.length} ${selectedFiles.length === 1 ? "photo" : "photos"} for download...`);
+    try {
+      for (const file of selectedFiles) {
+        const response = await fetch(file.mediaUrl);
+        if (!response.ok) throw new Error(`Unable to download ${file.fileName}.`);
+        const blobUrl = URL.createObjectURL(await response.blob());
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.download = file.fileName || "photo.jpg";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+        await new Promise((resolve) => window.setTimeout(resolve, 250));
+      }
+      setMessage(`${selectedFiles.length} ${selectedFiles.length === 1 ? "photo" : "photos"} downloaded.`);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Unable to download selected photos.");
+    } finally {
+      setIsBulkWorking(false);
     }
   };
 
@@ -94,20 +150,43 @@ export default function MemoryMakerAlbumPage({ params }: { params: Promise<{ alb
         {!message && isLoading && <p className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-8 text-center text-sm text-white/40">Loading album...</p>}
         {!message && !isLoading && !files.length && <p className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-8 text-center text-sm text-white/40">No memories uploaded yet.</p>}
 
+        {!isLoading && files.length > 0 && (
+          <div className="mb-5 flex flex-wrap items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-3">
+            <label className="flex cursor-pointer items-center gap-2 px-2 text-xs uppercase tracking-[0.14em] text-white/55"><input type="checkbox" checked={selectedIds.length === files.length} onChange={(event) => setSelectedIds(event.target.checked ? files.map((file) => file.id) : [])} className="h-4 w-4 accent-[#72E49A]" />Select all</label>
+            <span className="text-xs text-white/35">{selectedIds.length} selected</span>
+            <div className="ml-auto flex gap-2">
+              <button type="button" onClick={downloadSelectedPhotos} disabled={!selectedIds.length || isBulkWorking} className="rounded-full border border-white/20 px-4 py-2 text-xs uppercase tracking-[0.14em] text-white/65 transition hover:border-white/40 disabled:cursor-not-allowed disabled:opacity-30">Download</button>
+              <button type="button" onClick={() => deletePhotos(selectedIds)} disabled={!selectedIds.length || isBulkWorking} className="rounded-full border border-red-300/20 px-4 py-2 text-xs uppercase tracking-[0.14em] text-red-200/65 transition hover:border-red-300/45 disabled:cursor-not-allowed disabled:opacity-30">Delete</button>
+            </div>
+          </div>
+        )}
+
         <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
           {files.map((file) => (
-            <figure key={file.id} className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03]">
-              <a href={file.mediaUrl} target="_blank" rel="noopener noreferrer"><img src={file.mediaUrl} alt={file.fileName} loading="lazy" className="aspect-square w-full object-cover transition hover:opacity-85" /></a>
+            <figure key={file.id} className={`relative overflow-hidden rounded-2xl border bg-white/[0.03] ${selectedIds.includes(file.id) ? "border-[#72E49A]/70" : "border-white/10"}`}>
+              <label className="absolute left-2 top-2 z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-white/25 bg-black/65 backdrop-blur-sm"><input type="checkbox" checked={selectedIds.includes(file.id)} onChange={(event) => setSelectedIds((current) => event.target.checked ? [...current, file.id] : current.filter((id) => id !== file.id))} className="h-4 w-4 accent-[#72E49A]" aria-label={`Select photo uploaded by ${file.uploader}`} /></label>
+              <button type="button" onClick={() => setActivePhotoIndex(files.findIndex((candidate) => candidate.id === file.id))} className="block w-full"><img src={file.mediaUrl} alt={file.fileName} loading="lazy" className="aspect-square w-full object-cover transition hover:opacity-85" /></button>
               <figcaption className="p-3">
                 <div className="flex items-center justify-between gap-3">
                   <p className="min-w-0 truncate text-[10px] text-white/35">{file.uploader}</p>
-                  <button type="button" onClick={() => deletePhoto(file)} disabled={Boolean(deletingId)} className="shrink-0 text-[10px] uppercase tracking-[0.14em] text-red-200/45 transition hover:text-red-200 disabled:cursor-wait disabled:opacity-30">{deletingId === file.id ? "Deleting..." : "Delete"}</button>
+                  <button type="button" onClick={() => deletePhotos([file.id])} disabled={Boolean(deletingId) || isBulkWorking} className="shrink-0 text-[10px] uppercase tracking-[0.14em] text-red-200/45 transition hover:text-red-200 disabled:cursor-wait disabled:opacity-30">{deletingId === file.id ? "Deleting..." : "Delete"}</button>
                 </div>
               </figcaption>
             </figure>
           ))}
         </div>
       </div>
+      {activePhoto && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-3 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label={`Photo ${activePhotoIndex! + 1} of ${files.length}`}>
+          <button type="button" onClick={() => setActivePhotoIndex(null)} aria-label="Close photo viewer" title="Close" className="absolute right-4 top-4 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black/50 text-2xl text-white/75 transition hover:border-white/45 hover:text-white">×</button>
+          {files.length > 1 && <button type="button" onClick={showPreviousPhoto} aria-label="Previous photo" title="Previous photo" className="absolute left-3 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/50 text-3xl text-white/75 transition hover:border-white/45 hover:text-white md:left-6">‹</button>}
+          <div className="flex h-full w-full flex-col items-center justify-center gap-4" onTouchStart={(event) => { touchStartX.current = event.touches[0]?.clientX ?? null; }} onTouchEnd={(event) => { if (touchStartX.current === null) return; const distance = event.changedTouches[0].clientX - touchStartX.current; if (Math.abs(distance) > 50) { if (distance > 0) showPreviousPhoto(); else showNextPhoto(); } touchStartX.current = null; }}>
+            <img src={activePhoto.mediaUrl} alt={activePhoto.fileName} className="max-h-[84vh] max-w-full object-contain" />
+            <p className="text-xs uppercase tracking-[0.2em] text-white/45">{activePhotoIndex! + 1} / {files.length} · {activePhoto.uploader}</p>
+          </div>
+          {files.length > 1 && <button type="button" onClick={showNextPhoto} aria-label="Next photo" title="Next photo" className="absolute right-3 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/50 text-3xl text-white/75 transition hover:border-white/45 hover:text-white md:right-6">›</button>}
+        </div>
+      )}
     </main>
   );
 }

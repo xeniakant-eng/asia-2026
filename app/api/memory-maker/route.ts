@@ -107,7 +107,9 @@ export async function DELETE(request: NextRequest) {
   if (!config || !isGoogleDriveConfigured()) return unavailableResponse();
 
   const body = await request.json().catch(() => ({}));
-  const id = typeof body.id === "string" ? body.id : "";
+  const ids = Array.isArray(body.ids)
+    ? body.ids.filter((id: unknown): id is string => typeof id === "string" && Boolean(id))
+    : typeof body.id === "string" && body.id ? [body.id] : [];
   const album = typeof body.album === "string" ? body.album : "";
   const password = typeof body.password === "string" ? body.password : "";
 
@@ -117,13 +119,13 @@ export async function DELETE(request: NextRequest) {
   if (password !== process.env.SITE_PASSWORD) {
     return NextResponse.json({ error: "Incorrect administrator password." }, { status: 401 });
   }
-  if (!id || !VALID_ALBUMS.has(album)) {
+  if (!ids.length || !VALID_ALBUMS.has(album)) {
     return NextResponse.json({ error: "Unknown photo." }, { status: 400 });
   }
 
   try {
     const lookupResponse = await fetch(
-      `${config.url}/rest/v1/memory_maker_files?id=eq.${encodeURIComponent(id)}&album_key=eq.${encodeURIComponent(album)}&select=id,drive_file_id&limit=1`,
+      `${config.url}/rest/v1/memory_maker_files?id=in.(${encodeURIComponent(ids.join(","))})&album_key=eq.${encodeURIComponent(album)}&select=id,drive_file_id`,
       {
         headers: { apikey: config.key, Authorization: `Bearer ${config.key}` },
         cache: "no-store",
@@ -131,11 +133,10 @@ export async function DELETE(request: NextRequest) {
     );
     if (!lookupResponse.ok) return NextResponse.json({ error: "Unable to verify the photo." }, { status: 500 });
     const rows = await lookupResponse.json() as Array<{ id: string; drive_file_id: string }>;
-    const row = rows[0];
-    if (!row) return NextResponse.json({ error: "Photo not found." }, { status: 404 });
+    if (!rows.length) return NextResponse.json({ error: "Photos not found." }, { status: 404 });
 
-    await deleteGoogleDriveFile(row.drive_file_id);
-    const deleteResponse = await fetch(`${config.url}/rest/v1/memory_maker_files?id=eq.${encodeURIComponent(row.id)}`, {
+    for (const row of rows) await deleteGoogleDriveFile(row.drive_file_id);
+    const deleteResponse = await fetch(`${config.url}/rest/v1/memory_maker_files?id=in.(${encodeURIComponent(rows.map((row) => row.id).join(","))})`, {
       method: "DELETE",
       headers: {
         apikey: config.key,
@@ -145,7 +146,7 @@ export async function DELETE(request: NextRequest) {
     if (!deleteResponse.ok) {
       return NextResponse.json({ error: "The Drive photo was deleted, but its album record could not be removed." }, { status: 500 });
     }
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true, deletedIds: rows.map((row) => row.id) });
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : "Unable to delete photo." }, { status: 500 });
   }
