@@ -806,9 +806,6 @@ export default function TravelSite() {
           {nextChapter && (
             <button type="button" onClick={() => setPage(nextChapter)} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70">Next Chapter<span className="hidden sm:inline"> · {chapterLabels[nextChapter]}</span> →</button>
           )}
-          {!previousChapter && !nextChapter && current !== "checklist" && (
-            <button type="button" onClick={() => setPage("map")} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70">← Back to Timeline</button>
-          )}
         </div>
       </div>
     );
