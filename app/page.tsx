@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
 const BABY_BLUE = "#9EDCFF";
@@ -28,6 +28,14 @@ type PackingChecklist = {
 
 type Person = [string, string];
 type SignupTripKey = "morocco" | "skiMyoko" | "skiDeerValley" | "skiBig3" | "houston" | "azoresPortugal" | "similanThailand" | "disneyWorld" | "fiveStans";
+type MemoryMakerFile = {
+  id: string;
+  fileName: string;
+  mimeType: string;
+  uploader: string;
+  createdAt: string;
+  mediaUrl: string;
+};
 
 type TripStatus = "Planning" | "Confirmed" | "Dreaming";
 
@@ -82,6 +90,101 @@ function TripPanelTitle({
       </h1>
       {description && <p className="mt-4 text-sm leading-6 text-white/55">{description}</p>}
     </div>
+  );
+}
+
+function MemoryMaker({
+  albumKey,
+  albumName,
+  accentColor,
+  guestName,
+}: {
+  albumKey: string;
+  albumName: string;
+  accentColor: string;
+  guestName: string;
+}) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [files, setFiles] = useState<MemoryMakerFile[]>([]);
+  const [showAlbum, setShowAlbum] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const loadFiles = async () => {
+    setIsLoading(true);
+    setMessage("");
+    try {
+      const response = await fetch(`/api/memory-maker?album=${encodeURIComponent(albumKey)}`);
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Unable to load album.");
+      setFiles(Array.isArray(data.files) ? data.files : []);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Unable to load album.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadFiles();
+  }, [albumKey]);
+
+  const uploadFiles = async (selectedFiles: FileList | null) => {
+    if (!selectedFiles?.length) return;
+    setIsLoading(true);
+    setMessage("");
+    try {
+      for (const file of Array.from(selectedFiles)) {
+        const formData = new FormData();
+        formData.append("album", albumKey);
+        formData.append("albumName", albumName);
+        formData.append("uploader", guestName || "Guest");
+        formData.append("file", file);
+        const response = await fetch("/api/memory-maker", { method: "POST", body: formData });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || `Unable to upload ${file.name}.`);
+      }
+      setShowAlbum(true);
+      await loadFiles();
+      setMessage("Upload complete.");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Unable to upload files.");
+    } finally {
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <section className="mb-10 rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
+      <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+        <div>
+          <p className="mb-2 text-xs uppercase tracking-[0.3em]" style={{ color: accentColor }}>Memory Maker</p>
+          <h2 className="text-2xl font-light">📸 {albumName} Memories</h2>
+          <p className="mt-2 text-sm text-white/45">Share photos and videos with everyone joining this trip segment.</p>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2 md:min-w-[300px]">
+          <input ref={fileInputRef} type="file" multiple accept="image/*,video/*" className="hidden" onChange={(event) => uploadFiles(event.target.files)} />
+          <button type="button" disabled={isLoading} onClick={() => fileInputRef.current?.click()} className="rounded-full border border-white/20 bg-white/[0.04] px-5 py-3 text-sm uppercase tracking-[0.18em] text-white/70 transition hover:border-white/40 hover:bg-white/[0.08] disabled:cursor-wait disabled:opacity-50">Upload</button>
+          <button type="button" disabled={isLoading} onClick={() => { setShowAlbum((current) => !current); if (!showAlbum) loadFiles(); }} className="rounded-full border border-white/20 bg-white/[0.04] px-5 py-3 text-sm uppercase tracking-[0.18em] text-white/70 transition hover:border-white/40 hover:bg-white/[0.08] disabled:cursor-wait disabled:opacity-50">{showAlbum ? "Hide Album" : "View Album"}</button>
+        </div>
+      </div>
+      {message && <p className="mt-4 text-sm text-white/50">{message}</p>}
+      {showAlbum && (
+        <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-3">
+          {files.length ? files.map((file) => (
+            <figure key={file.id} className="overflow-hidden rounded-2xl border border-white/10 bg-black/30">
+              {file.mimeType.startsWith("video/") ? (
+                <video controls preload="metadata" className="aspect-square w-full object-cover"><source src={file.mediaUrl} type={file.mimeType} /></video>
+              ) : (
+                <img src={file.mediaUrl} alt={file.fileName} loading="lazy" className="aspect-square w-full object-cover" />
+              )}
+              <figcaption className="p-3 text-left"><p className="truncate text-xs text-white/70">{file.fileName}</p><p className="mt-1 text-[10px] text-white/35">{file.uploader}</p></figcaption>
+            </figure>
+          )) : <p className="col-span-full rounded-2xl border border-white/10 bg-black/20 px-4 py-6 text-center text-sm text-white/35">{isLoading ? "Loading album..." : "No memories uploaded yet."}</p>}
+        </div>
+      )}
+    </section>
   );
 }
 
@@ -638,15 +741,6 @@ export default function TravelSite() {
     );
   };
 
-  const memoryMaker = (albumName: string, accentColor: string = "#72E49A") => (
-    <section className="mb-10 rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
-      <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
-        <div><p className="mb-2 text-xs uppercase tracking-[0.3em]" style={{ color: accentColor }}>Memory Maker</p><h2 className="text-2xl font-light">📸 {albumName} Memories</h2><p className="mt-2 text-sm text-white/45">Shared photo book album. Upload and album features coming soon.</p></div>
-        <div className="grid gap-3 sm:grid-cols-2 md:min-w-[300px]"><button type="button" disabled className="cursor-not-allowed rounded-full border border-white/10 bg-white/[0.02] px-5 py-3 text-sm uppercase tracking-[0.18em] text-white/25 opacity-60">Upload Photos</button><button type="button" disabled className="cursor-not-allowed rounded-full border border-white/10 bg-white/[0.02] px-5 py-3 text-sm uppercase tracking-[0.18em] text-white/25 opacity-60">View Album</button></div>
-      </div>
-    </section>
-  );
-
   const peopleCards = (people: Person[]) => (
     <section className="mt-10 rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
       <div className="mb-5 flex items-center justify-between"><h2 className="text-2xl font-light">Who's Here</h2><p className="text-[10px] uppercase tracking-[0.24em] text-white/35">Current Trip Segment</p></div>
@@ -840,7 +934,10 @@ export default function TravelSite() {
           <p className="mb-3 text-xs uppercase tracking-[0.35em] text-white/70">Private Group Event</p>
           {!selectedTrip ? (
             <>
-              <h1 className="mb-4 text-3xl font-light tracking-wide">Welcome to XK Events</h1>
+              <h1 className="mb-4 text-3xl font-light tracking-wide">
+                <span className="block">Welcome,</span>
+                <span className="block">Where are we going?</span>
+              </h1>
               <p className="mb-8 text-sm leading-6 text-white/55">Please select your trip.</p>
               <div className="space-y-3">
                 <TripButton location="Morocco" date="Sept 3 - Sept 12 2026" status="Planning" onClick={() => setSelectedTrip("morocco")} />
@@ -857,7 +954,7 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "morocco" ? (
             <>
-              <button type="button" onClick={() => { setSelectedTrip(""); setShowMoroccoNameInput(false); setMoroccoNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
+              <button type="button" onClick={() => { setSelectedTrip(""); setShowMoroccoNameInput(false); setMoroccoNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">All Trips</button>
               <TripPanelTitle location="Morocco" date="Sept 3 - Sept 12 2026" description="A late-summer group adventure through Morocco with time for culture, scenery, food, and slow wandering." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
@@ -890,7 +987,7 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "skiMyoko" ? (
             <>
-              <button type="button" onClick={() => { setSelectedTrip(""); setShowSkiMyokoNameInput(false); setSkiMyokoNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
+              <button type="button" onClick={() => { setSelectedTrip(""); setShowSkiMyokoNameInput(false); setSkiMyokoNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">All Trips</button>
               <TripPanelTitle location="Ski Shiga Kogen & Nagano Japan" date="Jan 23 - Jan 31 2027" description="A winter ski week in the Nagano mountains with onsen time, snow days, and cozy Japanese food." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
@@ -923,7 +1020,7 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "skiDeerValley" ? (
             <>
-              <button type="button" onClick={() => { setSelectedTrip(""); setShowSkiDeerValleyNameInput(false); setSkiDeerValleyNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
+              <button type="button" onClick={() => { setSelectedTrip(""); setShowSkiDeerValleyNameInput(false); setSkiDeerValleyNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">All Trips</button>
               <TripPanelTitle location="Ski Deer Valley UT USA" date="Feb 2027" description="A polished Utah ski escape built around groomed runs, mountain views, and relaxed resort evenings." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
@@ -956,7 +1053,7 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "skiBig3" ? (
             <>
-              <button type="button" onClick={() => { setSelectedTrip(""); setShowSkiBig3NameInput(false); setSkiBig3NameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
+              <button type="button" onClick={() => { setSelectedTrip(""); setShowSkiBig3NameInput(false); setSkiBig3NameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">All Trips</button>
               <TripPanelTitle location="SkiBig3 AB Canada" date="Mar 2027" description="A Canadian Rockies ski trip across Banff's big mountain terrain, with plenty of alpine scenery between runs." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
@@ -989,7 +1086,7 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "houston" ? (
             <>
-              <button type="button" onClick={() => { setSelectedTrip(""); setShowHoustonNameInput(false); setHoustonNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
+              <button type="button" onClick={() => { setSelectedTrip(""); setShowHoustonNameInput(false); setHoustonNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">All Trips</button>
               <TripPanelTitle location="Houston & Galveston TX USA" subtitle="FRC & Disney Cruise" date="April 28 - May 7 2027" description="Arriving Houston to witness the exciting First Robotics Competition at the George R. Brown Convention Center from April 28 - May 1; followed by Mark's birthday celebration on May 1. On May 2, we board Disney Magic from Galveston for a 5-night Western Caribbean Disney cruise." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
@@ -1022,7 +1119,7 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "azoresPortugal" ? (
             <>
-              <button type="button" onClick={() => { setSelectedTrip(""); setShowAzoresNameInput(false); setAzoresNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
+              <button type="button" onClick={() => { setSelectedTrip(""); setShowAzoresNameInput(false); setAzoresNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">All Trips</button>
               <TripPanelTitle location="Azores Portugal" date="Sept 2027" description="An island nature trip with volcanic landscapes, ocean views, hot springs, and unhurried Atlantic days." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
@@ -1055,7 +1152,7 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "similanThailand" ? (
             <>
-              <button type="button" onClick={() => { setSelectedTrip(""); setShowSimilanNameInput(false); setSimilanNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
+              <button type="button" onClick={() => { setSelectedTrip(""); setShowSimilanNameInput(false); setSimilanNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">All Trips</button>
               <TripPanelTitle location="Similan & Phuket Thailand" subtitle="Scuba Diving Liveaboard" date="Mar 2028" description="A warm-water dive adventure centered on liveaboard days, reefs, beaches, and Phuket time before or after the boat." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
@@ -1088,7 +1185,7 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "disneyWorld" ? (
             <>
-              <button type="button" onClick={() => { setSelectedTrip(""); setShowDisneyWorldNameInput(false); setDisneyWorldNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
+              <button type="button" onClick={() => { setSelectedTrip(""); setShowDisneyWorldNameInput(false); setDisneyWorldNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">All Trips</button>
               <TripPanelTitle location="Orlando FL USA" subtitle="Disney World" date="Nov 2028" description="A Disney World holiday with park days, character moments, resort downtime, and room for family pacing." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
@@ -1121,7 +1218,7 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "fiveStans" ? (
             <>
-              <button type="button" onClick={() => { setSelectedTrip(""); setShowFiveStansNameInput(false); setFiveStansNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
+              <button type="button" onClick={() => { setSelectedTrip(""); setShowFiveStansNameInput(false); setFiveStansNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">All Trips</button>
               <TripPanelTitle location="The 5 Stans & Silk Road" date="TBD" description="Trace the legendary Silk Road across five nations: Kyrgyzstan, Kazakhstan, Tajikistan, Turkmenistan, Uzbekistan. This is Central Asia in full, gloriously unfiltered widescreen. Gonna be gorgeous and totally unforgettable." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
@@ -1167,8 +1264,8 @@ export default function TravelSite() {
             </>
           ) : !showGuestActions ? (
             <>
-              <button type="button" onClick={() => { setSelectedTrip(""); setShowGuestActions(false); setGuestName(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">← Back</button>
-              <h1 className="mb-4 text-3xl font-light tracking-wide">Welcome to Taiwan/Japan 2026</h1>
+              <button type="button" onClick={() => { setSelectedTrip(""); setShowGuestActions(false); setGuestName(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">All Trips</button>
+              <h1 className="mb-4 text-3xl font-light tracking-wide">Okinawa & Taiwan 2026</h1>
               <p className="mb-8 text-sm leading-6 text-white/55">Please select your party to continue.</p>
               <div className="mb-5 max-h-[280px] space-y-2 overflow-y-auto pr-1">
                 {guestOptions.map((guest) => <button key={guest} type="button" onClick={() => { setGuestName(guest); if (guest === "I am just a random Guest") { setIsGuestConfirmed(true); setPage("map"); return; } setShowGuestActions(true); }} className="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm font-light tracking-wide text-white/70 transition hover:border-white/30 hover:bg-white/[0.05]">{guest}</button>)}
@@ -1176,6 +1273,10 @@ export default function TravelSite() {
             </>
           ) : (
             <>
+              <div className="mb-5 grid grid-cols-2 gap-3">
+                <button type="button" onClick={() => { setShowGuestActions(false); setGuestName(""); }} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45 transition hover:border-white/30 hover:bg-white/[0.05]">Back</button>
+                <button type="button" onClick={() => { setSelectedTrip(""); setShowGuestActions(false); setGuestName(""); }} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45 transition hover:border-white/30 hover:bg-white/[0.05]">All Trips</button>
+              </div>
               <div className="mb-8 rounded-3xl border border-white/10 bg-white/[0.04] p-6 text-left shadow-[0_0_30px_rgba(255,255,255,0.05)]">
                 <p className="text-sm uppercase tracking-[0.28em] text-white/70">Welcome</p>
                 <h2 className="mt-2 text-3xl font-light tracking-wide text-white">Hello {guestName} 👋</h2>
@@ -1246,7 +1347,7 @@ export default function TravelSite() {
       <main className="mx-auto max-w-5xl">
         <p className="mb-3 text-sm uppercase tracking-[0.35em]" style={{ color: accentColor }}>{eyebrow}</p>
         <h1 className="mb-6 text-4xl font-light tracking-wide md:text-6xl">{title}</h1>
-        {memoryMaker(album, accentColor)}
+        <MemoryMaker albumKey={chapter} albumName={album} accentColor={accentColor} guestName={guestName} />
         {infoWidgets(month, nights, hotel, region)}
         <section className="space-y-8">{children}</section>
         {peopleCards(chapterPeople[chapter])}
