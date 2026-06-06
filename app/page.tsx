@@ -29,6 +29,17 @@ type PackingChecklist = {
 type Person = [string, string];
 type SignupTripKey = "morocco" | "skiMyoko" | "skiDeerValley" | "skiBig3" | "houston" | "azoresPortugal" | "similanThailand" | "disneyWorld" | "fiveStans";
 type TripStatus = "Planning" | "Confirmed" | "Dreaming";
+type RentalCarArrangement = {
+  id: string;
+  carName: string;
+  capacity: number;
+  notes: string | null;
+  occupants: {
+    personName: string;
+    partyName: string;
+    role: "driver" | "passenger";
+  }[];
+};
 
 const MAX_PHOTO_UPLOAD_BYTES = 3.5 * 1024 * 1024;
 const MAX_PHOTO_EDGE = 2560;
@@ -512,6 +523,7 @@ export default function TravelSite() {
     if (["xiaoliuqiu", "onna", "nago", "nanjo", "naha", "nahaearly", "yilan"].includes(chapter || "")) {
       setPage(chapter as PageName);
       if (returningGuest) setGuestName(returningGuest);
+      setSelectedTrip("okinawaTaiwan");
       setIsGuestConfirmed(true);
     }
     setIsInitialRouteReady(true);
@@ -638,7 +650,7 @@ export default function TravelSite() {
       { id: "nanjo", label: "Nanjo", range: "Dec 2–4", color: "okinawa" },
       { id: "naha", label: "Naha", range: "Dec 4–6", color: "okinawa" },
     ],
-    2: [{ id: "yilan", label: "Yilan", range: "Dec 9–12", color: "yilan" }],
+    2: [{ id: "yilan", label: "Yilan", range: "Dec 8–11", color: "yilan" }],
     3: [],
     4: [],
   };
@@ -796,7 +808,7 @@ export default function TravelSite() {
 
   const peopleCards = (people: Person[]) => (
     <section className="mt-10 rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
-      <div className="mb-5 flex items-center justify-between"><h2 className="text-2xl font-light">Who's Here</h2><p className="text-[10px] uppercase tracking-[0.24em] text-white/35">Current Trip Segment</p></div>
+      <h2 className="mb-5 text-2xl font-light">Who's Here</h2>
       <div className="grid gap-3 md:grid-cols-2">{people.map(([name, date]) => <div key={name} className="rounded-2xl border border-white/10 bg-black/20 p-4"><p className="text-sm font-medium text-white">{name}</p><p className="text-[10px] text-gray-400 md:text-xs">{date}</p></div>)}</div>
     </section>
   );
@@ -1391,8 +1403,8 @@ export default function TravelSite() {
     checklist: [],
     yilan: [["Xenia & David & Naomi (3)", "Dec 8 – Dec 11 · Yilan"], ["Mei & Emilia (8)", "Dec 8 – Dec 11 · Yilan"], ["Dave & Christina & Xixi (2)", "Dec 8 – Dec 11 · Yilan"], ["Heather & Jack & Aizen (8) & Kaien (3)", "Dec 8 – Dec 11 · Yilan"]],
     xiaoliuqiu: [["Anthony & Christine & Mona (1)", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Mark Wang", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Xenia & David & Naomi (3)", "Nov 21 – Nov 23 · Xiaoliuqiu"]],
-    onna: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 4 · Okinawa"], ["Mark Wang", "Nov 25 – Nov 30 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Jack & Aizen (8) & Kaien (3)", "Nov 26 – Dec 2 · Okinawa"]],
-    nago: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 4 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Jack & Aizen (8) & Kaien (3)", "Nov 26 – Dec 2 · Okinawa"]],
+    onna: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 2 · Okinawa"], ["Mark Wang", "Nov 25 – Nov 30 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Jack & Aizen (8) & Kaien (3)", "Nov 26 – Dec 2 · Okinawa"]],
+    nago: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 2 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Jack & Aizen (8) & Kaien (3)", "Nov 26 – Dec 2 · Okinawa"]],
     nanjo: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 27 – Dec 6 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"]],
     naha: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 27 – Dec 6 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"]],
     nahaearly: [["Steven Wang", "Nov 25 – Dec 2 · Okinawa"], ["Mark Wang", "Nov 25 – Nov 30 · Okinawa"]],
@@ -1464,8 +1476,83 @@ function SegmentButtons({ segments, setIsGuestConfirmed, setPage }: { segments: 
   return <div className="mt-5 space-y-3 text-sm leading-7 text-white/70"><p className="text-xs uppercase tracking-[0.22em] text-white/35">You are joining:</p>{segments.map((segment) => <button key={segment.label} type="button" onClick={() => { setIsGuestConfirmed(true); setPage(segment.page); }} className="w-full rounded-2xl border px-4 py-3 text-left transition" style={{ borderColor: `${segment.color}44`, backgroundColor: `${segment.color}12` }}><p className="font-medium" style={{ color: segment.color }}>{segment.label}</p></button>)}</div>;
 }
 
-function DayArticle({ date, title, children }: { date: string; title: string; children: React.ReactNode }) {
-  return <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md"><p className="mb-2 text-sm text-[var(--chapter-accent)]">{date}</p><h2 className="mb-5 text-2xl font-light">{title}</h2><div className="space-y-4 text-sm leading-7 text-white/75">{children}</div></article>;
+function RentalCarPlanner({ date, dateLabel }: { date: string; dateLabel: string }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [arrangements, setArrangements] = useState<RentalCarArrangement[]>([]);
+  const [dayStatus, setDayStatus] = useState<"planned" | "pending" | "not_required">("pending");
+  const [dayNotes, setDayNotes] = useState<string | null>(null);
+  const [message, setMessage] = useState("");
+
+  const openPlanner = async () => {
+    setIsOpen(true);
+    setIsLoading(true);
+    setMessage("");
+    try {
+      const response = await fetch(`/api/rental-car-arrangements?date=${encodeURIComponent(date)}`);
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Unable to load rental car arrangements.");
+      setDayStatus(data.status || "pending");
+      setDayNotes(typeof data.notes === "string" ? data.notes : null);
+      setArrangements(Array.isArray(data.arrangements) ? data.arrangements : []);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Unable to load rental car arrangements.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <>
+      <button type="button" onClick={openPlanner} aria-label={`View rental car seating for ${dateLabel}`} title="Rental car seating" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 bg-black/20 text-base transition hover:border-white/35 hover:bg-white/[0.08]">🚗</button>
+      {isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label={`Rental car seating for ${dateLabel}`}>
+          <div className="max-h-[88vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-white/15 bg-[#111] p-5 shadow-2xl sm:p-7">
+            <div className="mb-6 flex items-start justify-between gap-5 border-b border-white/10 pb-5">
+              <div>
+                <p className="mb-2 text-xs uppercase tracking-[0.24em] text-[var(--chapter-accent)]">Rental Car Seating</p>
+                <h3 className="text-2xl font-light text-white">{dateLabel}</h3>
+              </div>
+              <button type="button" onClick={() => setIsOpen(false)} aria-label="Close rental car seating" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">×</button>
+            </div>
+
+            {isLoading && <p className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-8 text-center text-sm text-white/40">Loading arrangements...</p>}
+            {!isLoading && message && <p className="rounded-xl border border-red-300/20 bg-red-300/5 px-4 py-4 text-sm text-red-100/75">{message}</p>}
+            {!isLoading && !message && dayStatus === "not_required" && <p className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-8 text-center text-sm text-white/55">No rental car arrangement is required for this day.</p>}
+            {!isLoading && !message && dayStatus === "pending" && <p className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-8 text-center text-sm text-white/45">Rental car seating has not been arranged for this day yet.</p>}
+            {!isLoading && !message && dayStatus === "planned" && !arrangements.length && <p className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-8 text-center text-sm text-white/45">No cars have been added to this day's plan yet.</p>}
+            {!isLoading && !message && arrangements.length > 0 && (
+              <div className="space-y-4">
+                {arrangements.map((arrangement) => {
+                  const driver = arrangement.occupants.find((occupant) => occupant.role === "driver");
+                  return (
+                    <section key={arrangement.id} className="rounded-xl border border-white/10 bg-white/[0.04] p-5">
+                      <div className="mb-4 flex items-start justify-between gap-4">
+                        <div>
+                          <h4 className="text-lg font-medium text-white">{arrangement.carName}</h4>
+                          <p className="mt-1 text-sm text-white/55">Driver: {driver?.personName || "Not assigned"}</p>
+                        </div>
+                        <span className="shrink-0 rounded-full border border-white/10 px-3 py-1 text-xs text-white/45">{arrangement.occupants.length}/{arrangement.capacity} seats</span>
+                      </div>
+                      <div className="grid gap-2 sm:grid-cols-2">
+                        {arrangement.occupants.map((occupant) => <p key={occupant.personName} className="rounded-lg border border-white/10 bg-black/20 px-3 py-2 text-sm text-white/70">{occupant.personName}{occupant.role === "driver" ? " · Driver" : ""}</p>)}
+                      </div>
+                      {arrangement.notes && <p className="mt-4 border-t border-white/10 pt-4 text-sm leading-6 text-white/45">{arrangement.notes}</p>}
+                    </section>
+                  );
+                })}
+                {dayNotes && <p className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm leading-6 text-white/45">{dayNotes}</p>}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+function DayArticle({ date, title, rentalCarDate, children }: { date: string; title: string; rentalCarDate?: string; children: React.ReactNode }) {
+  return <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md"><div className="mb-5 flex items-start justify-between gap-4"><div><p className="mb-2 text-sm text-[var(--chapter-accent)]">{date}</p><h2 className="text-2xl font-light">{title}</h2></div>{rentalCarDate && <RentalCarPlanner date={rentalCarDate} dateLabel={date} />}</div><div className="space-y-4 text-sm leading-7 text-white/75">{children}</div></article>;
 }
 
 function XiaoliuqiuContent({ card }: { card: (children: React.ReactNode) => React.ReactNode }) {
@@ -1473,11 +1560,11 @@ function XiaoliuqiuContent({ card }: { card: (children: React.ReactNode) => Reac
 }
 
 function OnnaContent({ card, linkedImage }: { card: (children: React.ReactNode) => React.ReactNode; linkedImage: (src: string, alt: string) => React.ReactNode }) {
-  return <><DayArticle date="Friday, November 27, 2026" title="Morning Arrival · Naha">{card(<><p>✈ EVA Air BR112 · Arrive 9:15 AM at Naha Airport</p><p>🚗 Pick up rental car · Rental Company TBD</p></>)}{card(<><p>🕛 <a href="https://maps.google.com/?q=Senaga+Island+Umikaji+Terrace" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Senaga Island · Umikaji Terrace</a></p>{linkedImage("/umikaji-terrace.png", "Umikaji Terrace Okinawa")}<p className="mt-4">MKCafe → ocean views and Mackerel Bitter Melon Burger.</p></>)}{card(<><p className="text-[var(--chapter-accent)]">Afternoon · PART I</p><p>🛍 <a href="https://maps.google.com/?q=San-A+PARCO+CITY+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">PARCO City</a></p><p>☕ <a href="https://maps.google.com/?q=Minatogawa+Stateside+Town+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">港川外人住宅 Minatogawa State Side Town</a></p></>)}{card(<><p className="text-[var(--chapter-accent)]">Afternoon · PART II</p><p>🏖 <a href="https://maps.google.com/?q=Araha+Beach+Park+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Araha Beach Park</a></p><p>🛒 <a href="https://maps.google.com/?q=AEON+Mall+Rycom+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Aeon Mall Rycom</a></p><p>🚗 <a href="https://maps.google.com/?q=Hotel+Monterey+Okinawa+Spa+%26+Resort" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Drive to resort</a> · approximately 45 minutes.</p></>)}</DayArticle><DayArticle date="Saturday, November 28, 2026" title="Resort Day · Beach / Culture / Blue Cave">{card(<p>🍳 Breakfast · Hotel buffet</p>)}{card(<><p>🤿 Blue Cave dive & snorkel 青之洞窟潛水</p><p className="text-white/50">Weather dependent</p>{linkedImage("/bluecave.png", "Blue Cave Okinawa")}</>)}{card(<a href="https://www.ryukyumura.co.jp/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🏯 Ryukyu Mura with FunPass</a>)}{card(<><a href="https://www.hotelmonterey.co.jp/en/okinawa/activity/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🏖 Resort & Beach Activities</a>{linkedImage("/hotel.png", "Hotel Monterey Okinawa")}</>)}{card(<p>🍽 Dinner · TBD</p>)}</DayArticle><DayArticle date="Sunday, November 29, 2026" title="Albert & Quinn Wedding Day">{card(<><p>Breakfast · Hotel buffet</p><p>💍 Albert & Quinn Wedding at Hotel Monterey Okinawa Spa & Resort</p>{linkedImage("/chapel.png", "Wedding Chapel Okinawa")}</>)}</DayArticle></>;
+  return <><DayArticle date="Friday, November 27, 2026" rentalCarDate="2026-11-27" title="Morning Arrival · Naha">{card(<><p>✈ EVA Air BR112 · Arrive 9:15 AM at Naha Airport</p><p>🚗 Pick up rental car · Rental Company TBD</p></>)}{card(<><p>🕛 <a href="https://maps.google.com/?q=Senaga+Island+Umikaji+Terrace" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Senaga Island · Umikaji Terrace</a></p>{linkedImage("/umikaji-terrace.png", "Umikaji Terrace Okinawa")}<p className="mt-4">MKCafe → ocean views and Mackerel Bitter Melon Burger.</p></>)}{card(<><p className="text-[var(--chapter-accent)]">Afternoon · PART I</p><p>🛍 <a href="https://maps.google.com/?q=San-A+PARCO+CITY+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">PARCO City</a></p><p>☕ <a href="https://maps.google.com/?q=Minatogawa+Stateside+Town+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">港川外人住宅 Minatogawa State Side Town</a></p></>)}{card(<><p className="text-[var(--chapter-accent)]">Afternoon · PART II</p><p>🏖 <a href="https://maps.google.com/?q=Araha+Beach+Park+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Araha Beach Park</a></p><p>🛒 <a href="https://maps.google.com/?q=AEON+Mall+Rycom+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Aeon Mall Rycom</a></p><p>🚗 <a href="https://maps.google.com/?q=Hotel+Monterey+Okinawa+Spa+%26+Resort" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Drive to resort</a> · approximately 45 minutes.</p></>)}</DayArticle><DayArticle date="Saturday, November 28, 2026" rentalCarDate="2026-11-28" title="Resort Day · Beach / Culture / Blue Cave">{card(<p>🍳 Breakfast · Hotel buffet</p>)}{card(<><p>🤿 Blue Cave dive & snorkel 青之洞窟潛水</p><p className="text-white/50">Weather dependent</p>{linkedImage("/bluecave.png", "Blue Cave Okinawa")}</>)}{card(<a href="https://www.ryukyumura.co.jp/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🏯 Ryukyu Mura with FunPass</a>)}{card(<><a href="https://www.hotelmonterey.co.jp/en/okinawa/activity/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🏖 Resort & Beach Activities</a>{linkedImage("/hotel.png", "Hotel Monterey Okinawa")}</>)}{card(<p>🍽 Dinner · TBD</p>)}</DayArticle><DayArticle date="Sunday, November 29, 2026" rentalCarDate="2026-11-29" title="Albert & Quinn Wedding Day">{card(<><p>Breakfast · Hotel buffet</p><p>💍 Albert & Quinn Wedding at Hotel Monterey Okinawa Spa & Resort</p>{linkedImage("/chapel.png", "Wedding Chapel Okinawa")}</>)}</DayArticle></>;
 }
 
 function NagoContent({ card, linkedImage }: { card: (children: React.ReactNode) => React.ReactNode; linkedImage: (src: string, alt: string) => React.ReactNode }) {
-  return <><DayArticle date="Monday, November 30, 2026" title="Onna → Nago">{card(<><p>🍳 Breakfast · Hotel buffet</p><p>🧳 Checkout at 10:00 AM</p><a href="https://maps.google.com/?q=Cape+Manzamo+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🌊 Cape Manzamo quick stop</a>{linkedImage("/cape.png", "Cape Manzamo Okinawa")}</>)}{card(<><a href="https://maps.google.com/?q=Busena+Marine+Park+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🌊 Busena Marine Park Underwater Observatory + Glass Boat</a>{linkedImage("/busena.png", "Busena Marine Park")}</>)}{card(<><a href="https://maps.google.com/?q=Orion+Happy+Park+Nago" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🍺 14:00 – 16:00 Orion Happy Park</a>{linkedImage("/orion.png", "Orion Happy Park")}</>)}{card(<><p>🥩 Dinner · <a href="https://share.google/nhtDdtE6vYP48ws81" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Restaurant Flipper</a></p><p>🛍 <a href="https://maps.google.com/?q=MEGA+Don+Quijote+Nago" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">MEGA Don Quijote Nago</a></p></>)}</DayArticle><DayArticle date="Tuesday, December 1, 2026" title="Aquarium + Kouri Island">{card(<><p><a href="https://maps.google.com/?q=Okinawa+Churaumi+Aquarium" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🐠 9:30 – 13:00 Churaumi Aquarium</a></p>{linkedImage("/aquarium.png", "Churaumi Aquarium")}</>)}{card(<><p><a href="https://maps.google.com/?q=Bise+Fukugi+Tree+Road+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🌳 Bise Fukugi Tree Road</a></p>{linkedImage("/tree.png", "Bise Fukugi Tree Road")}</>)}{card(<><p><a href="https://maps.google.com/?q=Kouri+Island+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🌉 Kouri Island</a></p>{linkedImage("/kouri.png", "Kouri Island")}</>)}{card(<p>🍽 Dinner · <a href="https://maps.google.com/?q=Yakiniku+Kochan+Nago" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Yakiniku Kochan 焼肉こうちゃん</a></p>)}</DayArticle></>;
+  return <><DayArticle date="Monday, November 30, 2026" rentalCarDate="2026-11-30" title="Onna → Nago">{card(<><p>🍳 Breakfast · Hotel buffet</p><p>🧳 Checkout at 10:00 AM</p><a href="https://maps.google.com/?q=Cape+Manzamo+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🌊 Cape Manzamo quick stop</a>{linkedImage("/cape.png", "Cape Manzamo Okinawa")}</>)}{card(<><a href="https://maps.google.com/?q=Busena+Marine+Park+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🌊 Busena Marine Park Underwater Observatory + Glass Boat</a>{linkedImage("/busena.png", "Busena Marine Park")}</>)}{card(<><a href="https://maps.google.com/?q=Orion+Happy+Park+Nago" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🍺 14:00 – 16:00 Orion Happy Park</a>{linkedImage("/orion.png", "Orion Happy Park")}</>)}{card(<><p>🥩 Dinner · <a href="https://share.google/nhtDdtE6vYP48ws81" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Restaurant Flipper</a></p><p>🛍 <a href="https://maps.google.com/?q=MEGA+Don+Quijote+Nago" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">MEGA Don Quijote Nago</a></p></>)}</DayArticle><DayArticle date="Tuesday, December 1, 2026" rentalCarDate="2026-12-01" title="Aquarium + Kouri Island">{card(<><p><a href="https://maps.google.com/?q=Okinawa+Churaumi+Aquarium" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🐠 9:30 – 13:00 Churaumi Aquarium</a></p>{linkedImage("/aquarium.png", "Churaumi Aquarium")}</>)}{card(<><p><a href="https://maps.google.com/?q=Bise+Fukugi+Tree+Road+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🌳 Bise Fukugi Tree Road</a></p>{linkedImage("/tree.png", "Bise Fukugi Tree Road")}</>)}{card(<><p><a href="https://maps.google.com/?q=Kouri+Island+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🌉 Kouri Island</a></p>{linkedImage("/kouri.png", "Kouri Island")}</>)}{card(<p>🍽 Dinner · <a href="https://maps.google.com/?q=Yakiniku+Kochan+Nago" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Yakiniku Kochan 焼肉こうちゃん</a></p>)}</DayArticle></>;
 }
 
 function YilanContent({ card }: { card: (children: React.ReactNode) => React.ReactNode }) {
@@ -1510,13 +1597,13 @@ function YilanContent({ card }: { card: (children: React.ReactNode) => React.Rea
 }
 
 function NanjoContent({ card }: { card: (children: React.ReactNode) => React.ReactNode }) {
-  return <><DayArticle date="Wednesday, December 2, 2026" title="Nago → Nanjo">{card(<><p className="text-[var(--chapter-accent)]">Morning & Day</p><p>🎢 Option 1 · Kids age 4+ & adults</p><p><a href="https://junglia.jp/en" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Junglia Park</a></p><div className="mt-4" /><p>🦁 Option 2 · Kids age 1–3</p><p><a href="https://maps.google.com/?q=Nago+Pineapple+Park" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Nago Pineapple Park</a> or <a href="https://maps.google.com/?q=Neo+Park+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Neo Park Zoo</a></p></>)}{card(<><p className="text-[var(--chapter-accent)]">Afternoon · 3:00 PM</p><p>🚗 Leaving Nago and drive approximately 1 hour toward <a href="https://maps.google.com/?q=Miyagi+Coast+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Miyagi Coast</a> & American Village</p><img src="/america.png" alt="American Village Okinawa" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /><p className="mt-4">🍽 Dinner · <a href="https://maps.app.goo.gl/PXMBGjZ1AsTNkSVT9" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Taco Rice Cafe Kijimuna</a></p><p>🚗 Evening drive to hotel · <a href="https://maps.google.com/?q=Yuinchi+Hotel+Nanjo" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Yuinchi Hotel Nanjo</a></p></>)} </DayArticle><DayArticle date="Thursday, December 3, 2026" title="Nanjo · Okinawa World + Gangala Valley">{card(<><p>🍳 Breakfast · Hotel buffet</p><p>🌏 <a href="https://maps.google.com/?q=Okinawa+World" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Okinawa World（玉泉洞）</a> · FunPass</p><img src="/cave.png" alt="Okinawa World Cave" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}{card(<><p>🌿 Gangala Valley</p><img src="/gangala.png" alt="Gangala Valley" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /><a href="https://book.gangala.com/?lng=zh-TW" target="_blank" rel="noopener noreferrer" className="mt-4 inline-block text-[var(--chapter-accent)] hover:underline">Gangala Valley reservation</a></>)}</DayArticle></>;
+  return <><DayArticle date="Wednesday, December 2, 2026" rentalCarDate="2026-12-02" title="Nago → Nanjo">{card(<><p className="text-[var(--chapter-accent)]">Morning & Day</p><p>🎢 Option 1 · Kids age 4+ & adults</p><p><a href="https://junglia.jp/en" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Junglia Park</a></p><div className="mt-4" /><p>🦁 Option 2 · Kids age 1–3</p><p><a href="https://maps.google.com/?q=Nago+Pineapple+Park" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Nago Pineapple Park</a> or <a href="https://maps.google.com/?q=Neo+Park+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Neo Park Zoo</a></p></>)}{card(<><p className="text-[var(--chapter-accent)]">Afternoon · 3:00 PM</p><p>🚗 Leaving Nago and drive approximately 1 hour toward <a href="https://maps.google.com/?q=Miyagi+Coast+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Miyagi Coast</a> & American Village</p><img src="/america.png" alt="American Village Okinawa" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /><p className="mt-4">🍽 Dinner · <a href="https://maps.app.goo.gl/PXMBGjZ1AsTNkSVT9" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Taco Rice Cafe Kijimuna</a></p><p>🚗 Evening drive to hotel · <a href="https://maps.google.com/?q=Yuinchi+Hotel+Nanjo" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Yuinchi Hotel Nanjo</a></p></>)} </DayArticle><DayArticle date="Thursday, December 3, 2026" rentalCarDate="2026-12-03" title="Nanjo · Okinawa World + Gangala Valley">{card(<><p>🍳 Breakfast · Hotel buffet</p><p>🌏 <a href="https://maps.google.com/?q=Okinawa+World" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Okinawa World（玉泉洞）</a> · FunPass</p><img src="/cave.png" alt="Okinawa World Cave" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}{card(<><p>🌿 Gangala Valley</p><img src="/gangala.png" alt="Gangala Valley" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /><a href="https://book.gangala.com/?lng=zh-TW" target="_blank" rel="noopener noreferrer" className="mt-4 inline-block text-[var(--chapter-accent)] hover:underline">Gangala Valley reservation</a></>)}</DayArticle></>;
 }
 
 function NahaEarlyContent({ card, linkedImage }: { card: (children: React.ReactNode) => React.ReactNode; linkedImage: (src: string, alt: string) => React.ReactNode }) {
-  return <><DayArticle date="Wednesday, November 25, 2026" title="Morning Arrival · Naha">{card(<><p>✈ EVA Air BR112 · Arrive 9:15 AM at Naha Airport</p><p>🚗 Pick up rental car</p></>)}{card(<><p>🕛 Lunch · <a href="https://okinawa.letsgojp.com/archives/405500/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Senaga Island · Umikaji Terrace</a></p><p>如果天氣好 + 飛機準時，可前往瀨長島散步。</p><p>🍔 MKCafe · Ocean view & Mackerel Bitter Melon Burger</p></>)}{card(<><p>🏯 Shuri Castle if reopened</p><p>🛍 Kokusai dori 國際通 · Calbee Okinawa · 御果子御殿 · Tsuboya Pottery Street</p><img src="/shop.png" alt="Naha Shopping" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)} </DayArticle><DayArticle date="Thursday, November 26, 2026" title="Okinawa World + Gangala Valley">{card(<><p>🐟 10:00 AM · Tomari Iyumachi Fish Market Brunch</p></>)}{card(<><p>🌏 <a href="https://maps.google.com/?q=Okinawa+World" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">沖繩世界（玉泉洞） Okinawa World</a> · Fun Pass</p><ul className="ml-5 list-disc text-white/65"><li>玉泉洞鐘乳石洞</li><li>琉球文化村</li><li>太鼓舞表演</li></ul><img src="/cave.png" alt="Okinawa World Cave" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}{card(<><p>🌿 Gangala之谷</p><p>導航可搜尋「Cave Cafe」或「Gangala之谷」，附免費停車場。</p><p className="text-white/60">沖繩南部熱門自然景點，以鐘乳石洞穴崩塌形成的森林山谷聞名。</p><p className="text-white/60">導覽需事先預約，每人約 2,500 日圓。</p><a href="https://book.gangala.com/?lng=zh-TW" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Gangala Valley Reservation</a><img src="/gangala.png" alt="Gangala Valley" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}{card(<p>🍽 Dinner · TBD</p>)} </DayArticle></>;
+  return <><DayArticle date="Wednesday, November 25, 2026" rentalCarDate="2026-11-25" title="Morning Arrival · Naha">{card(<><p>✈ EVA Air BR112 · Arrive 9:15 AM at Naha Airport</p><p>🚗 Pick up rental car</p></>)}{card(<><p>🕛 Lunch · <a href="https://okinawa.letsgojp.com/archives/405500/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Senaga Island · Umikaji Terrace</a></p><p>如果天氣好 + 飛機準時，可前往瀨長島散步。</p><p>🍔 MKCafe · Ocean view & Mackerel Bitter Melon Burger</p></>)}{card(<><p>🏯 Shuri Castle if reopened</p><p>🛍 Kokusai dori 國際通 · Calbee Okinawa · 御果子御殿 · Tsuboya Pottery Street</p><img src="/shop.png" alt="Naha Shopping" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)} </DayArticle><DayArticle date="Thursday, November 26, 2026" rentalCarDate="2026-11-26" title="Okinawa World + Gangala Valley">{card(<><p>🐟 10:00 AM · Tomari Iyumachi Fish Market Brunch</p></>)}{card(<><p>🌏 <a href="https://maps.google.com/?q=Okinawa+World" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">沖繩世界（玉泉洞） Okinawa World</a> · Fun Pass</p><ul className="ml-5 list-disc text-white/65"><li>玉泉洞鐘乳石洞</li><li>琉球文化村</li><li>太鼓舞表演</li></ul><img src="/cave.png" alt="Okinawa World Cave" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}{card(<><p>🌿 Gangala之谷</p><p>導航可搜尋「Cave Cafe」或「Gangala之谷」，附免費停車場。</p><p className="text-white/60">沖繩南部熱門自然景點，以鐘乳石洞穴崩塌形成的森林山谷聞名。</p><p className="text-white/60">導覽需事先預約，每人約 2,500 日圓。</p><a href="https://book.gangala.com/?lng=zh-TW" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Gangala Valley Reservation</a><img src="/gangala.png" alt="Gangala Valley" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}{card(<p>🍽 Dinner · TBD</p>)} </DayArticle></>;
 }
 
 function NahaContent({ card }: { card: (children: React.ReactNode) => React.ReactNode }) {
-  return <><DayArticle date="Friday, December 4, 2026" title="Nanjo → Naha">{card(<><p>🧳 9:00 AM · Checkout hotel</p><p>🚗 Drive from Nanjo → Naha · approximately 30 min</p><p>✈️ Drop off Steven at <a href="https://maps.google.com/?q=Naha+Airport" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Naha Airport</a></p></>)}{card(<><p>🐟 11:00 AM · Tomari Iyumachi Fish Market Brunch</p></>)}{card(<><p>🏯 Shuri Castle if reopened</p><p>🛍 Kokusai dori 國際通 · Calbee Okinawa · 御果子御殿 · Tsuboya Pottery Street</p><img src="/shop.png" alt="Kokusai Dori Shopping" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)} </DayArticle><DayArticle date="Saturday, December 5, 2026" title="Shopping + Aquarium Day">{card(<><p>🍳 Hotel breakfast buffet</p><p>🧳 Checkout at 11:00 AM</p><p>🐟 Itoman Fish Market · Ashibinaa Outlet · DMM Kariyushi Aquarium</p></>)}</DayArticle><DayArticle date="Sunday, December 6, 2026" title="Departure Day">{card(<><p>🧳 Hotel checkout at 7:15 AM</p><p>✈️ EVA Air BR113 · OKA 10:15 → TPE 10:55</p></>)}</DayArticle></>;
+  return <><DayArticle date="Friday, December 4, 2026" rentalCarDate="2026-12-04" title="Nanjo → Naha">{card(<><p>🧳 9:00 AM · Checkout hotel</p><p>🚗 Drive from Nanjo → Naha · approximately 30 min</p><p>✈️ Drop off Steven at <a href="https://maps.google.com/?q=Naha+Airport" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Naha Airport</a></p></>)}{card(<><p>🐟 11:00 AM · Tomari Iyumachi Fish Market Brunch</p></>)}{card(<><p>🏯 Shuri Castle if reopened</p><p>🛍 Kokusai dori 國際通 · Calbee Okinawa · 御果子御殿 · Tsuboya Pottery Street</p><img src="/shop.png" alt="Kokusai Dori Shopping" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)} </DayArticle><DayArticle date="Saturday, December 5, 2026" rentalCarDate="2026-12-05" title="Shopping + Aquarium Day">{card(<><p>🍳 Hotel breakfast buffet</p><p>🧳 Checkout at 11:00 AM</p><p>🐟 Itoman Fish Market · Ashibinaa Outlet · DMM Kariyushi Aquarium</p></>)}</DayArticle><DayArticle date="Sunday, December 6, 2026" rentalCarDate="2026-12-06" title="Departure Day">{card(<><p>🧳 Hotel checkout at 7:15 AM</p><p>✈️ EVA Air BR113 · OKA 10:15 → TPE 10:55</p></>)}</DayArticle></>;
 }
