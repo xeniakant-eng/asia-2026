@@ -21,6 +21,7 @@ export default function MemoryMakerAlbumPage({ params }: { params: Promise<{ alb
   const { albumKey } = use(params);
   const [files, setFiles] = useState<MemoryMakerFile[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState("");
   const [message, setMessage] = useState("");
 
   const loadFiles = useCallback(async () => {
@@ -43,9 +44,35 @@ export default function MemoryMakerAlbumPage({ params }: { params: Promise<{ alb
   }, [loadFiles]);
 
   const albumName = ALBUM_NAMES[albumKey] || "Trip";
+  const deletePhoto = async (file: MemoryMakerFile) => {
+    if (!window.confirm("Delete this photo permanently from the shared album?")) return;
+    const password = window.prompt("Enter the administrator password to delete this photo:");
+    if (password === null) return;
+
+    setDeletingId(file.id);
+    setMessage("");
+    try {
+      const response = await fetch("/api/memory-maker", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: file.id, album: albumKey, password }),
+      });
+      const data = await response.json().catch(() => null) as { error?: string } | null;
+      if (!response.ok) throw new Error(data?.error || "Unable to delete photo.");
+      setFiles((currentFiles) => currentFiles.filter((currentFile) => currentFile.id !== file.id));
+      setMessage("Photo deleted.");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Unable to delete photo.");
+    } finally {
+      setDeletingId("");
+    }
+  };
+
   const closeAlbum = () => {
-    const returnChapter = new URLSearchParams(window.location.search).get("returnChapter") || albumKey;
-    window.location.replace(`/?chapter=${encodeURIComponent(returnChapter)}`);
+    const searchParams = new URLSearchParams(window.location.search);
+    const returnChapter = searchParams.get("returnChapter") || albumKey;
+    const guest = searchParams.get("guest") || "Guest";
+    window.location.replace(`/?chapter=${encodeURIComponent(returnChapter)}&guest=${encodeURIComponent(guest)}`);
   };
 
   return (
@@ -72,8 +99,10 @@ export default function MemoryMakerAlbumPage({ params }: { params: Promise<{ alb
             <figure key={file.id} className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03]">
               <a href={file.mediaUrl} target="_blank" rel="noopener noreferrer"><img src={file.mediaUrl} alt={file.fileName} loading="lazy" className="aspect-square w-full object-cover transition hover:opacity-85" /></a>
               <figcaption className="p-3">
-                <p className="truncate text-xs text-white/70">{file.fileName}</p>
-                <p className="mt-1 text-[10px] text-white/35">{file.uploader}</p>
+                <div className="flex items-center justify-between gap-3">
+                  <p className="min-w-0 truncate text-[10px] text-white/35">{file.uploader}</p>
+                  <button type="button" onClick={() => deletePhoto(file)} disabled={Boolean(deletingId)} className="shrink-0 text-[10px] uppercase tracking-[0.14em] text-red-200/45 transition hover:text-red-200 disabled:cursor-wait disabled:opacity-30">{deletingId === file.id ? "Deleting..." : "Delete"}</button>
+                </div>
               </figcaption>
             </figure>
           ))}

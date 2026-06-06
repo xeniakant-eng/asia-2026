@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { isGoogleDriveConfigured, uploadMemoryMakerFile } from "@/lib/google-drive";
+import { deleteGoogleDriveFile, isGoogleDriveConfigured, uploadMemoryMakerFile } from "@/lib/google-drive";
 
 export const runtime = "nodejs";
 
@@ -99,5 +99,54 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ file: rows[0] ? serializeRow(rows[0]) : null });
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : "Unable to upload file." }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  const config = getSupabaseConfig();
+  if (!config || !isGoogleDriveConfigured()) return unavailableResponse();
+
+  const body = await request.json().catch(() => ({}));
+  const id = typeof body.id === "string" ? body.id : "";
+  const album = typeof body.album === "string" ? body.album : "";
+  const password = typeof body.password === "string" ? body.password : "";
+
+  if (!process.env.SITE_PASSWORD) {
+    return NextResponse.json({ error: "Administrator password is not configured." }, { status: 503 });
+  }
+  if (password !== process.env.SITE_PASSWORD) {
+    return NextResponse.json({ error: "Incorrect administrator password." }, { status: 401 });
+  }
+  if (!id || !VALID_ALBUMS.has(album)) {
+    return NextResponse.json({ error: "Unknown photo." }, { status: 400 });
+  }
+
+  try {
+    const lookupResponse = await fetch(
+      `${config.url}/rest/v1/memory_maker_files?id=eq.${encodeURIComponent(id)}&album_key=eq.${encodeURIComponent(album)}&select=id,drive_file_id&limit=1`,
+      {
+        headers: { apikey: config.key, Authorization: `Bearer ${config.key}` },
+        cache: "no-store",
+      }
+    );
+    if (!lookupResponse.ok) return NextResponse.json({ error: "Unable to verify the photo." }, { status: 500 });
+    const rows = await lookupResponse.json() as Array<{ id: string; drive_file_id: string }>;
+    const row = rows[0];
+    if (!row) return NextResponse.json({ error: "Photo not found." }, { status: 404 });
+
+    await deleteGoogleDriveFile(row.drive_file_id);
+    const deleteResponse = await fetch(`${config.url}/rest/v1/memory_maker_files?id=eq.${encodeURIComponent(row.id)}`, {
+      method: "DELETE",
+      headers: {
+        apikey: config.key,
+        Authorization: `Bearer ${config.key}`,
+      },
+    });
+    if (!deleteResponse.ok) {
+      return NextResponse.json({ error: "The Drive photo was deleted, but its album record could not be removed." }, { status: 500 });
+    }
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Unable to delete photo." }, { status: 500 });
   }
 }

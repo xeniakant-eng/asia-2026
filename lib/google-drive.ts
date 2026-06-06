@@ -144,3 +144,15 @@ export async function downloadGoogleDriveFile(driveFileId: string, range?: strin
     cache: "no-store",
   });
 }
+
+export async function deleteGoogleDriveFile(driveFileId: string) {
+  const accessToken = await getGoogleDriveAccessToken();
+  const response = await fetch(`${DRIVE_API}/files/${encodeURIComponent(driveFileId)}`, {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${accessToken}` },
+    cache: "no-store",
+  });
+  if (!response.ok && response.status !== 404) {
+    throw new Error("Unable to delete the photo from Google Drive.");
+  }
+}

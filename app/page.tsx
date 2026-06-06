@@ -30,6 +30,68 @@ type Person = [string, string];
 type SignupTripKey = "morocco" | "skiMyoko" | "skiDeerValley" | "skiBig3" | "houston" | "azoresPortugal" | "similanThailand" | "disneyWorld" | "fiveStans";
 type TripStatus = "Planning" | "Confirmed" | "Dreaming";
 
+const MAX_PHOTO_UPLOAD_BYTES = 3.5 * 1024 * 1024;
+const MAX_PHOTO_EDGE = 2560;
+
+function formatFileSize(bytes: number) {
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function canvasToJpeg(canvas: HTMLCanvasElement, quality: number) {
+  return new Promise<Blob>((resolve, reject) => {
+    canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error("This browser could not compress the photo.")), "image/jpeg", quality);
+  });
+}
+
+async function compressPhoto(file: File) {
+  const needsJpegConversion = /heic|heif/i.test(file.type) || /\.(heic|heif)$/i.test(file.name);
+  if (file.size <= MAX_PHOTO_UPLOAD_BYTES && !needsJpegConversion) return file;
+
+  const objectUrl = URL.createObjectURL(file);
+  try {
+    const image = new Image();
+    image.src = objectUrl;
+    await image.decode();
+
+    const initialScale = Math.min(1, MAX_PHOTO_EDGE / Math.max(image.naturalWidth, image.naturalHeight));
+    let width = Math.max(1, Math.round(image.naturalWidth * initialScale));
+    let height = Math.max(1, Math.round(image.naturalHeight * initialScale));
+    let quality = 0.86;
+    let compressed: Blob | null = null;
+
+    for (let attempt = 0; attempt < 8; attempt += 1) {
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const context = canvas.getContext("2d");
+      if (!context) throw new Error("This browser could not prepare the photo for upload.");
+      context.fillStyle = "#ffffff";
+      context.fillRect(0, 0, width, height);
+      context.drawImage(image, 0, 0, width, height);
+      compressed = await canvasToJpeg(canvas, quality);
+      if (compressed.size <= MAX_PHOTO_UPLOAD_BYTES) break;
+
+      if (quality > 0.64) {
+        quality -= 0.08;
+      } else {
+        width = Math.max(1, Math.round(width * 0.82));
+        height = Math.max(1, Math.round(height * 0.82));
+      }
+    }
+
+    if (!compressed || compressed.size > MAX_PHOTO_UPLOAD_BYTES) {
+      throw new Error("The photo is still too large after compression.");
+    }
+
+    const jpegName = file.name.replace(/\.[^.]+$/, "") || "photo";
+    return new File([compressed], `${jpegName}.jpg`, { type: "image/jpeg", lastModified: file.lastModified });
+  } catch {
+    throw new Error(`${file.name} could not be compressed. Try sharing a smaller copy or screenshot of this photo.`);
+  } finally {
+    URL.revokeObjectURL(objectUrl);
+  }
+}
+
 function TripButton({
   location,
   subtitle,
@@ -103,22 +165,44 @@ function MemoryMaker({
 
   const uploadFiles = async (selectedFiles: FileList | null) => {
     if (!selectedFiles?.length) return;
+    const files = Array.from(selectedFiles);
     setIsLoading(true);
     setMessage("");
+    const failures: string[] = [];
+    let uploadedCount = 0;
+    let compressedCount = 0;
+
     try {
-      for (const file of Array.from(selectedFiles)) {
-        const formData = new FormData();
-        formData.append("album", albumKey);
-        formData.append("albumName", albumName);
-        formData.append("uploader", guestName || "Guest");
-        formData.append("file", file);
-        const response = await fetch("/api/memory-maker", { method: "POST", body: formData });
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error || `Unable to upload ${file.name}.`);
+      for (const [index, originalFile] of files.entries()) {
+        try {
+          const needsPreparation = originalFile.size > MAX_PHOTO_UPLOAD_BYTES || /heic|heif/i.test(originalFile.type) || /\.(heic|heif)$/i.test(originalFile.name);
+          setMessage(`${needsPreparation ? "Preparing" : "Uploading"} photo ${index + 1} of ${files.length}...`);
+          const file = await compressPhoto(originalFile);
+          if (file !== originalFile) {
+            compressedCount += 1;
+            setMessage(`Uploading photo ${index + 1} of ${files.length} (${formatFileSize(originalFile.size)} compressed to ${formatFileSize(file.size)})...`);
+          }
+
+          const formData = new FormData();
+          formData.append("album", albumKey);
+          formData.append("albumName", albumName);
+          formData.append("uploader", guestName || "Guest");
+          formData.append("file", file);
+          const response = await fetch("/api/memory-maker", { method: "POST", body: formData });
+          const data = await response.json().catch(() => null) as { error?: string } | null;
+          if (!response.ok) throw new Error(data?.error || `Unable to upload ${originalFile.name}.`);
+          uploadedCount += 1;
+        } catch (error) {
+          failures.push(error instanceof Error ? error.message : `Unable to upload ${originalFile.name}.`);
+        }
       }
-      setMessage("Upload complete.");
-    } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Unable to upload files.");
+
+      const compressionNote = compressedCount ? ` ${compressedCount} large ${compressedCount === 1 ? "photo was" : "photos were"} compressed automatically.` : "";
+      if (failures.length) {
+        setMessage(`${uploadedCount} of ${files.length} photos uploaded.${compressionNote} ${failures.join(" ")}`);
+      } else {
+        setMessage(`${uploadedCount} ${uploadedCount === 1 ? "photo" : "photos"} uploaded.${compressionNote}`);
+      }
     } finally {
       if (fileInputRef.current) fileInputRef.current.value = "";
       setIsLoading(false);
@@ -136,7 +220,7 @@ function MemoryMaker({
         <div className="grid gap-3 sm:grid-cols-2 md:min-w-[300px]">
           <input ref={fileInputRef} type="file" multiple accept="image/*" className="hidden" onChange={(event) => uploadFiles(event.target.files)} />
           <button type="button" disabled={isLoading} onClick={() => fileInputRef.current?.click()} className="rounded-full border border-white/20 bg-white/[0.04] px-5 py-3 text-sm uppercase tracking-[0.18em] text-white/70 transition hover:border-white/40 hover:bg-white/[0.08] disabled:cursor-wait disabled:opacity-50">Upload</button>
-          <button type="button" onClick={() => window.open(`/memory-maker/${albumKey}?returnChapter=${encodeURIComponent(returnChapter)}`, "_blank", "noopener,noreferrer")} className="rounded-full border border-white/20 bg-white/[0.04] px-5 py-3 text-center text-sm uppercase tracking-[0.18em] text-white/70 transition hover:border-white/40 hover:bg-white/[0.08]">View Album</button>
+          <button type="button" onClick={() => window.open(`/memory-maker/${albumKey}?returnChapter=${encodeURIComponent(returnChapter)}&guest=${encodeURIComponent(guestName || "Guest")}`, "_blank", "noopener,noreferrer")} className="rounded-full border border-white/20 bg-white/[0.04] px-5 py-3 text-center text-sm uppercase tracking-[0.18em] text-white/70 transition hover:border-white/40 hover:bg-white/[0.08]">View Album</button>
         </div>
       </div>
       {message && <p className="mt-4 text-sm text-white/50">{message}</p>}
@@ -422,9 +506,12 @@ export default function TravelSite() {
   }, []);
 
   useEffect(() => {
-    const chapter = new URLSearchParams(window.location.search).get("chapter");
+    const searchParams = new URLSearchParams(window.location.search);
+    const chapter = searchParams.get("chapter");
+    const returningGuest = searchParams.get("guest");
     if (["xiaoliuqiu", "onna", "nago", "nanjo", "naha", "nahaearly", "yilan"].includes(chapter || "")) {
       setPage(chapter as PageName);
+      if (returningGuest) setGuestName(returningGuest);
       setIsGuestConfirmed(true);
     }
     setIsInitialRouteReady(true);
