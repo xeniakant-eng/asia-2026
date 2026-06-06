@@ -1,6 +1,6 @@
 create table if not exists public.memory_maker_files (
   id uuid primary key default gen_random_uuid(),
-  album_key text not null check (album_key in ('xiaoliuqiu', 'onna', 'nago', 'nanjo', 'naha', 'nahaearly', 'yilan')),
+  album_key text not null check (album_key in ('taiwanNovember', 'japanNovember', 'taiwanDecember')),
   drive_file_id text not null unique,
   file_name text not null,
   mime_type text not null,

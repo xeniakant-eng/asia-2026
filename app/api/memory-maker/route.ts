@@ -3,7 +3,7 @@ import { isGoogleDriveConfigured, uploadMemoryMakerFile } from "@/lib/google-dri
 
 export const runtime = "nodejs";
 
-const VALID_ALBUMS = new Set(["xiaoliuqiu", "onna", "nago", "nanjo", "naha", "nahaearly", "yilan"]);
+const VALID_ALBUMS = new Set(["taiwanNovember", "japanNovember", "taiwanDecember"]);
 const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
 
 type MemoryMakerRow = {
@@ -68,9 +68,9 @@ export async function POST(request: NextRequest) {
     const file = formData.get("file");
 
     if (!VALID_ALBUMS.has(album) || !albumName) return NextResponse.json({ error: "Unknown album." }, { status: 400 });
-    if (!(file instanceof File)) return NextResponse.json({ error: "A photo or video is required." }, { status: 400 });
-    if (!file.type.startsWith("image/") && !file.type.startsWith("video/")) {
-      return NextResponse.json({ error: "Only photos and videos can be uploaded." }, { status: 400 });
+    if (!(file instanceof File)) return NextResponse.json({ error: "A photo is required." }, { status: 400 });
+    if (!file.type.startsWith("image/")) {
+      return NextResponse.json({ error: "Only photos can be uploaded." }, { status: 400 });
     }
     if (file.size > MAX_UPLOAD_BYTES) {
       return NextResponse.json({ error: "This file is larger than the current 4 MB website upload limit." }, { status: 413 });

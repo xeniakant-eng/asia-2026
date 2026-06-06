@@ -1,6 +1,6 @@
 # Google Drive Memory Maker Setup
 
-Memory Maker stores photo/video files in Google Drive and stores album metadata in Supabase.
+Memory Maker stores photo files in Google Drive and stores album metadata in Supabase.
 
 ## 1. Create Google OAuth credentials
 
@@ -44,4 +44,4 @@ Files remain private in Google Drive. The website streams them through its passw
 
 ## Upload size note
 
-Website uploads are currently limited to 4 MB per file because of Vercel request-size limits. Larger photos should be compressed first. Large videos will need a future direct/resumable upload flow or can be placed in Drive manually.
+Website uploads are currently limited to 4 MB per photo because of Vercel request-size limits. Larger photos should be compressed first.

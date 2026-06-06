@@ -28,15 +28,6 @@ type PackingChecklist = {
 
 type Person = [string, string];
 type SignupTripKey = "morocco" | "skiMyoko" | "skiDeerValley" | "skiBig3" | "houston" | "azoresPortugal" | "similanThailand" | "disneyWorld" | "fiveStans";
-type MemoryMakerFile = {
-  id: string;
-  fileName: string;
-  mimeType: string;
-  uploader: string;
-  createdAt: string;
-  mediaUrl: string;
-};
-
 type TripStatus = "Planning" | "Confirmed" | "Dreaming";
 
 function TripButton({
@@ -98,36 +89,17 @@ function MemoryMaker({
   albumName,
   accentColor,
   guestName,
+  returnChapter,
 }: {
   albumKey: string;
   albumName: string;
   accentColor: string;
   guestName: string;
+  returnChapter: string;
 }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [files, setFiles] = useState<MemoryMakerFile[]>([]);
-  const [showAlbum, setShowAlbum] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
-
-  const loadFiles = async () => {
-    setIsLoading(true);
-    setMessage("");
-    try {
-      const response = await fetch(`/api/memory-maker?album=${encodeURIComponent(albumKey)}`);
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Unable to load album.");
-      setFiles(Array.isArray(data.files) ? data.files : []);
-    } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Unable to load album.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadFiles();
-  }, [albumKey]);
 
   const uploadFiles = async (selectedFiles: FileList | null) => {
     if (!selectedFiles?.length) return;
@@ -144,8 +116,6 @@ function MemoryMaker({
         const data = await response.json();
         if (!response.ok) throw new Error(data.error || `Unable to upload ${file.name}.`);
       }
-      setShowAlbum(true);
-      await loadFiles();
       setMessage("Upload complete.");
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Unable to upload files.");
@@ -161,29 +131,15 @@ function MemoryMaker({
         <div>
           <p className="mb-2 text-xs uppercase tracking-[0.3em]" style={{ color: accentColor }}>Memory Maker</p>
           <h2 className="text-2xl font-light">📸 {albumName} Memories</h2>
-          <p className="mt-2 text-sm text-white/45">Share photos and videos with everyone joining this trip segment.</p>
+          <p className="mt-2 text-sm text-white/45">Share photos with everyone joining this trip segment.</p>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 md:min-w-[300px]">
-          <input ref={fileInputRef} type="file" multiple accept="image/*,video/*" className="hidden" onChange={(event) => uploadFiles(event.target.files)} />
+          <input ref={fileInputRef} type="file" multiple accept="image/*" className="hidden" onChange={(event) => uploadFiles(event.target.files)} />
           <button type="button" disabled={isLoading} onClick={() => fileInputRef.current?.click()} className="rounded-full border border-white/20 bg-white/[0.04] px-5 py-3 text-sm uppercase tracking-[0.18em] text-white/70 transition hover:border-white/40 hover:bg-white/[0.08] disabled:cursor-wait disabled:opacity-50">Upload</button>
-          <button type="button" disabled={isLoading} onClick={() => { setShowAlbum((current) => !current); if (!showAlbum) loadFiles(); }} className="rounded-full border border-white/20 bg-white/[0.04] px-5 py-3 text-sm uppercase tracking-[0.18em] text-white/70 transition hover:border-white/40 hover:bg-white/[0.08] disabled:cursor-wait disabled:opacity-50">{showAlbum ? "Hide Album" : "View Album"}</button>
+          <button type="button" onClick={() => window.open(`/memory-maker/${albumKey}?returnChapter=${encodeURIComponent(returnChapter)}`, "_blank", "noopener,noreferrer")} className="rounded-full border border-white/20 bg-white/[0.04] px-5 py-3 text-center text-sm uppercase tracking-[0.18em] text-white/70 transition hover:border-white/40 hover:bg-white/[0.08]">View Album</button>
         </div>
       </div>
       {message && <p className="mt-4 text-sm text-white/50">{message}</p>}
-      {showAlbum && (
-        <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-3">
-          {files.length ? files.map((file) => (
-            <figure key={file.id} className="overflow-hidden rounded-2xl border border-white/10 bg-black/30">
-              {file.mimeType.startsWith("video/") ? (
-                <video controls preload="metadata" className="aspect-square w-full object-cover"><source src={file.mediaUrl} type={file.mimeType} /></video>
-              ) : (
-                <img src={file.mediaUrl} alt={file.fileName} loading="lazy" className="aspect-square w-full object-cover" />
-              )}
-              <figcaption className="p-3 text-left"><p className="truncate text-xs text-white/70">{file.fileName}</p><p className="mt-1 text-[10px] text-white/35">{file.uploader}</p></figcaption>
-            </figure>
-          )) : <p className="col-span-full rounded-2xl border border-white/10 bg-black/20 px-4 py-6 text-center text-sm text-white/35">{isLoading ? "Loading album..." : "No memories uploaded yet."}</p>}
-        </div>
-      )}
     </section>
   );
 }
@@ -339,6 +295,7 @@ export default function TravelSite() {
   const [page, setPage] = useState<PageName>("map");
   const [guestName, setGuestName] = useState("");
   const [isGuestConfirmed, setIsGuestConfirmed] = useState(false);
+  const [isInitialRouteReady, setIsInitialRouteReady] = useState(false);
   const [showGuestActions, setShowGuestActions] = useState(false);
   const [selectedTrip, setSelectedTrip] = useState<"" | "morocco" | "okinawaTaiwan" | "skiMyoko" | "skiDeerValley" | "skiBig3" | "houston" | "azoresPortugal" | "similanThailand" | "disneyWorld" | "fiveStans">("");
   const [moroccoInterestedNames, setMoroccoInterestedNames] = useState<string[]>(() => {
@@ -462,6 +419,15 @@ export default function TravelSite() {
   useEffect(() => {
     const timer = window.setInterval(() => setNow(new Date()), 1000);
     return () => window.clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const chapter = new URLSearchParams(window.location.search).get("chapter");
+    if (["xiaoliuqiu", "onna", "nago", "nanjo", "naha", "nahaearly", "yilan"].includes(chapter || "")) {
+      setPage(chapter as PageName);
+      setIsGuestConfirmed(true);
+    }
+    setIsInitialRouteReady(true);
   }, []);
 
   useEffect(() => {
@@ -927,6 +893,10 @@ export default function TravelSite() {
     }
   };
 
+  if (!isInitialRouteReady) {
+    return <div className="min-h-screen bg-black" />;
+  }
+
   if (!isGuestConfirmed) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-black px-6 text-white">
@@ -1347,7 +1317,7 @@ export default function TravelSite() {
       <main className="mx-auto max-w-5xl">
         <p className="mb-3 text-sm uppercase tracking-[0.35em]" style={{ color: accentColor }}>{eyebrow}</p>
         <h1 className="mb-6 text-4xl font-light tracking-wide md:text-6xl">{title}</h1>
-        <MemoryMaker albumKey={chapter} albumName={album} accentColor={accentColor} guestName={guestName} />
+        <MemoryMaker albumKey={chapter === "xiaoliuqiu" ? "taiwanNovember" : chapter === "yilan" ? "taiwanDecember" : "japanNovember"} albumName={chapter === "xiaoliuqiu" ? "Taiwan November" : chapter === "yilan" ? "Taiwan December" : "Japan November"} accentColor={accentColor} guestName={guestName} returnChapter={chapter} />
         {infoWidgets(month, nights, hotel, region)}
         <section className="space-y-8">{children}</section>
         {peopleCards(chapterPeople[chapter])}
@@ -1374,6 +1344,7 @@ export default function TravelSite() {
     <div className="min-h-screen bg-black text-white">
       <section className="relative flex min-h-screen flex-col items-center justify-start overflow-visible px-6 pb-10 pt-16 md:h-[90vh] md:min-h-0 md:justify-center md:overflow-hidden md:pt-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.06),transparent_55%)]" />
+        <button type="button" onClick={() => { setIsGuestConfirmed(false); setSelectedTrip(""); setShowGuestActions(false); setGuestName(""); setPage("map"); window.history.replaceState({}, "", "/"); }} className="absolute right-5 top-5 z-30 rounded-full border border-white/25 bg-black/30 px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/75 backdrop-blur-md transition hover:border-white/50 hover:bg-white/10">All Trips</button>
         {guestName && guestName !== "I am just a random Guest" && <button type="button" onClick={() => { setIsGuestConfirmed(false); setShowGuestActions(true); }} className="absolute left-5 top-5 z-30 rounded-full border border-white/25 bg-black/30 px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/75 backdrop-blur-md">← Back to Dashboard</button>}
         <div className="relative z-10 flex w-full max-w-5xl items-center justify-center gap-8 md:gap-20">
           <svg viewBox="0 0 140 260" className="h-[300px] w-[147px] opacity-90 md:h-[495px] md:w-[243px]" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
