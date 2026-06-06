@@ -1470,10 +1470,11 @@ export default function TravelSite() {
         { id: "yilan", label: "Yilan", range: "Dec 8–11", color: "yilan" },
       ]
     : [
-        { id: "naha", label: "Naha", range: "Nov 25–27 · Dec 4–6", color: "okinawa" },
+        { id: "nahaearly", label: "Naha", range: "Nov 25–27", color: "okinawa" },
         { id: "onna", label: "Onna", range: "Nov 27–30", color: "okinawa" },
         { id: "nago", label: "Nago", range: "Nov 30–Dec 2", color: "okinawa" },
         { id: "nanjo", label: "Nanjo", range: "Dec 2–4", color: "okinawa" },
+        { id: "naha", label: "Naha", range: "Dec 4–6", color: "okinawa" },
       ];
   const diff = Math.max(departureDate.getTime() - now.getTime(), 0);
   const countdownDays = Math.floor(diff / MS_PER_DAY);
@@ -1509,7 +1510,7 @@ export default function TravelSite() {
             <p className="mt-2 text-xs text-gray-400">{isTaiwanMap ? "Nov 21 · Taiwan trip begins" : "Nov 25 · Okinawa trip begins"}</p>
           </div>
         </div>
-        <div className="relative z-20 mt-5 grid w-full max-w-5xl gap-2 px-4 sm:grid-cols-2 md:absolute md:bottom-4 md:left-1/2 md:-translate-x-1/2 md:grid-cols-4 md:px-6">
+        <div className={`relative z-20 mt-5 grid w-full gap-2 px-4 sm:grid-cols-2 md:absolute md:bottom-4 md:left-1/2 md:-translate-x-1/2 md:px-6 ${isTaiwanMap ? "max-w-5xl md:grid-cols-3" : "max-w-6xl md:grid-cols-5"}`}>
           {mapLocations.map((item) => <button key={item.id} type="button" onClick={() => item.id !== "taipei" && openChapterForLocation(item.id)} className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-left transition hover:border-white/30"><span className="flex items-center gap-3"><span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: item.color === "yilan" ? "#72E49A" : item.color === "taiwan" ? TAIWAN_GOLD : BABY_BLUE }} /><span className="text-sm font-light tracking-wide text-white">{item.label}</span></span><span className="text-[10px] uppercase tracking-[0.12em] text-white/45">{item.range}</span></button>)}
         </div>
       </section>
