@@ -1122,7 +1122,7 @@ export default function TravelSite() {
           ) : selectedTrip === "fiveStans" ? (
             <>
               <button type="button" onClick={() => { setSelectedTrip(""); setShowFiveStansNameInput(false); setFiveStansNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
-              <TripPanelTitle location="The 5 Stans & Silk Road" date="TBD" description="A bigger dream trip across Central Asia, following Silk Road history, markets, architecture, and wide-open landscapes." />
+              <TripPanelTitle location="The 5 Stans & Silk Road" date="TBD" description="Trace the legendary Silk Road across five nations: Kyrgyzstan, Kazakhstan, Tajikistan, Turkmenistan, Uzbekistan. This is Central Asia in full, gloriously unfiltered widescreen. Gonna be gorgeous and totally unforgettable." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
                 <button type="button" onClick={() => setShowFiveStansNameInput(true)} className="w-full rounded-2xl border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#FF8FC7] transition hover:border-[#FF8FC7]/60 hover:bg-[#FF8FC7]/15">I am interested</button>
