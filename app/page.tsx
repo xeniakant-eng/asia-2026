@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
 const BABY_BLUE = "#9EDCFF";
@@ -41,6 +41,8 @@ type RentalCarArrangement = {
     role: "driver" | "passenger";
   }[];
 };
+
+const GuestPartyContext = createContext("");
 
 const MAX_PHOTO_UPLOAD_BYTES = 3.5 * 1024 * 1024;
 const MAX_PHOTO_EDGE = 2560;
@@ -1443,7 +1445,9 @@ export default function TravelSite() {
         <h1 className="mb-6 text-4xl font-light tracking-wide md:text-6xl">{title}</h1>
         <MemoryMaker key={chapter === "xiaoliuqiu" ? "taiwanNovember" : chapter === "yilan" ? "taiwanDecember" : "japanNovember"} albumKey={chapter === "xiaoliuqiu" ? "taiwanNovember" : chapter === "yilan" ? "taiwanDecember" : "japanNovember"} albumName={chapter === "xiaoliuqiu" ? "Taiwan November" : chapter === "yilan" ? "Taiwan December" : "Japan November"} accentColor={accentColor} guestName={guestName} returnChapter={chapter} />
         {infoWidgets(month, nights, hotel, region)}
-        <section className="space-y-8">{children}</section>
+        <GuestPartyContext.Provider value={guestName}>
+          <section className="space-y-8">{children}</section>
+        </GuestPartyContext.Provider>
         {peopleCards(chapterPeople[chapter])}
       </main>
     </div>
@@ -1518,6 +1522,7 @@ function SegmentButtons({ segments, setIsGuestConfirmed, setPage }: { segments: 
 }
 
 function RentalCarPlanner({ date, dateLabel }: { date: string; dateLabel: string }) {
+  const guestPartyName = useContext(GuestPartyContext);
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [arrangements, setArrangements] = useState<RentalCarArrangement[]>([]);
@@ -1565,8 +1570,14 @@ function RentalCarPlanner({ date, dateLabel }: { date: string; dateLabel: string
             {!isLoading && !message && arrangements.length > 0 && (
               <div className="space-y-4">
                 {arrangements.map((arrangement) => {
+                  const isGuestPartyCar = Boolean(guestPartyName) && arrangement.occupants.some(
+                    (occupant) => occupant.partyName.trim().toLowerCase() === guestPartyName.trim().toLowerCase()
+                  );
                   return (
-                    <section key={arrangement.id} className="rounded-xl border border-white/10 bg-white/[0.04] p-5">
+                    <section
+                      key={arrangement.id}
+                      className={`rounded-xl border p-5 transition ${isGuestPartyCar ? "border-[#9EDCFF]/70 bg-[#9EDCFF]/10 shadow-[0_0_24px_rgba(158,220,255,0.18)]" : "border-white/10 bg-white/[0.04]"}`}
+                    >
                       <div className="mb-4 flex items-start justify-between gap-4">
                         <h4 className="text-lg font-medium text-white">{arrangement.carName}</h4>
                         <span className="shrink-0 rounded-full border border-white/10 px-3 py-1 text-xs text-white/45">{arrangement.occupants.length}/{arrangement.capacity} seats</span>
