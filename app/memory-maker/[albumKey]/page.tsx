@@ -100,21 +100,37 @@ export default function MemoryMakerAlbumPage({ params }: { params: Promise<{ alb
     setIsBulkWorking(true);
     setMessage(`Preparing ${selectedFiles.length} ${selectedFiles.length === 1 ? "photo" : "photos"} for download...`);
     try {
+      const preparedFiles: File[] = [];
       for (const file of selectedFiles) {
         const response = await fetch(file.mediaUrl);
-        if (!response.ok) throw new Error(`Unable to download ${file.fileName}.`);
-        const blobUrl = URL.createObjectURL(await response.blob());
+        if (!response.ok) throw new Error(`Unable to prepare ${file.fileName}.`);
+        const blob = await response.blob();
+        preparedFiles.push(new File([blob], file.fileName || "photo.jpg", { type: blob.type || file.mimeType || "image/jpeg" }));
+      }
+
+      if (navigator.canShare?.({ files: preparedFiles })) {
+        await navigator.share({ files: preparedFiles, title: `${albumName} Memories` });
+        setMessage(`Choose "Save Images" in the share menu to add ${preparedFiles.length === 1 ? "this photo" : "these photos"} to your photo library.`);
+        return;
+      }
+
+      for (const file of preparedFiles) {
+        const blobUrl = URL.createObjectURL(file);
         const link = document.createElement("a");
         link.href = blobUrl;
-        link.download = file.fileName || "photo.jpg";
+        link.download = file.name;
         document.body.appendChild(link);
         link.click();
         link.remove();
         window.setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
         await new Promise((resolve) => window.setTimeout(resolve, 250));
       }
-      setMessage(`${selectedFiles.length} ${selectedFiles.length === 1 ? "photo" : "photos"} downloaded.`);
+      setMessage(`${preparedFiles.length} ${preparedFiles.length === 1 ? "photo" : "photos"} downloaded.`);
     } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") {
+        setMessage("Save / Share cancelled.");
+        return;
+      }
       setMessage(error instanceof Error ? error.message : "Unable to download selected photos.");
     } finally {
       setIsBulkWorking(false);
@@ -152,7 +168,7 @@ export default function MemoryMakerAlbumPage({ params }: { params: Promise<{ alb
             <label className="flex cursor-pointer items-center gap-2 px-2 text-xs uppercase tracking-[0.14em] text-white/55"><input type="checkbox" checked={selectedIds.length === files.length} onChange={(event) => setSelectedIds(event.target.checked ? files.map((file) => file.id) : [])} className="h-4 w-4 accent-[#72E49A]" />Select all</label>
             <span className="text-xs text-white/35">{selectedIds.length} selected</span>
             <div className="ml-auto flex gap-2">
-              <button type="button" onClick={downloadSelectedPhotos} disabled={!selectedIds.length || isBulkWorking} className="rounded-full border border-white/20 px-4 py-2 text-xs uppercase tracking-[0.14em] text-white/65 transition hover:border-white/40 disabled:cursor-not-allowed disabled:opacity-30">Download</button>
+              <button type="button" onClick={downloadSelectedPhotos} disabled={!selectedIds.length || isBulkWorking} className="rounded-full border border-white/20 px-4 py-2 text-xs uppercase tracking-[0.14em] text-white/65 transition hover:border-white/40 disabled:cursor-not-allowed disabled:opacity-30">Save / Download</button>
               <button type="button" onClick={() => deletePhotos(selectedIds)} disabled={!selectedIds.length || isBulkWorking} className="rounded-full border border-red-300/20 px-4 py-2 text-xs uppercase tracking-[0.14em] text-red-200/65 transition hover:border-red-300/45 disabled:cursor-not-allowed disabled:opacity-30">Delete</button>
             </div>
           </div>
