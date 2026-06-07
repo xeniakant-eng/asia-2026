@@ -5,6 +5,7 @@ import React, { createContext, useContext, useEffect, useMemo, useRef, useState 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
 const BABY_BLUE = "#9EDCFF";
 const TAIWAN_GOLD = "#FFD76A";
+const MOROCCO_BROWN = "#D6B48C";
 
 type PageName = "map" | "xiaoliuqiu" | "onna" | "nago" | "nanjo" | "naha" | "nahaearly" | "yilan" | "checklist";
 type Region = "japan" | "taiwan";
@@ -40,6 +41,18 @@ type RentalCarArrangement = {
     partyName: string;
     role: "driver" | "passenger";
   }[];
+};
+
+type MoroccoExpense = {
+  id: string;
+  description: string;
+  amountCad: number | null;
+  amountLocal: number | null;
+  amountUsd: number | null;
+  exchangeRateToCad: number | null;
+  convertedAmountCad: number | null;
+  paidBy: string;
+  createdAt: string;
 };
 
 const GuestPartyContext = createContext("");
@@ -406,6 +419,19 @@ export default function TravelSite() {
   });
   const [showMoroccoNameInput, setShowMoroccoNameInput] = useState(false);
   const [moroccoNameInput, setMoroccoNameInput] = useState("");
+  const [showMoroccoBudget, setShowMoroccoBudget] = useState(false);
+  const [showMoroccoMap, setShowMoroccoMap] = useState(false);
+  const [showMoroccoChecklist, setShowMoroccoChecklist] = useState(false);
+  const [showMoroccoItinerary, setShowMoroccoItinerary] = useState(false);
+  const [showMoroccoCostTracker, setShowMoroccoCostTracker] = useState(false);
+  const [moroccoExpenses, setMoroccoExpenses] = useState<MoroccoExpense[]>([]);
+  const [moroccoExpenseDescription, setMoroccoExpenseDescription] = useState("");
+  const [moroccoExpenseAmount, setMoroccoExpenseAmount] = useState("");
+  const [moroccoExpenseCurrency, setMoroccoExpenseCurrency] = useState<"CAD" | "MAD" | "USD">("MAD");
+  const [moroccoExpensePaidBy, setMoroccoExpensePaidBy] = useState("");
+  const [moroccoEditingExpenseId, setMoroccoEditingExpenseId] = useState("");
+  const [moroccoExpenseAdminPassword, setMoroccoExpenseAdminPassword] = useState("");
+  const [moroccoExpenseMessage, setMoroccoExpenseMessage] = useState("");
   const [skiMyokoInterestedNames, setSkiMyokoInterestedNames] = useState<string[]>(() => {
     if (typeof window === "undefined") return [];
     try {
@@ -490,6 +516,7 @@ export default function TravelSite() {
   const [now, setNow] = useState(new Date());
   const [usdToJpy, setUsdToJpy] = useState("150");
   const [usdToTwd, setUsdToTwd] = useState("32");
+  const [usdToMad, setUsdToMad] = useState("10");
   const [selectedTimelineSectionId, setSelectedTimelineSectionId] = useState(1);
 
   const septOctGuestOptions = [
@@ -537,7 +564,11 @@ export default function TravelSite() {
     const searchParams = new URLSearchParams(window.location.search);
     const chapter = searchParams.get("chapter");
     const returningGuest = searchParams.get("guest");
-    if (["xiaoliuqiu", "onna", "nago", "nanjo", "naha", "nahaearly", "yilan"].includes(chapter || "")) {
+    if (chapter === "morocco") {
+      if (returningGuest) setGuestName(returningGuest);
+      setSelectedTrip("morocco");
+      setShowMoroccoItinerary(true);
+    } else if (["xiaoliuqiu", "onna", "nago", "nanjo", "naha", "nahaearly", "yilan"].includes(chapter || "")) {
       setPage(chapter as PageName);
       if (returningGuest) setGuestName(returningGuest);
       setSelectedTrip(chapter === "xiaoliuqiu" || chapter === "yilan" ? "taiwan" : "okinawaJapan");
@@ -636,9 +667,11 @@ export default function TravelSite() {
         const data = await response.json();
         if (data?.rates?.JPY) setUsdToJpy(Math.round(data.rates.JPY).toString());
         if (data?.rates?.TWD) setUsdToTwd(Math.round(data.rates.TWD).toString());
+        if (data?.rates?.MAD) setUsdToMad(Number(data.rates.MAD).toFixed(2));
       } catch {
         setUsdToJpy("150");
         setUsdToTwd("32");
+        setUsdToMad("10");
       }
     }
     fetchRates();
@@ -1013,8 +1046,164 @@ export default function TravelSite() {
     }
   };
 
+  const openMoroccoCostTracker = async () => {
+    setShowMoroccoCostTracker(true);
+    setMoroccoExpensePaidBy((current) => current || guestName || moroccoInterestedNames[0] || "");
+    setMoroccoExpenseMessage("");
+    try {
+      const response = await fetch("/api/trip-expenses?trip=morocco");
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Unable to load expenses.");
+      setMoroccoExpenses(Array.isArray(data.expenses) ? data.expenses : []);
+    } catch (error) {
+      setMoroccoExpenseMessage(error instanceof Error ? error.message : "Unable to load expenses.");
+    }
+  };
+
+  const addMoroccoExpense = async () => {
+    const amount = Number(moroccoExpenseAmount);
+    if (!moroccoExpenseDescription.trim() || !Number.isFinite(amount) || amount <= 0 || !moroccoExpensePaidBy) return;
+    setMoroccoExpenseMessage("Saving expense...");
+    try {
+      const response = await fetch("/api/trip-expenses", {
+        method: moroccoEditingExpenseId ? "PATCH" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ trip: "morocco", id: moroccoEditingExpenseId, description: moroccoExpenseDescription.trim(), amount, currency: moroccoExpenseCurrency, paidBy: moroccoExpensePaidBy, password: moroccoExpenseAdminPassword }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Unable to save expense.");
+      setMoroccoExpenses(Array.isArray(data.expenses) ? data.expenses : []);
+      setMoroccoExpenseDescription("");
+      setMoroccoExpenseAmount("");
+      setMoroccoEditingExpenseId("");
+      setMoroccoExpenseAdminPassword("");
+      setMoroccoExpenseMessage("");
+    } catch (error) {
+      setMoroccoExpenseMessage(error instanceof Error ? error.message : "Unable to save expense.");
+    }
+  };
+
+  const editMoroccoExpense = (expense: MoroccoExpense) => {
+    const password = window.prompt("Enter the administrator password to edit this expense:");
+    if (password === null) return;
+    setMoroccoExpenseAdminPassword(password);
+    setMoroccoEditingExpenseId(expense.id);
+    setMoroccoExpenseDescription(expense.description);
+    setMoroccoExpensePaidBy(expense.paidBy);
+    if (expense.amountCad !== null) {
+      setMoroccoExpenseAmount(expense.amountCad.toString());
+      setMoroccoExpenseCurrency("CAD");
+    } else if (expense.amountUsd !== null) {
+      setMoroccoExpenseAmount(expense.amountUsd.toString());
+      setMoroccoExpenseCurrency("USD");
+    } else {
+      setMoroccoExpenseAmount(expense.amountLocal?.toString() || "");
+      setMoroccoExpenseCurrency("MAD");
+    }
+    setMoroccoExpenseMessage("Editing expense. Update the fields and save changes.");
+  };
+
+  const cancelMoroccoExpenseEdit = () => {
+    setMoroccoEditingExpenseId("");
+    setMoroccoExpenseAdminPassword("");
+    setMoroccoExpenseDescription("");
+    setMoroccoExpenseAmount("");
+    setMoroccoExpenseMessage("");
+  };
+
+  const deleteMoroccoExpense = async (expense: MoroccoExpense) => {
+    const password = window.prompt(`Enter the administrator password to delete "${expense.description}":`);
+    if (password === null) return;
+    setMoroccoExpenseMessage("Deleting expense...");
+    try {
+      const response = await fetch("/api/trip-expenses", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ trip: "morocco", id: expense.id, password }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Unable to delete expense.");
+      setMoroccoExpenses(Array.isArray(data.expenses) ? data.expenses : []);
+      if (moroccoEditingExpenseId === expense.id) cancelMoroccoExpenseEdit();
+      setMoroccoExpenseMessage("");
+    } catch (error) {
+      setMoroccoExpenseMessage(error instanceof Error ? error.message : "Unable to delete expense.");
+    }
+  };
+
   if (!isInitialRouteReady) {
     return <div className="min-h-screen bg-black" />;
+  }
+
+  if (showMoroccoItinerary && guestName) {
+    const moroccoLocalTime = new Intl.DateTimeFormat("en-US", { timeZone: "Africa/Casablanca", hour: "numeric", minute: "2-digit", second: "2-digit", hour12: true }).format(now);
+    const expenseTotal = moroccoExpenses.reduce((sum, expense) => sum + (expense.convertedAmountCad ?? expense.amountCad ?? 0), 0);
+    return (
+      <div className="min-h-screen bg-black px-6 py-10 text-white" style={{ "--chapter-accent": MOROCCO_BROWN } as React.CSSProperties}>
+        <header className="mx-auto mb-10 flex max-w-5xl flex-wrap items-center justify-between gap-3">
+          <button type="button" onClick={() => setShowMoroccoItinerary(false)} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white">← Back to Dashboard</button>
+          <button type="button" onClick={() => { setShowMoroccoItinerary(false); setGuestName(""); setSelectedTrip(""); }} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white">All Trips</button>
+        </header>
+        <main className="mx-auto max-w-5xl">
+          <p className="mb-3 text-sm uppercase tracking-[0.35em]" style={{ color: MOROCCO_BROWN }}>Morocco · G Adventures</p>
+          <h1 className="mb-6 text-4xl font-light tracking-wide md:text-6xl">Trip Itinerary</h1>
+          <MemoryMaker albumKey="moroccoSeptember" albumName="Morocco September" accentColor={MOROCCO_BROWN} guestName={guestName} returnChapter="morocco" />
+          <section className="mb-10 grid grid-cols-2 gap-3 md:grid-cols-4">
+            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:text-2xl">💵</p><p className="text-[10px] text-gray-400 md:text-xs">Currency</p><p className="mt-1 text-xs font-medium md:text-sm">MAD د.م.</p><p className="mt-1 text-xs text-gray-400">1 USD ≈ {usdToMad} MAD</p></div>
+            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:text-2xl">🌤️</p><p className="text-[10px] text-gray-400 md:text-xs">September Temp</p><p className="mt-1 text-xs font-medium md:text-sm">18–32°C</p><p className="mt-1 text-[9px] text-gray-500">Live forecast once trip begins</p></div>
+            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:text-2xl">🕘</p><p className="text-[10px] text-gray-400 md:text-xs">Local Time</p><p className="mt-1 text-xs font-medium md:text-sm">{moroccoLocalTime}</p><p className="mt-1 text-[9px] text-gray-500">Morocco · Casablanca</p></div>
+            <button type="button" onClick={openMoroccoCostTracker} className="rounded-2xl border border-[#D6B48C]/30 bg-[#D6B48C]/10 p-3 text-center transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15 md:p-4"><p className="mb-1 text-xl md:text-2xl">💳</p><p className="text-[10px] text-[#D6B48C]/75 md:text-xs">Cost Tracker</p><p className="mt-1 text-xs font-medium text-[#D6B48C] md:text-sm">${expenseTotal.toFixed(2)} CAD</p><p className="mt-1 text-[9px] text-white/40">Converted CAD total</p></button>
+          </section>
+          <section className="space-y-8">
+            <MoroccoItineraryContent card={(children) => <div className="rounded-2xl border border-white/10 bg-black/20 p-4">{children}</div>} />
+          </section>
+        </main>
+        {showMoroccoCostTracker && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Morocco cost tracker">
+            <section className="flex max-h-[92vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] shadow-2xl">
+              <div className="flex items-start justify-between gap-5 border-b border-white/10 px-5 py-5 sm:px-7">
+                <div><p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: MOROCCO_BROWN }}>Morocco 2026</p><h2 className="text-2xl font-light">Cost Tracker</h2><p className="mt-2 text-sm text-white/45">Converted total: ${expenseTotal.toFixed(2)} CAD</p></div>
+                <button type="button" onClick={() => setShowMoroccoCostTracker(false)} aria-label="Close cost tracker" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65">×</button>
+              </div>
+              <div className="min-h-0 overflow-y-auto p-5 sm:p-7">
+                <form onSubmit={(event) => { event.preventDefault(); addMoroccoExpense(); }} className="mb-6 grid gap-3 sm:grid-cols-2">
+                  <label className="grid gap-1.5 text-xs text-white/45 sm:col-span-2">
+                    Expense Item
+                    <input value={moroccoExpenseDescription} onChange={(event) => setMoroccoExpenseDescription(event.target.value)} placeholder="Expense description" className="rounded-xl border border-white/15 bg-black/30 px-4 py-3 text-sm text-white outline-none focus:border-[#D6B48C]/60" />
+                  </label>
+                  <label className="grid gap-1.5 text-xs text-white/45">
+                    Amount
+                    <input value={moroccoExpenseAmount} onChange={(event) => setMoroccoExpenseAmount(event.target.value)} type="number" min="0.01" step="0.01" placeholder="0.00" className="rounded-xl border border-white/15 bg-black/30 px-4 py-3 text-sm text-white outline-none focus:border-[#D6B48C]/60" />
+                  </label>
+                  <fieldset className="grid gap-1.5 text-xs text-white/45">
+                    <legend className="mb-1.5">Currency</legend>
+                    <div className="grid grid-cols-3 rounded-xl border border-white/15 bg-black/30 p-1">
+                      {(["CAD", "MAD", "USD"] as const).map((currency) => <button key={currency} type="button" onClick={() => setMoroccoExpenseCurrency(currency)} className={`rounded-lg px-3 py-2 text-sm transition ${moroccoExpenseCurrency === currency ? "bg-[#D6B48C] text-black" : "text-white/55 hover:text-white"}`}>{currency}</button>)}
+                    </div>
+                  </fieldset>
+                  <label className="grid gap-1.5 text-xs text-white/45">
+                    Who Paid
+                    <select value={moroccoExpensePaidBy} onChange={(event) => setMoroccoExpensePaidBy(event.target.value)} className="rounded-xl border border-white/15 bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-[#D6B48C]/60">
+                      <option value="" disabled>Select a party</option>
+                      {moroccoInterestedNames.map((name) => <option key={name} value={name}>{name}</option>)}
+                    </select>
+                  </label>
+                  <div className="grid gap-2 sm:self-end">
+                    <button type="submit" className="rounded-xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-5 py-3 text-sm uppercase tracking-[0.16em] text-[#D6B48C]">{moroccoEditingExpenseId ? "Save Changes" : "Add Expense"}</button>
+                    {moroccoEditingExpenseId && <button type="button" onClick={cancelMoroccoExpenseEdit} className="text-xs text-white/40 transition hover:text-white/70">Cancel Edit</button>}
+                  </div>
+                </form>
+                {moroccoExpenseMessage && <p className="mb-4 text-sm text-white/50">{moroccoExpenseMessage}</p>}
+                <div className="space-y-3">
+                  {moroccoExpenses.map((expense) => <div key={expense.id} className={`flex items-start justify-between gap-4 rounded-xl border bg-white/[0.04] p-4 ${moroccoEditingExpenseId === expense.id ? "border-[#D6B48C]/60" : "border-white/10"}`}><div><p className="text-sm text-white/80">{expense.description}</p><p className="mt-1 text-xs text-white/40">{new Intl.DateTimeFormat("en-CA", { year: "numeric", month: "short", day: "numeric" }).format(new Date(expense.createdAt))}</p><p className="mt-1 text-xs text-white/40">Paid by {expense.paidBy}</p>{expense.exchangeRateToCad !== null && expense.amountCad === null && <p className="mt-1 text-[11px] text-white/30">Saved rate: 1 {expense.amountUsd !== null ? "USD" : "MAD"} = {expense.exchangeRateToCad.toFixed(4)} CAD</p>}<div className="mt-3 flex gap-3"><button type="button" onClick={() => editMoroccoExpense(expense)} className="text-xs uppercase tracking-[0.12em] text-[#D6B48C]/75 transition hover:text-[#D6B48C]">Edit</button><button type="button" onClick={() => deleteMoroccoExpense(expense)} className="text-xs uppercase tracking-[0.12em] text-red-300/60 transition hover:text-red-300">Delete</button></div></div><div className="shrink-0 text-right"><p className="text-sm font-medium" style={{ color: MOROCCO_BROWN }}>{expense.amountCad !== null ? `$${expense.amountCad.toFixed(2)} CAD` : expense.amountUsd !== null ? `$${expense.amountUsd.toFixed(2)} USD` : `${expense.amountLocal?.toFixed(2)} MAD`}</p>{expense.convertedAmountCad !== null && expense.amountCad === null && <p className="mt-1 text-xs text-white/40">≈ ${expense.convertedAmountCad.toFixed(2)} CAD</p>}</div></div>)}
+                  {!moroccoExpenses.length && !moroccoExpenseMessage && <p className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-8 text-center text-sm text-white/40">No shared expenses recorded yet.</p>}
+                </div>
+              </div>
+            </section>
+          </div>
+        )}
+      </div>
+    );
   }
 
   if (!isGuestConfirmed) {
@@ -1030,7 +1219,7 @@ export default function TravelSite() {
               </h1>
               <p className="mb-8 text-sm leading-6 text-white/55">Please select your trip.</p>
               <div className="space-y-3">
-                <TripButton location="Morocco" date="Sept 3 - Sept 12 2026" status="Planning" onClick={() => setSelectedTrip("morocco")} />
+                <TripButton location="Morocco (G Adventures)" date="Sept 4 - Sept 16 2026" status="Confirmed" onClick={() => { setGuestName(""); setSelectedTrip("morocco"); }} />
                 <TripButton location="Taiwan" date="Nov 21 - Dec 21 2026" status="Confirmed" onClick={() => setSelectedTrip("taiwan")} />
                 <TripButton location="Okinawa Japan" date="Nov 25 - Dec 6 2026" status="Confirmed" onClick={() => setSelectedTrip("okinawaJapan")} />
                 <TripButton location="Ski Shiga Kogen & Nagano Japan" date="Jan 23 - Jan 31 2027" status="Dreaming" onClick={() => setSelectedTrip("skiMyoko")} />
@@ -1045,36 +1234,133 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "morocco" ? (
             <>
-              <button type="button" onClick={() => { setSelectedTrip(""); setShowMoroccoNameInput(false); setMoroccoNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">All Trips</button>
-              <TripPanelTitle location="Morocco" date="Sept 3 - Sept 12 2026" description="A late-summer group adventure through Morocco with time for culture, scenery, food, and slow wandering." />
-              <div className="space-y-3">
-                <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
-                <button type="button" onClick={() => setShowMoroccoNameInput(true)} className="w-full rounded-2xl border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#FF8FC7] transition hover:border-[#FF8FC7]/60 hover:bg-[#FF8FC7]/15">I am interested</button>
+              <div className="mb-5 flex flex-wrap justify-center gap-3">
+                {guestName && <button type="button" onClick={() => { setGuestName(""); setShowMoroccoChecklist(false); }} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45 transition hover:border-white/30 hover:bg-white/[0.05]">Back</button>}
+                <button type="button" onClick={() => { setGuestName(""); setSelectedTrip(""); setShowMoroccoNameInput(false); setMoroccoNameInput(""); setShowMoroccoBudget(false); setShowMoroccoMap(false); setShowMoroccoChecklist(false); }} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45 transition hover:border-white/30 hover:bg-white/[0.05]">All Trips</button>
               </div>
-
-              {showMoroccoNameInput && (
-                <form onSubmit={(event) => { event.preventDefault(); addMoroccoInterestedName(); }} className="mt-5 rounded-3xl border border-white/10 bg-white/[0.03] p-4 text-left">
-                  <label className="mb-2 block text-xs uppercase tracking-[0.22em] text-white/45" htmlFor="morocco-interest-name">Name</label>
-                  <input id="morocco-interest-name" value={moroccoNameInput} onChange={(event) => setMoroccoNameInput(event.target.value)} autoFocus className="mb-3 w-full rounded-2xl border border-white/15 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-white/40" placeholder="Enter your name" />
-                  <button type="submit" className="w-full rounded-2xl border border-[#72E49A]/35 bg-[#72E49A]/10 px-4 py-3 text-sm uppercase tracking-[0.18em] text-[#72E49A] transition hover:bg-[#72E49A]/15">Add to list</button>
-                </form>
-              )}
-
-              <section className="mt-6 rounded-3xl border border-white/10 bg-black/20 p-5 text-left">
-                <div className="mb-4 flex items-center justify-between gap-3">
-                  <h2 className="text-sm uppercase tracking-[0.24em] text-white/55">Who signed up</h2>
-                  <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-white/45">{moroccoInterestedNames.length}</span>
-                </div>
-                {moroccoInterestedNames.length ? (
-                  <div className="space-y-2">
-                    {moroccoInterestedNames.map((name) => (
-                      <p key={name} className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/75">{name}</p>
-                    ))}
+              <TripPanelTitle location="Morocco (G Adventures)" date="Sept 4 - Sept 16 2026" description="A late-summer group adventure through Morocco with time for culture, scenery, food, and slow wandering." />
+              {guestName ? (
+                <section className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 text-left">
+                  <p className="text-sm uppercase tracking-[0.28em] text-white/55">Welcome</p>
+                  <h2 className="mt-2 mb-6 text-3xl font-light tracking-wide text-white">Hello {guestName}</h2>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <button type="button" onClick={() => setShowMoroccoItinerary(true)} className="w-full rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#D6B48C] transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15 sm:col-span-2">Trip Itinerary</button>
+                    <button type="button" onClick={() => setShowMoroccoMap(true)} className="w-full rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#D6B48C] transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">Map View</button>
+                    <button type="button" onClick={() => setShowMoroccoChecklist(true)} className="w-full rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#D6B48C] transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">Packing List</button>
                   </div>
-                ) : (
-                  <p className="rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm text-white/35">No names added yet.</p>
-                )}
-              </section>
+                </section>
+              ) : (
+                <>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <button type="button" onClick={() => setShowMoroccoMap(true)} className="w-full rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#D6B48C] transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">Map View</button>
+                    <button type="button" onClick={() => setShowMoroccoBudget(true)} className="w-full rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#D6B48C] transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">Budget</button>
+                  </div>
+
+                  <section className="mt-6 rounded-3xl border border-white/10 bg-black/20 p-5 text-left">
+                    <div className="mb-4 flex items-center justify-between gap-3">
+                      <h2 className="text-sm uppercase tracking-[0.24em] text-white/55">List of Party</h2>
+                      <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-white/45">{moroccoInterestedNames.length}</span>
+                    </div>
+                    {moroccoInterestedNames.length ? (
+                      <div className="space-y-2">
+                        {moroccoInterestedNames.map((name) => (
+                          <button key={name} type="button" onClick={() => setGuestName(name)} className="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-left text-sm text-white/75 transition hover:border-white/30 hover:bg-white/[0.06]">{name}</button>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm text-white/35">No parties added yet.</p>
+                    )}
+                  </section>
+                </>
+              )}
+              {showMoroccoBudget && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Morocco trip budget">
+                  <section className="max-h-[88vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-white/15 bg-[#111] p-6 text-left shadow-2xl sm:p-7">
+                    <div className="mb-6 flex items-start justify-between gap-5 border-b border-white/10 pb-5">
+                      <div>
+                        <p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: MOROCCO_BROWN }}>Morocco 2026</p>
+                        <h2 className="text-2xl font-light text-white">Trip Budget</h2>
+                      </div>
+                      <button type="button" onClick={() => setShowMoroccoBudget(false)} aria-label="Close Morocco budget" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">×</button>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
+                        <p className="text-xs uppercase tracking-[0.18em] text-white/40">Flight</p>
+                        <p className="mt-2 text-sm leading-6 text-white/75">Royal Air Maroc direct round trip</p>
+                        <p className="mt-2 text-sm font-medium text-white">$1,261.22 CAD</p>
+                      </div>
+                      <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
+                        <p className="text-xs uppercase tracking-[0.18em] text-white/40">G Adventures Tour</p>
+                        <p className="mt-2 text-sm leading-6 text-white/75">Morocco: Historic Cities & Sand Dunes of the Sahara</p>
+                        <p className="mt-2 text-sm font-medium text-white">$1,835 CAD</p>
+                      </div>
+                      <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
+                        <p className="text-xs uppercase tracking-[0.18em] text-white/40">Additional Allowance</p>
+                        <p className="mt-2 text-sm leading-6 text-white/75">Some meals, guide/driver tips, airport/hotel transfers</p>
+                        <p className="mt-2 text-sm font-medium text-white">$600 CAD</p>
+                      </div>
+                      <div className="rounded-xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 p-5">
+                        <div className="flex items-end justify-between gap-4">
+                          <div>
+                            <p className="text-xs uppercase tracking-[0.18em] text-[#D6B48C]/75">Estimated Total</p>
+                            <p className="mt-2 text-sm text-white/55">Exact subtotal: $3,696.22 CAD</p>
+                          </div>
+                          <p className="text-right text-xl font-medium text-[#D6B48C]">≈ $3,700 CAD</p>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+                </div>
+              )}
+              {showMoroccoMap && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Morocco route map">
+                  <section className="flex max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] shadow-2xl">
+                    <div className="flex items-start justify-between gap-5 border-b border-white/10 px-5 py-4 sm:px-7">
+                      <div>
+                        <p className="mb-1 text-xs uppercase tracking-[0.24em]" style={{ color: MOROCCO_BROWN }}>Morocco 2026</p>
+                        <h2 className="text-xl font-light text-white">Route Map</h2>
+                      </div>
+                      <button type="button" onClick={() => setShowMoroccoMap(false)} aria-label="Close Morocco route map" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">×</button>
+                    </div>
+                    <div className="min-h-0 overflow-auto bg-white p-2 sm:p-4">
+                      <img src="/morocco-route-map.png" alt="G Adventures Morocco route from Casablanca to Marrakech" className="mx-auto h-auto max-h-[75vh] w-auto max-w-full object-contain" />
+                    </div>
+                  </section>
+                </div>
+              )}
+              {showMoroccoChecklist && guestName && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label={`${guestName} Morocco packing checklist`}>
+                  <section className="flex max-h-[92vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] text-left shadow-2xl">
+                    <div className="flex items-start justify-between gap-5 border-b border-white/10 px-5 py-5 sm:px-7">
+                      <div>
+                        <p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: MOROCCO_BROWN }}>Morocco 2026</p>
+                        <h2 className="text-2xl font-light text-white">Packing List</h2>
+                        <p className="mt-2 text-sm text-white/45">{guestName}</p>
+                      </div>
+                      <button type="button" onClick={() => setShowMoroccoChecklist(false)} aria-label="Close Morocco checklist" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">×</button>
+                    </div>
+                    <div className="min-h-0 space-y-5 overflow-y-auto p-5 sm:p-7">
+                      {getPackingChecklist(guestName).sections.filter((section) => ["Essentials", "Clothes", "Personal"].includes(section.title)).map((section) => (
+                        <article key={section.title} className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
+                          <h3 className="mb-4 text-lg font-light text-white">{section.title}</h3>
+                          <div className="grid gap-2">
+                            {section.items.map((item) => {
+                              const key = `Morocco-${guestName}-${section.title}-${item}`;
+                              const checked = Boolean(checkedPackingItems[key]);
+                              return (
+                                <button key={key} type="button" onClick={() => togglePackingItem(key, checked)} className={`flex items-center gap-3 rounded-xl border px-3 py-3 text-left text-sm transition ${checked ? "border-[#D6B48C]/55 bg-[#D6B48C]/10 text-white" : "border-white/10 bg-black/20 text-white/70 hover:border-white/25"}`}>
+                                  <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-xs ${checked ? "border-[#D6B48C] bg-[#D6B48C] text-black" : "border-white/25 text-transparent"}`}>✓</span>
+                                  <span className={checked ? "line-through decoration-[#D6B48C]/70" : ""}>{item}</span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </article>
+                      ))}
+                    </div>
+                  </section>
+                </div>
+              )}
             </>
           ) : selectedTrip === "skiMyoko" ? (
             <>
@@ -1394,7 +1680,7 @@ export default function TravelSite() {
               <div className="space-y-5">
                 <div className="grid gap-3 sm:grid-cols-2">
                   <button type="button" onClick={() => { setPage("map"); setIsGuestConfirmed(true); }} className="rounded-full border border-white/30 bg-white/[0.05] px-5 py-3 text-sm uppercase tracking-[0.22em] text-white transition hover:border-white/60 hover:bg-white/[0.08]">Map View</button>
-                  <button type="button" onClick={() => { setPage("checklist"); setIsGuestConfirmed(true); }} className="rounded-full border border-white/30 bg-white/[0.05] px-5 py-3 text-sm uppercase tracking-[0.22em] text-white transition hover:border-white/60 hover:bg-white/[0.08]">My Checklist</button>
+                  <button type="button" onClick={() => { setPage("checklist"); setIsGuestConfirmed(true); }} className="rounded-full border border-white/30 bg-white/[0.05] px-5 py-3 text-sm uppercase tracking-[0.22em] text-white transition hover:border-white/60 hover:bg-white/[0.08]">Packing List</button>
                 </div>
                 <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-4 text-left"><p className="mb-4 whitespace-nowrap text-[10px] uppercase tracking-[0.18em] text-white/35 sm:text-xs sm:tracking-[0.24em]">Active once trip begins</p><div className="grid gap-3 sm:grid-cols-2"><button type="button" disabled className="cursor-not-allowed rounded-full border border-white/10 bg-white/[0.02] px-5 py-3 text-sm uppercase tracking-[0.22em] text-white/25 opacity-60">What's Today?</button><button type="button" disabled className="cursor-not-allowed rounded-full border border-white/10 bg-white/[0.02] px-5 py-3 text-sm uppercase tracking-[0.22em] text-white/25 opacity-60">What's Tomorrow?</button></div></div>
               </div>
@@ -1602,6 +1888,82 @@ function RentalCarPlanner({ date, dateLabel }: { date: string; dateLabel: string
 
 function DayArticle({ date, title, rentalCarDate, children }: { date: string; title: string; rentalCarDate?: string; children: React.ReactNode }) {
   return <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md"><div className="mb-5 flex items-start justify-between gap-4"><div><p className="mb-2 text-sm text-[var(--chapter-accent)]">{date}</p><h2 className="text-2xl font-light">{title}</h2></div>{rentalCarDate && <RentalCarPlanner date={rentalCarDate} dateLabel={date} />}</div><div className="space-y-4 text-sm leading-7 text-white/75">{children}</div></article>;
+}
+
+function MoroccoItineraryContent({ card }: { card: (children: React.ReactNode) => React.ReactNode }) {
+  return (
+    <>
+      <DayArticle date="Day 0 · Friday, September 4, 2026" title="Toronto → Casablanca">
+        {card(<><p className="text-[var(--chapter-accent)]">Royal Air Maroc · AT 211</p><p>Depart Toronto Pearson International Airport (YYZ) · Terminal 1 · 10:25 PM</p><p className="mt-2 text-white/50">Economy · Overnight flight · 7h 25m</p></>)}
+      </DayArticle>
+      <DayArticle date="Day 1 · Saturday, September 5, 2026" title="Arrive in Casablanca">
+        {card(<><p className="text-[var(--chapter-accent)]">Royal Air Maroc · AT211</p><p>Arrive Casablanca Mohammed V International Airport (CMN) · Terminal 2 · 10:50 AM</p><div className="mt-3 space-y-2 text-white/60"><p><span className="text-white/80">Hotel Transfer:</span> Uber from CMN airport to Kyriad Residence Casablanca Centre Ville (32km, about 40 min)</p><p><span className="text-white/80">Day Plan:</span> TBD</p><p><span className="text-white/80">Evening Plan:</span> Attend the evening welcome meeting with the G Adventures CEO and fellow travellers, followed by an optional group dinner.</p></div></>)}
+        {card(<><p className="text-[var(--chapter-accent)]">Stay</p><p>Kyriad Residence Casablanca Centre Ville or similar</p></>)}
+      </DayArticle>
+      <DayArticle date="Day 2 · Sunday, September 6, 2026" title="Casablanca · Rabat · Meknès">
+        {card(<><p className="text-[var(--chapter-accent)]">Meals</p><p>Breakfast included</p></>)}
+        {card(<><p>Visit Casablanca's monumental Hassan II Mosque before travelling north to Rabat.</p><p className="mt-2 text-white/50">Explore Kasbah des Oudaias, the medina and souks, Mohamed V Mausoleum, and Hassan Tower with a local guide. Continue to the former imperial capital of Meknès.</p></>)}
+        {card(<><p className="text-[var(--chapter-accent)]">Travel & Stay</p><p>Private vehicle · approximately 4.5 hours / 240 km</p><p>Hotel Swani or similar</p></>)}
+      </DayArticle>
+      <DayArticle date="Day 3 · Monday, September 7, 2026" title="Meknès · Volubilis · Chefchaouen">
+        {card(<><p className="text-[var(--chapter-accent)]">Meals</p><p>Breakfast included</p></>)}
+        {card(<><p>Tour Meknès' old medina, lively souks, historic gates, Dar Jamai music museum, and Moulay Ismail Mausoleum.</p></>)}
+        {card(<><p>Walk through the UNESCO-listed Roman ruins of Volubilis with a local expert, including preserved mosaics, bathhouses, and marble columns.</p><p className="mt-2 text-white/50">Continue through the Rif Mountains to Chefchaouen, Morocco's Blue City.</p></>)}
+        {card(<><p className="text-[var(--chapter-accent)]">Stay</p><p>Torre Hadra or similar guesthouse</p></>)}
+      </DayArticle>
+      <DayArticle date="Day 4 · Tuesday, September 8, 2026" title="Chefchaouen · Fès">
+        {card(<><p className="text-[var(--chapter-accent)]">Meals</p><p>Breakfast and traditional Moroccan group dinner included</p></>)}
+        {card(<><p>Morning walking tour through Chefchaouen's blue alleys, medina, kasbah, Rass Elma, and the Spanish Mosque viewpoint.</p></>)}
+        {card(<><p className="text-[var(--chapter-accent)]">Travel & Stay</p><p>Drive to Fès · approximately 5 hours</p><p>Hotel Zahrat Al Jabal or similar</p></>)}
+      </DayArticle>
+      <DayArticle date="Day 5 · Wednesday, September 9, 2026" title="Fès Medina">
+        {card(<><p className="text-[var(--chapter-accent)]">Meals</p><p>Breakfast included</p></>)}
+        {card(<><p>Spend the day inside the cultural heart of Fès with an expert local guide.</p><p className="mt-2 text-white/50">Navigate the vast medina, artisan quarters, food stalls, Al Qarawiyin University, mausoleum, and famous leather tannery viewpoint.</p></>)}
+        {card(<><p className="text-[var(--chapter-accent)]">Evening & Stay</p><p>Free time to explore, shop, or relax.</p><p>Hotel Zahrat Al Jabal or similar</p></>)}
+      </DayArticle>
+      <DayArticle date="Day 6 · Thursday, September 10, 2026" title="Fès · Ifrane · Midelt">
+        {card(<><p className="text-[var(--chapter-accent)]">Meals</p><p>Breakfast, lunch, and dinner included</p></>)}
+        {card(<><p>Travel inland toward the High Atlas Mountains with a tea stop in Ifrane.</p></>)}
+        {card(<><p>Share a home-cooked Berber lunch with a local family, then walk through apple orchards and villages in the Atlas foothills.</p><p className="mt-2 text-white/50">Finish with an introduction to traditional henna art led by local women.</p></>)}
+        {card(<><p className="text-[var(--chapter-accent)]">Stay</p><p>Hotel Kasbah Asmaa Midelt or similar</p></>)}
+      </DayArticle>
+      <DayArticle date="Day 7 · Friday, September 11, 2026" title="Midelt · Arfoud · Merzouga">
+        {card(<><p className="text-[var(--chapter-accent)]">Meals</p><p>Breakfast and dinner included</p></>)}
+        {card(<><p>Journey south through changing landscapes toward the towering Erg Chebbi dunes, stopping in Arfoud to learn about dates and desert culture.</p></>)}
+        {card(<><p>Ride camels into the Sahara camp, climb a nearby dune for sunset, and enjoy dinner by firelight with Berber music beneath the stars.</p></>)}
+        {card(<><p className="text-[var(--chapter-accent)]">Stay</p><p>Auberge Dunes D'Or desert camp or similar</p></>)}
+      </DayArticle>
+      <DayArticle date="Day 8 · Saturday, September 12, 2026" title="Sahara Desert Immersion">
+        {card(<><p className="text-[var(--chapter-accent)]">Meals</p><p>Breakfast, lunch, and dinner included</p></>)}
+        {card(<><p>Explore Erg Chebbi by 4x4, visit a kohl mine, and meet Amazigh nomads for mint tea and a glimpse of desert life.</p></>)}
+        {card(<><p>Visit Khamlia for Gnaoua music, then join a Medfouna cooking experience in Taous village.</p><p className="mt-2 text-white/50">Return to Merzouga for free time, dinner, a bonfire, and music.</p></>)}
+        {card(<><p className="text-[var(--chapter-accent)]">Stay</p><p>Auberge Dunes D'Or or similar</p></>)}
+      </DayArticle>
+      <DayArticle date="Day 9 · Sunday, September 13, 2026" title="Merzouga · Skoura">
+        {card(<><p className="text-[var(--chapter-accent)]">Meals</p><p>Breakfast, lunch, and dinner included</p></>)}
+        {card(<><p>Leave the Sahara for Skoura, a fertile oasis of date palms with views toward the snowcapped Atlas Mountains.</p><p className="mt-2 text-white/50">Stop near Tinghir before a guided walk through the Valley of One Thousand Kasbahs.</p></>)}
+        {card(<><p className="text-[var(--chapter-accent)]">Stay</p><p>Dar Panorama Skoura or similar</p></>)}
+      </DayArticle>
+      <DayArticle date="Day 10 · Monday, September 14, 2026" title="Skoura · Aït Ben Haddou · Marrakech">
+        {card(<><p className="text-[var(--chapter-accent)]">Meals</p><p>Breakfast included</p></>)}
+        {card(<><p>Cross the High Atlas and Tizi n'Tichka pass on the road to Marrakech.</p></>)}
+        {card(<><p>Explore the UNESCO-listed earthen ksar of Aït Ben Haddou, known for its hilltop views and appearances in films and television.</p><p className="mt-2 text-white/50">Optional evening walk through Marrakech's Gueliz district to Menara Gardens.</p></>)}
+        {card(<><p className="text-[var(--chapter-accent)]">Stay</p><p>YAAD Hotel Marrakech or similar</p></>)}
+      </DayArticle>
+      <DayArticle date="Day 11 · Tuesday, September 15, 2026" title="Marrakech · Culture & Medina">
+        {card(<><p className="text-[var(--chapter-accent)]">Meals</p><p>Breakfast and lunch included</p></>)}
+        {card(<><p>Visit the G Adventures-supported Zarbiat Achbarou Cooperative for a hands-on weaving experience and lunch with the women behind the project.</p></>)}
+        {card(<><p>Explore Bahia Palace, Ben Youssef Madrasa, and Marrakech's immersive medina and souks with a local guide.</p><p className="mt-2 text-white/50">Optional farewell dinner at a food stall in Djemaa el-Fnaa square.</p></>)}
+        {card(<><p className="text-[var(--chapter-accent)]">Stay</p><p>YAAD Hotel Marrakech or similar</p></>)}
+      </DayArticle>
+      <DayArticle date="Day 12 · Wednesday, September 16, 2026" title="Depart Marrakech">
+        {card(<><p className="text-[var(--chapter-accent)]">Meals</p><p>Breakfast included</p></>)}
+        {card(<><p className="text-[var(--chapter-accent)]">RAM Express · AT410</p><p>Depart Marrakech Menara Airport (RAK) · Terminal 1 · 1:45 PM</p><p>Arrive Casablanca Mohammed V International Airport (CMN) · Terminal 2 · 2:45 PM</p><p className="mt-2 text-white/50">Economy · 1h flight</p></>)}
+        {card(<><p className="text-[var(--chapter-accent)]">Casablanca Connection</p><p>2-hour transit in Casablanca · Terminal change from Terminal 2 to Terminal 1</p></>)}
+        {card(<><p className="text-[var(--chapter-accent)]">Royal Air Maroc · AT210</p><p>Depart Casablanca Mohammed V International Airport (CMN) · Terminal 1 · 4:45 PM</p><p>Arrive Toronto Pearson International Airport (YYZ) · Terminal 1 · 8:10 PM</p><p className="mt-2 text-white/50">Economy · 8h 25m flight</p></>)}
+      </DayArticle>
+    </>
+  );
 }
 
 function XiaoliuqiuContent({ card }: { card: (children: React.ReactNode) => React.ReactNode }) {
