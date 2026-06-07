@@ -831,7 +831,7 @@ export default function TravelSite() {
     return (
       <div className="mb-10 flex items-start justify-between gap-4">
         <div className="flex flex-col items-start gap-3">
-          <button type="button" onClick={() => setPage("map")} className="rounded-full border border-white/30 px-4 py-2 text-sm text-white/80 transition hover:border-white hover:text-white">← Back to Map</button>
+          {current !== "checklist" && <button type="button" onClick={() => setPage("map")} className="rounded-full border border-white/30 px-4 py-2 text-sm text-white/80 transition hover:border-white hover:text-white">← Back to Map</button>}
           {guestName && guestName !== "I am just a random Guest" && (
             <button type="button" onClick={() => { setIsGuestConfirmed(false); setShowGuestActions(true); }} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70 transition hover:border-white/40 hover:bg-white/[0.08] hover:text-white">← Back to Dashboard</button>
           )}
@@ -1952,58 +1952,52 @@ function MoroccoItineraryContent({ card }: { card: (children: React.ReactNode) =
       </DayArticle>
       <DayArticle date="Day 2 · Sunday, September 6, 2026" title="Casablanca · Rabat · Meknès">
         {card(<><p className="text-[var(--chapter-accent)]">Meals</p><p>Breakfast included</p></>)}
-        {card(<><p>Visit Casablanca's monumental Hassan II Mosque before travelling north to Rabat.</p><p className="mt-2 text-white/50">Explore Kasbah des Oudaias, the medina and souks, Mohamed V Mausoleum, and Hassan Tower with a local guide. Continue to the former imperial capital of Meknès.</p></>)}
-        {card(<><p className="text-[var(--chapter-accent)]">Travel & Stay</p><p>Private vehicle · approximately 4.5 hours / 240 km</p><p>Hotel Swani or similar</p></>)}
+        {card(<><p className="text-[var(--chapter-accent)]">Activities</p><ul className="ml-5 list-disc space-y-2 text-white/65"><li>Visit Casablanca's monumental Hassan II Mosque.</li><li>Travel northwest to Rabat, join a local city tour to explore Kasbah des Oudaias, Mohamed V Mausoleum, and Hassan Tower.</li><li>Continue to the former imperial capital of Meknès. Enjoy some time to relax at the hotel, or find a nearby restaurant for dinner.</li></ul></>)}
+        {card(<><p className="text-[var(--chapter-accent)]">Stay</p><p>Hotel Swani or similar</p><p className="mt-2 text-white/50">Private vehicle · approximately 4.5 hours / 240 km</p></>)}
       </DayArticle>
       <DayArticle date="Day 3 · Monday, September 7, 2026" title="Meknès · Volubilis · Chefchaouen">
         {card(<><p className="text-[var(--chapter-accent)]">Meals</p><p>Breakfast included</p></>)}
-        {card(<><p>Tour Meknès' old medina, lively souks, historic gates, Dar Jamai music museum, and Moulay Ismail Mausoleum.</p></>)}
-        {card(<><p>Walk through the UNESCO-listed Roman ruins of Volubilis with a local expert, including preserved mosaics, bathhouses, and marble columns.</p><p className="mt-2 text-white/50">Continue through the Rif Mountains to Chefchaouen, Morocco's Blue City.</p></>)}
+        {card(<><p className="text-[var(--chapter-accent)]">Activities</p><ul className="ml-5 list-disc space-y-2 text-white/65"><li>Tour Meknès' old medina, lively souks, historical landmarks like Bab Mansour and Bab El Khmiss, Dar Jamai National Museum of Music, and Mausoleum of Moulay Ismail.</li><li>Walk through the UNESCO-listed Roman ruins of Volubilis with a local expert, including preserved mosaics, bathhouses, and marble columns.</li><li>Continue through the Rif Mountains to Chefchaouen, Morocco's Blue City.</li></ul></>)}
         {card(<><p className="text-[var(--chapter-accent)]">Stay</p><p>Torre Hadra or similar guesthouse</p></>)}
       </DayArticle>
       <DayArticle date="Day 4 · Tuesday, September 8, 2026" title="Chefchaouen · Fès">
         {card(<><p className="text-[var(--chapter-accent)]">Meals</p><p>Breakfast and traditional Moroccan group dinner included</p></>)}
-        {card(<><p>Morning walking tour through Chefchaouen's blue alleys, medina, kasbah, Rass Elma, and the Spanish Mosque viewpoint.</p></>)}
-        {card(<><p className="text-[var(--chapter-accent)]">Travel & Stay</p><p>Drive to Fès · approximately 5 hours</p><p>Hotel Zahrat Al Jabal or similar</p></>)}
+        {card(<><p className="text-[var(--chapter-accent)]">Activities</p><ul className="ml-5 list-disc space-y-2 text-white/65"><li>Join a morning walking tour through Chefchaouen's blue alleys and medina. Finish the walk at Rass Elma and climb to the Spanish Mosque to take in the expansive view of the Rif Mountains.</li><li>Drive to Fès. Arriving in the late afternoon, join the group for a delicious dinner of the city's culinary delights, such as the sweet and salty pastilla.</li></ul></>)}
+        {card(<><p className="text-[var(--chapter-accent)]">Stay</p><p>Hotel Zahrat Al Jabal or similar</p><p className="mt-2 text-white/50">Drive to Fès · approximately 5 hours</p></>)}
       </DayArticle>
       <DayArticle date="Day 5 · Wednesday, September 9, 2026" title="Fès Medina">
         {card(<><p className="text-[var(--chapter-accent)]">Meals</p><p>Breakfast included</p></>)}
-        {card(<><p>Spend the day inside the cultural heart of Fès with an expert local guide.</p><p className="mt-2 text-white/50">Navigate the vast medina, artisan quarters, food stalls, Al Qarawiyin University, mausoleum, and famous leather tannery viewpoint.</p></>)}
-        {card(<><p className="text-[var(--chapter-accent)]">Evening & Stay</p><p>Free time to explore, shop, or relax.</p><p>Hotel Zahrat Al Jabal or similar</p></>)}
+        {card(<><p className="text-[var(--chapter-accent)]">Activities</p><ul className="ml-5 list-disc space-y-2 text-white/65"><li>Fès Medina guided tour. Explore one of the world's largest medinas, with more than 9,000 winding streets spread across 365 hectares. Visit Al Qarawiyin University, a mausoleum, and the famous leather tannery viewpoint.</li><li>Enjoy free time in the evening to explore, shop, or relax.</li></ul></>)}
+        {card(<><p className="text-[var(--chapter-accent)]">Stay</p><p>Hotel Zahrat Al Jabal or similar</p></>)}
       </DayArticle>
       <DayArticle date="Day 6 · Thursday, September 10, 2026" title="Fès · Ifrane · Midelt">
         {card(<><p className="text-[var(--chapter-accent)]">Meals</p><p>Breakfast, lunch, and dinner included</p></>)}
-        {card(<><p>Travel inland toward the High Atlas Mountains with a tea stop in Ifrane.</p></>)}
-        {card(<><p>Share a home-cooked Berber lunch with a local family, then walk through apple orchards and villages in the Atlas foothills.</p><p className="mt-2 text-white/50">Finish with an introduction to traditional henna art led by local women.</p></>)}
+        {card(<><p className="text-[var(--chapter-accent)]">Activities</p><ul className="ml-5 list-disc space-y-2 text-white/65"><li>Travel inland toward the High Atlas Mountains with a tea stop in Ifrane.</li><li>Upon arrival at Midelt, share a home-cooked Berber lunch with a local family, followed by the Berber Village Walk in the foothills of the Atlas Mountains.</li><li>Join an introduction to traditional henna art led by local women.</li></ul></>)}
         {card(<><p className="text-[var(--chapter-accent)]">Stay</p><p>Hotel Kasbah Asmaa Midelt or similar</p></>)}
       </DayArticle>
       <DayArticle date="Day 7 · Friday, September 11, 2026" title="Midelt · Arfoud · Merzouga">
         {card(<><p className="text-[var(--chapter-accent)]">Meals</p><p>Breakfast and dinner included</p></>)}
-        {card(<><p>Journey south through changing landscapes toward the towering Erg Chebbi dunes, stopping in Arfoud to learn about dates and desert culture.</p></>)}
-        {card(<><p>Ride camels into the Sahara camp, climb a nearby dune for sunset, and enjoy dinner by firelight with Berber music beneath the stars.</p></>)}
+        {card(<><p className="text-[var(--chapter-accent)]">Activities</p><ul className="ml-5 list-disc space-y-2 text-white/65"><li>Journey south through changing landscapes toward the towering Erg Chebbi dunes.</li><li>Stop in Arfoud to learn about dates and desert culture.</li><li>Ride camels into the Sahara camp and climb a nearby dune for sunset.</li><li>Enjoy dinner by firelight with Berber music beneath the stars.</li></ul></>)}
         {card(<><p className="text-[var(--chapter-accent)]">Stay</p><p>Auberge Dunes D'Or desert camp or similar</p></>)}
       </DayArticle>
-      <DayArticle date="Day 8 · Saturday, September 12, 2026" title="Sahara Desert Immersion">
+      <DayArticle date="Day 8 · Saturday, September 12, 2026" title="Merzouga · Sahara Desert Immersion">
         {card(<><p className="text-[var(--chapter-accent)]">Meals</p><p>Breakfast, lunch, and dinner included</p></>)}
-        {card(<><p>Explore Erg Chebbi by 4x4, visit a kohl mine, and meet Amazigh nomads for mint tea and a glimpse of desert life.</p></>)}
-        {card(<><p>Visit Khamlia for Gnaoua music, then join a Medfouna cooking experience in Taous village.</p><p className="mt-2 text-white/50">Return to Merzouga for free time, dinner, a bonfire, and music.</p></>)}
+        {card(<><p className="text-[var(--chapter-accent)]">Activities</p><ul className="ml-5 list-disc space-y-2 text-white/65"><li>Explore Erg Chebbi by 4x4 and visit a kohl mine.</li><li>Meet Amazigh nomads for mint tea and a glimpse of desert life.</li><li>Visit Khamlia for Gnaoua music.</li><li>Join a Medfouna cooking experience in Taous village.</li><li>Return to Merzouga for free time, dinner, a bonfire, and music.</li></ul></>)}
         {card(<><p className="text-[var(--chapter-accent)]">Stay</p><p>Auberge Dunes D'Or or similar</p></>)}
       </DayArticle>
       <DayArticle date="Day 9 · Sunday, September 13, 2026" title="Merzouga · Skoura">
         {card(<><p className="text-[var(--chapter-accent)]">Meals</p><p>Breakfast, lunch, and dinner included</p></>)}
-        {card(<><p>Leave the Sahara for Skoura, a fertile oasis of date palms with views toward the snowcapped Atlas Mountains.</p><p className="mt-2 text-white/50">Stop near Tinghir before a guided walk through the Valley of One Thousand Kasbahs.</p></>)}
+        {card(<><p className="text-[var(--chapter-accent)]">Activities</p><ul className="ml-5 list-disc space-y-2 text-white/65"><li>Leave the Sahara for Skoura, a fertile oasis of date palms with views toward the snowcapped Atlas Mountains.</li><li>Stop near Tinghir.</li><li>Join a guided walk through the Valley of One Thousand Kasbahs.</li></ul></>)}
         {card(<><p className="text-[var(--chapter-accent)]">Stay</p><p>Dar Panorama Skoura or similar</p></>)}
       </DayArticle>
       <DayArticle date="Day 10 · Monday, September 14, 2026" title="Skoura · Aït Ben Haddou · Marrakech">
         {card(<><p className="text-[var(--chapter-accent)]">Meals</p><p>Breakfast included</p></>)}
-        {card(<><p>Cross the High Atlas and Tizi n'Tichka pass on the road to Marrakech.</p></>)}
-        {card(<><p>Explore the UNESCO-listed earthen ksar of Aït Ben Haddou, known for its hilltop views and appearances in films and television.</p><p className="mt-2 text-white/50">Optional evening walk through Marrakech's Gueliz district to Menara Gardens.</p></>)}
+        {card(<><p className="text-[var(--chapter-accent)]">Activities</p><ul className="ml-5 list-disc space-y-2 text-white/65"><li>Cross the High Atlas and Tizi n'Tichka pass on the road to Marrakech.</li><li>Explore the UNESCO-listed earthen ksar of Aït Ben Haddou, known for its hilltop views and appearances in films and television.</li><li>Optional evening walk through Marrakech's Gueliz district to Menara Gardens.</li></ul></>)}
         {card(<><p className="text-[var(--chapter-accent)]">Stay</p><p>YAAD Hotel Marrakech or similar</p></>)}
       </DayArticle>
       <DayArticle date="Day 11 · Tuesday, September 15, 2026" title="Marrakech · Culture & Medina">
         {card(<><p className="text-[var(--chapter-accent)]">Meals</p><p>Breakfast and lunch included</p></>)}
-        {card(<><p>Visit the G Adventures-supported Zarbiat Achbarou Cooperative for a hands-on weaving experience and lunch with the women behind the project.</p></>)}
-        {card(<><p>Explore Bahia Palace, Ben Youssef Madrasa, and Marrakech's immersive medina and souks with a local guide.</p><p className="mt-2 text-white/50">Optional farewell dinner at a food stall in Djemaa el-Fnaa square.</p></>)}
+        {card(<><p className="text-[var(--chapter-accent)]">Activities</p><ul className="ml-5 list-disc space-y-2 text-white/65"><li>Visit the G Adventures-supported Zarbiat Achbarou Cooperative for a hands-on weaving experience and lunch with the women behind the project.</li><li>Explore Bahia Palace and Ben Youssef Madrasa.</li><li>Walk through Marrakech's immersive medina and souks with a local guide.</li><li>Optional farewell dinner at a food stall in Djemaa el-Fnaa square.</li></ul></>)}
         {card(<><p className="text-[var(--chapter-accent)]">Stay</p><p>YAAD Hotel Marrakech or similar</p></>)}
       </DayArticle>
       <DayArticle date="Day 12 · Wednesday, September 16, 2026" title="Depart Marrakech">
