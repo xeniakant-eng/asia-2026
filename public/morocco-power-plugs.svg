@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="280" viewBox="0 0 640 280" role="img" aria-labelledby="title desc">
+  <title id="title">Morocco Type C and Type E power plugs</title>
+  <desc id="desc">Simple examples of Type C and Type E European-style plugs used in Morocco.</desc>
+  <rect width="640" height="280" rx="28" fill="#f7f1e8"/>
+  <g transform="translate(88 48)">
+    <rect x="0" y="0" width="190" height="184" rx="24" fill="#ffffff" stroke="#d6b48c" stroke-width="4"/>
+    <text x="95" y="34" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#6b5238">Type C</text>
+    <rect x="58" y="70" width="28" height="76" rx="14" fill="#6b5238"/>
+    <rect x="104" y="70" width="28" height="76" rx="14" fill="#6b5238"/>
+    <text x="95" y="170" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" fill="#8a755f">two round pins</text>
+  </g>
+  <g transform="translate(362 48)">
+    <rect x="0" y="0" width="190" height="184" rx="24" fill="#ffffff" stroke="#d6b48c" stroke-width="4"/>
+    <text x="95" y="34" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#6b5238">Type E</text>
+    <circle cx="95" cy="70" r="9" fill="#d6b48c"/>
+    <rect x="58" y="92" width="28" height="58" rx="14" fill="#6b5238"/>
+    <rect x="104" y="92" width="28" height="58" rx="14" fill="#6b5238"/>
+    <text x="95" y="170" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" fill="#8a755f">round pins + earth</text>
+  </g>
+  <text x="320" y="252" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#6b5238">Morocco: 220V / 50Hz</text>
+</svg>

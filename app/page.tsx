@@ -420,10 +420,12 @@ export default function TravelSite() {
   const [showMoroccoNameInput, setShowMoroccoNameInput] = useState(false);
   const [moroccoNameInput, setMoroccoNameInput] = useState("");
   const [showMoroccoBudget, setShowMoroccoBudget] = useState(false);
+  const [showMoroccoUsefulInfo, setShowMoroccoUsefulInfo] = useState(false);
   const [showMoroccoMap, setShowMoroccoMap] = useState(false);
   const [showMoroccoChecklist, setShowMoroccoChecklist] = useState(false);
   const [showMoroccoItinerary, setShowMoroccoItinerary] = useState(false);
   const [showMoroccoCostTracker, setShowMoroccoCostTracker] = useState(false);
+  const [showMoroccoAccountingSummary, setShowMoroccoAccountingSummary] = useState(false);
   const [moroccoExpenses, setMoroccoExpenses] = useState<MoroccoExpense[]>([]);
   const [moroccoExpenseDescription, setMoroccoExpenseDescription] = useState("");
   const [moroccoExpenseAmount, setMoroccoExpenseAmount] = useState("");
@@ -1145,9 +1147,9 @@ export default function TravelSite() {
           <button type="button" onClick={() => { setShowMoroccoItinerary(false); setGuestName(""); setSelectedTrip(""); }} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white">All Trips</button>
         </header>
         <main className="mx-auto max-w-5xl">
-          <p className="mb-3 text-sm uppercase tracking-[0.35em]" style={{ color: MOROCCO_BROWN }}>Morocco · G Adventures</p>
+          <p className="mb-3 text-sm uppercase tracking-[0.35em]" style={{ color: MOROCCO_BROWN }}>Morocco · G-Adventures</p>
           <h1 className="mb-6 text-4xl font-light tracking-wide md:text-6xl">Trip Itinerary</h1>
-          <MemoryMaker albumKey="moroccoSeptember" albumName="Morocco September" accentColor={MOROCCO_BROWN} guestName={guestName} returnChapter="morocco" />
+          <MemoryMaker albumKey="moroccoSeptember" albumName="Morocco" accentColor={MOROCCO_BROWN} guestName={guestName} returnChapter="morocco" />
           <section className="mb-10 grid grid-cols-2 gap-3 md:grid-cols-4">
             <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:text-2xl">💵</p><p className="text-[10px] text-gray-400 md:text-xs">Currency</p><p className="mt-1 text-xs font-medium md:text-sm">MAD د.م.</p><p className="mt-1 text-xs text-gray-400">1 USD ≈ {usdToMad} MAD</p></div>
             <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:text-2xl">🌤️</p><p className="text-[10px] text-gray-400 md:text-xs">September Temp</p><p className="mt-1 text-xs font-medium md:text-sm">18–32°C</p><p className="mt-1 text-[9px] text-gray-500">Live forecast once trip begins</p></div>
@@ -1163,7 +1165,10 @@ export default function TravelSite() {
             <section className="flex max-h-[92vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] shadow-2xl">
               <div className="flex items-start justify-between gap-5 border-b border-white/10 px-5 py-5 sm:px-7">
                 <div><p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: MOROCCO_BROWN }}>Morocco 2026</p><h2 className="text-2xl font-light">Cost Tracker</h2><p className="mt-2 text-sm text-white/45">Converted total: ${expenseTotal.toFixed(2)} CAD</p></div>
-                <button type="button" onClick={() => setShowMoroccoCostTracker(false)} aria-label="Close cost tracker" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65">×</button>
+                <div className="flex items-center gap-2">
+                  <button type="button" onClick={() => setShowMoroccoAccountingSummary(true)} className="rounded-full border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-3 py-2 text-[10px] uppercase tracking-[0.12em] text-[#D6B48C] transition hover:border-[#D6B48C]/60">Accounting Summary</button>
+                  <button type="button" onClick={() => setShowMoroccoCostTracker(false)} aria-label="Close cost tracker" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65">×</button>
+                </div>
               </div>
               <div className="min-h-0 overflow-y-auto p-5 sm:p-7">
                 <form onSubmit={(event) => { event.preventDefault(); addMoroccoExpense(); }} className="mb-6 grid gap-3 sm:grid-cols-2">
@@ -1195,9 +1200,19 @@ export default function TravelSite() {
                 </form>
                 {moroccoExpenseMessage && <p className="mb-4 text-sm text-white/50">{moroccoExpenseMessage}</p>}
                 <div className="space-y-3">
-                  {moroccoExpenses.map((expense) => <div key={expense.id} className={`flex items-start justify-between gap-4 rounded-xl border bg-white/[0.04] p-4 ${moroccoEditingExpenseId === expense.id ? "border-[#D6B48C]/60" : "border-white/10"}`}><div><p className="text-sm text-white/80">{expense.description}</p><p className="mt-1 text-xs text-white/40">{new Intl.DateTimeFormat("en-CA", { year: "numeric", month: "short", day: "numeric" }).format(new Date(expense.createdAt))}</p><p className="mt-1 text-xs text-white/40">Paid by {expense.paidBy}</p>{expense.exchangeRateToCad !== null && expense.amountCad === null && <p className="mt-1 text-[11px] text-white/30">Saved rate: 1 {expense.amountUsd !== null ? "USD" : "MAD"} = {expense.exchangeRateToCad.toFixed(4)} CAD</p>}<div className="mt-3 flex gap-3"><button type="button" onClick={() => editMoroccoExpense(expense)} className="text-xs uppercase tracking-[0.12em] text-[#D6B48C]/75 transition hover:text-[#D6B48C]">Edit</button><button type="button" onClick={() => deleteMoroccoExpense(expense)} className="text-xs uppercase tracking-[0.12em] text-red-300/60 transition hover:text-red-300">Delete</button></div></div><div className="shrink-0 text-right"><p className="text-sm font-medium" style={{ color: MOROCCO_BROWN }}>{expense.amountCad !== null ? `$${expense.amountCad.toFixed(2)} CAD` : expense.amountUsd !== null ? `$${expense.amountUsd.toFixed(2)} USD` : `${expense.amountLocal?.toFixed(2)} MAD`}</p>{expense.convertedAmountCad !== null && expense.amountCad === null && <p className="mt-1 text-xs text-white/40">≈ ${expense.convertedAmountCad.toFixed(2)} CAD</p>}</div></div>)}
+                  {moroccoExpenses.map((expense) => <div key={expense.id} className={`flex items-start justify-between gap-4 rounded-xl border bg-white/[0.04] px-4 py-3 ${moroccoEditingExpenseId === expense.id ? "border-[#D6B48C]/60" : "border-white/10"}`}><div className="min-w-0"><p className="truncate text-sm text-white/80">{expense.description}</p><p className="mt-1 text-xs text-white/40">{new Intl.DateTimeFormat("en-CA", { year: "numeric", month: "short", day: "numeric" }).format(new Date(expense.createdAt))} · Paid by {expense.paidBy}</p>{expense.exchangeRateToCad !== null && expense.amountCad === null && <p className="mt-1 text-[11px] text-white/30">1 {expense.amountUsd !== null ? "USD" : "MAD"} = {expense.exchangeRateToCad.toFixed(4)} CAD</p>}</div><div className="shrink-0 text-right"><p className="text-sm font-medium" style={{ color: MOROCCO_BROWN }}>{expense.amountCad !== null ? `$${expense.amountCad.toFixed(2)} CAD` : expense.amountUsd !== null ? `$${expense.amountUsd.toFixed(2)} USD` : `${expense.amountLocal?.toFixed(2)} MAD`}</p>{expense.convertedAmountCad !== null && expense.amountCad === null && <p className="mt-1 text-xs text-white/40">≈ ${expense.convertedAmountCad.toFixed(2)} CAD</p>}<div className="mt-2 flex justify-end gap-3"><button type="button" onClick={() => editMoroccoExpense(expense)} className="text-[10px] uppercase tracking-[0.12em] text-[#D6B48C]/75 transition hover:text-[#D6B48C]">Edit</button><button type="button" onClick={() => deleteMoroccoExpense(expense)} className="text-[10px] uppercase tracking-[0.12em] text-red-300/60 transition hover:text-red-300">Delete</button></div></div></div>)}
                   {!moroccoExpenses.length && !moroccoExpenseMessage && <p className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-8 text-center text-sm text-white/40">No shared expenses recorded yet.</p>}
                 </div>
+              </div>
+            </section>
+          </div>
+        )}
+        {showMoroccoAccountingSummary && (
+          <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Morocco accounting summary">
+            <section className="w-full max-w-lg rounded-2xl border border-white/15 bg-[#111] p-6 shadow-2xl">
+              <div className="flex items-start justify-between gap-5">
+                <div><p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: MOROCCO_BROWN }}>Morocco 2026</p><h2 className="text-2xl font-light">Accounting Summary</h2><p className="mt-3 text-sm leading-6 text-white/45">Who owes whom and settlement amounts will appear here once expense-sharing rules are added.</p></div>
+                <button type="button" onClick={() => setShowMoroccoAccountingSummary(false)} aria-label="Close accounting summary" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65">×</button>
               </div>
             </section>
           </div>
@@ -1219,7 +1234,7 @@ export default function TravelSite() {
               </h1>
               <p className="mb-8 text-sm leading-6 text-white/55">Please select your trip.</p>
               <div className="space-y-3">
-                <TripButton location="Morocco (G Adventures)" date="Sept 4 - Sept 16 2026" status="Confirmed" onClick={() => { setGuestName(""); setSelectedTrip("morocco"); }} />
+                <TripButton location="Morocco (G-Adventures)" date="Sept 4 - Sept 16 2026" status="Confirmed" onClick={() => { setGuestName(""); setSelectedTrip("morocco"); }} />
                 <TripButton location="Taiwan" date="Nov 21 - Dec 21 2026" status="Confirmed" onClick={() => setSelectedTrip("taiwan")} />
                 <TripButton location="Okinawa Japan" date="Nov 25 - Dec 6 2026" status="Confirmed" onClick={() => setSelectedTrip("okinawaJapan")} />
                 <TripButton location="Ski Shiga Kogen & Nagano Japan" date="Jan 23 - Jan 31 2027" status="Dreaming" onClick={() => setSelectedTrip("skiMyoko")} />
@@ -1236,9 +1251,9 @@ export default function TravelSite() {
             <>
               <div className="mb-5 flex flex-wrap justify-center gap-3">
                 {guestName && <button type="button" onClick={() => { setGuestName(""); setShowMoroccoChecklist(false); }} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45 transition hover:border-white/30 hover:bg-white/[0.05]">Back</button>}
-                <button type="button" onClick={() => { setGuestName(""); setSelectedTrip(""); setShowMoroccoNameInput(false); setMoroccoNameInput(""); setShowMoroccoBudget(false); setShowMoroccoMap(false); setShowMoroccoChecklist(false); }} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45 transition hover:border-white/30 hover:bg-white/[0.05]">All Trips</button>
+                <button type="button" onClick={() => { setGuestName(""); setSelectedTrip(""); setShowMoroccoNameInput(false); setMoroccoNameInput(""); setShowMoroccoBudget(false); setShowMoroccoUsefulInfo(false); setShowMoroccoMap(false); setShowMoroccoChecklist(false); }} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45 transition hover:border-white/30 hover:bg-white/[0.05]">All Trips</button>
               </div>
-              <TripPanelTitle location="Morocco (G Adventures)" date="Sept 4 - Sept 16 2026" description="A late-summer group adventure through Morocco with time for culture, scenery, food, and slow wandering." />
+              <TripPanelTitle location="Morocco (G-Adventures)" date="Sept 4 - Sept 16 2026" description="A late-summer group adventure through Morocco with time for culture, scenery, food, and slow wandering." />
               {guestName ? (
                 <section className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 text-left">
                   <p className="text-sm uppercase tracking-[0.28em] text-white/55">Welcome</p>
@@ -1251,9 +1266,10 @@ export default function TravelSite() {
                 </section>
               ) : (
                 <>
-                  <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="grid gap-3 sm:grid-cols-3">
                     <button type="button" onClick={() => setShowMoroccoMap(true)} className="w-full rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#D6B48C] transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">Map View</button>
                     <button type="button" onClick={() => setShowMoroccoBudget(true)} className="w-full rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#D6B48C] transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">Budget</button>
+                    <button type="button" onClick={() => setShowMoroccoUsefulInfo(true)} className="w-full rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#D6B48C] transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">Useful Info</button>
                   </div>
 
                   <section className="mt-6 rounded-3xl border border-white/10 bg-black/20 p-5 text-left">
@@ -1300,13 +1316,47 @@ export default function TravelSite() {
                         <p className="mt-2 text-sm font-medium text-white">$600 CAD</p>
                       </div>
                       <div className="rounded-xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 p-5">
-                        <div className="flex items-end justify-between gap-4">
-                          <div>
-                            <p className="text-xs uppercase tracking-[0.18em] text-[#D6B48C]/75">Estimated Total</p>
-                            <p className="mt-2 text-sm text-white/55">Exact subtotal: $3,696.22 CAD</p>
-                          </div>
-                          <p className="text-right text-xl font-medium text-[#D6B48C]">≈ $3,700 CAD</p>
-                        </div>
+                        <p className="text-center text-xs font-medium uppercase tracking-[0.18em] text-[#D6B48C]">Estimated Total = 3,700 CAD</p>
+                      </div>
+                    </div>
+                  </section>
+                </div>
+              )}
+              {showMoroccoUsefulInfo && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Morocco useful information">
+                  <section className="max-h-[88vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-white/15 bg-[#111] p-6 text-left shadow-2xl sm:p-7">
+                    <div className="mb-6 flex items-start justify-between gap-5 border-b border-white/10 pb-5">
+                      <div>
+                        <p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: MOROCCO_BROWN }}>Morocco 2026</p>
+                        <h2 className="text-2xl font-light text-white">Useful Information</h2>
+                      </div>
+                      <button type="button" onClick={() => setShowMoroccoUsefulInfo(false)} aria-label="Close Morocco useful information" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">×</button>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
+                        <p className="text-xs uppercase tracking-[0.18em] text-white/40">Power</p>
+                        <img src="/morocco-power-plugs.svg" alt="Examples of Type C and Type E plugs used in Morocco" className="mt-3 w-full rounded-xl border border-white/10 bg-white" />
+                        <p className="mt-2 text-sm leading-6 text-white/75">Morocco uses 220V / 50Hz power with Type C and Type E plugs. A European-style Type C/E adapter is recommended.</p>
+                      </div>
+                      <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
+                        <p className="text-xs uppercase tracking-[0.18em] text-white/40">Uber</p>
+                        <p className="mt-2 text-sm leading-6 text-white/75">Available in Casablanca & Marrakesh.</p>
+                      </div>
+                      <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
+                        <p className="text-xs uppercase tracking-[0.18em] text-white/40">Tipping</p>
+                        <p className="mt-2 text-sm leading-6 text-white/75">Tipping is customary for guides, drivers, hotel staff, restaurants, and small services. Keep small MAD bills handy throughout the trip.</p>
+                      </div>
+                      <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
+                        <p className="text-xs uppercase tracking-[0.18em] text-white/40">Visa</p>
+                        <p className="mt-2 text-sm leading-6 text-white/75">Canadian passport holders do not need a tourist visa for stays under 90 days.</p>
+                      </div>
+                      <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
+                        <p className="text-xs uppercase tracking-[0.18em] text-white/40">Payment</p>
+                        <p className="mt-2 text-sm leading-6 text-white/75">Credit cards are useful at hotels, larger restaurants, and bigger shops. Cash is still important for markets, taxis, tips, smaller restaurants, and rural stops.</p>
+                      </div>
+                      <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
+                        <p className="text-xs uppercase tracking-[0.18em] text-white/40">SIM Card</p>
+                        <p className="mt-2 text-sm leading-6 text-white/75">Maroc Telecom, Orange Morocco, and Inwi are the main local networks. For broad trip coverage, Maroc Telecom is a strong first choice; Orange is also tourist-friendly and widely available. Buy at the airport or an official shop and bring your passport.</p>
                       </div>
                     </div>
                   </section>
