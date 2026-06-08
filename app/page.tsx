@@ -7,7 +7,7 @@ const BABY_BLUE = "#9EDCFF";
 const TAIWAN_GOLD = "#FFD76A";
 const MOROCCO_BROWN = "#D6B48C";
 
-type PageName = "map" | "xiaoliuqiu" | "onna" | "nago" | "nanjo" | "naha" | "nahaearly" | "yilan" | "checklist";
+type PageName = "map" | "xiaoliuqiu" | "taipei" | "onna" | "nago" | "nanjo" | "naha" | "nahaearly" | "yilan" | "checklist";
 type Region = "japan" | "taiwan";
 
 type TimelineItem = {
@@ -29,7 +29,7 @@ type PackingChecklist = {
 
 type Person = [string, string];
 type DashboardSegment = { label: string; page: PageName; color: string };
-type SignupTripKey = "morocco" | "skiMyoko" | "skiDeerValley" | "skiBig3" | "houston" | "azoresPortugal" | "similanThailand" | "disneyWorld" | "fiveStans";
+type SignupTripKey = "morocco" | "vietnam" | "skiMyoko" | "skiDeerValley" | "skiBig3" | "houston" | "azoresPortugal" | "similanThailand" | "disneyWorld" | "fiveStans";
 type TripStatus = "Planning" | "Confirmed" | "Dreaming";
 type RentalCarArrangement = {
   id: string;
@@ -408,7 +408,7 @@ export default function TravelSite() {
   const [isGuestConfirmed, setIsGuestConfirmed] = useState(false);
   const [isInitialRouteReady, setIsInitialRouteReady] = useState(false);
   const [showGuestActions, setShowGuestActions] = useState(false);
-  const [selectedTrip, setSelectedTrip] = useState<"" | "morocco" | "taiwan" | "okinawaJapan" | "skiMyoko" | "skiDeerValley" | "skiBig3" | "houston" | "azoresPortugal" | "similanThailand" | "disneyWorld" | "fiveStans">("");
+  const [selectedTrip, setSelectedTrip] = useState<"" | "morocco" | "vietnam" | "taiwan" | "okinawaJapan" | "skiMyoko" | "skiDeerValley" | "skiBig3" | "houston" | "azoresPortugal" | "similanThailand" | "disneyWorld" | "fiveStans">("");
   const [moroccoInterestedNames, setMoroccoInterestedNames] = useState<string[]>(() => {
     if (typeof window === "undefined") return [];
     try {
@@ -422,6 +422,16 @@ export default function TravelSite() {
   const [showMoroccoBudget, setShowMoroccoBudget] = useState(false);
   const [showMoroccoUsefulInfo, setShowMoroccoUsefulInfo] = useState(false);
   const [showMoroccoMap, setShowMoroccoMap] = useState(false);
+  const [showTaipeiMrtMap, setShowTaipeiMrtMap] = useState(false);
+  const [showTaipeiFoodieList, setShowTaipeiFoodieList] = useState(false);
+  const [checkedTaipeiFoodieItems, setCheckedTaipeiFoodieItems] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      return JSON.parse(window.localStorage.getItem("checkedTaipeiFoodieItems") || "[]");
+    } catch {
+      return [];
+    }
+  });
   const [showMoroccoChecklist, setShowMoroccoChecklist] = useState(false);
   const [showMoroccoItinerary, setShowMoroccoItinerary] = useState(false);
   const [showMoroccoCostTracker, setShowMoroccoCostTracker] = useState(false);
@@ -514,6 +524,16 @@ export default function TravelSite() {
   });
   const [showFiveStansNameInput, setShowFiveStansNameInput] = useState(false);
   const [fiveStansNameInput, setFiveStansNameInput] = useState("");
+  const [vietnamInterestedNames, setVietnamInterestedNames] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      return JSON.parse(window.localStorage.getItem("vietnamInterestedNames") || "[]");
+    } catch {
+      return [];
+    }
+  });
+  const [showVietnamNameInput, setShowVietnamNameInput] = useState(false);
+  const [vietnamNameInput, setVietnamNameInput] = useState("");
   const [checkedPackingItems, setCheckedPackingItems] = useState<Record<string, boolean>>({});
   const [now, setNow] = useState(new Date());
   const [usdToJpy, setUsdToJpy] = useState("150");
@@ -545,7 +565,7 @@ export default function TravelSite() {
 
   const filterDashboardSegments = (segments: DashboardSegment[]) => {
     if (selectedTrip === "taiwan") {
-      return segments.filter((segment) => ["xiaoliuqiu", "yilan"].includes(segment.page));
+      return segments.filter((segment) => ["xiaoliuqiu", "taipei", "yilan"].includes(segment.page));
     }
     if (selectedTrip === "okinawaJapan") {
       return segments.filter((segment) => ["nahaearly", "onna", "nago", "nanjo", "naha"].includes(segment.page));
@@ -554,7 +574,7 @@ export default function TravelSite() {
   };
 
   const CountrySegmentButtons = ({ segments, setIsGuestConfirmed, setPage }: { segments: DashboardSegment[]; setIsGuestConfirmed: React.Dispatch<React.SetStateAction<boolean>>; setPage: React.Dispatch<React.SetStateAction<PageName>> }) => (
-    <SegmentButtons segments={filterDashboardSegments(segments)} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />
+    <SegmentButtons segments={filterDashboardSegments(segments).map((segment) => selectedTrip === "taiwan" ? { ...segment, color: TAIWAN_GOLD } : segment)} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />
   );
 
   useEffect(() => {
@@ -570,10 +590,10 @@ export default function TravelSite() {
       if (returningGuest) setGuestName(returningGuest);
       setSelectedTrip("morocco");
       setShowMoroccoItinerary(true);
-    } else if (["xiaoliuqiu", "onna", "nago", "nanjo", "naha", "nahaearly", "yilan"].includes(chapter || "")) {
+    } else if (["xiaoliuqiu", "taipei", "onna", "nago", "nanjo", "naha", "nahaearly", "yilan"].includes(chapter || "")) {
       setPage(chapter as PageName);
       if (returningGuest) setGuestName(returningGuest);
-      setSelectedTrip(chapter === "xiaoliuqiu" || chapter === "yilan" ? "taiwan" : "okinawaJapan");
+      setSelectedTrip(chapter === "xiaoliuqiu" || chapter === "taipei" || chapter === "yilan" ? "taiwan" : "okinawaJapan");
       setIsGuestConfirmed(true);
     }
     setIsInitialRouteReady(true);
@@ -581,8 +601,9 @@ export default function TravelSite() {
 
   useEffect(() => {
     async function loadTripSignups() {
-      const [moroccoNames, skiMyokoNames, skiDeerValleyNames, skiBig3Names, houstonNames, azoresNames, similanNames, disneyWorldNames, fiveStansNames] = await Promise.all([
+      const [moroccoNames, vietnamNames, skiMyokoNames, skiDeerValleyNames, skiBig3Names, houstonNames, azoresNames, similanNames, disneyWorldNames, fiveStansNames] = await Promise.all([
         fetchTripSignupNames("morocco"),
+        fetchTripSignupNames("vietnam"),
         fetchTripSignupNames("skiMyoko"),
         fetchTripSignupNames("skiDeerValley"),
         fetchTripSignupNames("skiBig3"),
@@ -593,6 +614,7 @@ export default function TravelSite() {
         fetchTripSignupNames("fiveStans"),
       ]);
       if (moroccoNames) setMoroccoInterestedNames(moroccoNames);
+      if (vietnamNames) setVietnamInterestedNames(vietnamNames);
       if (skiMyokoNames) setSkiMyokoInterestedNames(skiMyokoNames);
       if (skiDeerValleyNames) setSkiDeerValleyInterestedNames(skiDeerValleyNames);
       if (skiBig3Names) setSkiBig3InterestedNames(skiBig3Names);
@@ -663,6 +685,10 @@ export default function TravelSite() {
   }, [fiveStansInterestedNames]);
 
   useEffect(() => {
+    window.localStorage.setItem("vietnamInterestedNames", JSON.stringify(vietnamInterestedNames));
+  }, [vietnamInterestedNames]);
+
+  useEffect(() => {
     async function fetchRates() {
       try {
         const response = await fetch("https://open.er-api.com/v6/latest/USD");
@@ -708,24 +734,26 @@ export default function TravelSite() {
   };
 
   const openChapterForLocation = (id: string) => {
-    if (["xiaoliuqiu", "nahaearly", "onna", "nago", "nanjo", "naha", "yilan"].includes(id)) setPage(id as PageName);
+    if (["xiaoliuqiu", "taipei", "nahaearly", "onna", "nago", "nanjo", "naha", "yilan"].includes(id)) setPage(id as PageName);
   };
 
   const getGuestChapterOrder = (guest: string): PageName[] => {
-    const fullOrder: PageName[] = ["xiaoliuqiu", "nahaearly", "onna", "nago", "nanjo", "naha", "yilan"];
+    const fullOrder: PageName[] = ["xiaoliuqiu", "taipei", "nahaearly", "onna", "nago", "nanjo", "naha", "yilan"];
     const guestRoutes: Record<string, PageName[]> = {
       "I am just a random Guest": fullOrder,
-      "Xenia & David & Naomi (3)": ["xiaoliuqiu", "onna", "nago", "nanjo", "naha", "yilan"],
-      "Anthony & Christine & Mona (1)": ["xiaoliuqiu"],
-      "Heather & Jack & Aizen (8) & Kaien (3)": ["onna", "nago", "yilan"],
+      "Xenia & David & Naomi (3)": ["xiaoliuqiu", "taipei", "onna", "nago", "nanjo", "naha", "yilan"],
+      "Anthony & Christine & Mona (1)": ["xiaoliuqiu", "taipei"],
+      "Jenn & Hiroshi & Masashi (6) & Miyari (3)": ["xiaoliuqiu", "taipei"],
+      "Heather & Jack & Aizen (8) & Kaien (3)": ["taipei", "onna", "nago", "yilan"],
       "Steven Wang": ["nahaearly", "onna", "nago"],
-      "Mark Wang": ["xiaoliuqiu", "nahaearly", "onna"],
-      "Mei & Emilia (8)": ["nago", "nanjo", "naha", "yilan"],
-      "Dave & Christina & Xixi (2)": ["onna", "nago", "nanjo", "naha", "yilan"],
+      "Mark Wang": ["xiaoliuqiu", "taipei", "nahaearly", "onna"],
+      "Mei & Emilia (8)": ["taipei", "nago", "nanjo", "naha", "yilan"],
+      "Dave & Christina & Xixi (2)": ["taipei", "onna", "nago", "nanjo", "naha", "yilan"],
+      "Julie & Adrian & Ethan (4) & Tyrell (1)": ["taipei"],
     };
     const guestRoute = guestRoutes[guest] || [];
     if (selectedTrip === "taiwan") {
-      return guestRoute.filter((chapter) => ["xiaoliuqiu", "yilan"].includes(chapter));
+      return guestRoute.filter((chapter) => ["xiaoliuqiu", "taipei", "yilan"].includes(chapter));
     }
     if (selectedTrip === "okinawaJapan") {
       return guestRoute.filter((chapter) => ["nahaearly", "onna", "nago", "nanjo", "naha"].includes(chapter));
@@ -820,6 +848,7 @@ export default function TravelSite() {
     const nextChapter = currentIndex >= 0 && currentIndex < chapterOrder.length - 1 ? chapterOrder[currentIndex + 1] : null;
     const chapterLabels: Partial<Record<PageName, string>> = {
       xiaoliuqiu: "Scuba Dive",
+      taipei: "Taipei",
       nahaearly: "Naha + Okinawa World",
       onna: "Onna",
       nago: "Nago",
@@ -892,8 +921,8 @@ export default function TravelSite() {
             const isYilan = item.color === "yilan";
             const active = hovered === item.id;
             return (
-              <button key={item.id} type="button" onClick={() => setHovered(item.id)} onDoubleClick={() => openChapterForLocation(item.id)} className={`flex items-center justify-between rounded-2xl border px-4 py-3 text-left transition ${active ? isYilan ? "border-[#72E49A]/70 bg-[#72E49A]/10" : isTaiwan ? "border-[#FFD76A]/70 bg-[#FFD76A]/10" : "border-[#9EDCFF]/70 bg-[#9EDCFF]/10" : "border-white/10 bg-white/[0.04]"}`}>
-                <span className="flex items-center gap-3"><span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: isYilan ? "#72E49A" : isTaiwan ? TAIWAN_GOLD : BABY_BLUE }} /><span className="text-sm font-light tracking-wide text-white">{item.label}</span></span>
+              <button key={item.id} type="button" onClick={() => setHovered(item.id)} onDoubleClick={() => openChapterForLocation(item.id)} className={`flex items-center justify-between rounded-2xl border px-4 py-3 text-left transition ${active ? isYilan || isTaiwan ? "border-[#FFD76A]/70 bg-[#FFD76A]/10" : "border-[#9EDCFF]/70 bg-[#9EDCFF]/10" : "border-white/10 bg-white/[0.04]"}`}>
+                <span className="flex items-center gap-3"><span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: isYilan || isTaiwan ? TAIWAN_GOLD : BABY_BLUE }} /><span className="text-sm font-light tracking-wide text-white">{item.label}</span></span>
                 <span className="text-[10px] uppercase tracking-[0.18em] text-white/45">{item.range}</span>
               </button>
             );
@@ -926,7 +955,7 @@ export default function TravelSite() {
             {selectedTimelineSectionId === 2 && (
               <>
                 {[
-                  { id: "yilan", page: "yilan", start: new Date(2026, 11, 8), end: new Date(2026, 11, 11), color: "#72E49A" },
+                  { id: "yilan", page: "yilan", start: new Date(2026, 11, 8), end: new Date(2026, 11, 11), color: TAIWAN_GOLD },
                 ].map((segment) => {
                   const left = getSectionPercent(segment.start);
                   const width = getSectionPercent(segment.end) - left;
@@ -1030,6 +1059,14 @@ export default function TravelSite() {
     await saveInterestedName("fiveStans", nextName, setFiveStansInterestedNames);
     setFiveStansNameInput("");
     setShowFiveStansNameInput(false);
+  };
+
+  const addVietnamInterestedName = async () => {
+    const nextName = vietnamNameInput.trim();
+    if (!nextName) return;
+    await saveInterestedName("vietnam", nextName, setVietnamInterestedNames);
+    setVietnamNameInput("");
+    setShowVietnamNameInput(false);
   };
 
   const togglePackingItem = (itemKey: string, checked: boolean) => {
@@ -1235,6 +1272,7 @@ export default function TravelSite() {
               <p className="mb-8 text-sm leading-6 text-white/55">Please select your trip.</p>
               <div className="space-y-3">
                 <TripButton location="Morocco (G-Adventures)" date="Sept 4 - Sept 16 2026" status="Confirmed" onClick={() => { setGuestName(""); setSelectedTrip("morocco"); }} />
+                <TripButton location="Vietnam" date="Nov 12 - Nov 21 2026" status="Planning" onClick={() => setSelectedTrip("vietnam")} />
                 <TripButton location="Taiwan" date="Nov 21 - Dec 21 2026" status="Confirmed" onClick={() => setSelectedTrip("taiwan")} />
                 <TripButton location="Okinawa Japan" date="Nov 25 - Dec 6 2026" status="Confirmed" onClick={() => setSelectedTrip("okinawaJapan")} />
                 <TripButton location="Ski Shiga Kogen & Nagano Japan" date="Jan 23 - Jan 31 2027" status="Dreaming" onClick={() => setSelectedTrip("skiMyoko")} />
@@ -1411,6 +1449,39 @@ export default function TravelSite() {
                   </section>
                 </div>
               )}
+            </>
+          ) : selectedTrip === "vietnam" ? (
+            <>
+              <button type="button" onClick={() => { setSelectedTrip(""); setShowVietnamNameInput(false); setVietnamNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">All Trips</button>
+              <TripPanelTitle location="Vietnam" date="Nov 12 - Nov 21 2026" description="A Vietnam adventure in the early planning stage, with cities, food, culture, and landscapes still waiting to take shape." />
+              <div className="space-y-3">
+                <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
+                <button type="button" onClick={() => setShowVietnamNameInput(true)} className="w-full rounded-2xl border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#FF8FC7] transition hover:border-[#FF8FC7]/60 hover:bg-[#FF8FC7]/15">I am interested</button>
+              </div>
+
+              {showVietnamNameInput && (
+                <form onSubmit={(event) => { event.preventDefault(); addVietnamInterestedName(); }} className="mt-5 rounded-3xl border border-white/10 bg-white/[0.03] p-4 text-left">
+                  <label className="mb-2 block text-xs uppercase tracking-[0.22em] text-white/45" htmlFor="vietnam-interest-name">Name</label>
+                  <input id="vietnam-interest-name" value={vietnamNameInput} onChange={(event) => setVietnamNameInput(event.target.value)} autoFocus className="mb-3 w-full rounded-2xl border border-white/15 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-white/40" placeholder="Enter your name" />
+                  <button type="submit" className="w-full rounded-2xl border border-[#72E49A]/35 bg-[#72E49A]/10 px-4 py-3 text-sm uppercase tracking-[0.18em] text-[#72E49A] transition hover:bg-[#72E49A]/15">Add to list</button>
+                </form>
+              )}
+
+              <section className="mt-6 rounded-3xl border border-white/10 bg-black/20 p-5 text-left">
+                <div className="mb-4 flex items-center justify-between gap-3">
+                  <h2 className="text-sm uppercase tracking-[0.24em] text-white/55">Who signed up</h2>
+                  <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-white/45">{vietnamInterestedNames.length}</span>
+                </div>
+                {vietnamInterestedNames.length ? (
+                  <div className="space-y-2">
+                    {vietnamInterestedNames.map((name) => (
+                      <p key={name} className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/75">{name}</p>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm text-white/35">No names added yet.</p>
+                )}
+              </section>
             </>
           ) : selectedTrip === "skiMyoko" ? (
             <>
@@ -1700,6 +1771,14 @@ export default function TravelSite() {
                   if (selectedTrip === "taiwan") return guest !== "Steven Wang";
                   if (selectedTrip === "okinawaJapan") return !["Anthony & Christine & Mona (1)", "Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Julie & Adrian & Ethan (4) & Tyrell (1)"].includes(guest);
                   return true;
+                }).sort((firstGuest, secondGuest) => {
+                  if (selectedTrip === "okinawaJapan") {
+                    const okinawaPartyOrder = ["Xenia & David & Naomi (3)", "Dave & Christina & Xixi (2)", "Heather & Jack & Aizen (8) & Kaien (3)", "Steven Wang", "Mark Wang", "Mei & Emilia (8)"];
+                    return okinawaPartyOrder.indexOf(firstGuest) - okinawaPartyOrder.indexOf(secondGuest);
+                  }
+                  if (selectedTrip !== "taiwan") return 0;
+                  const taiwanPartyOrder = ["Xenia & David & Naomi (3)", "Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Anthony & Christine & Mona (1)", "Mark Wang", "Dave & Christina & Xixi (2)", "Mei & Emilia (8)", "Heather & Jack & Aizen (8) & Kaien (3)", "Julie & Adrian & Ethan (4) & Tyrell (1)"];
+                  return taiwanPartyOrder.indexOf(firstGuest) - taiwanPartyOrder.indexOf(secondGuest);
                 }).map((guest) => <button key={guest} type="button" onClick={() => { setGuestName(guest); if (guest === "I am just a random Guest") { setIsGuestConfirmed(true); setPage("map"); return; } setShowGuestActions(true); }} className="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm font-light tracking-wide text-white/70 transition hover:border-white/30 hover:bg-white/[0.05]">{guest}</button>)}
               </div>
             </>
@@ -1712,14 +1791,16 @@ export default function TravelSite() {
               <div className="mb-8 rounded-3xl border border-white/10 bg-white/[0.04] p-6 text-left shadow-[0_0_30px_rgba(255,255,255,0.05)]">
                 <p className="text-sm uppercase tracking-[0.28em] text-white/70">Welcome</p>
                 <h2 className="mt-2 text-3xl font-light tracking-wide text-white">Hello {guestName} 👋</h2>
-                {guestName === "Xenia & David & Naomi (3)" && <CountrySegmentButtons segments={[{ label: "Nov 21–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
-                {guestName === "Mark Wang" && <CountrySegmentButtons segments={[{ label: "Nov 20–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }, { label: "Nov 25–27 · Naha + Okinawa World", page: "nahaearly", color: BABY_BLUE }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
-                {guestName === "Anthony & Christine & Mona (1)" && <CountrySegmentButtons segments={[{ label: "Nov 20–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
-                {guestName === "Mei & Emilia (8)" && <CountrySegmentButtons segments={[{ label: "Nov 29–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
+                {guestName === "Xenia & David & Naomi (3)" && <CountrySegmentButtons segments={[{ label: "Nov 21–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }, { label: "Day Trips · Taipei", page: "taipei", color: TAIWAN_GOLD }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
+                {guestName === "Mark Wang" && <CountrySegmentButtons segments={[{ label: "Nov 20–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }, { label: "Day Trips · Taipei", page: "taipei", color: TAIWAN_GOLD }, { label: "Nov 25–27 · Naha + Okinawa World", page: "nahaearly", color: BABY_BLUE }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
+                {guestName === "Anthony & Christine & Mona (1)" && <CountrySegmentButtons segments={[{ label: "Nov 20–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }, { label: "Day Trips · Taipei", page: "taipei", color: TAIWAN_GOLD }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
+                {guestName === "Jenn & Hiroshi & Masashi (6) & Miyari (3)" && <CountrySegmentButtons segments={[{ label: "Nov 21–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }, { label: "Day Trips · Taipei", page: "taipei", color: TAIWAN_GOLD }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
+                {guestName === "Mei & Emilia (8)" && <CountrySegmentButtons segments={[{ label: "Day Trips · Taipei", page: "taipei", color: TAIWAN_GOLD }, { label: "Nov 29–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Steven Wang" && <CountrySegmentButtons segments={[{ label: "Nov 25–27 · Naha + Okinawa World", page: "nahaearly", color: BABY_BLUE }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
-                {guestName === "Dave & Christina & Xixi (2)" && <CountrySegmentButtons segments={[{ label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
-                {guestName === "Heather & Jack & Aizen (8) & Kaien (3)" && <CountrySegmentButtons segments={[{ label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
-                {!["Xenia & David & Naomi (3)", "Mark Wang", "Anthony & Christine & Mona (1)", "Mei & Emilia (8)", "Steven Wang", "Dave & Christina & Xixi (2)", "Heather & Jack & Aizen (8) & Kaien (3)"].includes(guestName) && (
+                {guestName === "Dave & Christina & Xixi (2)" && <CountrySegmentButtons segments={[{ label: "Day Trips · Taipei", page: "taipei", color: TAIWAN_GOLD }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
+                {guestName === "Heather & Jack & Aizen (8) & Kaien (3)" && <CountrySegmentButtons segments={[{ label: "Day Trips · Taipei", page: "taipei", color: TAIWAN_GOLD }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
+                {guestName === "Julie & Adrian & Ethan (4) & Tyrell (1)" && <CountrySegmentButtons segments={[{ label: "Day Trips · Taipei", page: "taipei", color: TAIWAN_GOLD }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
+                {!["Xenia & David & Naomi (3)", "Mark Wang", "Anthony & Christine & Mona (1)", "Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Mei & Emilia (8)", "Steven Wang", "Dave & Christina & Xixi (2)", "Heather & Jack & Aizen (8) & Kaien (3)", "Julie & Adrian & Ethan (4) & Tyrell (1)"].includes(guestName) && (
                   <div className="mt-5 rounded-2xl border border-amber-300/20 bg-amber-300/5 p-4">
                     <p className="text-sm leading-6 text-amber-100/80">
                       No trip segment found, please confirm your trip with Xenia ASAP.
@@ -1764,8 +1845,9 @@ export default function TravelSite() {
   const chapterPeople: Record<PageName, Person[]> = {
     map: [],
     checklist: [],
+    taipei: [["Xenia & David & Naomi (3)", "Taipei · Day Trips"], ["Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Taipei · Day Trips"], ["Anthony & Christine & Mona (1)", "Taipei · Day Trips"], ["Mark Wang", "Taipei · Day Trips"], ["Dave & Christina & Xixi (2)", "Taipei · Day Trips"], ["Mei & Emilia (8)", "Taipei · Day Trips"], ["Heather & Jack & Aizen (8) & Kaien (3)", "Taipei · Day Trips"], ["Julie & Adrian & Ethan (4) & Tyrell (1)", "Taipei · Day Trips"]],
     yilan: [["Xenia & David & Naomi (3)", "Dec 8 – Dec 11 · Yilan"], ["Mei & Emilia (8)", "Dec 8 – Dec 11 · Yilan"], ["Dave & Christina & Xixi (2)", "Dec 8 – Dec 11 · Yilan"], ["Heather & Jack & Aizen (8) & Kaien (3)", "Dec 8 – Dec 11 · Yilan"]],
-    xiaoliuqiu: [["Anthony & Christine & Mona (1)", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Mark Wang", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Xenia & David & Naomi (3)", "Nov 21 – Nov 23 · Xiaoliuqiu"]],
+    xiaoliuqiu: [["Anthony & Christine & Mona (1)", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Mark Wang", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Xenia & David & Naomi (3)", "Nov 21 – Nov 23 · Xiaoliuqiu"], ["Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Nov 21 – Nov 23 · Xiaoliuqiu"]],
     onna: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 2 · Okinawa"], ["Mark Wang", "Nov 25 – Nov 30 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Jack & Aizen (8) & Kaien (3)", "Nov 26 – Dec 2 · Okinawa"]],
     nago: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 2 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Jack & Aizen (8) & Kaien (3)", "Nov 26 – Dec 2 · Okinawa"]],
     nanjo: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 27 – Dec 6 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"]],
@@ -1790,19 +1872,152 @@ export default function TravelSite() {
   );
 
   if (page === "xiaoliuqiu") return renderChapter("xiaoliuqiu", "Taiwan · Xiaoliuqiu", "Scuba Dive Chapter", "Taiwan November", "November", "3 Nights", <p className="mt-1 text-sm font-medium" style={{ color: TAIWAN_GOLD }}>小琉球民宿 TBD</p>, "taiwan", TAIWAN_GOLD, <XiaoliuqiuContent card={card} />);
+  if (page === "taipei") {
+    const taipeiFoodieItems = ["饗 A Joy (101)", "施家腰花 (永春)", "鼎泰豐總店 (東門)", "門前隱味牛肉麵 (西門漢口)", "晶華故宮", "大腕燒肉", "胡同燒肉", "欣葉台菜", "金蓬萊台菜", "橘色火鍋", "士林夜市", "公館夜市", "饒河夜市", "雙月", "雞窩餐廳 (麟光站)", "Nomura", "康寧街七里香臭豆腐", "清河鵝肉 (天母)", "香帥芋泥蛋糕", "舊振南傳統糕餅", "大稻埕滷肉飯 (台北車站)", "天下三絕 (忠孝復興)"];
+    const taipeiDayTrips = [
+      { titleZh: "台北市東區", titleEn: "Taipei City East", details: [{ zh: "松山文創園區", en: "Songshan Cultural and Creative Park" }, { zh: "國父紀念館", en: "Sun Yat-sen Memorial Hall" }, { zh: "Taipei 101", en: "Taipei 101" }, { zh: "象山步道", en: "Xiangshan Trail" }] },
+      { titleZh: "台北市西區", titleEn: "Taipei City West", details: [{ zh: "中正紀念堂", en: "Chiang Kai-shek Memorial Hall" }, { zh: "龍山寺", en: "Longshan Temple" }, { zh: "西門町", en: "Ximending" }, { zh: "台北車站", en: "Taipei Main Station" }, { zh: "總統府", en: "Presidential Office Building" }, { zh: "華山文創園區", en: "Huashan 1914 Creative Park" }] },
+      { titleZh: "野柳 & 九份 包車一日遊", titleEn: "Yehliu & Jiufen", details: [{ zh: "野柳地質公園", en: "Yehliu Geopark" }, { zh: "金瓜石（黃金瀑布、陰陽海、黃金博物園區）", en: "Jinguashi: Gold Falls, Yin Yang Sea, and Gold Museum" }, { zh: "九份老街", en: "Jiufen Old Street" }] },
+      { titleZh: "北投 & 淡水", titleEn: "Beitou & Tamsui", details: [{ zh: "北投溫泉", en: "Beitou Hot Springs" }, { zh: "地熱谷", en: "Thermal Valley" }, { zh: "硫磺谷", en: "Sulfur Valley" }, { zh: "淡水老街", en: "Tamsui Old Street" }, { zh: "漁人碼頭", en: "Fisherman's Wharf" }, { zh: "紅毛城", en: "Fort San Domingo" }] },
+      { titleZh: "貓空 & 台北市立動物園", titleEn: "Maokong & Taipei Zoo", details: [{ zh: "台北市立動物園", en: "Taipei Zoo" }, { zh: "貓空纜車", en: "Maokong Gondola" }, { zh: "茶館與城市景觀", en: "Tea houses with city views" }] },
+      { titleZh: "兒童新樂園 & 士林夜市", titleEn: "Children's Amusement Park & Shilin Night Market", details: [{ zh: "台北市兒童新樂園", en: "Taipei Children's Amusement Park" }, { zh: "士林夜市", en: "Shilin Night Market" }] },
+    ];
+    return (
+      <div className="min-h-screen bg-black px-6 py-10 text-white" style={{ "--chapter-accent": TAIWAN_GOLD } as React.CSSProperties}>
+        {chapterNav("taipei")}
+        <main className="mx-auto max-w-5xl">
+          <p className="mb-3 text-sm uppercase tracking-[0.35em]" style={{ color: TAIWAN_GOLD }}>Taiwan · Taipei</p>
+          <h1 className="mb-4 text-4xl font-light tracking-wide md:text-6xl">Taipei Day Trip Options</h1>
+          <div className="mb-5 flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => setShowTaipeiMrtMap(true)}
+              className="rounded-full border px-4 py-2 text-xs uppercase tracking-[0.16em] transition hover:bg-white/10"
+              style={{ color: TAIWAN_GOLD, borderColor: `${TAIWAN_GOLD}66`, backgroundColor: `${TAIWAN_GOLD}14` }}
+            >
+              台北捷運圖
+              <span className="ml-2 text-white/45">Taipei MRT Map</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowTaipeiFoodieList(true)}
+              className="rounded-full border px-4 py-2 text-xs uppercase tracking-[0.16em] transition hover:bg-white/10"
+              style={{ color: TAIWAN_GOLD, borderColor: `${TAIWAN_GOLD}66`, backgroundColor: `${TAIWAN_GOLD}14` }}
+            >
+              美食清單
+              <span className="ml-2 text-white/45">Foodie List</span>
+            </button>
+          </div>
+          <p className="mb-8 max-w-3xl text-sm leading-6 text-white/50">
+            <span className="block text-white/65">這裡沒有固定日期，每張卡片都是一個可以自由安排的台北一日遊選項。</span>
+            <span className="mt-1 block">No fixed date schedule here. Each card is a different Taipei day-trip itinerary that can be planned independently.</span>
+          </p>
+          <section className="grid gap-4 md:grid-cols-2">
+            {taipeiDayTrips.map((trip) => (
+                <article key={trip.titleEn} className="rounded-3xl border border-white/10 bg-white/[0.04] p-5">
+                  <h2 className="mb-4 font-light" style={{ color: TAIWAN_GOLD }}>
+                    <span className="block text-xl">{trip.titleZh}</span>
+                    <span className="mt-1 block text-sm text-white/55">{trip.titleEn}</span>
+                  </h2>
+                  <ul className="space-y-3 text-sm leading-6">
+                    {trip.details.map((detail) => (
+                      <li key={detail.zh} className="border-l border-white/10 pl-3">
+                        <span className="block text-white/75">{detail.zh}</span>
+                        <span className="block text-xs text-white/40">{detail.en}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </article>
+            ))}
+          </section>
+          {peopleCards(chapterPeople.taipei)}
+        </main>
+        {showTaipeiMrtMap && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Taipei MRT map">
+            <section className="flex max-h-[94vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] shadow-2xl">
+              <div className="flex items-center justify-between gap-4 border-b border-white/10 px-5 py-4">
+                <h2 className="font-light">
+                  <span className="block text-xl">台北捷運圖</span>
+                  <span className="block text-xs text-white/45">Taipei MRT Map</span>
+                </h2>
+                <button
+                  type="button"
+                  onClick={() => setShowTaipeiMrtMap(false)}
+                  aria-label="Close Taipei MRT map"
+                  title="Close"
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white"
+                >
+                  ×
+                </button>
+              </div>
+              <div className="min-h-0 overflow-auto bg-white p-2 sm:p-4">
+                <img src="/taipeimrt.png" alt="Taipei MRT sightseeing map" className="mx-auto h-auto max-h-[82vh] w-auto max-w-full object-contain" />
+              </div>
+            </section>
+          </div>
+        )}
+        {showTaipeiFoodieList && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Taipei foodie list">
+            <section className="w-full max-w-lg overflow-hidden rounded-2xl border border-white/15 bg-[#111] shadow-2xl">
+              <div className="flex items-center justify-between gap-4 border-b border-white/10 px-5 py-4">
+                <div>
+                  <h2 className="font-light">
+                    <span className="block text-xl">美食清單</span>
+                    <span className="block text-xs text-white/45">Foodie List</span>
+                  </h2>
+                  <p className="mt-1 text-xs text-white/45">已品嚐 {checkedTaipeiFoodieItems.length} / {taipeiFoodieItems.length} · {checkedTaipeiFoodieItems.length} of {taipeiFoodieItems.length} visited</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowTaipeiFoodieList(false)}
+                  aria-label="Close foodie list"
+                  title="Close"
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white"
+                >
+                  ×
+                </button>
+              </div>
+              <div className="space-y-2 p-5">
+                {taipeiFoodieItems.map((item) => {
+                  const isChecked = checkedTaipeiFoodieItems.includes(item);
+                  return (
+                    <label key={item} className="flex cursor-pointer items-center gap-3 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 transition hover:border-white/25">
+                      <input
+                        type="checkbox"
+                        checked={isChecked}
+                        onChange={() => {
+                          setCheckedTaipeiFoodieItems((current) => {
+                            const next = current.includes(item) ? current.filter((checkedItem) => checkedItem !== item) : [...current, item];
+                            window.localStorage.setItem("checkedTaipeiFoodieItems", JSON.stringify(next));
+                            return next;
+                          });
+                        }}
+                        className="h-5 w-5 shrink-0 accent-[#FFD76A]"
+                      />
+                      <span className={isChecked ? "text-sm text-white/40 line-through" : "text-sm text-white/80"}>{item}</span>
+                    </label>
+                  );
+                })}
+              </div>
+            </section>
+          </div>
+        )}
+      </div>
+    );
+  }
   if (page === "onna") return renderChapter("onna", "Okinawa · Onna", "Wedding Resort Chapter", "Okinawa Japan", "November", "3 Nights", <a href="https://www.hotelmonterey.co.jp/en/okinawa/" target="_blank" rel="noopener noreferrer" className="mt-1 block text-sm font-medium hover:underline" style={{ color: BABY_BLUE }}>Hotel Monterey Okinawa</a>, "japan", BABY_BLUE, <OnnaContent card={card} linkedImage={linkedImage} />);
   if (page === "nago") return renderChapter("nago", "Okinawa · Nago", "Northern Okinawa Chapter", "Okinawa Japan", "December", "2 Nights", <p className="mt-1 text-sm font-medium" style={{ color: BABY_BLUE }}>TBD</p>, "japan", BABY_BLUE, <NagoContent card={card} linkedImage={linkedImage} />);
   if (page === "nanjo") return renderChapter("nanjo", "Okinawa · Nanjo", "Southern Okinawa Chapter", "Okinawa Japan", "December", "2 Nights", <><a href="https://www.yuinchi.jp/heal/hot-spring/" target="_blank" rel="noopener noreferrer" className="mt-1 block text-sm font-medium hover:underline" style={{ color: BABY_BLUE }}>Yuinchi Hotel Nanjo</a><p className="mt-1 text-[9px] text-gray-500">Apeman Spa Natural Hot Spring</p></>, "japan", BABY_BLUE, <NanjoContent card={card} />);
   if (page === "naha") return renderChapter("naha", "Okinawa · Naha", "Final Naha Chapter", "Okinawa Japan", "December", "2 Nights", <><p className="mt-1 text-sm font-medium" style={{ color: BABY_BLUE }}>Hotel Strata Naha</p><p className="mt-1 text-[9px] text-gray-500">or Hotel JAL City Naha</p></>, "japan", BABY_BLUE, <NahaContent card={card} />);
   if (page === "nahaearly") return renderChapter("nahaearly", "Okinawa · Naha", "Naha + Okinawa World Chapter", "Okinawa Japan", "November", "2 Nights", <p className="mt-1 text-sm font-medium" style={{ color: BABY_BLUE }}>Hotel Strata Naha</p>, "japan", BABY_BLUE, <NahaEarlyContent card={card} linkedImage={linkedImage} />);
-  if (page === "yilan") return renderChapter("yilan", "Taiwan · Yilan", "Yilan Family Chapter", "Taiwan December", "December", "3 Nights", <><p className="mt-1 text-sm font-medium text-[#72E49A]">瓏山林蘇澳冷熱泉度假飯店 (1)</p><p className="mt-1 text-sm font-medium text-[#72E49A]">礁溪寒沐酒店 (2)</p></>, "taiwan", "#72E49A", <YilanContent card={card} />);
+  if (page === "yilan") return renderChapter("yilan", "Taiwan · Yilan", "Yilan Family Chapter", "Taiwan December", "December", "3 Nights", <><p className="mt-1 text-sm font-medium" style={{ color: TAIWAN_GOLD }}>瓏山林蘇澳冷熱泉度假飯店 (1)</p><p className="mt-1 text-sm font-medium" style={{ color: TAIWAN_GOLD }}>礁溪寒沐酒店 (2)</p></>, "taiwan", TAIWAN_GOLD, <YilanContent card={card} />);
 
   const isTaiwanMap = selectedTrip === "taiwan";
   const departureDate = isTaiwanMap ? new Date(2026, 10, 21) : new Date(2026, 10, 25);
   const mapLocations: TimelineItem[] = isTaiwanMap
     ? [
         { id: "xiaoliuqiu", label: "Xiaoliuqiu", range: "Nov 21–23", color: "taiwan" },
-        { id: "taipei", label: "Taipei", range: "Nov 23–Dec 8", color: "taiwan" },
+        { id: "taipei", label: "Taipei", range: "Day Trips", color: "taiwan" },
         { id: "yilan", label: "Yilan", range: "Dec 8–11", color: "yilan" },
       ]
     : [
@@ -1827,9 +2042,9 @@ export default function TravelSite() {
         <div className="relative z-10 flex w-full max-w-5xl items-center justify-center gap-8 md:gap-20">
           {isTaiwanMap && <svg viewBox="0 0 140 260" className="h-[340px] w-[166px] opacity-90 md:h-[520px] md:w-[255px]" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M110 0 L105 0 L94 12 L80 16 L69 24 L58 47 L47 57 L29 90 L10 117 L8 147 L0 173 L10 181 L16 205 L21 213 L43 230 L48 242 L47 254 L50 259 L61 254 L62 227 L68 210 L84 193 L98 163 L107 132 L113 96 L130 61 L127 36 L139 24 L134 15 L120 10 Z" />
-            <SvgPin id="taipei" label="Taipei" cx={108} cy={18} hovered={hovered} setHovered={setHovered} activeColor={TAIWAN_GOLD} scale={0.9} labelFontSize={8} labelOffset={12} />
+            <SvgPin id="taipei" label="Taipei" cx={108} cy={18} hovered={hovered} setHovered={setHovered} activeColor={TAIWAN_GOLD} scale={0.9} labelFontSize={8} labelOffset={12} onDoubleClick={() => setPage("taipei")} />
             <SvgPin id="xiaoliuqiu" label="Xiaoliuqiu" cx={39} cy={234} hovered={hovered} setHovered={setHovered} activeColor={TAIWAN_GOLD} scale={0.9} labelFontSize={8} labelOffset={12} onDoubleClick={() => setPage("xiaoliuqiu")} />
-            <SvgPin id="yilan" label="Yilan" cx={120} cy={45} hovered={hovered} setHovered={setHovered} activeColor="#72E49A" scale={0.9} labelFontSize={8} labelOffset={12} onDoubleClick={() => setPage("yilan")} />
+            <SvgPin id="yilan" label="Yilan" cx={120} cy={45} hovered={hovered} setHovered={setHovered} activeColor={TAIWAN_GOLD} scale={0.9} labelFontSize={8} labelOffset={12} onDoubleClick={() => setPage("yilan")} />
           </svg>}
           {!isTaiwanMap && <svg viewBox="0 0 331 520" className="h-[350px] w-[350px] md:h-[520px] md:w-[520px]" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M291 5 L282 5 L280 12 L283 27 L277 42 L262 65 L257 79 L251 83 L242 82 L239 85 L238 90 L243 93 L243 97 L237 105 L223 112 L216 127 L222 134 L213 135 L212 144 L209 147 L196 150 L192 156 L180 154 L177 160 L169 160 L162 154 L164 149 L173 147 L181 151 L185 145 L176 133 L167 132 L167 125 L154 124 L142 115 L130 115 L121 120 L113 118 L106 120 L104 136 L111 144 L108 157 L110 173 L120 186 L134 182 L141 189 L158 192 L159 204 L124 235 L120 235 L115 244 L108 240 L99 244 L89 264 L80 273 L74 287 L62 285 L53 293 L40 288 L35 291 L36 314 L54 350 L53 358 L60 367 L60 377 L52 380 L47 389 L36 391 L27 407 L19 405 L17 418 L20 426 L8 425 L5 431 L4 441 L10 448 L10 456 L19 465 L19 468 L15 470 L15 479 L20 486 L19 507 L23 514 L32 516 L41 509 L51 507 L69 484 L85 479 L89 470 L103 459 L103 450 L97 438 L92 435 L85 437 L79 449 L68 431 L79 420 L80 408 L84 400 L94 391 L90 379 L97 374 L98 369 L107 367 L102 355 L112 346 L120 361 L132 374 L140 372 L139 361 L118 333 L115 321 L108 318 L95 298 L99 294 L99 289 L111 279 L138 279 L141 284 L147 282 L150 278 L149 272 L153 269 L162 269 L175 254 L172 245 L174 240 L182 241 L194 232 L196 224 L192 217 L195 214 L221 219 L229 211 L237 209 L240 204 L239 199 L245 189 L237 183 L236 179 L244 164 L253 161 L266 166 L277 159 L286 157 L290 153 L292 142 L304 129 L311 105 L325 84 L322 73 L327 59 L322 50 L320 35 L309 24 L310 18 L298 13 Z" /><SvgPin id="naha" label="Naha" cx={34} cy={437} hovered={hovered} setHovered={setHovered} activeColor={BABY_BLUE} scale={2.25} labelFontSize={20} labelOffset={38} onDoubleClick={() => setPage("naha")} /><SvgPin id="onna" label="Onna" cx={50} cy={300} hovered={hovered} setHovered={setHovered} activeColor={BABY_BLUE} scale={2.25} labelFontSize={20} labelOffset={38} onDoubleClick={() => setPage("onna")} /><SvgPin id="nago" label="Nago" cx={152} cy={172} hovered={hovered} setHovered={setHovered} activeColor={BABY_BLUE} scale={2.25} labelFontSize={20} labelOffset={38} onDoubleClick={() => setPage("nago")} /><SvgPin id="nanjo" label="Nanjo" cx={70} cy={468} hovered={hovered} setHovered={setHovered} activeColor={BABY_BLUE} scale={2.25} labelFontSize={20} labelOffset={38} onDoubleClick={() => setPage("nanjo")} /></svg>}
         </div>
@@ -1847,7 +2062,7 @@ export default function TravelSite() {
           </div>
         </div>
         <div className={`relative z-20 mt-5 grid w-full gap-2 px-4 sm:grid-cols-2 md:absolute md:bottom-4 md:left-1/2 md:-translate-x-1/2 md:px-6 ${isTaiwanMap ? "max-w-5xl md:grid-cols-3" : "max-w-6xl md:grid-cols-5"}`}>
-          {mapLocations.map((item) => <button key={item.id} type="button" onClick={() => item.id !== "taipei" && openChapterForLocation(item.id)} className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-left transition hover:border-white/30"><span className="flex items-center gap-3"><span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: item.color === "yilan" ? "#72E49A" : item.color === "taiwan" ? TAIWAN_GOLD : BABY_BLUE }} /><span className="text-sm font-light tracking-wide text-white">{item.label}</span></span><span className="text-[10px] uppercase tracking-[0.12em] text-white/45">{item.range}</span></button>)}
+          {mapLocations.map((item) => <button key={item.id} type="button" onClick={() => openChapterForLocation(item.id)} className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-left transition hover:border-white/30"><span className="flex items-center gap-3"><span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: item.color === "yilan" || item.color === "taiwan" ? TAIWAN_GOLD : BABY_BLUE }} /><span className="text-sm font-light tracking-wide text-white">{item.label}</span></span><span className="text-[10px] uppercase tracking-[0.12em] text-white/45">{item.range}</span></button>)}
         </div>
       </section>
     </div>
@@ -2011,7 +2226,7 @@ function MoroccoItineraryContent({ card }: { card: (children: React.ReactNode) =
 }
 
 function XiaoliuqiuContent({ card }: { card: (children: React.ReactNode) => React.ReactNode }) {
-  return <><DayArticle date="Friday, November 20, 2026" title="Arrival Day · Xiaoliuqiu">{card(<><p>🌅 Anthony, Christine, Mona & Mark arriving Xiaoliuqiu</p><p className="mt-2 text-white/50">高雄左營高鐵站 → 10:30 AM 客運 → 屏客東港總站 → 步行10分鐘東港碼頭 → 11:50 AM <a href="https://www.leucosapphire.com/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">藍白船班</a> → 與Jim碼頭集合</p></>)}{card(<><p>🤿 Open Water Lesson</p><ul className="ml-5 list-disc text-white/65"><li>裝備組裝介紹</li><li>Close Water · Dive #1</li></ul></>)}{card(<p>🍽 Dinner · TBD</p>)}</DayArticle><DayArticle date="Saturday, November 21, 2026" title="Open Water Dive Day">{card(<><p>🌊 Open Water Lessons</p><p>Dive #2 & Dive #3</p></>)}{card(<><p>⛴ Xenia, David & Naomi arriving Xiaoliuqiu</p><p className="mt-2 text-sm font-medium text-white/80">Northern XLQ Visits</p><div className="mt-4 flex flex-col gap-4 md:flex-row"><ul className="ml-5 flex-1 list-disc space-y-2 text-white/65"><li>美人洞</li><li>花瓶岩</li><li>龍蝦洞</li></ul><img src="/xlqmap.png" alt="Xiaoliuqiu map" className="h-auto w-full rounded-2xl object-contain bg-black/20 p-2 md:w-1/2" /></div></>)}</DayArticle><DayArticle date="Sunday, November 22, 2026" title="Dive + Southern Island Day">{card(<><p>🤿 Open Water Lessons</p><p>Dive #4 & Dive #5</p><p className="mt-2 text-white/50">David & Anthony may join fun dives with the OW group.</p></>)}{card(<p>👶 Toddler Group 小琉球海洋館</p>)}{card(<><p>🌅 Southern Xiaoliuqiu Exploration</p><ul className="ml-5 list-disc text-white/65"><li>琉行綠色隧道</li><li>烏鬼洞</li><li>落日亭 Sunset View</li></ul></>)}</DayArticle><DayArticle date="Monday, November 23, 2026" title="Departure to Taipei">{card(<><p>⛴ Everyone leaving Xiaoliuqiu · 11:10 AM boat</p><p>🍣 Lunch · 東港漁市場</p><p>🚄 Afternoon · 左營 → 台北</p></>)}</DayArticle></>;
+  return <><DayArticle date="Friday, November 20, 2026" title="Arrival Day · Xiaoliuqiu">{card(<><p>🌅 Anthony, Christine, Mona & Mark arriving Xiaoliuqiu</p><p className="mt-2 text-white/50">高雄左營高鐵站 → 10:30 AM 客運 → 屏客東港總站 → 步行10分鐘東港碼頭 → 11:50 AM <a href="https://www.leucosapphire.com/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">藍白船班</a> → 與Jim碼頭集合</p></>)}{card(<><p>🤿 Open Water Lesson</p><ul className="ml-5 list-disc text-white/65"><li>裝備組裝介紹</li><li>Close Water · Dive #1</li></ul></>)}{card(<p>🍽 Dinner · TBD</p>)}</DayArticle><DayArticle date="Saturday, November 21, 2026" title="Open Water Dive Day">{card(<><p>🌊 Open Water Lessons</p><p>Dive #2 & Dive #3</p></>)}{card(<><p>⛴ Xenia, David, Naomi, Jenn, Hiroshi, Masashi & Miyari arriving Xiaoliuqiu</p><p className="mt-2 text-sm font-medium text-white/80">Southern Xiaoliuqiu Exploration</p><div className="mt-4 flex flex-col gap-4 md:flex-row"><ul className="ml-5 flex-1 list-disc text-white/65"><li>琉行綠色隧道</li><li>烏鬼洞</li><li>落日亭 Sunset View</li></ul><img src="/xlqmap.png" alt="Xiaoliuqiu map" className="h-auto w-full rounded-2xl object-contain bg-black/20 p-2 md:w-1/2" /></div></>)}</DayArticle><DayArticle date="Sunday, November 22, 2026" title="Dive + Southern Island Day">{card(<><p>🤿 Open Water Lessons</p><p>Dive #4 & Dive #5</p><ul className="mt-2 ml-5 list-disc space-y-1 text-white/50"><li>David & Anthony join morning dives (2 dives) with the OW group.</li><li>Xenia & Jenn enjoy afternoon fun dives (2 dives).</li></ul></>)}{card(<p>👶 Toddler Group 小琉球海洋館</p>)}{card(<><p>🌅 Northern Xiaoliuliu Visits</p><ul className="mt-4 ml-5 list-disc space-y-2 text-white/65"><li>美人洞</li><li>花瓶岩</li><li>龍蝦洞</li></ul></>)}</DayArticle><DayArticle date="Monday, November 23, 2026" title="Departure to Taipei">{card(<><p>🍳 Breakfast · <a href="https://maps.google.com/?q=琉浪日嚐+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">琉浪日嚐</a></p><p>⛴ Everyone leaving Xiaoliuqiu · 11:10 AM boat</p><p>🍣 Lunch · 東港漁市場</p><p>🚄 Afternoon · 左營 → 台北</p></>)}</DayArticle></>;
 }
 
 function OnnaContent({ card, linkedImage }: { card: (children: React.ReactNode) => React.ReactNode; linkedImage: (src: string, alt: string) => React.ReactNode }) {
