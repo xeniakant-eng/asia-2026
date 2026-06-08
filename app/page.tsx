@@ -1957,9 +1957,9 @@ export default function TravelSite() {
           </div>
         )}
         {showTaipeiFoodieList && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Taipei foodie list">
-            <section className="w-full max-w-lg overflow-hidden rounded-2xl border border-white/15 bg-[#111] shadow-2xl">
-              <div className="flex items-center justify-between gap-4 border-b border-white/10 px-5 py-4">
+          <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/85 p-2 backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-label="Taipei foodie list">
+            <section className="flex max-h-[calc(100dvh-1rem)] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] shadow-2xl sm:max-h-[90vh]">
+              <div className="flex shrink-0 items-center justify-between gap-3 border-b border-white/10 px-4 py-3 sm:gap-4 sm:px-5 sm:py-4">
                 <div>
                   <h2 className="font-light">
                     <span className="block text-xl">美食清單</span>
@@ -1977,11 +1977,11 @@ export default function TravelSite() {
                   ×
                 </button>
               </div>
-              <div className="space-y-2 p-5">
+              <div className="min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-contain p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-5">
                 {taipeiFoodieItems.map((item) => {
                   const isChecked = checkedTaipeiFoodieItems.includes(item);
                   return (
-                    <label key={item} className="flex cursor-pointer items-center gap-3 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 transition hover:border-white/25">
+                    <label key={item} className="flex cursor-pointer items-center gap-3 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 transition hover:border-white/25 sm:px-4 sm:py-3">
                       <input
                         type="checkbox"
                         checked={isChecked}
