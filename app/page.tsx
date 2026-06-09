@@ -2429,7 +2429,102 @@ function MoroccoItineraryContent({ card }: { card: (children: React.ReactNode) =
 }
 
 function XiaoliuqiuContent({ card }: { card: (children: React.ReactNode) => React.ReactNode }) {
-  return <><DayArticle date="Friday, November 20, 2026" title="Arrival Day · Xiaoliuqiu">{card(<><p>🌅 Anthony, Christine, Mona & Mark arriving Xiaoliuqiu</p><p className="mt-2 text-white/50">高雄左營高鐵站 → 10:30 AM 客運 → 屏客東港總站 → 步行10分鐘東港碼頭 → 11:50 AM <a href="https://www.leucosapphire.com/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">藍白船班</a> → 與Jim碼頭集合</p></>)}{card(<><p>🤿 Open Water Lesson</p><ul className="ml-5 list-disc text-white/65"><li>裝備組裝介紹</li><li>Close Water · Dive #1</li></ul></>)}{card(<p>🍽 Dinner · TBD</p>)}</DayArticle><DayArticle date="Saturday, November 21, 2026" title="Open Water Dive Day">{card(<><p>🌊 Open Water Lessons</p><p>Dive #2 & Dive #3</p></>)}{card(<><p>⛴ Xenia, David, Naomi, Jenn, Hiroshi, Masashi & Miyari arriving Xiaoliuqiu</p><p className="mt-2 text-sm font-medium text-white/80">Southern Xiaoliuqiu Exploration</p><div className="mt-4 flex flex-col gap-4 md:flex-row"><ul className="ml-5 flex-1 list-disc text-white/65"><li>琉行綠色隧道</li><li>烏鬼洞</li><li>落日亭 Sunset View</li></ul><img src="/xlqmap.png" alt="Xiaoliuqiu map" className="h-auto w-full rounded-2xl object-contain bg-black/20 p-2 md:w-1/2" /></div></>)}</DayArticle><DayArticle date="Sunday, November 22, 2026" title="Dive + Southern Island Day">{card(<><p>🤿 Open Water Lessons</p><p>Dive #4 & Dive #5</p><ul className="mt-2 ml-5 list-disc space-y-1 text-white/50"><li>David & Anthony join morning dives (2 dives) with the OW group.</li><li>Xenia & Jenn enjoy afternoon fun dives (2 dives).</li></ul></>)}{card(<p>👶 Toddler Group 小琉球海洋館</p>)}{card(<><p>🌅 Northern Xiaoliuqiu Visits</p><ul className="mt-4 ml-5 list-disc space-y-2 text-white/65"><li>美人洞</li><li>花瓶岩</li><li>龍蝦洞</li></ul></>)}</DayArticle><DayArticle date="Monday, November 23, 2026" title="Departure to Taipei">{card(<><p>🍳 Breakfast · <a href="https://maps.google.com/?q=琉浪日嚐+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">琉浪日嚐</a></p><p>⛴ Everyone leaving Xiaoliuqiu · 11:10 AM boat</p><p>🍣 Lunch · 東港漁市場</p><p>🚄 Afternoon · 左營 → 台北</p></>)}</DayArticle></>;
+  return (
+    <>
+      <DayArticle date="Friday, November 20, 2026" title="Arrival Day · Xiaoliuqiu">
+        {card(
+          <>
+            <p>🌅 Anthony, Christine, Mona & Mark arriving Xiaoliuqiu</p>
+            <p className="mt-2 text-white/50">
+              高雄左營高鐵站 → 10:30 AM 客運 → 屏客東港總站 → 步行10分鐘東港碼頭 → 吃完中餐 → 13:30 PM <a href="https://www.leucosapphire.com/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">藍白船班</a> → 與Jim碼頭集合
+            </p>
+          </>
+        )}
+        {card(
+          <>
+            <p>🤿 Open Water Lesson · Christine & Mark</p>
+            <ul className="ml-5 list-disc space-y-1 text-white/65">
+              <li>裝備組裝介紹</li>
+              <li>註: 進島前須先完成電子教材喔!</li>
+            </ul>
+          </>
+        )}
+        {card(<p>🍽 Dinner · <a href="https://maps.google.com/?q=岩石二館+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">岩石二館</a></p>)}
+      </DayArticle>
+
+      <DayArticle date="Saturday, November 21, 2026" title="Open Water Dive Day">
+        {card(
+          <>
+            <p>🌊 Open Water Lesson</p>
+            <ul className="ml-5 list-disc space-y-1 text-white/65">
+              <li>Morning: Close Water Dive #1</li>
+              <li>Afternoon: Open Water Dive #2 & #3</li>
+              <li>Evening: Review 檢討與說明</li>
+            </ul>
+          </>
+        )}
+        {card(
+          <>
+            <p>⛴ Xenia, David, Naomi, Jenn, Hiroshi, Masashi & Miyari arriving Xiaoliuqiu</p>
+            <p className="mt-2 text-sm font-medium text-white/80">Southern Xiaoliuqiu Exploration</p>
+            <div className="mt-4 flex flex-col gap-4 md:flex-row">
+              <ul className="ml-5 flex-1 list-disc space-y-1 text-white/65">
+                <li><a href="https://maps.google.com/?q=琉行綠色隧道+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">琉行綠色隧道</a></li>
+                <li><a href="https://maps.google.com/?q=烏鬼洞+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">烏鬼洞</a></li>
+                <li><a href="https://maps.google.com/?q=落日亭+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">落日亭 Sunset View</a></li>
+                <li>Dessert · <a href="https://maps.google.com/?q=海找冰+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">海找冰</a></li>
+              </ul>
+              <img src="/xlqmap.png" alt="Xiaoliuqiu map" className="h-auto w-full rounded-2xl object-contain bg-black/20 p-2 md:w-1/2" />
+            </div>
+          </>
+        )}
+        {card(<p>🍽 Dinner · <a href="https://maps.google.com/?q=夏味鮮+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">夏味鮮</a></p>)}
+      </DayArticle>
+
+      <DayArticle date="Sunday, November 22, 2026" title="Dive + Northern Island Day">
+        {card(
+          <>
+            <p>🤿 Open Water Lesson</p>
+            <ul className="ml-5 list-disc space-y-1 text-white/65">
+              <li>Morning: Open Water Dive #4 & #5 + Anthony & David</li>
+              <li>Afternoon: Fun Dive (2 dives) Xenia & Jennifer</li>
+            </ul>
+          </>
+        )}
+        {card(
+          <>
+            <p>🍽 Lunch · <a href="https://maps.google.com/?q=巫里小餐館+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">巫里小餐館</a></p>
+            <p className="mt-2 text-white/55">Early Lunch: Jenn, Hiroshi, Xenia, and the kid.</p>
+            <p className="text-white/55">Late Lunch: Mark, Anthony, Christine, David</p>
+          </>
+        )}
+        {card(<p>👶 Toddler Group 小琉球海洋館</p>)}
+        {card(
+          <>
+            <p>🌅 Northern Xiaoliuqiu Visits</p>
+            <ul className="mt-4 ml-5 list-disc space-y-2 text-white/65">
+              <li><a href="https://maps.google.com/?q=美人洞+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">美人洞</a></li>
+              <li><a href="https://maps.google.com/?q=花瓶岩+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">花瓶岩</a></li>
+              <li><a href="https://maps.google.com/?q=龍蝦洞+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">龍蝦洞</a></li>
+              <li><a href="https://maps.google.com/?q=琉球共融公園+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">琉球共融公園</a></li>
+            </ul>
+          </>
+        )}
+        {card(<p>🍽 Dinner · <a href="https://maps.google.com/?q=蜜仔琉部餐館+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">蜜仔琉部 餐館</a></p>)}
+      </DayArticle>
+
+      <DayArticle date="Monday, November 23, 2026" title="Departure to Taipei">
+        {card(
+          <>
+            <p>🍳 Breakfast · <a href="https://maps.google.com/?q=琉浪日嚐+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">琉浪日嚐</a></p>
+            <p>⛴ Everyone leaving Xiaoliuqiu · 12:50 PM boat</p>
+            <p>🍣 Lunch · 東港漁市場</p>
+            <p>🚄 Afternoon · 左營 → 台北</p>
+          </>
+        )}
+      </DayArticle>
+    </>
+  );
 }
 
 function OnnaContent({ card, linkedImage }: { card: (children: React.ReactNode) => React.ReactNode; linkedImage: (src: string, alt: string) => React.ReactNode }) {
