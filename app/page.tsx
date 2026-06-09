@@ -1278,8 +1278,8 @@ export default function TravelSite() {
   if (!isGuestConfirmed) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-black px-6 text-white">
-        <div className="w-full max-w-md rounded-[2rem] border border-white/10 bg-white/[0.04] p-8 text-center shadow-[0_0_40px_rgba(255,255,255,0.06)] backdrop-blur-xl">
-          <p className="mb-3 text-xs uppercase tracking-[0.35em] text-white/70">Private Group Event</p>
+        <div className={`w-full max-w-md rounded-[2rem] border border-white/10 text-center backdrop-blur-xl ${selectedTrip === "okinawaJapan" && !showGuestActions ? "overflow-hidden bg-[#020B18] shadow-[0_0_44px_rgba(158,220,255,0.16)]" : "bg-white/[0.04] p-8 shadow-[0_0_40px_rgba(255,255,255,0.06)]"}`}>
+          <p className={selectedTrip === "okinawaJapan" && !showGuestActions ? "px-8 pt-8 pb-3 text-xs uppercase tracking-[0.35em] text-white/75" : "mb-3 text-xs uppercase tracking-[0.35em] text-white/70"}>Private Group Event</p>
           {!selectedTrip ? (
             <>
               <h1 className="mb-4 text-3xl font-light tracking-wide">
@@ -1779,27 +1779,47 @@ export default function TravelSite() {
             </>
           ) : !showGuestActions ? (
             <>
-              <button type="button" onClick={() => { setSelectedTrip(""); setShowGuestActions(false); setGuestName(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">All Trips</button>
-              <h1 className="mb-4 text-3xl font-light tracking-wide">{selectedTrip === "taiwan" ? "Taiwan 2026" : "Okinawa Japan 2026"}</h1>
-              <p className="mb-8 text-sm leading-6 text-white/55">Please select your party to continue.</p>
-              {selectedTrip === "okinawaJapan" && (
-                <img src="/okinawa-2026-poster.png" alt="Okinawa Japan 2026 travel poster" className="mb-6 h-auto w-full rounded-3xl border border-white/10 bg-white/[0.03] object-cover shadow-[0_0_30px_rgba(158,220,255,0.12)]" />
+              <button type="button" onClick={() => { setSelectedTrip(""); setShowGuestActions(false); setGuestName(""); }} className={selectedTrip === "okinawaJapan" ? "mx-8 mb-5 rounded-full border border-white/20 bg-white/[0.06] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/65 transition hover:border-white/35 hover:bg-white/[0.1]" : "mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45"}>All Trips</button>
+              {selectedTrip === "okinawaJapan" ? (
+                <div className="relative overflow-hidden bg-[#020B18]">
+                  <img src="/okinawa-2026-poster.png" alt="Okinawa Japan 2026 travel poster" className="h-auto w-full object-cover" />
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/72 to-transparent px-4 pb-4 pt-20">
+                    <select
+                      defaultValue=""
+                      onChange={(event) => {
+                        const selectedGuest = event.target.value;
+                        if (!selectedGuest) return;
+                        setGuestName(selectedGuest);
+                        setShowGuestActions(true);
+                      }}
+                      className="w-full rounded-2xl border border-white/25 bg-black/75 px-4 py-3 text-sm font-light tracking-wide text-white outline-none backdrop-blur-md transition focus:border-[#9EDCFF]/70"
+                    >
+                      <option value="" disabled>Select your party</option>
+                      {getVisibleGuestOptions().map((guest) => <option key={guest} value={guest}>{guest}</option>)}
+                    </select>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <h1 className="mb-4 text-3xl font-light tracking-wide">Taiwan 2026</h1>
+                  <p className="mb-8 text-sm leading-6 text-white/55">Please select your party to continue.</p>
+                  <label className="mb-5 block text-left">
+                    <select
+                      defaultValue=""
+                      onChange={(event) => {
+                        const selectedGuest = event.target.value;
+                        if (!selectedGuest) return;
+                        setGuestName(selectedGuest);
+                        setShowGuestActions(true);
+                      }}
+                      className="w-full rounded-2xl border border-white/15 bg-[#111] px-4 py-3 text-sm font-light tracking-wide text-white/75 outline-none transition focus:border-white/35"
+                    >
+                      <option value="" disabled>Select your party</option>
+                      {getVisibleGuestOptions().map((guest) => <option key={guest} value={guest}>{guest}</option>)}
+                    </select>
+                  </label>
+                </>
               )}
-              <label className="mb-5 block text-left">
-                <select
-                  defaultValue=""
-                  onChange={(event) => {
-                    const selectedGuest = event.target.value;
-                    if (!selectedGuest) return;
-                    setGuestName(selectedGuest);
-                    setShowGuestActions(true);
-                  }}
-                  className="w-full rounded-2xl border border-white/15 bg-[#111] px-4 py-3 text-sm font-light tracking-wide text-white/75 outline-none transition focus:border-white/35"
-                >
-                  <option value="" disabled>Select your party</option>
-                  {getVisibleGuestOptions().map((guest) => <option key={guest} value={guest}>{guest}</option>)}
-                </select>
-              </label>
             </>
           ) : (
             <>
