@@ -553,6 +553,7 @@ export default function TravelSite() {
   const guestOptions = [
     "I am just a random Guest",
     "Xenia & David & Naomi (3)",
+    "Jim",
     "Anthony & Christine & Mona (1)",
     "Jenn & Hiroshi & Masashi (6) & Miyari (3)",
     "Heather & Jack & Aizen (8) & Kaien (3)",
@@ -576,6 +577,21 @@ export default function TravelSite() {
   const CountrySegmentButtons = ({ segments, setIsGuestConfirmed, setPage }: { segments: DashboardSegment[]; setIsGuestConfirmed: React.Dispatch<React.SetStateAction<boolean>>; setPage: React.Dispatch<React.SetStateAction<PageName>> }) => (
     <SegmentButtons segments={filterDashboardSegments(segments).map((segment) => selectedTrip === "taiwan" ? { ...segment, color: TAIWAN_GOLD } : segment)} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />
   );
+
+  const getVisibleGuestOptions = () => guestOptions.filter((guest) => {
+    if (guest === "I am just a random Guest") return false;
+    if (selectedTrip === "taiwan") return guest !== "Steven Wang";
+    if (selectedTrip === "okinawaJapan") return !["Jim", "Anthony & Christine & Mona (1)", "Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Julie & Adrian & Ethan (4) & Tyrell (1)"].includes(guest);
+    return true;
+  }).sort((firstGuest, secondGuest) => {
+    if (selectedTrip === "okinawaJapan") {
+      const okinawaPartyOrder = ["Xenia & David & Naomi (3)", "Dave & Christina & Xixi (2)", "Heather & Jack & Aizen (8) & Kaien (3)", "Steven Wang", "Mark Wang", "Mei & Emilia (8)"];
+      return okinawaPartyOrder.indexOf(firstGuest) - okinawaPartyOrder.indexOf(secondGuest);
+    }
+    if (selectedTrip !== "taiwan") return 0;
+    const taiwanPartyOrder = ["Xenia & David & Naomi (3)", "Jim", "Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Anthony & Christine & Mona (1)", "Mark Wang", "Dave & Christina & Xixi (2)", "Mei & Emilia (8)", "Heather & Jack & Aizen (8) & Kaien (3)", "Julie & Adrian & Ethan (4) & Tyrell (1)"];
+    return taiwanPartyOrder.indexOf(firstGuest) - taiwanPartyOrder.indexOf(secondGuest);
+  });
 
   useEffect(() => {
     const timer = window.setInterval(() => setNow(new Date()), 1000);
@@ -742,6 +758,7 @@ export default function TravelSite() {
     const guestRoutes: Record<string, PageName[]> = {
       "I am just a random Guest": fullOrder,
       "Xenia & David & Naomi (3)": ["xiaoliuqiu", "taipei", "onna", "nago", "nanjo", "naha", "yilan"],
+      "Jim": ["xiaoliuqiu"],
       "Anthony & Christine & Mona (1)": ["xiaoliuqiu", "taipei"],
       "Jenn & Hiroshi & Masashi (6) & Miyari (3)": ["xiaoliuqiu", "taipei"],
       "Heather & Jack & Aizen (8) & Kaien (3)": ["taipei", "onna", "nago", "yilan"],
@@ -1291,7 +1308,7 @@ export default function TravelSite() {
                 {guestName && <button type="button" onClick={() => { setGuestName(""); setShowMoroccoChecklist(false); }} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45 transition hover:border-white/30 hover:bg-white/[0.05]">Back</button>}
                 <button type="button" onClick={() => { setGuestName(""); setSelectedTrip(""); setShowMoroccoNameInput(false); setMoroccoNameInput(""); setShowMoroccoBudget(false); setShowMoroccoUsefulInfo(false); setShowMoroccoMap(false); setShowMoroccoChecklist(false); }} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45 transition hover:border-white/30 hover:bg-white/[0.05]">All Trips</button>
               </div>
-              <TripPanelTitle location="Morocco (G-Adventures)" date="Sept 4 - Sept 16 2026" description="A late-summer group adventure through Morocco with time for culture, scenery, food, and slow wandering." />
+              <TripPanelTitle location="Morocco (G-Adventures)" date="Sept 4 - Sept 16 2026" description={guestName ? undefined : "A late-summer group adventure through Morocco with time for culture, scenery, food, and slow wandering."} />
               {guestName ? (
                 <section className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 text-left">
                   <p className="text-sm uppercase tracking-[0.28em] text-white/55">Welcome</p>
@@ -1765,22 +1782,24 @@ export default function TravelSite() {
               <button type="button" onClick={() => { setSelectedTrip(""); setShowGuestActions(false); setGuestName(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">All Trips</button>
               <h1 className="mb-4 text-3xl font-light tracking-wide">{selectedTrip === "taiwan" ? "Taiwan 2026" : "Okinawa Japan 2026"}</h1>
               <p className="mb-8 text-sm leading-6 text-white/55">Please select your party to continue.</p>
-              <div className="mb-5 max-h-[280px] space-y-2 overflow-y-auto pr-1">
-                {guestOptions.filter((guest) => {
-                  if (guest === "I am just a random Guest") return false;
-                  if (selectedTrip === "taiwan") return guest !== "Steven Wang";
-                  if (selectedTrip === "okinawaJapan") return !["Anthony & Christine & Mona (1)", "Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Julie & Adrian & Ethan (4) & Tyrell (1)"].includes(guest);
-                  return true;
-                }).sort((firstGuest, secondGuest) => {
-                  if (selectedTrip === "okinawaJapan") {
-                    const okinawaPartyOrder = ["Xenia & David & Naomi (3)", "Dave & Christina & Xixi (2)", "Heather & Jack & Aizen (8) & Kaien (3)", "Steven Wang", "Mark Wang", "Mei & Emilia (8)"];
-                    return okinawaPartyOrder.indexOf(firstGuest) - okinawaPartyOrder.indexOf(secondGuest);
-                  }
-                  if (selectedTrip !== "taiwan") return 0;
-                  const taiwanPartyOrder = ["Xenia & David & Naomi (3)", "Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Anthony & Christine & Mona (1)", "Mark Wang", "Dave & Christina & Xixi (2)", "Mei & Emilia (8)", "Heather & Jack & Aizen (8) & Kaien (3)", "Julie & Adrian & Ethan (4) & Tyrell (1)"];
-                  return taiwanPartyOrder.indexOf(firstGuest) - taiwanPartyOrder.indexOf(secondGuest);
-                }).map((guest) => <button key={guest} type="button" onClick={() => { setGuestName(guest); if (guest === "I am just a random Guest") { setIsGuestConfirmed(true); setPage("map"); return; } setShowGuestActions(true); }} className="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm font-light tracking-wide text-white/70 transition hover:border-white/30 hover:bg-white/[0.05]">{guest}</button>)}
-              </div>
+              {selectedTrip === "okinawaJapan" && (
+                <img src="/okinawa-2026-poster.png" alt="Okinawa Japan 2026 travel poster" className="mb-6 h-auto w-full rounded-3xl border border-white/10 bg-white/[0.03] object-cover shadow-[0_0_30px_rgba(158,220,255,0.12)]" />
+              )}
+              <label className="mb-5 block text-left">
+                <select
+                  defaultValue=""
+                  onChange={(event) => {
+                    const selectedGuest = event.target.value;
+                    if (!selectedGuest) return;
+                    setGuestName(selectedGuest);
+                    setShowGuestActions(true);
+                  }}
+                  className="w-full rounded-2xl border border-white/15 bg-[#111] px-4 py-3 text-sm font-light tracking-wide text-white/75 outline-none transition focus:border-white/35"
+                >
+                  <option value="" disabled>Select your party</option>
+                  {getVisibleGuestOptions().map((guest) => <option key={guest} value={guest}>{guest}</option>)}
+                </select>
+              </label>
             </>
           ) : (
             <>
@@ -1792,6 +1811,7 @@ export default function TravelSite() {
                 <p className="text-sm uppercase tracking-[0.28em] text-white/70">Welcome</p>
                 <h2 className="mt-2 text-3xl font-light tracking-wide text-white">Hello {guestName} 👋</h2>
                 {guestName === "Xenia & David & Naomi (3)" && <CountrySegmentButtons segments={[{ label: "Nov 21–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }, { label: "Day Trips · Taipei", page: "taipei", color: TAIWAN_GOLD }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
+                {guestName === "Jim" && <CountrySegmentButtons segments={[{ label: "Nov 20–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Mark Wang" && <CountrySegmentButtons segments={[{ label: "Nov 20–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }, { label: "Day Trips · Taipei", page: "taipei", color: TAIWAN_GOLD }, { label: "Nov 25–27 · Naha + Okinawa World", page: "nahaearly", color: BABY_BLUE }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Anthony & Christine & Mona (1)" && <CountrySegmentButtons segments={[{ label: "Nov 20–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }, { label: "Day Trips · Taipei", page: "taipei", color: TAIWAN_GOLD }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Jenn & Hiroshi & Masashi (6) & Miyari (3)" && <CountrySegmentButtons segments={[{ label: "Nov 21–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }, { label: "Day Trips · Taipei", page: "taipei", color: TAIWAN_GOLD }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
@@ -1800,7 +1820,7 @@ export default function TravelSite() {
                 {guestName === "Dave & Christina & Xixi (2)" && <CountrySegmentButtons segments={[{ label: "Day Trips · Taipei", page: "taipei", color: TAIWAN_GOLD }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Heather & Jack & Aizen (8) & Kaien (3)" && <CountrySegmentButtons segments={[{ label: "Day Trips · Taipei", page: "taipei", color: TAIWAN_GOLD }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Julie & Adrian & Ethan (4) & Tyrell (1)" && <CountrySegmentButtons segments={[{ label: "Day Trips · Taipei", page: "taipei", color: TAIWAN_GOLD }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
-                {!["Xenia & David & Naomi (3)", "Mark Wang", "Anthony & Christine & Mona (1)", "Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Mei & Emilia (8)", "Steven Wang", "Dave & Christina & Xixi (2)", "Heather & Jack & Aizen (8) & Kaien (3)", "Julie & Adrian & Ethan (4) & Tyrell (1)"].includes(guestName) && (
+                {!["Xenia & David & Naomi (3)", "Jim", "Mark Wang", "Anthony & Christine & Mona (1)", "Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Mei & Emilia (8)", "Steven Wang", "Dave & Christina & Xixi (2)", "Heather & Jack & Aizen (8) & Kaien (3)", "Julie & Adrian & Ethan (4) & Tyrell (1)"].includes(guestName) && (
                   <div className="mt-5 rounded-2xl border border-amber-300/20 bg-amber-300/5 p-4">
                     <p className="text-sm leading-6 text-amber-100/80">
                       No trip segment found, please confirm your trip with Xenia ASAP.
@@ -1811,7 +1831,7 @@ export default function TravelSite() {
               <div className="space-y-5">
                 <div className="grid gap-3 sm:grid-cols-2">
                   <button type="button" onClick={() => { setPage("map"); setIsGuestConfirmed(true); }} className="rounded-full border border-white/30 bg-white/[0.05] px-5 py-3 text-sm uppercase tracking-[0.22em] text-white transition hover:border-white/60 hover:bg-white/[0.08]">Map View</button>
-                  <button type="button" onClick={() => { setPage("checklist"); setIsGuestConfirmed(true); }} className="rounded-full border border-white/30 bg-white/[0.05] px-5 py-3 text-sm uppercase tracking-[0.22em] text-white transition hover:border-white/60 hover:bg-white/[0.08]">Packing List</button>
+                  <button type="button" disabled={guestName === "Jim"} onClick={() => { setPage("checklist"); setIsGuestConfirmed(true); }} className={guestName === "Jim" ? "cursor-not-allowed rounded-full border border-white/10 bg-white/[0.02] px-5 py-3 text-sm uppercase tracking-[0.22em] text-white/25 opacity-60" : "rounded-full border border-white/30 bg-white/[0.05] px-5 py-3 text-sm uppercase tracking-[0.22em] text-white transition hover:border-white/60 hover:bg-white/[0.08]"}>Packing List</button>
                 </div>
                 <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-4 text-left"><p className="mb-4 whitespace-nowrap text-[10px] uppercase tracking-[0.18em] text-white/35 sm:text-xs sm:tracking-[0.24em]">Active once trip begins</p><div className="grid gap-3 sm:grid-cols-2"><button type="button" disabled className="cursor-not-allowed rounded-full border border-white/10 bg-white/[0.02] px-5 py-3 text-sm uppercase tracking-[0.22em] text-white/25 opacity-60">What's Today?</button><button type="button" disabled className="cursor-not-allowed rounded-full border border-white/10 bg-white/[0.02] px-5 py-3 text-sm uppercase tracking-[0.22em] text-white/25 opacity-60">What's Tomorrow?</button></div></div>
               </div>
@@ -1847,7 +1867,7 @@ export default function TravelSite() {
     checklist: [],
     taipei: [["Xenia & David & Naomi (3)", "Taipei · Day Trips"], ["Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Taipei · Day Trips"], ["Anthony & Christine & Mona (1)", "Taipei · Day Trips"], ["Mark Wang", "Taipei · Day Trips"], ["Dave & Christina & Xixi (2)", "Taipei · Day Trips"], ["Mei & Emilia (8)", "Taipei · Day Trips"], ["Heather & Jack & Aizen (8) & Kaien (3)", "Taipei · Day Trips"], ["Julie & Adrian & Ethan (4) & Tyrell (1)", "Taipei · Day Trips"]],
     yilan: [["Xenia & David & Naomi (3)", "Dec 8 – Dec 11 · Yilan"], ["Mei & Emilia (8)", "Dec 8 – Dec 11 · Yilan"], ["Dave & Christina & Xixi (2)", "Dec 8 – Dec 11 · Yilan"], ["Heather & Jack & Aizen (8) & Kaien (3)", "Dec 8 – Dec 11 · Yilan"]],
-    xiaoliuqiu: [["Anthony & Christine & Mona (1)", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Mark Wang", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Xenia & David & Naomi (3)", "Nov 21 – Nov 23 · Xiaoliuqiu"], ["Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Nov 21 – Nov 23 · Xiaoliuqiu"]],
+    xiaoliuqiu: [["Anthony & Christine & Mona (1)", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Mark Wang", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Jim", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Xenia & David & Naomi (3)", "Nov 21 – Nov 23 · Xiaoliuqiu"], ["Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Nov 21 – Nov 23 · Xiaoliuqiu"]],
     onna: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 2 · Okinawa"], ["Mark Wang", "Nov 25 – Nov 30 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Jack & Aizen (8) & Kaien (3)", "Nov 26 – Dec 2 · Okinawa"]],
     nago: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 2 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Jack & Aizen (8) & Kaien (3)", "Nov 26 – Dec 2 · Okinawa"]],
     nanjo: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 27 – Dec 6 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"]],
@@ -2226,7 +2246,7 @@ function MoroccoItineraryContent({ card }: { card: (children: React.ReactNode) =
 }
 
 function XiaoliuqiuContent({ card }: { card: (children: React.ReactNode) => React.ReactNode }) {
-  return <><DayArticle date="Friday, November 20, 2026" title="Arrival Day · Xiaoliuqiu">{card(<><p>🌅 Anthony, Christine, Mona & Mark arriving Xiaoliuqiu</p><p className="mt-2 text-white/50">高雄左營高鐵站 → 10:30 AM 客運 → 屏客東港總站 → 步行10分鐘東港碼頭 → 11:50 AM <a href="https://www.leucosapphire.com/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">藍白船班</a> → 與Jim碼頭集合</p></>)}{card(<><p>🤿 Open Water Lesson</p><ul className="ml-5 list-disc text-white/65"><li>裝備組裝介紹</li><li>Close Water · Dive #1</li></ul></>)}{card(<p>🍽 Dinner · TBD</p>)}</DayArticle><DayArticle date="Saturday, November 21, 2026" title="Open Water Dive Day">{card(<><p>🌊 Open Water Lessons</p><p>Dive #2 & Dive #3</p></>)}{card(<><p>⛴ Xenia, David, Naomi, Jenn, Hiroshi, Masashi & Miyari arriving Xiaoliuqiu</p><p className="mt-2 text-sm font-medium text-white/80">Southern Xiaoliuqiu Exploration</p><div className="mt-4 flex flex-col gap-4 md:flex-row"><ul className="ml-5 flex-1 list-disc text-white/65"><li>琉行綠色隧道</li><li>烏鬼洞</li><li>落日亭 Sunset View</li></ul><img src="/xlqmap.png" alt="Xiaoliuqiu map" className="h-auto w-full rounded-2xl object-contain bg-black/20 p-2 md:w-1/2" /></div></>)}</DayArticle><DayArticle date="Sunday, November 22, 2026" title="Dive + Southern Island Day">{card(<><p>🤿 Open Water Lessons</p><p>Dive #4 & Dive #5</p><ul className="mt-2 ml-5 list-disc space-y-1 text-white/50"><li>David & Anthony join morning dives (2 dives) with the OW group.</li><li>Xenia & Jenn enjoy afternoon fun dives (2 dives).</li></ul></>)}{card(<p>👶 Toddler Group 小琉球海洋館</p>)}{card(<><p>🌅 Northern Xiaoliuliu Visits</p><ul className="mt-4 ml-5 list-disc space-y-2 text-white/65"><li>美人洞</li><li>花瓶岩</li><li>龍蝦洞</li></ul></>)}</DayArticle><DayArticle date="Monday, November 23, 2026" title="Departure to Taipei">{card(<><p>🍳 Breakfast · <a href="https://maps.google.com/?q=琉浪日嚐+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">琉浪日嚐</a></p><p>⛴ Everyone leaving Xiaoliuqiu · 11:10 AM boat</p><p>🍣 Lunch · 東港漁市場</p><p>🚄 Afternoon · 左營 → 台北</p></>)}</DayArticle></>;
+  return <><DayArticle date="Friday, November 20, 2026" title="Arrival Day · Xiaoliuqiu">{card(<><p>🌅 Anthony, Christine, Mona & Mark arriving Xiaoliuqiu</p><p className="mt-2 text-white/50">高雄左營高鐵站 → 10:30 AM 客運 → 屏客東港總站 → 步行10分鐘東港碼頭 → 11:50 AM <a href="https://www.leucosapphire.com/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">藍白船班</a> → 與Jim碼頭集合</p></>)}{card(<><p>🤿 Open Water Lesson</p><ul className="ml-5 list-disc text-white/65"><li>裝備組裝介紹</li><li>Close Water · Dive #1</li></ul></>)}{card(<p>🍽 Dinner · TBD</p>)}</DayArticle><DayArticle date="Saturday, November 21, 2026" title="Open Water Dive Day">{card(<><p>🌊 Open Water Lessons</p><p>Dive #2 & Dive #3</p></>)}{card(<><p>⛴ Xenia, David, Naomi, Jenn, Hiroshi, Masashi & Miyari arriving Xiaoliuqiu</p><p className="mt-2 text-sm font-medium text-white/80">Southern Xiaoliuqiu Exploration</p><div className="mt-4 flex flex-col gap-4 md:flex-row"><ul className="ml-5 flex-1 list-disc text-white/65"><li>琉行綠色隧道</li><li>烏鬼洞</li><li>落日亭 Sunset View</li></ul><img src="/xlqmap.png" alt="Xiaoliuqiu map" className="h-auto w-full rounded-2xl object-contain bg-black/20 p-2 md:w-1/2" /></div></>)}</DayArticle><DayArticle date="Sunday, November 22, 2026" title="Dive + Southern Island Day">{card(<><p>🤿 Open Water Lessons</p><p>Dive #4 & Dive #5</p><ul className="mt-2 ml-5 list-disc space-y-1 text-white/50"><li>David & Anthony join morning dives (2 dives) with the OW group.</li><li>Xenia & Jenn enjoy afternoon fun dives (2 dives).</li></ul></>)}{card(<p>👶 Toddler Group 小琉球海洋館</p>)}{card(<><p>🌅 Northern Xiaoliuqiu Visits</p><ul className="mt-4 ml-5 list-disc space-y-2 text-white/65"><li>美人洞</li><li>花瓶岩</li><li>龍蝦洞</li></ul></>)}</DayArticle><DayArticle date="Monday, November 23, 2026" title="Departure to Taipei">{card(<><p>🍳 Breakfast · <a href="https://maps.google.com/?q=琉浪日嚐+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">琉浪日嚐</a></p><p>⛴ Everyone leaving Xiaoliuqiu · 11:10 AM boat</p><p>🍣 Lunch · 東港漁市場</p><p>🚄 Afternoon · 左營 → 台北</p></>)}</DayArticle></>;
 }
 
 function OnnaContent({ card, linkedImage }: { card: (children: React.ReactNode) => React.ReactNode; linkedImage: (src: string, alt: string) => React.ReactNode }) {
