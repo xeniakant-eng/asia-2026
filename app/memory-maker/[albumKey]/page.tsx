@@ -138,13 +138,6 @@ export default function MemoryMakerAlbumPage({ params }: { params: Promise<{ alb
     }
   };
 
-  const closeAlbum = () => {
-    const searchParams = new URLSearchParams(window.location.search);
-    const returnChapter = searchParams.get("returnChapter") || albumKey;
-    const guest = searchParams.get("guest") || "Guest";
-    window.location.replace(`/?chapter=${encodeURIComponent(returnChapter)}&guest=${encodeURIComponent(guest)}`);
-  };
-
   return (
     <main className="min-h-screen bg-black px-5 py-8 text-white md:px-10 md:py-12">
       <div className="mx-auto max-w-6xl">
@@ -156,7 +149,6 @@ export default function MemoryMakerAlbumPage({ params }: { params: Promise<{ alb
           </div>
           <div className="flex gap-3">
             <button type="button" onClick={loadFiles} disabled={isLoading} className="rounded-full border border-white/20 bg-white/[0.04] px-5 py-3 text-xs uppercase tracking-[0.18em] text-white/70 transition hover:border-white/40 hover:bg-white/[0.08] disabled:cursor-wait disabled:opacity-50">Refresh</button>
-            <button type="button" onClick={closeAlbum} className="rounded-full border border-white/20 bg-white/[0.04] px-5 py-3 text-xs uppercase tracking-[0.18em] text-white/70 transition hover:border-white/40 hover:bg-white/[0.08]">Close</button>
           </div>
         </div>
 

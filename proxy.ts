@@ -19,15 +19,22 @@ function isPublicPath(pathname: string) {
   );
 }
 
+function rewriteTripPath(request: NextRequest) {
+  if (!request.nextUrl.pathname.startsWith("/trip/")) return null;
+  const rewriteUrl = request.nextUrl.clone();
+  rewriteUrl.pathname = "/";
+  return NextResponse.rewrite(rewriteUrl);
+}
+
 export async function proxy(request: NextRequest) {
   const password = process.env.SITE_PASSWORD;
   if (!password || isPublicPath(request.nextUrl.pathname)) {
-    return NextResponse.next();
+    return rewriteTripPath(request) || NextResponse.next();
   }
 
   const expectedToken = await createAuthToken(password);
   if (request.cookies.get(AUTH_COOKIE)?.value === expectedToken) {
-    return NextResponse.next();
+    return rewriteTripPath(request) || NextResponse.next();
   }
 
   const loginUrl = request.nextUrl.clone();
