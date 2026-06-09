@@ -1198,7 +1198,7 @@ export default function TravelSite() {
       <div className="min-h-screen bg-black px-6 py-10 text-white" style={{ "--chapter-accent": MOROCCO_BROWN } as React.CSSProperties}>
         <header className="mx-auto mb-10 flex max-w-5xl flex-wrap items-center justify-between gap-3">
           <button type="button" onClick={() => setShowMoroccoItinerary(false)} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white">← Back to Dashboard</button>
-          <button type="button" onClick={() => { setShowMoroccoItinerary(false); setGuestName(""); setSelectedTrip(""); }} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white">All Trips</button>
+          <button type="button" onClick={() => { setShowMoroccoItinerary(false); setGuestName(""); setSelectedTrip(""); }} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white">Back to All Trips</button>
         </header>
         <main className="mx-auto max-w-5xl">
           <p className="mb-3 text-sm uppercase tracking-[0.35em]" style={{ color: MOROCCO_BROWN }}>Morocco · G-Adventures</p>
@@ -1287,7 +1287,6 @@ export default function TravelSite() {
                 <span className="block">Welcome,</span>
                 <span className="block">Where are we going?</span>
               </h1>
-              <p className="mb-8 text-sm leading-6 text-white/55">Please select your trip.</p>
               <div className="space-y-3">
                 <TripButton location="Morocco" date="Sept 4 - Sept 16 2026" status="Confirmed" onClick={() => { setGuestName(""); setSelectedTrip("morocco"); }} />
                 <TripButton location="Vietnam" date="Nov 12 - Nov 21 2026" status="Planning" onClick={() => setSelectedTrip("vietnam")} />
@@ -1309,7 +1308,7 @@ export default function TravelSite() {
                 <>
                   <div className="mb-5 flex flex-wrap justify-center gap-3">
                     <button type="button" onClick={() => { setGuestName(""); setShowMoroccoChecklist(false); }} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45 transition hover:border-white/30 hover:bg-white/[0.05]">Back</button>
-                    <button type="button" onClick={() => { setGuestName(""); setSelectedTrip(""); setShowMoroccoNameInput(false); setMoroccoNameInput(""); setShowMoroccoBudget(false); setShowMoroccoUsefulInfo(false); setShowMoroccoMap(false); setShowMoroccoChecklist(false); }} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45 transition hover:border-white/30 hover:bg-white/[0.05]">All Trips</button>
+                    <button type="button" onClick={() => { setGuestName(""); setSelectedTrip(""); setShowMoroccoNameInput(false); setMoroccoNameInput(""); setShowMoroccoBudget(false); setShowMoroccoUsefulInfo(false); setShowMoroccoMap(false); setShowMoroccoChecklist(false); }} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45 transition hover:border-white/30 hover:bg-white/[0.05]">Back to All Trips</button>
                   </div>
                   <TripPanelTitle location="Morocco" subtitle="G-Adventures" date="Sept 4 - Sept 16 2026" />
                   <section className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 text-left">
@@ -1317,8 +1316,7 @@ export default function TravelSite() {
                     <h2 className="mt-2 mb-6 text-3xl font-light tracking-wide text-white">Hello {guestName}</h2>
                     <div className="grid gap-3 sm:grid-cols-2">
                       <button type="button" onClick={() => setShowMoroccoItinerary(true)} className="w-full rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#D6B48C] transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15 sm:col-span-2">Trip Itinerary</button>
-                      <button type="button" onClick={() => setShowMoroccoMap(true)} className="w-full rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#D6B48C] transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">Map View</button>
-                      <button type="button" onClick={() => setShowMoroccoChecklist(true)} className="w-full rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#D6B48C] transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">Packing List</button>
+                      <button type="button" onClick={() => setShowMoroccoChecklist(true)} className="w-full rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#D6B48C] transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15 sm:col-span-2">Packing List</button>
                     </div>
                   </section>
                 </>
@@ -1385,8 +1383,8 @@ export default function TravelSite() {
                 </div>
               )}
               {showMoroccoUsefulInfo && (
-                <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/80 p-2 backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-label="Morocco useful information">
-                  <section className="flex max-h-[calc(100dvh-1rem)] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] text-left shadow-2xl sm:max-h-[90vh]">
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-2 backdrop-blur-sm sm:p-4" role="dialog" aria-modal="true" aria-label="Morocco useful information">
+                  <section className="flex h-[calc(100vh-1rem)] max-h-[calc(100vh-1rem)] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] text-left shadow-2xl sm:h-[82vh] sm:max-h-[760px]">
                     <div className="flex shrink-0 items-start justify-between gap-4 border-b border-white/10 px-4 py-4 sm:px-7 sm:py-5">
                       <div>
                         <p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: MOROCCO_BROWN }}>Morocco 2026</p>
@@ -1397,7 +1395,7 @@ export default function TravelSite() {
                     <div className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-7">
                       <div className="rounded-xl border border-white/10 bg-white/[0.04] p-3 sm:p-4">
                         <p className="text-xs uppercase tracking-[0.18em] text-white/40">Power</p>
-                        <img src="/poweradapter.png" alt="Power adapter suitable for Morocco" className="mt-3 max-h-52 w-full rounded-xl border border-white/10 bg-white object-contain sm:max-h-none" />
+                        <img src="/poweradapter.png" alt="Power adapter suitable for Morocco" className="mt-3 max-h-40 w-full rounded-xl border border-white/10 bg-white object-contain sm:max-h-56" />
                         <p className="mt-2 text-sm leading-6 text-white/75">Morocco uses 220V / 50Hz power with Type C and Type E plugs. A European-style Type C/E adapter is recommended.</p>
                       </div>
                       <div className="rounded-xl border border-white/10 bg-white/[0.04] p-3 sm:p-4">
@@ -1476,7 +1474,7 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "vietnam" ? (
             <>
-              <button type="button" onClick={() => { setSelectedTrip(""); setShowVietnamNameInput(false); setVietnamNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">All Trips</button>
+              <button type="button" onClick={() => { setSelectedTrip(""); setShowVietnamNameInput(false); setVietnamNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back to All Trips</button>
               <TripPanelTitle location="Vietnam" date="Nov 12 - Nov 21 2026" description="A Vietnam adventure in the early planning stage, with cities, food, culture, and landscapes still waiting to take shape." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
@@ -1509,7 +1507,7 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "skiMyoko" ? (
             <>
-              <button type="button" onClick={() => { setSelectedTrip(""); setShowSkiMyokoNameInput(false); setSkiMyokoNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">All Trips</button>
+              <button type="button" onClick={() => { setSelectedTrip(""); setShowSkiMyokoNameInput(false); setSkiMyokoNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back to All Trips</button>
               <TripPanelTitle location="Ski Shiga Kogen & Nagano Japan" date="Jan 23 - Jan 31 2027" description="A winter ski week in the Nagano mountains with onsen time, snow days, and cozy Japanese food." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
@@ -1542,7 +1540,7 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "skiDeerValley" ? (
             <>
-              <button type="button" onClick={() => { setSelectedTrip(""); setShowSkiDeerValleyNameInput(false); setSkiDeerValleyNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">All Trips</button>
+              <button type="button" onClick={() => { setSelectedTrip(""); setShowSkiDeerValleyNameInput(false); setSkiDeerValleyNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back to All Trips</button>
               <TripPanelTitle location="Ski Deer Valley UT USA" date="Feb 2027" description="A polished Utah ski escape built around groomed runs, mountain views, and relaxed resort evenings." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
@@ -1575,7 +1573,7 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "skiBig3" ? (
             <>
-              <button type="button" onClick={() => { setSelectedTrip(""); setShowSkiBig3NameInput(false); setSkiBig3NameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">All Trips</button>
+              <button type="button" onClick={() => { setSelectedTrip(""); setShowSkiBig3NameInput(false); setSkiBig3NameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back to All Trips</button>
               <TripPanelTitle location="SkiBig3 AB Canada" date="Mar 2027" description="A Canadian Rockies ski trip across Banff's big mountain terrain, with plenty of alpine scenery between runs." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
@@ -1608,7 +1606,7 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "houston" ? (
             <>
-              <button type="button" onClick={() => { setSelectedTrip(""); setShowHoustonNameInput(false); setHoustonNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">All Trips</button>
+              <button type="button" onClick={() => { setSelectedTrip(""); setShowHoustonNameInput(false); setHoustonNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back to All Trips</button>
               <TripPanelTitle location="Houston & Galveston TX USA" subtitle="FRC & Disney Cruise" date="April 28 - May 7 2027" description="Arriving Houston to witness the exciting First Robotics Competition at the George R. Brown Convention Center from April 28 - May 1; followed by Mark's birthday celebration on May 1. On May 2, we board Disney Magic from Galveston for a 5-night Western Caribbean Disney cruise." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
@@ -1641,7 +1639,7 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "azoresPortugal" ? (
             <>
-              <button type="button" onClick={() => { setSelectedTrip(""); setShowAzoresNameInput(false); setAzoresNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">All Trips</button>
+              <button type="button" onClick={() => { setSelectedTrip(""); setShowAzoresNameInput(false); setAzoresNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back to All Trips</button>
               <TripPanelTitle location="Azores Portugal" date="Sept 2027" description="An island nature trip with volcanic landscapes, ocean views, hot springs, and unhurried Atlantic days." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
@@ -1674,7 +1672,7 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "similanThailand" ? (
             <>
-              <button type="button" onClick={() => { setSelectedTrip(""); setShowSimilanNameInput(false); setSimilanNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">All Trips</button>
+              <button type="button" onClick={() => { setSelectedTrip(""); setShowSimilanNameInput(false); setSimilanNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back to All Trips</button>
               <TripPanelTitle location="Similan & Phuket Thailand" subtitle="Scuba Diving Liveaboard" date="Mar 2028" description="A warm-water dive adventure centered on liveaboard days, reefs, beaches, and Phuket time before or after the boat." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
@@ -1707,7 +1705,7 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "disneyWorld" ? (
             <>
-              <button type="button" onClick={() => { setSelectedTrip(""); setShowDisneyWorldNameInput(false); setDisneyWorldNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">All Trips</button>
+              <button type="button" onClick={() => { setSelectedTrip(""); setShowDisneyWorldNameInput(false); setDisneyWorldNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back to All Trips</button>
               <TripPanelTitle location="Orlando FL USA" subtitle="Disney World" date="Nov 2028" description="A Disney World holiday with park days, character moments, resort downtime, and room for family pacing." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
@@ -1740,7 +1738,7 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "fiveStans" ? (
             <>
-              <button type="button" onClick={() => { setSelectedTrip(""); setShowFiveStansNameInput(false); setFiveStansNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">All Trips</button>
+              <button type="button" onClick={() => { setSelectedTrip(""); setShowFiveStansNameInput(false); setFiveStansNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back to All Trips</button>
               <TripPanelTitle location="The 5 Stans & Silk Road" date="TBD" description="Trace the legendary Silk Road across five nations: Kyrgyzstan, Kazakhstan, Tajikistan, Turkmenistan, Uzbekistan. This is Central Asia in full, gloriously unfiltered widescreen. Gonna be gorgeous and totally unforgettable." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
@@ -1786,7 +1784,7 @@ export default function TravelSite() {
             </>
           ) : !showGuestActions ? (
             <>
-              <button type="button" onClick={() => { setSelectedTrip(""); setShowGuestActions(false); setGuestName(""); }} className={selectedTrip === "okinawaJapan" ? "mx-8 mb-5 rounded-full border border-white/20 bg-white/[0.06] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/65 transition hover:border-white/35 hover:bg-white/[0.1]" : "mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45"}>All Trips</button>
+              <button type="button" onClick={() => { setSelectedTrip(""); setShowGuestActions(false); setGuestName(""); }} className={selectedTrip === "okinawaJapan" ? "mx-8 mb-5 rounded-full border border-white/20 bg-white/[0.06] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/65 transition hover:border-white/35 hover:bg-white/[0.1]" : "mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45"}>Back to All Trips</button>
               {selectedTrip === "okinawaJapan" ? (
                 <div className="relative overflow-hidden bg-[#020B18]">
                   <img src="/okinawa-2026-poster.png" alt="Okinawa Japan 2026 travel poster" className="h-auto w-full object-cover" />
@@ -1832,7 +1830,7 @@ export default function TravelSite() {
             <>
               <div className="mb-5 grid grid-cols-2 gap-3">
                 <button type="button" onClick={() => { setShowGuestActions(false); setGuestName(""); }} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45 transition hover:border-white/30 hover:bg-white/[0.05]">Back</button>
-                <button type="button" onClick={() => { setSelectedTrip(""); setShowGuestActions(false); setGuestName(""); }} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45 transition hover:border-white/30 hover:bg-white/[0.05]">All Trips</button>
+                <button type="button" onClick={() => { setSelectedTrip(""); setShowGuestActions(false); setGuestName(""); }} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45 transition hover:border-white/30 hover:bg-white/[0.05]">Back to All Trips</button>
               </div>
               <div className="mb-8 rounded-3xl border border-white/10 bg-white/[0.04] p-6 text-left shadow-[0_0_30px_rgba(255,255,255,0.05)]">
                 <p className="text-sm uppercase tracking-[0.28em] text-white/70">Welcome</p>
@@ -2084,7 +2082,7 @@ export default function TravelSite() {
     <div className="min-h-screen bg-black text-white">
       <section className="relative flex min-h-screen flex-col items-center justify-start overflow-visible px-6 pb-10 pt-16 md:h-[90vh] md:min-h-0 md:justify-center md:overflow-hidden md:pt-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.06),transparent_55%)]" />
-        <button type="button" onClick={() => { setIsGuestConfirmed(false); setSelectedTrip(""); setShowGuestActions(false); setGuestName(""); setPage("map"); window.history.replaceState({}, "", "/"); }} className="absolute right-5 top-5 z-30 rounded-full border border-white/25 bg-black/30 px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/75 backdrop-blur-md transition hover:border-white/50 hover:bg-white/10">All Trips</button>
+        <button type="button" onClick={() => { setIsGuestConfirmed(false); setSelectedTrip(""); setShowGuestActions(false); setGuestName(""); setPage("map"); window.history.replaceState({}, "", "/"); }} className="absolute right-5 top-5 z-30 rounded-full border border-white/25 bg-black/30 px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/75 backdrop-blur-md transition hover:border-white/50 hover:bg-white/10">Back to All Trips</button>
         {guestName && guestName !== "I am just a random Guest" && <button type="button" onClick={() => { setIsGuestConfirmed(false); setShowGuestActions(true); }} className="absolute left-5 top-5 z-30 rounded-full border border-white/25 bg-black/30 px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/75 backdrop-blur-md">← Back to Dashboard</button>}
         <div className="relative z-10 flex w-full max-w-5xl items-center justify-center gap-8 md:gap-20">
           {isTaiwanMap && <svg viewBox="0 0 140 260" className="h-[340px] w-[166px] opacity-90 md:h-[520px] md:w-[255px]" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
