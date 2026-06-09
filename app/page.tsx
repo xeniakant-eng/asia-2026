@@ -200,6 +200,10 @@ function MemoryMaker({
   returnChapter,
   onViewAlbum,
   compact = false,
+  inlineButtons = false,
+  inlineMode = "both",
+  uploadLabel = "Upload Photos",
+  viewLabel = "View Album",
 }: {
   albumKey: string;
   albumName: string;
@@ -208,6 +212,10 @@ function MemoryMaker({
   returnChapter: string;
   onViewAlbum?: (albumUrl: string) => void;
   compact?: boolean;
+  inlineButtons?: boolean;
+  inlineMode?: "both" | "upload" | "view";
+  uploadLabel?: string;
+  viewLabel?: string;
 }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -267,19 +275,37 @@ function MemoryMaker({
     }
   };
 
+  const compactUploadButton = (
+    <button type="button" disabled={isLoading} onClick={() => fileInputRef.current?.click()} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border px-4 py-3 text-center transition disabled:cursor-wait disabled:opacity-50" style={{ borderColor: `${accentColor}59`, backgroundColor: `${accentColor}18` }}>
+      <span className="text-xl">📤</span>
+      <span className="text-xs font-light uppercase tracking-[0.16em]" style={{ color: accentColor }}>{uploadLabel}</span>
+    </button>
+  );
+  const compactAlbumButton = (
+    <button type="button" onClick={viewAlbum} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border px-4 py-3 text-center transition" style={{ borderColor: `${accentColor}59`, backgroundColor: `${accentColor}18` }}>
+      <span className="text-xl">🖼️</span>
+      <span className="text-xs font-light uppercase tracking-[0.16em]" style={{ color: accentColor }}>{viewLabel}</span>
+    </button>
+  );
+
+  if (inlineButtons) {
+    return (
+      <>
+        <input ref={fileInputRef} type="file" multiple accept="image/*" className="hidden" onChange={(event) => uploadFiles(event.target.files)} />
+        {(inlineMode === "both" || inlineMode === "upload") && compactUploadButton}
+        {(inlineMode === "both" || inlineMode === "view") && compactAlbumButton}
+        {message && <p className="col-span-full text-sm text-white/50">{message}</p>}
+      </>
+    );
+  }
+
   if (compact) {
     return (
       <div>
         <div className="grid gap-3 sm:grid-cols-2">
           <input ref={fileInputRef} type="file" multiple accept="image/*" className="hidden" onChange={(event) => uploadFiles(event.target.files)} />
-          <button type="button" disabled={isLoading} onClick={() => fileInputRef.current?.click()} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-3 text-center transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15 disabled:cursor-wait disabled:opacity-50">
-            <span className="text-xl">📤</span>
-            <span className="text-xs font-light uppercase tracking-[0.16em] text-[#D6B48C]">Upload Photos</span>
-          </button>
-          <button type="button" onClick={viewAlbum} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-3 text-center transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">
-            <span className="text-xl">🖼️</span>
-            <span className="text-xs font-light uppercase tracking-[0.16em] text-[#D6B48C]">View Album</span>
-          </button>
+          {compactUploadButton}
+          {compactAlbumButton}
         </div>
         {message && <p className="mt-3 text-sm text-white/50">{message}</p>}
       </div>
@@ -475,6 +501,7 @@ export default function TravelSite() {
   const [showMoroccoMap, setShowMoroccoMap] = useState(false);
   const [showTaipeiMrtMap, setShowTaipeiMrtMap] = useState(false);
   const [showTaipeiFoodieList, setShowTaipeiFoodieList] = useState(false);
+  const [taiwanDashboardAlbumMode, setTaiwanDashboardAlbumMode] = useState<"" | "upload" | "view">("");
   const [checkedTaipeiFoodieItems, setCheckedTaipeiFoodieItems] = useState<string[]>(() => {
     if (typeof window === "undefined") return [];
     try {
@@ -486,11 +513,12 @@ export default function TravelSite() {
   const [showMoroccoChecklist, setShowMoroccoChecklist] = useState(false);
   const [showMoroccoItinerary, setShowMoroccoItinerary] = useState(false);
   const [showMoroccoCostTracker, setShowMoroccoCostTracker] = useState(false);
+  const [activeBillTabTrip, setActiveBillTabTrip] = useState<"morocco" | "taiwan" | "okinawaJapan">("morocco");
   const [showMoroccoAccountingSummary, setShowMoroccoAccountingSummary] = useState(false);
   const [moroccoExpenses, setMoroccoExpenses] = useState<MoroccoExpense[]>([]);
   const [moroccoExpenseDescription, setMoroccoExpenseDescription] = useState("");
   const [moroccoExpenseAmount, setMoroccoExpenseAmount] = useState("");
-  const [moroccoExpenseCurrency, setMoroccoExpenseCurrency] = useState<"CAD" | "MAD" | "USD">("MAD");
+  const [moroccoExpenseCurrency, setMoroccoExpenseCurrency] = useState<"CAD" | "MAD" | "JPY" | "USD">("MAD");
   const [moroccoExpensePaidBy, setMoroccoExpensePaidBy] = useState("");
   const [moroccoExpensePaidFor, setMoroccoExpensePaidFor] = useState<string[]>(["Everyone"]);
   const [moroccoEditingExpenseId, setMoroccoEditingExpenseId] = useState("");
@@ -644,6 +672,23 @@ export default function TravelSite() {
     const taiwanPartyOrder = ["Xenia & David & Naomi (3)", "Jim", "Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Anthony & Christine & Mona (1)", "Mark Wang", "Dave & Christina & Xixi (2)", "Mei & Emilia (8)", "Heather & Jack & Aizen (8) & Kaien (3)", "Julie & Adrian & Ethan (4) & Tyrell (1)"];
     return taiwanPartyOrder.indexOf(firstGuest) - taiwanPartyOrder.indexOf(secondGuest);
   });
+
+  const getBillTabPartyOptions = (trip: "morocco" | "taiwan" | "okinawaJapan") => {
+    if (trip === "morocco") return moroccoInterestedNames;
+    const previousSelectedTrip = selectedTrip;
+    if (previousSelectedTrip === trip) return getVisibleGuestOptions();
+    return guestOptions.filter((guest) => {
+      if (guest === "I am just a random Guest") return false;
+      if (trip === "taiwan") return guest !== "Steven Wang";
+      return !["Jim", "Anthony & Christine & Mona (1)", "Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Julie & Adrian & Ethan (4) & Tyrell (1)"].includes(guest);
+    });
+  };
+
+  const getBillTabConfig = (trip: "morocco" | "taiwan" | "okinawaJapan") => {
+    if (trip === "taiwan") return { trip, label: "Taiwan 2026", accent: TAIWAN_GOLD, localCurrency: "JPY" as const, localLabel: "JPY", localSymbol: "¥", parties: getBillTabPartyOptions(trip) };
+    if (trip === "okinawaJapan") return { trip, label: "Okinawa Japan 2026", accent: BABY_BLUE, localCurrency: "JPY" as const, localLabel: "JPY", localSymbol: "¥", parties: getBillTabPartyOptions(trip) };
+    return { trip, label: "Morocco 2026", accent: MOROCCO_BROWN, localCurrency: "MAD" as const, localLabel: "MAD", localSymbol: "", parties: getBillTabPartyOptions(trip) };
+  };
 
   const openTripPage = (trip: TripKey) => {
     setGuestName("");
@@ -981,6 +1026,29 @@ export default function TravelSite() {
     </section>
   );
 
+  const renderTripDashboardActions = () => {
+    if (selectedTrip !== "taiwan" && selectedTrip !== "okinawaJapan") return null;
+    const accentColor = selectedTrip === "taiwan" ? TAIWAN_GOLD : BABY_BLUE;
+    const actionStyle = { borderColor: `${accentColor}59`, backgroundColor: `${accentColor}18`, color: accentColor };
+    const actionClass = "flex min-h-14 items-center justify-center gap-3 rounded-2xl border px-4 py-3 text-center transition";
+    return (
+      <div className="mt-5 grid gap-3 sm:grid-cols-2">
+        <button type="button" onClick={() => { setPage("map"); setIsGuestConfirmed(true); }} className={actionClass} style={actionStyle}><span className="text-xl">🗺️</span><span className="text-xs font-light uppercase tracking-[0.16em]">Map View</span></button>
+        <button type="button" disabled={guestName === "Jim"} onClick={() => { setPage("checklist"); setIsGuestConfirmed(true); }} className={guestName === "Jim" ? `${actionClass} cursor-not-allowed opacity-45` : actionClass} style={actionStyle}><span className="text-xl">🎒</span><span className="text-xs font-light uppercase tracking-[0.16em]">Packing List</span></button>
+        <button type="button" disabled className={`${actionClass} cursor-not-allowed opacity-45`} style={actionStyle}><span className="text-xl">☀️</span><span className="text-xs font-light uppercase tracking-[0.16em]">What's Today?</span></button>
+        <button type="button" onClick={() => openMoroccoCostTracker(selectedTrip)} className={actionClass} style={actionStyle}><span className="text-xl">💰</span><span className="text-xs font-light uppercase tracking-[0.16em]">BillTab</span></button>
+        {selectedTrip === "taiwan" ? (
+          <>
+            <button type="button" onClick={() => setTaiwanDashboardAlbumMode("upload")} className={actionClass} style={actionStyle}><span className="text-xl">📤</span><span className="text-xs font-light uppercase tracking-[0.16em]">Upload Photos</span></button>
+            <button type="button" onClick={() => setTaiwanDashboardAlbumMode("view")} className={actionClass} style={actionStyle}><span className="text-xl">🖼️</span><span className="text-xs font-light uppercase tracking-[0.16em]">View Album</span></button>
+          </>
+        ) : (
+          <MemoryMaker albumKey="japanNovember" albumName="Japan November" accentColor={accentColor} guestName={guestName} returnChapter="map" onViewAlbum={openAlbumPopup} inlineButtons />
+        )}
+      </div>
+    );
+  };
+
   const linkedImage = (src: string, alt: string) => <img src={src} alt={alt} className="mt-4 h-56 w-full rounded-2xl object-cover object-center" />;
   const card = (children: React.ReactNode) => <div className="rounded-2xl border border-white/10 bg-black/20 p-4">{children}</div>;
 
@@ -1173,10 +1241,12 @@ export default function TravelSite() {
     return value.split(",").map((name) => name.trim()).filter(Boolean);
   };
 
+  const activeBillTabConfig = getBillTabConfig(activeBillTabTrip);
+  const activeBillTabParties = activeBillTabConfig.parties;
   const moroccoSelectedPaidForParties = moroccoExpensePaidFor.includes("Everyone")
-    ? moroccoInterestedNames
-    : moroccoExpensePaidFor.filter((name) => moroccoInterestedNames.includes(name));
-  const moroccoAllPaidForSelected = moroccoInterestedNames.length > 0 && moroccoSelectedPaidForParties.length === moroccoInterestedNames.length;
+    ? activeBillTabParties
+    : moroccoExpensePaidFor.filter((name) => activeBillTabParties.includes(name));
+  const moroccoAllPaidForSelected = activeBillTabParties.length > 0 && moroccoSelectedPaidForParties.length === activeBillTabParties.length;
   const moroccoPaidForPayload = moroccoAllPaidForSelected ? "Everyone" : moroccoSelectedPaidForParties.join(", ");
 
   const toggleMoroccoPaidForEveryone = (checked: boolean) => {
@@ -1185,20 +1255,23 @@ export default function TravelSite() {
 
   const toggleMoroccoPaidForParty = (name: string, checked: boolean) => {
     const current = moroccoExpensePaidFor.includes("Everyone")
-      ? moroccoInterestedNames
-      : moroccoExpensePaidFor.filter((partyName) => moroccoInterestedNames.includes(partyName));
+      ? activeBillTabParties
+      : moroccoExpensePaidFor.filter((partyName) => activeBillTabParties.includes(partyName));
     const next = checked ? [...current, name] : current.filter((partyName) => partyName !== name);
     const uniqueNext = Array.from(new Set(next));
-    setMoroccoExpensePaidFor(uniqueNext.length === moroccoInterestedNames.length ? ["Everyone"] : uniqueNext);
+    setMoroccoExpensePaidFor(uniqueNext.length === activeBillTabParties.length ? ["Everyone"] : uniqueNext);
   };
 
-  const openMoroccoCostTracker = async () => {
+  const openMoroccoCostTracker = async (trip: "morocco" | "taiwan" | "okinawaJapan" = "morocco") => {
+    const config = getBillTabConfig(trip);
+    setActiveBillTabTrip(trip);
     setShowMoroccoCostTracker(true);
-    setMoroccoExpensePaidBy((current) => current || guestName || moroccoInterestedNames[0] || "");
-    setMoroccoExpensePaidFor((current) => current.length ? current : ["Everyone"]);
+    setMoroccoExpenseCurrency(config.localCurrency);
+    setMoroccoExpensePaidBy((current) => config.parties.includes(current) ? current : guestName && config.parties.includes(guestName) ? guestName : config.parties[0] || "");
+    setMoroccoExpensePaidFor(["Everyone"]);
     setMoroccoExpenseMessage("");
     try {
-      const response = await fetch("/api/trip-expenses?trip=morocco");
+      const response = await fetch(`/api/trip-expenses?trip=${encodeURIComponent(trip)}`);
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Unable to load expenses.");
       setMoroccoExpenses(Array.isArray(data.expenses) ? data.expenses : []);
@@ -1215,7 +1288,7 @@ export default function TravelSite() {
       const response = await fetch("/api/trip-expenses", {
         method: moroccoEditingExpenseId ? "PATCH" : "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ trip: "morocco", id: moroccoEditingExpenseId, description: moroccoExpenseDescription.trim(), amount, currency: moroccoExpenseCurrency, paidBy: moroccoExpensePaidBy, paidFor: moroccoPaidForPayload, password: moroccoExpenseAdminPassword }),
+        body: JSON.stringify({ trip: activeBillTabTrip, id: moroccoEditingExpenseId, description: moroccoExpenseDescription.trim(), amount, currency: moroccoExpenseCurrency, paidBy: moroccoExpensePaidBy, paidFor: moroccoPaidForPayload, password: moroccoExpenseAdminPassword }),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Unable to save expense.");
@@ -1223,6 +1296,7 @@ export default function TravelSite() {
       setMoroccoExpenseDescription("");
       setMoroccoExpenseAmount("");
       setMoroccoExpensePaidFor(["Everyone"]);
+      setMoroccoExpenseCurrency(activeBillTabConfig.localCurrency);
       setMoroccoEditingExpenseId("");
       setMoroccoExpenseAdminPassword("");
       setMoroccoExpenseMessage("");
@@ -1247,7 +1321,7 @@ export default function TravelSite() {
       setMoroccoExpenseCurrency("USD");
     } else {
       setMoroccoExpenseAmount(expense.amountLocal?.toString() || "");
-      setMoroccoExpenseCurrency("MAD");
+      setMoroccoExpenseCurrency(activeBillTabConfig.localCurrency);
     }
     setMoroccoExpenseMessage("Editing expense. Update the fields and save changes.");
   };
@@ -1258,6 +1332,7 @@ export default function TravelSite() {
     setMoroccoExpenseDescription("");
     setMoroccoExpenseAmount("");
     setMoroccoExpensePaidFor(["Everyone"]);
+    setMoroccoExpenseCurrency(activeBillTabConfig.localCurrency);
     setMoroccoExpenseMessage("");
   };
 
@@ -1269,7 +1344,7 @@ export default function TravelSite() {
       const response = await fetch("/api/trip-expenses", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ trip: "morocco", id: expense.id, password }),
+        body: JSON.stringify({ trip: activeBillTabTrip, id: expense.id, password }),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Unable to delete expense.");
@@ -1290,7 +1365,7 @@ export default function TravelSite() {
           <input type="checkbox" checked={moroccoAllPaidForSelected} onChange={(event) => toggleMoroccoPaidForEveryone(event.target.checked)} className="h-4 w-4 accent-[#D6B48C]" />
           <span>Everyone</span>
         </label>
-        {moroccoInterestedNames.map((name) => (
+        {activeBillTabParties.map((name) => (
           <label key={name} className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-sm text-white/75">
             <input type="checkbox" checked={moroccoSelectedPaidForParties.includes(name)} onChange={(event) => toggleMoroccoPaidForParty(name, event.target.checked)} className="h-4 w-4 accent-[#D6B48C]" />
             <span>{name}</span>
@@ -1301,12 +1376,12 @@ export default function TravelSite() {
   );
 
   const moroccoCostTrackerPopup = showMoroccoCostTracker ? (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Morocco BillTab">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label={`${activeBillTabConfig.label} BillTab`}>
       <section className="flex max-h-[92vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] shadow-2xl">
         <div className="flex items-start justify-between gap-5 border-b border-white/10 px-5 py-5 sm:px-7">
-          <div><p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: MOROCCO_BROWN }}>Morocco 2026</p><h2 className="text-2xl font-light">BillTab</h2><p className="mt-2 text-sm text-white/45">Converted total: ${moroccoExpenseTotal.toFixed(2)} CAD</p></div>
+          <div><p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: activeBillTabConfig.accent }}>{activeBillTabConfig.label}</p><h2 className="text-2xl font-light">BillTab</h2><p className="mt-2 text-sm text-white/45">Converted total: ${moroccoExpenseTotal.toFixed(2)} CAD</p></div>
           <div className="flex items-center gap-2">
-            <button type="button" onClick={() => setShowMoroccoAccountingSummary(true)} className="rounded-full border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-3 py-2 text-[10px] uppercase tracking-[0.12em] text-[#D6B48C] transition hover:border-[#D6B48C]/60">Accounting Summary</button>
+            <button type="button" onClick={() => setShowMoroccoAccountingSummary(true)} className="rounded-full border px-3 py-2 text-[10px] uppercase tracking-[0.12em] transition" style={{ borderColor: `${activeBillTabConfig.accent}59`, backgroundColor: `${activeBillTabConfig.accent}18`, color: activeBillTabConfig.accent }}>Accounting Summary</button>
             <button type="button" onClick={() => setShowMoroccoCostTracker(false)} aria-label="Close BillTab" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65">x</button>
           </div>
         </div>
@@ -1323,7 +1398,7 @@ export default function TravelSite() {
             <fieldset className="grid gap-1.5 text-xs text-white/45">
               <legend className="mb-1.5">Currency</legend>
               <div className="grid grid-cols-3 rounded-xl border border-white/15 bg-black/30 p-1">
-                {(["CAD", "MAD", "USD"] as const).map((currency) => <button key={currency} type="button" onClick={() => setMoroccoExpenseCurrency(currency)} className={`rounded-lg px-3 py-2 text-sm transition ${moroccoExpenseCurrency === currency ? "bg-[#D6B48C] text-black" : "text-white/55 hover:text-white"}`}>{currency}</button>)}
+                {(["CAD", activeBillTabConfig.localCurrency, "USD"] as const).map((currency) => <button key={currency} type="button" onClick={() => setMoroccoExpenseCurrency(currency)} className={`rounded-lg px-3 py-2 text-sm transition ${moroccoExpenseCurrency === currency ? "text-black" : "text-white/55 hover:text-white"}`} style={moroccoExpenseCurrency === currency ? { backgroundColor: activeBillTabConfig.accent } : undefined}>{currency}</button>)}
               </div>
             </fieldset>
             {renderMoroccoPaidForSelector()}
@@ -1331,17 +1406,17 @@ export default function TravelSite() {
               Paid By
               <select value={moroccoExpensePaidBy} onChange={(event) => setMoroccoExpensePaidBy(event.target.value)} className="rounded-xl border border-white/15 bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-[#D6B48C]/60">
                 <option value="" disabled>Select a party</option>
-                {moroccoInterestedNames.map((name) => <option key={name} value={name}>{name}</option>)}
+                {activeBillTabParties.map((name) => <option key={name} value={name}>{name}</option>)}
               </select>
             </label>
             <div className="grid gap-2 sm:self-end">
-              <button type="submit" className="rounded-xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-5 py-3 text-sm uppercase tracking-[0.16em] text-[#D6B48C]">{moroccoEditingExpenseId ? "Save Changes" : "Add Expense"}</button>
+              <button type="submit" className="rounded-xl border px-5 py-3 text-sm uppercase tracking-[0.16em]" style={{ borderColor: `${activeBillTabConfig.accent}59`, backgroundColor: `${activeBillTabConfig.accent}18`, color: activeBillTabConfig.accent }}>{moroccoEditingExpenseId ? "Save Changes" : "Add Expense"}</button>
               {moroccoEditingExpenseId && <button type="button" onClick={cancelMoroccoExpenseEdit} className="text-xs text-white/40 transition hover:text-white/70">Cancel Edit</button>}
             </div>
           </form>
           {moroccoExpenseMessage && <p className="mb-4 text-sm text-white/50">{moroccoExpenseMessage}</p>}
           <div className="space-y-3">
-            {moroccoExpenses.map((expense) => <div key={expense.id} className={`flex items-start justify-between gap-4 rounded-xl border bg-white/[0.04] px-4 py-3 ${moroccoEditingExpenseId === expense.id ? "border-[#D6B48C]/60" : "border-white/10"}`}><div className="min-w-0"><p className="truncate text-sm text-white/80">{expense.description}</p><p className="mt-1 text-xs text-white/40">{new Intl.DateTimeFormat("en-CA", { year: "numeric", month: "short", day: "numeric" }).format(new Date(expense.createdAt))} · Paid By {expense.paidBy} · Paid For {expense.paidFor || "Everyone"}</p>{expense.exchangeRateToCad !== null && expense.amountCad === null && <p className="mt-1 text-[11px] text-white/30">1 {expense.amountUsd !== null ? "USD" : "MAD"} = {expense.exchangeRateToCad.toFixed(4)} CAD</p>}</div><div className="shrink-0 text-right"><p className="text-sm font-medium" style={{ color: MOROCCO_BROWN }}>{expense.amountCad !== null ? `$${expense.amountCad.toFixed(2)} CAD` : expense.amountUsd !== null ? `$${expense.amountUsd.toFixed(2)} USD` : `${expense.amountLocal?.toFixed(2)} MAD`}</p>{expense.convertedAmountCad !== null && expense.amountCad === null && <p className="mt-1 text-xs text-white/40">≈ ${expense.convertedAmountCad.toFixed(2)} CAD</p>}<div className="mt-2 flex justify-end gap-3"><button type="button" onClick={() => editMoroccoExpense(expense)} className="text-[10px] uppercase tracking-[0.12em] text-[#D6B48C]/75 transition hover:text-[#D6B48C]">Edit</button><button type="button" onClick={() => deleteMoroccoExpense(expense)} className="text-[10px] uppercase tracking-[0.12em] text-red-300/60 transition hover:text-red-300">Delete</button></div></div></div>)}
+            {moroccoExpenses.map((expense) => <div key={expense.id} className={`flex items-start justify-between gap-4 rounded-xl border bg-white/[0.04] px-4 py-3 ${moroccoEditingExpenseId === expense.id ? "" : "border-white/10"}`} style={moroccoEditingExpenseId === expense.id ? { borderColor: `${activeBillTabConfig.accent}99` } : undefined}><div className="min-w-0"><p className="truncate text-sm text-white/80">{expense.description}</p><p className="mt-1 text-xs text-white/40">{new Intl.DateTimeFormat("en-CA", { year: "numeric", month: "short", day: "numeric" }).format(new Date(expense.createdAt))} · Paid By {expense.paidBy} · Paid For {expense.paidFor || "Everyone"}</p>{expense.exchangeRateToCad !== null && expense.amountCad === null && <p className="mt-1 text-[11px] text-white/30">1 {expense.amountUsd !== null ? "USD" : activeBillTabConfig.localLabel} = {expense.exchangeRateToCad.toFixed(4)} CAD</p>}</div><div className="shrink-0 text-right"><p className="text-sm font-medium" style={{ color: activeBillTabConfig.accent }}>{expense.amountCad !== null ? `$${expense.amountCad.toFixed(2)} CAD` : expense.amountUsd !== null ? `$${expense.amountUsd.toFixed(2)} USD` : `${activeBillTabConfig.localSymbol}${expense.amountLocal?.toFixed(2)} ${activeBillTabConfig.localLabel}`}</p>{expense.convertedAmountCad !== null && expense.amountCad === null && <p className="mt-1 text-xs text-white/40">≈ ${expense.convertedAmountCad.toFixed(2)} CAD</p>}<div className="mt-2 flex justify-end gap-3"><button type="button" onClick={() => editMoroccoExpense(expense)} className="text-[10px] uppercase tracking-[0.12em] transition" style={{ color: activeBillTabConfig.accent }}>Edit</button><button type="button" onClick={() => deleteMoroccoExpense(expense)} className="text-[10px] uppercase tracking-[0.12em] text-red-300/60 transition hover:text-red-300">Delete</button></div></div></div>)}
             {!moroccoExpenses.length && !moroccoExpenseMessage && <p className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-8 text-center text-sm text-white/40">No shared expenses recorded yet.</p>}
           </div>
         </div>
@@ -1370,6 +1445,25 @@ export default function TravelSite() {
           <button type="button" onClick={() => setAlbumPopupUrl("")} aria-label="Close photo album" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">x</button>
         </div>
         <iframe src={albumPopupUrl} title="Photo album" className="min-h-0 w-full flex-1 border-0 bg-black" />
+      </section>
+    </div>
+  ) : null;
+
+  const taiwanDashboardAlbumPopup = taiwanDashboardAlbumMode ? (
+    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Choose Taiwan photo album">
+      <section className="w-full max-w-md rounded-2xl border border-white/15 bg-[#111] p-5 text-left shadow-2xl sm:p-6">
+        <div className="mb-5 flex items-start justify-between gap-4 border-b border-white/10 pb-4">
+          <div>
+            <p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: TAIWAN_GOLD }}>Taiwan 2026</p>
+            <h2 className="text-2xl font-light text-white">{taiwanDashboardAlbumMode === "upload" ? "Upload Photos" : "View Album"}</h2>
+            <p className="mt-2 text-sm text-white/45">Choose which Taiwan album to use.</p>
+          </div>
+          <button type="button" onClick={() => setTaiwanDashboardAlbumMode("")} aria-label="Close Taiwan album selection" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">x</button>
+        </div>
+        <div className="grid gap-3">
+          <MemoryMaker albumKey="taiwanNovember" albumName="Taiwan November" accentColor={TAIWAN_GOLD} guestName={guestName} returnChapter="map" onViewAlbum={(url) => { setTaiwanDashboardAlbumMode(""); openAlbumPopup(url); }} inlineButtons inlineMode={taiwanDashboardAlbumMode} uploadLabel="Taiwan November" viewLabel="Taiwan November" />
+          <MemoryMaker albumKey="taiwanDecember" albumName="Taiwan December" accentColor={TAIWAN_GOLD} guestName={guestName} returnChapter="map" onViewAlbum={(url) => { setTaiwanDashboardAlbumMode(""); openAlbumPopup(url); }} inlineButtons inlineMode={taiwanDashboardAlbumMode} uploadLabel="Taiwan December" viewLabel="Taiwan December" />
+        </div>
       </section>
     </div>
   ) : null;
@@ -1529,7 +1623,7 @@ export default function TravelSite() {
                         <span className="text-xl">🎒</span>
                         <span className="text-xs font-light uppercase tracking-[0.16em] text-[#D6B48C]">Packing List</span>
                       </button>
-                      <button type="button" onClick={openMoroccoCostTracker} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-3 text-center transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">
+                      <button type="button" onClick={() => openMoroccoCostTracker("morocco")} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-3 text-center transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">
                         <span className="text-xl">💰</span>
                         <span className="text-xs font-light uppercase tracking-[0.16em] text-[#D6B48C]">BillTab</span>
                       </button>
@@ -2053,6 +2147,7 @@ export default function TravelSite() {
               <div className="mb-8 rounded-3xl border border-white/10 bg-white/[0.04] p-6 text-left shadow-[0_0_30px_rgba(255,255,255,0.05)]">
                 <p className="text-sm uppercase tracking-[0.28em] text-white/70">Welcome</p>
                 <h2 className="mt-2 text-3xl font-light tracking-wide text-white">Hello {guestName} 👋</h2>
+                {renderTripDashboardActions()}
                 {guestName === "Xenia & David & Naomi (3)" && <CountrySegmentButtons segments={[{ label: "Nov 21–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }, { label: "Day Trips · Taipei", page: "taipei", color: TAIWAN_GOLD }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Jim" && <CountrySegmentButtons segments={[{ label: "Nov 20–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Mark Wang" && <CountrySegmentButtons segments={[{ label: "Nov 20–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }, { label: "Day Trips · Taipei", page: "taipei", color: TAIWAN_GOLD }, { label: "Nov 25–27 · Naha + Okinawa World", page: "nahaearly", color: BABY_BLUE }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
@@ -2071,17 +2166,11 @@ export default function TravelSite() {
                   </div>
                 )}
               </div>
-              <div className="space-y-5">
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <button type="button" onClick={() => { setPage("map"); setIsGuestConfirmed(true); }} className="rounded-full border border-white/30 bg-white/[0.05] px-5 py-3 text-sm uppercase tracking-[0.22em] text-white transition hover:border-white/60 hover:bg-white/[0.08]">Map View</button>
-                  <button type="button" disabled={guestName === "Jim"} onClick={() => { setPage("checklist"); setIsGuestConfirmed(true); }} className={guestName === "Jim" ? "cursor-not-allowed rounded-full border border-white/10 bg-white/[0.02] px-5 py-3 text-sm uppercase tracking-[0.22em] text-white/25 opacity-60" : "rounded-full border border-white/30 bg-white/[0.05] px-5 py-3 text-sm uppercase tracking-[0.22em] text-white transition hover:border-white/60 hover:bg-white/[0.08]"}>Packing List</button>
-                </div>
-                <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-4 text-left"><p className="mb-4 whitespace-nowrap text-[10px] uppercase tracking-[0.18em] text-white/35 sm:text-xs sm:tracking-[0.24em]">Active once trip begins</p><div className="grid gap-3 sm:grid-cols-2"><button type="button" disabled className="cursor-not-allowed rounded-full border border-white/10 bg-white/[0.02] px-5 py-3 text-sm uppercase tracking-[0.22em] text-white/25 opacity-60">What's Today?</button><button type="button" disabled className="cursor-not-allowed rounded-full border border-white/10 bg-white/[0.02] px-5 py-3 text-sm uppercase tracking-[0.22em] text-white/25 opacity-60">What's Tomorrow?</button></div></div>
-              </div>
             </>
           )}
         </div>
         {albumPopup}
+        {taiwanDashboardAlbumPopup}
         {moroccoCostTrackerPopup}
         {moroccoAccountingSummaryPopup}
       </div>

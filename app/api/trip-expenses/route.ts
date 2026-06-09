@@ -13,7 +13,13 @@ type ExpenseRow = {
   created_at: string;
 };
 
-type ExpenseCurrency = "CAD" | "MAD" | "USD";
+type ExpenseCurrency = "CAD" | "MAD" | "JPY" | "USD";
+
+const ALLOWED_TRIPS = ["morocco", "taiwan", "okinawaJapan"] as const;
+
+function isAllowedTrip(trip: string) {
+  return (ALLOWED_TRIPS as readonly string[]).includes(trip);
+}
 
 function getSupabaseConfig() {
   const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -61,7 +67,7 @@ function getExpenseInput(body: Record<string, unknown>) {
   const paidBy = typeof body.paidBy === "string" ? body.paidBy.trim() : "";
   const paidFor = typeof body.paidFor === "string" ? body.paidFor.trim() : "";
   const amount = Number(body.amount);
-  const currency: ExpenseCurrency | "" = body.currency === "MAD" ? "MAD" : body.currency === "CAD" ? "CAD" : body.currency === "USD" ? "USD" : "";
+  const currency: ExpenseCurrency | "" = body.currency === "MAD" ? "MAD" : body.currency === "JPY" ? "JPY" : body.currency === "CAD" ? "CAD" : body.currency === "USD" ? "USD" : "";
   if (!description || !paidBy || !paidFor || !currency || !Number.isFinite(amount) || amount <= 0) return null;
   return { description, paidBy, paidFor, amount, currency };
 }
@@ -76,7 +82,7 @@ export async function GET(request: NextRequest) {
   const config = getSupabaseConfig();
   if (!config) return NextResponse.json({ error: "Supabase is not configured." }, { status: 503 });
   const trip = request.nextUrl.searchParams.get("trip") || "";
-  if (trip !== "morocco") return NextResponse.json({ error: "Unknown trip." }, { status: 400 });
+  if (!isAllowedTrip(trip)) return NextResponse.json({ error: "Unknown trip." }, { status: 400 });
   try {
     return NextResponse.json({ expenses: await loadExpenses(config.url, config.key, trip) });
   } catch (error) {
@@ -91,7 +97,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const trip = typeof body.trip === "string" ? body.trip : "";
     const expense = getExpenseInput(body);
-    if (trip !== "morocco" || !expense) {
+    if (!isAllowedTrip(trip) || !expense) {
       return NextResponse.json({ error: "Valid expense details are required." }, { status: 400 });
     }
     const { description, paidBy, paidFor, amount, currency } = expense;
@@ -104,7 +110,7 @@ export async function POST(request: NextRequest) {
         trip_key: trip,
         description,
         amount_cad: currency === "CAD" ? amount : null,
-        amount_local: currency === "MAD" ? amount : null,
+        amount_local: currency === "MAD" || currency === "JPY" ? amount : null,
         amount_usd: currency === "USD" ? amount : null,
         exchange_rate_to_cad: exchangeRateToCad,
         converted_amount_cad: convertedAmountCad,
@@ -129,7 +135,7 @@ export async function PATCH(request: NextRequest) {
     const trip = typeof body.trip === "string" ? body.trip : "";
     const id = typeof body.id === "string" ? body.id : "";
     const expense = getExpenseInput(body);
-    if (trip !== "morocco" || !id || !expense) return NextResponse.json({ error: "Valid expense details are required." }, { status: 400 });
+    if (!isAllowedTrip(trip) || !id || !expense) return NextResponse.json({ error: "Valid expense details are required." }, { status: 400 });
 
     const { description, paidBy, paidFor, amount, currency } = expense;
     const exchangeRateToCad = await getCadExchangeRate(currency);
@@ -140,7 +146,7 @@ export async function PATCH(request: NextRequest) {
       body: JSON.stringify({
         description,
         amount_cad: currency === "CAD" ? amount : null,
-        amount_local: currency === "MAD" ? amount : null,
+        amount_local: currency === "MAD" || currency === "JPY" ? amount : null,
         amount_usd: currency === "USD" ? amount : null,
         exchange_rate_to_cad: exchangeRateToCad,
         converted_amount_cad: convertedAmountCad,
@@ -164,7 +170,7 @@ export async function DELETE(request: NextRequest) {
     if (passwordError) return NextResponse.json({ error: passwordError }, { status: process.env.SITE_PASSWORD ? 401 : 503 });
     const trip = typeof body.trip === "string" ? body.trip : "";
     const id = typeof body.id === "string" ? body.id : "";
-    if (trip !== "morocco" || !id) return NextResponse.json({ error: "Unknown expense." }, { status: 400 });
+    if (!isAllowedTrip(trip) || !id) return NextResponse.json({ error: "Unknown expense." }, { status: 400 });
     const response = await fetch(`${config.url}/rest/v1/trip_expenses?id=eq.${encodeURIComponent(id)}&trip_key=eq.${encodeURIComponent(trip)}`, {
       method: "DELETE",
       headers: { apikey: config.key, Authorization: `Bearer ${config.key}` },
