@@ -1276,10 +1276,11 @@ export default function TravelSite() {
   }
 
   if (!isGuestConfirmed) {
+    const isPosterHeroSelection = (selectedTrip === "okinawaJapan" && !showGuestActions) || (selectedTrip === "morocco" && !guestName);
     return (
       <div className="flex min-h-screen items-center justify-center bg-black px-6 text-white">
-        <div className={`w-full max-w-md rounded-[2rem] border border-white/10 text-center backdrop-blur-xl ${selectedTrip === "okinawaJapan" && !showGuestActions ? "overflow-hidden bg-[#020B18] shadow-[0_0_44px_rgba(158,220,255,0.16)]" : "bg-white/[0.04] p-8 shadow-[0_0_40px_rgba(255,255,255,0.06)]"}`}>
-          <p className={selectedTrip === "okinawaJapan" && !showGuestActions ? "px-8 pt-8 pb-3 text-xs uppercase tracking-[0.35em] text-white/75" : "mb-3 text-xs uppercase tracking-[0.35em] text-white/70"}>Private Group Event</p>
+        <div className={`w-full max-w-md rounded-[2rem] border border-white/10 text-center backdrop-blur-xl ${isPosterHeroSelection ? "overflow-hidden bg-[#020B18] shadow-[0_0_44px_rgba(158,220,255,0.16)]" : "bg-white/[0.04] p-8 shadow-[0_0_40px_rgba(255,255,255,0.06)]"}`}>
+          <p className={isPosterHeroSelection ? "px-8 pt-8 pb-3 text-xs uppercase tracking-[0.35em] text-white/75" : "mb-3 text-xs uppercase tracking-[0.35em] text-white/70"}>Private Group Event</p>
           {!selectedTrip ? (
             <>
               <h1 className="mb-4 text-3xl font-light tracking-wide">
@@ -1288,7 +1289,7 @@ export default function TravelSite() {
               </h1>
               <p className="mb-8 text-sm leading-6 text-white/55">Please select your trip.</p>
               <div className="space-y-3">
-                <TripButton location="Morocco (G-Adventures)" date="Sept 4 - Sept 16 2026" status="Confirmed" onClick={() => { setGuestName(""); setSelectedTrip("morocco"); }} />
+                <TripButton location="Morocco" date="Sept 4 - Sept 16 2026" status="Confirmed" onClick={() => { setGuestName(""); setSelectedTrip("morocco"); }} />
                 <TripButton location="Vietnam" date="Nov 12 - Nov 21 2026" status="Planning" onClick={() => setSelectedTrip("vietnam")} />
                 <TripButton location="Taiwan" date="Nov 21 - Dec 21 2026" status="Confirmed" onClick={() => setSelectedTrip("taiwan")} />
                 <TripButton location="Okinawa Japan" date="Nov 25 - Dec 6 2026" status="Confirmed" onClick={() => setSelectedTrip("okinawaJapan")} />
@@ -1304,45 +1305,51 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "morocco" ? (
             <>
-              <div className="mb-5 flex flex-wrap justify-center gap-3">
-                {guestName && <button type="button" onClick={() => { setGuestName(""); setShowMoroccoChecklist(false); }} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45 transition hover:border-white/30 hover:bg-white/[0.05]">Back</button>}
-                <button type="button" onClick={() => { setGuestName(""); setSelectedTrip(""); setShowMoroccoNameInput(false); setMoroccoNameInput(""); setShowMoroccoBudget(false); setShowMoroccoUsefulInfo(false); setShowMoroccoMap(false); setShowMoroccoChecklist(false); }} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45 transition hover:border-white/30 hover:bg-white/[0.05]">All Trips</button>
-              </div>
-              <TripPanelTitle location="Morocco (G-Adventures)" date="Sept 4 - Sept 16 2026" description={guestName ? undefined : "A late-summer group adventure through Morocco with time for culture, scenery, food, and slow wandering."} />
               {guestName ? (
-                <section className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 text-left">
-                  <p className="text-sm uppercase tracking-[0.28em] text-white/55">Welcome</p>
-                  <h2 className="mt-2 mb-6 text-3xl font-light tracking-wide text-white">Hello {guestName}</h2>
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    <button type="button" onClick={() => setShowMoroccoItinerary(true)} className="w-full rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#D6B48C] transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15 sm:col-span-2">Trip Itinerary</button>
-                    <button type="button" onClick={() => setShowMoroccoMap(true)} className="w-full rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#D6B48C] transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">Map View</button>
-                    <button type="button" onClick={() => setShowMoroccoChecklist(true)} className="w-full rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#D6B48C] transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">Packing List</button>
-                  </div>
-                </section>
-              ) : (
                 <>
-                  <div className="grid gap-3 sm:grid-cols-3">
-                    <button type="button" onClick={() => setShowMoroccoMap(true)} className="w-full rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#D6B48C] transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">Map View</button>
-                    <button type="button" onClick={() => setShowMoroccoBudget(true)} className="w-full rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#D6B48C] transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">Budget</button>
-                    <button type="button" onClick={() => setShowMoroccoUsefulInfo(true)} className="w-full rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#D6B48C] transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">Useful Info</button>
+                  <div className="mb-5 flex flex-wrap justify-center gap-3">
+                    <button type="button" onClick={() => { setGuestName(""); setShowMoroccoChecklist(false); }} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45 transition hover:border-white/30 hover:bg-white/[0.05]">Back</button>
+                    <button type="button" onClick={() => { setGuestName(""); setSelectedTrip(""); setShowMoroccoNameInput(false); setMoroccoNameInput(""); setShowMoroccoBudget(false); setShowMoroccoUsefulInfo(false); setShowMoroccoMap(false); setShowMoroccoChecklist(false); }} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45 transition hover:border-white/30 hover:bg-white/[0.05]">All Trips</button>
                   </div>
-
-                  <section className="mt-6 rounded-3xl border border-white/10 bg-black/20 p-5 text-left">
-                    <div className="mb-4 flex items-center justify-between gap-3">
-                      <h2 className="text-sm uppercase tracking-[0.24em] text-white/55">List of Party</h2>
-                      <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-white/45">{moroccoInterestedNames.length}</span>
+                  <TripPanelTitle location="Morocco" subtitle="G-Adventures" date="Sept 4 - Sept 16 2026" />
+                  <section className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 text-left">
+                    <p className="text-sm uppercase tracking-[0.28em] text-white/55">Welcome</p>
+                    <h2 className="mt-2 mb-6 text-3xl font-light tracking-wide text-white">Hello {guestName}</h2>
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <button type="button" onClick={() => setShowMoroccoItinerary(true)} className="w-full rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#D6B48C] transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15 sm:col-span-2">Trip Itinerary</button>
+                      <button type="button" onClick={() => setShowMoroccoMap(true)} className="w-full rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#D6B48C] transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">Map View</button>
+                      <button type="button" onClick={() => setShowMoroccoChecklist(true)} className="w-full rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#D6B48C] transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">Packing List</button>
                     </div>
-                    {moroccoInterestedNames.length ? (
-                      <div className="space-y-2">
-                        {moroccoInterestedNames.map((name) => (
-                          <button key={name} type="button" onClick={() => setGuestName(name)} className="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-left text-sm text-white/75 transition hover:border-white/30 hover:bg-white/[0.06]">{name}</button>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm text-white/35">No parties added yet.</p>
-                    )}
                   </section>
                 </>
+              ) : (
+                <div className="relative overflow-hidden bg-[#100D16]">
+                  <div className="px-5 pb-5">
+                    <div className="mb-3 grid grid-cols-2 gap-2">
+                      <button type="button" onClick={() => { setGuestName(""); setSelectedTrip(""); setShowMoroccoNameInput(false); setMoroccoNameInput(""); setShowMoroccoBudget(false); setShowMoroccoUsefulInfo(false); setShowMoroccoMap(false); setShowMoroccoChecklist(false); }} className="rounded-full border border-white/20 bg-white/[0.06] px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-white/65 transition hover:border-white/35 hover:bg-white/[0.1]">Back</button>
+                      <button type="button" onClick={() => setShowMoroccoMap(true)} className="rounded-full border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-[#D6B48C] transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">Map View</button>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button type="button" onClick={() => setShowMoroccoBudget(true)} className="rounded-full border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-[#D6B48C] transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">Budget</button>
+                      <button type="button" onClick={() => setShowMoroccoUsefulInfo(true)} className="rounded-full border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-[#D6B48C] transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">Useful Info</button>
+                    </div>
+                  </div>
+                  <img src="/morocco-2026-poster.png" alt="Morocco 2026 travel poster" className="h-auto w-full object-cover" />
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/72 to-transparent px-4 pb-4 pt-20">
+                    <select
+                      defaultValue=""
+                      onChange={(event) => {
+                        const selectedGuest = event.target.value;
+                        if (!selectedGuest) return;
+                        setGuestName(selectedGuest);
+                      }}
+                      className="w-full rounded-2xl border border-white/25 bg-black/75 px-4 py-3 text-sm font-light tracking-wide text-white outline-none backdrop-blur-md transition focus:border-[#D6B48C]/70"
+                    >
+                      <option value="" disabled>{moroccoInterestedNames.length ? "Select your party" : "No parties added yet"}</option>
+                      {moroccoInterestedNames.map((name) => <option key={name} value={name}>{name}</option>)}
+                    </select>
+                  </div>
+                </div>
               )}
               {showMoroccoBudget && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Morocco trip budget">
@@ -1378,38 +1385,38 @@ export default function TravelSite() {
                 </div>
               )}
               {showMoroccoUsefulInfo && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Morocco useful information">
-                  <section className="max-h-[88vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-white/15 bg-[#111] p-6 text-left shadow-2xl sm:p-7">
-                    <div className="mb-6 flex items-start justify-between gap-5 border-b border-white/10 pb-5">
+                <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/80 p-2 backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-label="Morocco useful information">
+                  <section className="flex max-h-[calc(100dvh-1rem)] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] text-left shadow-2xl sm:max-h-[90vh]">
+                    <div className="flex shrink-0 items-start justify-between gap-4 border-b border-white/10 px-4 py-4 sm:px-7 sm:py-5">
                       <div>
                         <p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: MOROCCO_BROWN }}>Morocco 2026</p>
                         <h2 className="text-2xl font-light text-white">Useful Information</h2>
                       </div>
                       <button type="button" onClick={() => setShowMoroccoUsefulInfo(false)} aria-label="Close Morocco useful information" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">×</button>
                     </div>
-                    <div className="space-y-3">
-                      <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
+                    <div className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-7">
+                      <div className="rounded-xl border border-white/10 bg-white/[0.04] p-3 sm:p-4">
                         <p className="text-xs uppercase tracking-[0.18em] text-white/40">Power</p>
-                        <img src="/poweradapter.png" alt="Power adapter suitable for Morocco" className="mt-3 w-full rounded-xl border border-white/10 bg-white object-contain" />
+                        <img src="/poweradapter.png" alt="Power adapter suitable for Morocco" className="mt-3 max-h-52 w-full rounded-xl border border-white/10 bg-white object-contain sm:max-h-none" />
                         <p className="mt-2 text-sm leading-6 text-white/75">Morocco uses 220V / 50Hz power with Type C and Type E plugs. A European-style Type C/E adapter is recommended.</p>
                       </div>
-                      <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
+                      <div className="rounded-xl border border-white/10 bg-white/[0.04] p-3 sm:p-4">
                         <p className="text-xs uppercase tracking-[0.18em] text-white/40">Uber</p>
                         <p className="mt-2 text-sm leading-6 text-white/75">Available in Casablanca & Marrakesh.</p>
                       </div>
-                      <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
+                      <div className="rounded-xl border border-white/10 bg-white/[0.04] p-3 sm:p-4">
                         <p className="text-xs uppercase tracking-[0.18em] text-white/40">Tipping</p>
                         <p className="mt-2 text-sm leading-6 text-white/75">Tipping is customary for guides, drivers, hotel staff, restaurants, and small services. Keep small MAD bills handy throughout the trip.</p>
                       </div>
-                      <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
+                      <div className="rounded-xl border border-white/10 bg-white/[0.04] p-3 sm:p-4">
                         <p className="text-xs uppercase tracking-[0.18em] text-white/40">Visa</p>
                         <p className="mt-2 text-sm leading-6 text-white/75">Canadian passport holders do not need a tourist visa for stays under 90 days.</p>
                       </div>
-                      <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
+                      <div className="rounded-xl border border-white/10 bg-white/[0.04] p-3 sm:p-4">
                         <p className="text-xs uppercase tracking-[0.18em] text-white/40">Payment</p>
                         <p className="mt-2 text-sm leading-6 text-white/75">Credit cards are useful at hotels, larger restaurants, and bigger shops. Cash is still important for markets, taxis, tips, smaller restaurants, and rural stops.</p>
                       </div>
-                      <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
+                      <div className="rounded-xl border border-white/10 bg-white/[0.04] p-3 sm:p-4">
                         <p className="text-xs uppercase tracking-[0.18em] text-white/40">SIM Card</p>
                         <p className="mt-2 text-sm leading-6 text-white/75">Maroc Telecom, Orange Morocco, and Inwi are the main local networks. For broad trip coverage, Maroc Telecom is a strong first choice; Orange is also tourist-friendly and widely available. Buy at the airport or an official shop and bring your passport.</p>
                       </div>
