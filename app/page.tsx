@@ -1354,7 +1354,7 @@ export default function TravelSite() {
                         <p className="mt-2 text-sm font-medium text-white">$600 CAD</p>
                       </div>
                       <div className="rounded-xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 p-5">
-                        <p className="text-center text-xs font-medium uppercase tracking-[0.18em] text-[#D6B48C]">Estimated Total = 3,700 CAD</p>
+                        <p className="whitespace-nowrap text-center text-[10px] font-medium uppercase tracking-[0.08em] text-[#D6B48C] sm:text-xs sm:tracking-[0.18em]">Estimated Total = $3,700 CAD</p>
                       </div>
                     </div>
                   </section>
@@ -1373,7 +1373,7 @@ export default function TravelSite() {
                     <div className="space-y-3">
                       <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
                         <p className="text-xs uppercase tracking-[0.18em] text-white/40">Power</p>
-                        <img src="/morocco-power-plugs.svg" alt="Examples of Type C and Type E plugs used in Morocco" className="mt-3 w-full rounded-xl border border-white/10 bg-white" />
+                        <img src="/poweradapter.png" alt="Power adapter suitable for Morocco" className="mt-3 w-full rounded-xl border border-white/10 bg-white object-contain" />
                         <p className="mt-2 text-sm leading-6 text-white/75">Morocco uses 220V / 50Hz power with Type C and Type E plugs. A European-style Type C/E adapter is recommended.</p>
                       </div>
                       <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
