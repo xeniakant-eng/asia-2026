@@ -20,7 +20,8 @@ export default function LoginPage() {
 
     setIsSubmitting(false);
     if (response.ok) {
-      window.location.href = "/";
+      const from = new URLSearchParams(window.location.search).get("from") || "/";
+      window.location.href = from.startsWith("/") && !from.startsWith("//") ? from : "/";
       return;
     }
 

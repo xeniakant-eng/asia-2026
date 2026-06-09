@@ -271,13 +271,13 @@ function MemoryMaker({
       <div>
         <div className="grid gap-3 sm:grid-cols-2">
           <input ref={fileInputRef} type="file" multiple accept="image/*" className="hidden" onChange={(event) => uploadFiles(event.target.files)} />
-          <button type="button" disabled={isLoading} onClick={() => fileInputRef.current?.click()} className="flex min-h-28 flex-col items-center justify-center rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-4 text-center transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15 disabled:cursor-wait disabled:opacity-50">
-            <span className="text-3xl">📤</span>
-            <span className="mt-3 text-xs font-light uppercase tracking-[0.16em] text-[#D6B48C]">Upload Photos</span>
+          <button type="button" disabled={isLoading} onClick={() => fileInputRef.current?.click()} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-3 text-center transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15 disabled:cursor-wait disabled:opacity-50">
+            <span className="text-xl">📤</span>
+            <span className="text-xs font-light uppercase tracking-[0.16em] text-[#D6B48C]">Upload Photos</span>
           </button>
-          <button type="button" onClick={viewAlbum} className="flex min-h-28 flex-col items-center justify-center rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-4 text-center transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">
-            <span className="text-3xl">🖼️</span>
-            <span className="mt-3 text-xs font-light uppercase tracking-[0.16em] text-[#D6B48C]">View Album</span>
+          <button type="button" onClick={viewAlbum} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-3 text-center transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">
+            <span className="text-xl">🖼️</span>
+            <span className="text-xs font-light uppercase tracking-[0.16em] text-[#D6B48C]">View Album</span>
           </button>
         </div>
         {message && <p className="mt-3 text-sm text-white/50">{message}</p>}
@@ -1460,14 +1460,14 @@ export default function TravelSite() {
                       <p className="mt-2 text-sm text-white/45">Sept 4 - Sept 16 2026</p>
                     </div>
                     <div className="grid gap-3 sm:grid-cols-2">
-                      <button type="button" onClick={() => setShowMoroccoItinerary(true)} className="rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-5 text-center text-sm font-light uppercase tracking-[0.18em] text-[#D6B48C] transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15 sm:col-span-2">Trip Itinerary</button>
-                      <button type="button" onClick={() => setShowMoroccoChecklist(true)} className="flex min-h-28 flex-col items-center justify-center rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-4 text-center transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">
-                        <span className="text-3xl">🎒</span>
-                        <span className="mt-3 text-xs font-light uppercase tracking-[0.16em] text-[#D6B48C]">Packing List</span>
+                      <button type="button" onClick={() => setShowMoroccoItinerary(true)} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-3 text-center text-sm font-light uppercase tracking-[0.18em] text-[#D6B48C] transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15 sm:col-span-2"><span className="text-xl">🗓️</span><span>Trip Itinerary</span></button>
+                      <button type="button" onClick={() => setShowMoroccoChecklist(true)} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-3 text-center transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">
+                        <span className="text-xl">🎒</span>
+                        <span className="text-xs font-light uppercase tracking-[0.16em] text-[#D6B48C]">Packing List</span>
                       </button>
-                      <button type="button" onClick={openMoroccoCostTracker} className="flex min-h-28 flex-col items-center justify-center rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-4 text-center transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">
-                        <span className="text-3xl">💳</span>
-                        <span className="mt-3 text-xs font-light uppercase tracking-[0.16em] text-[#D6B48C]">Cost Tracker</span>
+                      <button type="button" onClick={openMoroccoCostTracker} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-3 text-center transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">
+                        <span className="text-xl">💳</span>
+                        <span className="text-xs font-light uppercase tracking-[0.16em] text-[#D6B48C]">Cost Tracker</span>
                       </button>
                     </div>
                     <MemoryMaker albumKey="moroccoSeptember" albumName="Morocco" accentColor={MOROCCO_BROWN} guestName={guestName} returnChapter="morocco" onViewAlbum={openAlbumPopup} compact />
@@ -1941,8 +1941,8 @@ export default function TravelSite() {
               <button type="button" onClick={() => { setSelectedTrip(""); setShowGuestActions(false); setGuestName(""); }} className={selectedTrip === "okinawaJapan" || selectedTrip === "taiwan" ? "mx-8 mb-5 rounded-full border border-white/20 bg-white/[0.06] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/65 transition hover:border-white/35 hover:bg-white/[0.1]" : "mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45"}>Main Page</button>
               {selectedTrip === "okinawaJapan" || selectedTrip === "taiwan" ? (
                 <div className={`relative overflow-hidden ${selectedTrip === "taiwan" ? "bg-black" : "bg-[#020B18]"}`}>
-                  <img src={selectedTrip === "taiwan" ? "/taiwan-2026-poster.png" : "/okinawa-2026-poster.png"} alt={selectedTrip === "taiwan" ? "Taiwan 2026 travel poster" : "Okinawa Japan 2026 travel poster"} className="h-auto w-full object-cover" />
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/72 to-transparent px-4 pb-4 pt-20">
+                  <img src={selectedTrip === "taiwan" ? "/taiwan-2026-poster.png" : "/okinawa-2026-poster.png"} alt={selectedTrip === "taiwan" ? "Taiwan 2026 travel poster" : "Okinawa Japan 2026 travel poster"} className={`h-auto w-full object-cover ${selectedTrip === "taiwan" ? "scale-[1.04] -translate-y-7" : ""}`} />
+                  <div className={`absolute inset-x-0 bottom-0 bg-gradient-to-t from-black px-4 pb-4 ${selectedTrip === "taiwan" ? "via-black/90 pt-28" : "via-black/72 pt-20"} to-transparent`}>
                     <select
                       defaultValue=""
                       onChange={(event) => {
