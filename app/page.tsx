@@ -70,6 +70,7 @@ type MoroccoExpense = {
   exchangeRateToCad: number | null;
   convertedAmountCad: number | null;
   paidBy: string;
+  paidFor: string;
   createdAt: string;
 };
 
@@ -491,6 +492,7 @@ export default function TravelSite() {
   const [moroccoExpenseAmount, setMoroccoExpenseAmount] = useState("");
   const [moroccoExpenseCurrency, setMoroccoExpenseCurrency] = useState<"CAD" | "MAD" | "USD">("MAD");
   const [moroccoExpensePaidBy, setMoroccoExpensePaidBy] = useState("");
+  const [moroccoExpensePaidFor, setMoroccoExpensePaidFor] = useState<string[]>(["Everyone"]);
   const [moroccoEditingExpenseId, setMoroccoEditingExpenseId] = useState("");
   const [moroccoExpenseAdminPassword, setMoroccoExpenseAdminPassword] = useState("");
   const [moroccoExpenseMessage, setMoroccoExpenseMessage] = useState("");
@@ -1166,9 +1168,34 @@ export default function TravelSite() {
     }
   };
 
+  const parseMoroccoPaidFor = (value: string) => {
+    if (!value || value === "Everyone") return ["Everyone"];
+    return value.split(",").map((name) => name.trim()).filter(Boolean);
+  };
+
+  const moroccoSelectedPaidForParties = moroccoExpensePaidFor.includes("Everyone")
+    ? moroccoInterestedNames
+    : moroccoExpensePaidFor.filter((name) => moroccoInterestedNames.includes(name));
+  const moroccoAllPaidForSelected = moroccoInterestedNames.length > 0 && moroccoSelectedPaidForParties.length === moroccoInterestedNames.length;
+  const moroccoPaidForPayload = moroccoAllPaidForSelected ? "Everyone" : moroccoSelectedPaidForParties.join(", ");
+
+  const toggleMoroccoPaidForEveryone = (checked: boolean) => {
+    setMoroccoExpensePaidFor(checked ? ["Everyone"] : []);
+  };
+
+  const toggleMoroccoPaidForParty = (name: string, checked: boolean) => {
+    const current = moroccoExpensePaidFor.includes("Everyone")
+      ? moroccoInterestedNames
+      : moroccoExpensePaidFor.filter((partyName) => moroccoInterestedNames.includes(partyName));
+    const next = checked ? [...current, name] : current.filter((partyName) => partyName !== name);
+    const uniqueNext = Array.from(new Set(next));
+    setMoroccoExpensePaidFor(uniqueNext.length === moroccoInterestedNames.length ? ["Everyone"] : uniqueNext);
+  };
+
   const openMoroccoCostTracker = async () => {
     setShowMoroccoCostTracker(true);
     setMoroccoExpensePaidBy((current) => current || guestName || moroccoInterestedNames[0] || "");
+    setMoroccoExpensePaidFor((current) => current.length ? current : ["Everyone"]);
     setMoroccoExpenseMessage("");
     try {
       const response = await fetch("/api/trip-expenses?trip=morocco");
@@ -1182,19 +1209,20 @@ export default function TravelSite() {
 
   const addMoroccoExpense = async () => {
     const amount = Number(moroccoExpenseAmount);
-    if (!moroccoExpenseDescription.trim() || !Number.isFinite(amount) || amount <= 0 || !moroccoExpensePaidBy) return;
+    if (!moroccoExpenseDescription.trim() || !Number.isFinite(amount) || amount <= 0 || !moroccoExpensePaidBy || !moroccoPaidForPayload) return;
     setMoroccoExpenseMessage("Saving expense...");
     try {
       const response = await fetch("/api/trip-expenses", {
         method: moroccoEditingExpenseId ? "PATCH" : "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ trip: "morocco", id: moroccoEditingExpenseId, description: moroccoExpenseDescription.trim(), amount, currency: moroccoExpenseCurrency, paidBy: moroccoExpensePaidBy, password: moroccoExpenseAdminPassword }),
+        body: JSON.stringify({ trip: "morocco", id: moroccoEditingExpenseId, description: moroccoExpenseDescription.trim(), amount, currency: moroccoExpenseCurrency, paidBy: moroccoExpensePaidBy, paidFor: moroccoPaidForPayload, password: moroccoExpenseAdminPassword }),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Unable to save expense.");
       setMoroccoExpenses(Array.isArray(data.expenses) ? data.expenses : []);
       setMoroccoExpenseDescription("");
       setMoroccoExpenseAmount("");
+      setMoroccoExpensePaidFor(["Everyone"]);
       setMoroccoEditingExpenseId("");
       setMoroccoExpenseAdminPassword("");
       setMoroccoExpenseMessage("");
@@ -1210,6 +1238,7 @@ export default function TravelSite() {
     setMoroccoEditingExpenseId(expense.id);
     setMoroccoExpenseDescription(expense.description);
     setMoroccoExpensePaidBy(expense.paidBy);
+    setMoroccoExpensePaidFor(parseMoroccoPaidFor(expense.paidFor || "Everyone"));
     if (expense.amountCad !== null) {
       setMoroccoExpenseAmount(expense.amountCad.toString());
       setMoroccoExpenseCurrency("CAD");
@@ -1228,6 +1257,7 @@ export default function TravelSite() {
     setMoroccoExpenseAdminPassword("");
     setMoroccoExpenseDescription("");
     setMoroccoExpenseAmount("");
+    setMoroccoExpensePaidFor(["Everyone"]);
     setMoroccoExpenseMessage("");
   };
 
@@ -1252,15 +1282,32 @@ export default function TravelSite() {
   };
 
   const moroccoExpenseTotal = moroccoExpenses.reduce((sum, expense) => sum + (expense.convertedAmountCad ?? expense.amountCad ?? 0), 0);
+  const renderMoroccoPaidForSelector = () => (
+    <fieldset className="grid gap-2 text-xs text-white/45 sm:col-span-2">
+      <legend>Paid For</legend>
+      <div className="grid gap-2 rounded-xl border border-white/15 bg-black/20 p-3 sm:grid-cols-2">
+        <label className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-sm text-white/75">
+          <input type="checkbox" checked={moroccoAllPaidForSelected} onChange={(event) => toggleMoroccoPaidForEveryone(event.target.checked)} className="h-4 w-4 accent-[#D6B48C]" />
+          <span>Everyone</span>
+        </label>
+        {moroccoInterestedNames.map((name) => (
+          <label key={name} className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-sm text-white/75">
+            <input type="checkbox" checked={moroccoSelectedPaidForParties.includes(name)} onChange={(event) => toggleMoroccoPaidForParty(name, event.target.checked)} className="h-4 w-4 accent-[#D6B48C]" />
+            <span>{name}</span>
+          </label>
+        ))}
+      </div>
+    </fieldset>
+  );
 
   const moroccoCostTrackerPopup = showMoroccoCostTracker ? (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Morocco cost tracker">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Morocco BillTab">
       <section className="flex max-h-[92vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] shadow-2xl">
         <div className="flex items-start justify-between gap-5 border-b border-white/10 px-5 py-5 sm:px-7">
-          <div><p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: MOROCCO_BROWN }}>Morocco 2026</p><h2 className="text-2xl font-light">Cost Tracker</h2><p className="mt-2 text-sm text-white/45">Converted total: ${moroccoExpenseTotal.toFixed(2)} CAD</p></div>
+          <div><p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: MOROCCO_BROWN }}>Morocco 2026</p><h2 className="text-2xl font-light">BillTab</h2><p className="mt-2 text-sm text-white/45">Converted total: ${moroccoExpenseTotal.toFixed(2)} CAD</p></div>
           <div className="flex items-center gap-2">
             <button type="button" onClick={() => setShowMoroccoAccountingSummary(true)} className="rounded-full border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-3 py-2 text-[10px] uppercase tracking-[0.12em] text-[#D6B48C] transition hover:border-[#D6B48C]/60">Accounting Summary</button>
-            <button type="button" onClick={() => setShowMoroccoCostTracker(false)} aria-label="Close cost tracker" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65">x</button>
+            <button type="button" onClick={() => setShowMoroccoCostTracker(false)} aria-label="Close BillTab" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65">x</button>
           </div>
         </div>
         <div className="min-h-0 overflow-y-auto p-5 sm:p-7">
@@ -1279,8 +1326,9 @@ export default function TravelSite() {
                 {(["CAD", "MAD", "USD"] as const).map((currency) => <button key={currency} type="button" onClick={() => setMoroccoExpenseCurrency(currency)} className={`rounded-lg px-3 py-2 text-sm transition ${moroccoExpenseCurrency === currency ? "bg-[#D6B48C] text-black" : "text-white/55 hover:text-white"}`}>{currency}</button>)}
               </div>
             </fieldset>
+            {renderMoroccoPaidForSelector()}
             <label className="grid gap-1.5 text-xs text-white/45">
-              Who Paid
+              Paid By
               <select value={moroccoExpensePaidBy} onChange={(event) => setMoroccoExpensePaidBy(event.target.value)} className="rounded-xl border border-white/15 bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-[#D6B48C]/60">
                 <option value="" disabled>Select a party</option>
                 {moroccoInterestedNames.map((name) => <option key={name} value={name}>{name}</option>)}
@@ -1293,7 +1341,7 @@ export default function TravelSite() {
           </form>
           {moroccoExpenseMessage && <p className="mb-4 text-sm text-white/50">{moroccoExpenseMessage}</p>}
           <div className="space-y-3">
-            {moroccoExpenses.map((expense) => <div key={expense.id} className={`flex items-start justify-between gap-4 rounded-xl border bg-white/[0.04] px-4 py-3 ${moroccoEditingExpenseId === expense.id ? "border-[#D6B48C]/60" : "border-white/10"}`}><div className="min-w-0"><p className="truncate text-sm text-white/80">{expense.description}</p><p className="mt-1 text-xs text-white/40">{new Intl.DateTimeFormat("en-CA", { year: "numeric", month: "short", day: "numeric" }).format(new Date(expense.createdAt))} · Paid by {expense.paidBy}</p>{expense.exchangeRateToCad !== null && expense.amountCad === null && <p className="mt-1 text-[11px] text-white/30">1 {expense.amountUsd !== null ? "USD" : "MAD"} = {expense.exchangeRateToCad.toFixed(4)} CAD</p>}</div><div className="shrink-0 text-right"><p className="text-sm font-medium" style={{ color: MOROCCO_BROWN }}>{expense.amountCad !== null ? `$${expense.amountCad.toFixed(2)} CAD` : expense.amountUsd !== null ? `$${expense.amountUsd.toFixed(2)} USD` : `${expense.amountLocal?.toFixed(2)} MAD`}</p>{expense.convertedAmountCad !== null && expense.amountCad === null && <p className="mt-1 text-xs text-white/40">≈ ${expense.convertedAmountCad.toFixed(2)} CAD</p>}<div className="mt-2 flex justify-end gap-3"><button type="button" onClick={() => editMoroccoExpense(expense)} className="text-[10px] uppercase tracking-[0.12em] text-[#D6B48C]/75 transition hover:text-[#D6B48C]">Edit</button><button type="button" onClick={() => deleteMoroccoExpense(expense)} className="text-[10px] uppercase tracking-[0.12em] text-red-300/60 transition hover:text-red-300">Delete</button></div></div></div>)}
+            {moroccoExpenses.map((expense) => <div key={expense.id} className={`flex items-start justify-between gap-4 rounded-xl border bg-white/[0.04] px-4 py-3 ${moroccoEditingExpenseId === expense.id ? "border-[#D6B48C]/60" : "border-white/10"}`}><div className="min-w-0"><p className="truncate text-sm text-white/80">{expense.description}</p><p className="mt-1 text-xs text-white/40">{new Intl.DateTimeFormat("en-CA", { year: "numeric", month: "short", day: "numeric" }).format(new Date(expense.createdAt))} · Paid By {expense.paidBy} · Paid For {expense.paidFor || "Everyone"}</p>{expense.exchangeRateToCad !== null && expense.amountCad === null && <p className="mt-1 text-[11px] text-white/30">1 {expense.amountUsd !== null ? "USD" : "MAD"} = {expense.exchangeRateToCad.toFixed(4)} CAD</p>}</div><div className="shrink-0 text-right"><p className="text-sm font-medium" style={{ color: MOROCCO_BROWN }}>{expense.amountCad !== null ? `$${expense.amountCad.toFixed(2)} CAD` : expense.amountUsd !== null ? `$${expense.amountUsd.toFixed(2)} USD` : `${expense.amountLocal?.toFixed(2)} MAD`}</p>{expense.convertedAmountCad !== null && expense.amountCad === null && <p className="mt-1 text-xs text-white/40">≈ ${expense.convertedAmountCad.toFixed(2)} CAD</p>}<div className="mt-2 flex justify-end gap-3"><button type="button" onClick={() => editMoroccoExpense(expense)} className="text-[10px] uppercase tracking-[0.12em] text-[#D6B48C]/75 transition hover:text-[#D6B48C]">Edit</button><button type="button" onClick={() => deleteMoroccoExpense(expense)} className="text-[10px] uppercase tracking-[0.12em] text-red-300/60 transition hover:text-red-300">Delete</button></div></div></div>)}
             {!moroccoExpenses.length && !moroccoExpenseMessage && <p className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-8 text-center text-sm text-white/40">No shared expenses recorded yet.</p>}
           </div>
         </div>
@@ -1332,7 +1380,6 @@ export default function TravelSite() {
 
   if (showMoroccoItinerary && guestName) {
     const moroccoLocalTime = new Intl.DateTimeFormat("en-US", { timeZone: "Africa/Casablanca", hour: "numeric", minute: "2-digit", second: "2-digit", hour12: true }).format(now);
-    const expenseTotal = moroccoExpenses.reduce((sum, expense) => sum + (expense.convertedAmountCad ?? expense.amountCad ?? 0), 0);
     return (
       <div className="min-h-screen bg-black px-6 py-10 text-white" style={{ "--chapter-accent": MOROCCO_BROWN } as React.CSSProperties}>
         <header className="mx-auto mb-10 flex max-w-5xl flex-wrap items-center justify-between gap-3">
@@ -1347,20 +1394,36 @@ export default function TravelSite() {
             <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:text-2xl">💵</p><p className="text-[10px] text-gray-400 md:text-xs">Currency</p><p className="mt-1 text-xs font-medium md:text-sm">MAD د.م.</p><p className="mt-1 text-xs text-gray-400">1 USD ≈ {usdToMad} MAD</p></div>
             <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:text-2xl">🌤️</p><p className="text-[10px] text-gray-400 md:text-xs">September Temp</p><p className="mt-1 text-xs font-medium md:text-sm">18–32°C</p><p className="mt-1 text-[9px] text-gray-500">Live forecast once trip begins</p></div>
             <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:text-2xl">🕘</p><p className="text-[10px] text-gray-400 md:text-xs">Local Time</p><p className="mt-1 text-xs font-medium md:text-sm">{moroccoLocalTime}</p><p className="mt-1 text-[9px] text-gray-500">Morocco · Casablanca</p></div>
-            <button type="button" onClick={openMoroccoCostTracker} className="rounded-2xl border border-[#D6B48C]/30 bg-[#D6B48C]/10 p-3 text-center transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15 md:p-4"><p className="mb-1 text-xl md:text-2xl">💳</p><p className="text-[10px] text-[#D6B48C]/75 md:text-xs">Cost Tracker</p><p className="mt-1 text-xs font-medium text-[#D6B48C] md:text-sm">${expenseTotal.toFixed(2)} CAD</p><p className="mt-1 text-[9px] text-white/40">Converted CAD total</p></button>
+            <button type="button" onClick={() => setShowMoroccoMap(true)} className="rounded-2xl border border-[#D6B48C]/30 bg-[#D6B48C]/10 p-3 text-center transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15 md:p-4"><p className="mb-1 text-xl md:text-2xl">🗺️</p><p className="text-[10px] text-[#D6B48C]/75 md:text-xs">Map View</p><p className="mt-1 text-xs font-medium text-[#D6B48C] md:text-sm">Morocco Route</p><p className="mt-1 text-[9px] text-white/40">Casablanca to Marrakech</p></button>
           </section>
           <section className="space-y-8">
             <MoroccoItineraryContent card={(children) => <div className="rounded-2xl border border-white/10 bg-black/20 p-4">{children}</div>} />
           </section>
         </main>
+        {showMoroccoMap && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Morocco route map">
+            <section className="flex max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] shadow-2xl">
+              <div className="flex items-start justify-between gap-5 border-b border-white/10 px-5 py-4 sm:px-7">
+                <div>
+                  <p className="mb-1 text-xs uppercase tracking-[0.24em]" style={{ color: MOROCCO_BROWN }}>Morocco 2026</p>
+                  <h2 className="text-xl font-light text-white">Route Map</h2>
+                </div>
+                <button type="button" onClick={() => setShowMoroccoMap(false)} aria-label="Close Morocco route map" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">x</button>
+              </div>
+              <div className="min-h-0 overflow-auto bg-white p-2 sm:p-4">
+                <img src="/morocco-route-map.png" alt="G Adventures Morocco route from Casablanca to Marrakech" className="mx-auto h-auto max-h-[75vh] w-auto max-w-full object-contain" />
+              </div>
+            </section>
+          </div>
+        )}
         {showMoroccoCostTracker && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Morocco cost tracker">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Morocco BillTab">
             <section className="flex max-h-[92vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] shadow-2xl">
               <div className="flex items-start justify-between gap-5 border-b border-white/10 px-5 py-5 sm:px-7">
-                <div><p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: MOROCCO_BROWN }}>Morocco 2026</p><h2 className="text-2xl font-light">Cost Tracker</h2><p className="mt-2 text-sm text-white/45">Converted total: ${expenseTotal.toFixed(2)} CAD</p></div>
+                <div><p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: MOROCCO_BROWN }}>Morocco 2026</p><h2 className="text-2xl font-light">BillTab</h2><p className="mt-2 text-sm text-white/45">Converted total: ${moroccoExpenseTotal.toFixed(2)} CAD</p></div>
                 <div className="flex items-center gap-2">
                   <button type="button" onClick={() => setShowMoroccoAccountingSummary(true)} className="rounded-full border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-3 py-2 text-[10px] uppercase tracking-[0.12em] text-[#D6B48C] transition hover:border-[#D6B48C]/60">Accounting Summary</button>
-                  <button type="button" onClick={() => setShowMoroccoCostTracker(false)} aria-label="Close cost tracker" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65">×</button>
+                  <button type="button" onClick={() => setShowMoroccoCostTracker(false)} aria-label="Close BillTab" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65">×</button>
                 </div>
               </div>
               <div className="min-h-0 overflow-y-auto p-5 sm:p-7">
@@ -1379,8 +1442,9 @@ export default function TravelSite() {
                       {(["CAD", "MAD", "USD"] as const).map((currency) => <button key={currency} type="button" onClick={() => setMoroccoExpenseCurrency(currency)} className={`rounded-lg px-3 py-2 text-sm transition ${moroccoExpenseCurrency === currency ? "bg-[#D6B48C] text-black" : "text-white/55 hover:text-white"}`}>{currency}</button>)}
                     </div>
                   </fieldset>
+                  {renderMoroccoPaidForSelector()}
                   <label className="grid gap-1.5 text-xs text-white/45">
-                    Who Paid
+                    Paid By
                     <select value={moroccoExpensePaidBy} onChange={(event) => setMoroccoExpensePaidBy(event.target.value)} className="rounded-xl border border-white/15 bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-[#D6B48C]/60">
                       <option value="" disabled>Select a party</option>
                       {moroccoInterestedNames.map((name) => <option key={name} value={name}>{name}</option>)}
@@ -1393,7 +1457,7 @@ export default function TravelSite() {
                 </form>
                 {moroccoExpenseMessage && <p className="mb-4 text-sm text-white/50">{moroccoExpenseMessage}</p>}
                 <div className="space-y-3">
-                  {moroccoExpenses.map((expense) => <div key={expense.id} className={`flex items-start justify-between gap-4 rounded-xl border bg-white/[0.04] px-4 py-3 ${moroccoEditingExpenseId === expense.id ? "border-[#D6B48C]/60" : "border-white/10"}`}><div className="min-w-0"><p className="truncate text-sm text-white/80">{expense.description}</p><p className="mt-1 text-xs text-white/40">{new Intl.DateTimeFormat("en-CA", { year: "numeric", month: "short", day: "numeric" }).format(new Date(expense.createdAt))} · Paid by {expense.paidBy}</p>{expense.exchangeRateToCad !== null && expense.amountCad === null && <p className="mt-1 text-[11px] text-white/30">1 {expense.amountUsd !== null ? "USD" : "MAD"} = {expense.exchangeRateToCad.toFixed(4)} CAD</p>}</div><div className="shrink-0 text-right"><p className="text-sm font-medium" style={{ color: MOROCCO_BROWN }}>{expense.amountCad !== null ? `$${expense.amountCad.toFixed(2)} CAD` : expense.amountUsd !== null ? `$${expense.amountUsd.toFixed(2)} USD` : `${expense.amountLocal?.toFixed(2)} MAD`}</p>{expense.convertedAmountCad !== null && expense.amountCad === null && <p className="mt-1 text-xs text-white/40">≈ ${expense.convertedAmountCad.toFixed(2)} CAD</p>}<div className="mt-2 flex justify-end gap-3"><button type="button" onClick={() => editMoroccoExpense(expense)} className="text-[10px] uppercase tracking-[0.12em] text-[#D6B48C]/75 transition hover:text-[#D6B48C]">Edit</button><button type="button" onClick={() => deleteMoroccoExpense(expense)} className="text-[10px] uppercase tracking-[0.12em] text-red-300/60 transition hover:text-red-300">Delete</button></div></div></div>)}
+                  {moroccoExpenses.map((expense) => <div key={expense.id} className={`flex items-start justify-between gap-4 rounded-xl border bg-white/[0.04] px-4 py-3 ${moroccoEditingExpenseId === expense.id ? "border-[#D6B48C]/60" : "border-white/10"}`}><div className="min-w-0"><p className="truncate text-sm text-white/80">{expense.description}</p><p className="mt-1 text-xs text-white/40">{new Intl.DateTimeFormat("en-CA", { year: "numeric", month: "short", day: "numeric" }).format(new Date(expense.createdAt))} · Paid By {expense.paidBy} · Paid For {expense.paidFor || "Everyone"}</p>{expense.exchangeRateToCad !== null && expense.amountCad === null && <p className="mt-1 text-[11px] text-white/30">1 {expense.amountUsd !== null ? "USD" : "MAD"} = {expense.exchangeRateToCad.toFixed(4)} CAD</p>}</div><div className="shrink-0 text-right"><p className="text-sm font-medium" style={{ color: MOROCCO_BROWN }}>{expense.amountCad !== null ? `$${expense.amountCad.toFixed(2)} CAD` : expense.amountUsd !== null ? `$${expense.amountUsd.toFixed(2)} USD` : `${expense.amountLocal?.toFixed(2)} MAD`}</p>{expense.convertedAmountCad !== null && expense.amountCad === null && <p className="mt-1 text-xs text-white/40">≈ ${expense.convertedAmountCad.toFixed(2)} CAD</p>}<div className="mt-2 flex justify-end gap-3"><button type="button" onClick={() => editMoroccoExpense(expense)} className="text-[10px] uppercase tracking-[0.12em] text-[#D6B48C]/75 transition hover:text-[#D6B48C]">Edit</button><button type="button" onClick={() => deleteMoroccoExpense(expense)} className="text-[10px] uppercase tracking-[0.12em] text-red-300/60 transition hover:text-red-300">Delete</button></div></div></div>)}
                   {!moroccoExpenses.length && !moroccoExpenseMessage && <p className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-8 text-center text-sm text-white/40">No shared expenses recorded yet.</p>}
                 </div>
               </div>
@@ -1466,8 +1530,8 @@ export default function TravelSite() {
                         <span className="text-xs font-light uppercase tracking-[0.16em] text-[#D6B48C]">Packing List</span>
                       </button>
                       <button type="button" onClick={openMoroccoCostTracker} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-3 text-center transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">
-                        <span className="text-xl">💳</span>
-                        <span className="text-xs font-light uppercase tracking-[0.16em] text-[#D6B48C]">Cost Tracker</span>
+                        <span className="text-xl">💰</span>
+                        <span className="text-xs font-light uppercase tracking-[0.16em] text-[#D6B48C]">BillTab</span>
                       </button>
                     </div>
                     <MemoryMaker albumKey="moroccoSeptember" albumName="Morocco" accentColor={MOROCCO_BROWN} guestName={guestName} returnChapter="morocco" onViewAlbum={openAlbumPopup} compact />
@@ -1537,19 +1601,19 @@ export default function TravelSite() {
                 </div>
               )}
               {showMoroccoUsefulInfo && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-2 backdrop-blur-sm sm:p-4" role="dialog" aria-modal="true" aria-label="Morocco useful information">
-                  <section className="flex h-[calc(100vh-1rem)] max-h-[calc(100vh-1rem)] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] text-left shadow-2xl sm:h-[82vh] sm:max-h-[760px]">
-                    <div className="flex shrink-0 items-start justify-between gap-4 border-b border-white/10 px-4 py-4 sm:px-7 sm:py-5">
+                <div className="fixed inset-0 z-50 flex items-stretch justify-center bg-black/80 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-[max(0.5rem,env(safe-area-inset-top))] backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-label="Morocco useful information">
+                  <section className="flex h-[calc(100dvh-1rem)] max-h-[calc(100dvh-1rem)] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] text-left shadow-2xl sm:h-[82dvh] sm:max-h-[760px]">
+                    <div className="flex shrink-0 items-start justify-between gap-4 border-b border-white/10 px-4 py-3 sm:px-7 sm:py-5">
                       <div>
                         <p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: MOROCCO_BROWN }}>Morocco 2026</p>
-                        <h2 className="text-2xl font-light text-white">Useful Information</h2>
+                        <h2 className="text-xl font-light text-white sm:text-2xl">Useful Information</h2>
                       </div>
                       <button type="button" onClick={() => setShowMoroccoUsefulInfo(false)} aria-label="Close Morocco useful information" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">×</button>
                     </div>
-                    <div className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-7">
+                    <div className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain p-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-7">
                       <div className="rounded-xl border border-white/10 bg-white/[0.04] p-3 sm:p-4">
                         <p className="text-xs uppercase tracking-[0.18em] text-white/40">Power</p>
-                        <img src="/poweradapter.png" alt="Power adapter suitable for Morocco" className="mt-3 max-h-40 w-full rounded-xl border border-white/10 bg-white object-contain sm:max-h-56" />
+                        <img src="/poweradapter.png" alt="Power adapter suitable for Morocco" className="mt-3 max-h-28 w-full rounded-xl border border-white/10 bg-white object-contain sm:max-h-56" />
                         <p className="mt-2 text-sm leading-6 text-white/75">Morocco uses 220V / 50Hz power with Type C and Type E plugs. A European-style Type C/E adapter is recommended.</p>
                       </div>
                       <div className="rounded-xl border border-white/10 bg-white/[0.04] p-3 sm:p-4">
@@ -1593,26 +1657,26 @@ export default function TravelSite() {
                 </div>
               )}
               {showMoroccoChecklist && guestName && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label={`${guestName} Morocco packing checklist`}>
-                  <section className="flex max-h-[92vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] text-left shadow-2xl">
-                    <div className="flex items-start justify-between gap-5 border-b border-white/10 px-5 py-5 sm:px-7">
+                <div className="fixed inset-0 z-50 flex items-stretch justify-center bg-black/80 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-[max(0.5rem,env(safe-area-inset-top))] backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-label={`${guestName} Morocco packing checklist`}>
+                  <section className="flex h-[calc(100dvh-1rem)] max-h-[calc(100dvh-1rem)] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] text-left shadow-2xl sm:h-[88dvh] sm:max-h-[760px]">
+                    <div className="flex shrink-0 items-start justify-between gap-4 border-b border-white/10 px-4 py-3 sm:px-7 sm:py-4">
                       <div>
                         <p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: MOROCCO_BROWN }}>Morocco 2026</p>
-                        <h2 className="text-2xl font-light text-white">Packing List</h2>
-                        <p className="mt-2 text-sm text-white/45">{guestName}</p>
+                        <h2 className="text-xl font-light text-white sm:text-2xl">Packing List</h2>
+                        <p className="mt-1 text-xs text-white/45 sm:mt-2 sm:text-sm">{guestName}</p>
                       </div>
                       <button type="button" onClick={() => setShowMoroccoChecklist(false)} aria-label="Close Morocco checklist" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">×</button>
                     </div>
-                    <div className="min-h-0 space-y-5 overflow-y-auto p-5 sm:p-7">
+                    <div className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain p-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:space-y-4 sm:p-7">
                       {getPackingChecklist(guestName).sections.filter((section) => ["Essentials", "Clothes", "Personal"].includes(section.title)).map((section) => (
-                        <article key={section.title} className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
-                          <h3 className="mb-4 text-lg font-light text-white">{section.title}</h3>
+                        <article key={section.title} className="rounded-xl border border-white/10 bg-white/[0.04] p-3 sm:p-4">
+                          <h3 className="mb-3 text-base font-light text-white sm:mb-4 sm:text-lg">{section.title}</h3>
                           <div className="grid gap-2">
                             {section.items.map((item) => {
                               const key = `Morocco-${guestName}-${section.title}-${item}`;
                               const checked = Boolean(checkedPackingItems[key]);
                               return (
-                                <button key={key} type="button" onClick={() => togglePackingItem(key, checked)} className={`flex items-center gap-3 rounded-xl border px-3 py-3 text-left text-sm transition ${checked ? "border-[#D6B48C]/55 bg-[#D6B48C]/10 text-white" : "border-white/10 bg-black/20 text-white/70 hover:border-white/25"}`}>
+                                <button key={key} type="button" onClick={() => togglePackingItem(key, checked)} className={`flex items-center gap-3 rounded-xl border px-3 py-2 text-left text-sm transition sm:py-2.5 ${checked ? "border-[#D6B48C]/55 bg-[#D6B48C]/10 text-white" : "border-white/10 bg-black/20 text-white/70 hover:border-white/25"}`}>
                                   <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-xs ${checked ? "border-[#D6B48C] bg-[#D6B48C] text-black" : "border-white/25 text-transparent"}`}>✓</span>
                                   <span className={checked ? "line-through decoration-[#D6B48C]/70" : ""}>{item}</span>
                                 </button>

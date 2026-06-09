@@ -9,6 +9,7 @@ type ExpenseRow = {
   exchange_rate_to_cad: number | null;
   converted_amount_cad: number | null;
   paid_by: string;
+  paid_for: string | null;
   created_at: string;
 };
 
@@ -31,12 +32,13 @@ function serializeExpense(row: ExpenseRow) {
     exchangeRateToCad: row.exchange_rate_to_cad === null ? null : Number(row.exchange_rate_to_cad),
     convertedAmountCad: row.converted_amount_cad === null ? null : Number(row.converted_amount_cad),
     paidBy: row.paid_by,
+    paidFor: row.paid_for || "Everyone",
     createdAt: row.created_at,
   };
 }
 
 async function loadExpenses(url: string, key: string, trip: string) {
-  const response = await fetch(`${url}/rest/v1/trip_expenses?trip_key=eq.${encodeURIComponent(trip)}&select=id,description,amount_cad,amount_local,amount_usd,exchange_rate_to_cad,converted_amount_cad,paid_by,created_at&order=created_at.desc`, {
+  const response = await fetch(`${url}/rest/v1/trip_expenses?trip_key=eq.${encodeURIComponent(trip)}&select=id,description,amount_cad,amount_local,amount_usd,exchange_rate_to_cad,converted_amount_cad,paid_by,paid_for,created_at&order=created_at.desc`, {
     headers: { apikey: key, Authorization: `Bearer ${key}` },
     cache: "no-store",
   });
@@ -57,10 +59,11 @@ async function getCadExchangeRate(currency: ExpenseCurrency) {
 function getExpenseInput(body: Record<string, unknown>) {
   const description = typeof body.description === "string" ? body.description.trim() : "";
   const paidBy = typeof body.paidBy === "string" ? body.paidBy.trim() : "";
+  const paidFor = typeof body.paidFor === "string" ? body.paidFor.trim() : "";
   const amount = Number(body.amount);
   const currency: ExpenseCurrency | "" = body.currency === "MAD" ? "MAD" : body.currency === "CAD" ? "CAD" : body.currency === "USD" ? "USD" : "";
-  if (!description || !paidBy || !currency || !Number.isFinite(amount) || amount <= 0) return null;
-  return { description, paidBy, amount, currency };
+  if (!description || !paidBy || !paidFor || !currency || !Number.isFinite(amount) || amount <= 0) return null;
+  return { description, paidBy, paidFor, amount, currency };
 }
 
 function verifyAdminPassword(password: unknown) {
@@ -91,7 +94,7 @@ export async function POST(request: NextRequest) {
     if (trip !== "morocco" || !expense) {
       return NextResponse.json({ error: "Valid expense details are required." }, { status: 400 });
     }
-    const { description, paidBy, amount, currency } = expense;
+    const { description, paidBy, paidFor, amount, currency } = expense;
     const exchangeRateToCad = await getCadExchangeRate(currency);
     const convertedAmountCad = Number((amount * exchangeRateToCad).toFixed(2));
     const response = await fetch(`${config.url}/rest/v1/trip_expenses`, {
@@ -106,6 +109,7 @@ export async function POST(request: NextRequest) {
         exchange_rate_to_cad: exchangeRateToCad,
         converted_amount_cad: convertedAmountCad,
         paid_by: paidBy,
+        paid_for: paidFor,
       }),
     });
     if (!response.ok) return NextResponse.json({ error: "Unable to save expense." }, { status: 500 });
@@ -127,7 +131,7 @@ export async function PATCH(request: NextRequest) {
     const expense = getExpenseInput(body);
     if (trip !== "morocco" || !id || !expense) return NextResponse.json({ error: "Valid expense details are required." }, { status: 400 });
 
-    const { description, paidBy, amount, currency } = expense;
+    const { description, paidBy, paidFor, amount, currency } = expense;
     const exchangeRateToCad = await getCadExchangeRate(currency);
     const convertedAmountCad = Number((amount * exchangeRateToCad).toFixed(2));
     const response = await fetch(`${config.url}/rest/v1/trip_expenses?id=eq.${encodeURIComponent(id)}&trip_key=eq.${encodeURIComponent(trip)}`, {
@@ -141,6 +145,7 @@ export async function PATCH(request: NextRequest) {
         exchange_rate_to_cad: exchangeRateToCad,
         converted_amount_cad: convertedAmountCad,
         paid_by: paidBy,
+        paid_for: paidFor,
       }),
     });
     if (!response.ok) return NextResponse.json({ error: "Unable to update expense." }, { status: 500 });
