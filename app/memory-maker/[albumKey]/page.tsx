@@ -154,7 +154,7 @@ export default function MemoryMakerAlbumPage({ params }: { params: Promise<{ alb
 
         {message && <p className="rounded-2xl border border-red-300/20 bg-red-300/5 px-4 py-4 text-sm text-red-100/75">{message}</p>}
         {!message && isLoading && <p className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-8 text-center text-sm text-white/40">Loading album...</p>}
-        {!message && !isLoading && !files.length && <p className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-8 text-center text-sm text-white/40">No memories uploaded yet.</p>}
+        {!message && !isLoading && !files.length && <p className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-8 text-center text-sm leading-6 text-white/40">No memories uploaded yet. Photos shared from the trip dashboard or itinerary will appear here.</p>}
 
         {!isLoading && files.length > 0 && (
           <div className="mb-5 flex flex-wrap items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-3">

@@ -13,7 +13,7 @@ type ExpenseRow = {
   created_at: string;
 };
 
-type ExpenseCurrency = "CAD" | "MAD" | "JPY" | "USD";
+type ExpenseCurrency = "CAD" | "MAD" | "JPY" | "TWD" | "USD";
 
 const ALLOWED_TRIPS = ["morocco", "taiwan", "okinawaJapan"] as const;
 
@@ -67,7 +67,7 @@ function getExpenseInput(body: Record<string, unknown>) {
   const paidBy = typeof body.paidBy === "string" ? body.paidBy.trim() : "";
   const paidFor = typeof body.paidFor === "string" ? body.paidFor.trim() : "";
   const amount = Number(body.amount);
-  const currency: ExpenseCurrency | "" = body.currency === "MAD" ? "MAD" : body.currency === "JPY" ? "JPY" : body.currency === "CAD" ? "CAD" : body.currency === "USD" ? "USD" : "";
+  const currency: ExpenseCurrency | "" = body.currency === "MAD" ? "MAD" : body.currency === "JPY" ? "JPY" : body.currency === "TWD" ? "TWD" : body.currency === "CAD" ? "CAD" : body.currency === "USD" ? "USD" : "";
   if (!description || !paidBy || !paidFor || !currency || !Number.isFinite(amount) || amount <= 0) return null;
   return { description, paidBy, paidFor, amount, currency };
 }
@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
         trip_key: trip,
         description,
         amount_cad: currency === "CAD" ? amount : null,
-        amount_local: currency === "MAD" || currency === "JPY" ? amount : null,
+        amount_local: currency === "MAD" || currency === "JPY" || currency === "TWD" ? amount : null,
         amount_usd: currency === "USD" ? amount : null,
         exchange_rate_to_cad: exchangeRateToCad,
         converted_amount_cad: convertedAmountCad,
@@ -146,7 +146,7 @@ export async function PATCH(request: NextRequest) {
       body: JSON.stringify({
         description,
         amount_cad: currency === "CAD" ? amount : null,
-        amount_local: currency === "MAD" || currency === "JPY" ? amount : null,
+        amount_local: currency === "MAD" || currency === "JPY" || currency === "TWD" ? amount : null,
         amount_usd: currency === "USD" ? amount : null,
         exchange_rate_to_cad: exchangeRateToCad,
         converted_amount_cad: convertedAmountCad,

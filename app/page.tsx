@@ -518,7 +518,7 @@ export default function TravelSite() {
   const [moroccoExpenses, setMoroccoExpenses] = useState<MoroccoExpense[]>([]);
   const [moroccoExpenseDescription, setMoroccoExpenseDescription] = useState("");
   const [moroccoExpenseAmount, setMoroccoExpenseAmount] = useState("");
-  const [moroccoExpenseCurrency, setMoroccoExpenseCurrency] = useState<"CAD" | "MAD" | "JPY" | "USD">("MAD");
+  const [moroccoExpenseCurrency, setMoroccoExpenseCurrency] = useState<"CAD" | "MAD" | "JPY" | "TWD" | "USD">("MAD");
   const [moroccoExpensePaidBy, setMoroccoExpensePaidBy] = useState("");
   const [moroccoExpensePaidFor, setMoroccoExpensePaidFor] = useState<string[]>(["Everyone"]);
   const [moroccoEditingExpenseId, setMoroccoEditingExpenseId] = useState("");
@@ -654,8 +654,8 @@ export default function TravelSite() {
     return segments;
   };
 
-  const CountrySegmentButtons = ({ segments, setIsGuestConfirmed, setPage }: { segments: DashboardSegment[]; setIsGuestConfirmed: React.Dispatch<React.SetStateAction<boolean>>; setPage: React.Dispatch<React.SetStateAction<PageName>> }) => (
-    <SegmentButtons segments={filterDashboardSegments(segments).map((segment) => selectedTrip === "taiwan" ? { ...segment, color: TAIWAN_GOLD } : segment)} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />
+  const CountrySegmentButtons = ({ segments }: { segments: DashboardSegment[]; setIsGuestConfirmed?: React.Dispatch<React.SetStateAction<boolean>>; setPage?: React.Dispatch<React.SetStateAction<PageName>> }) => (
+    <SegmentButtons segments={filterDashboardSegments(segments).map((segment) => selectedTrip === "taiwan" ? { ...segment, color: TAIWAN_GOLD } : segment)} onOpenSegment={openChapterPage} />
   );
 
   const getVisibleGuestOptions = () => guestOptions.filter((guest) => {
@@ -685,16 +685,153 @@ export default function TravelSite() {
   };
 
   const getBillTabConfig = (trip: "morocco" | "taiwan" | "okinawaJapan") => {
-    if (trip === "taiwan") return { trip, label: "Taiwan 2026", accent: TAIWAN_GOLD, localCurrency: "JPY" as const, localLabel: "JPY", localSymbol: "¥", parties: getBillTabPartyOptions(trip) };
+    if (trip === "taiwan") return { trip, label: "Taiwan 2026", accent: TAIWAN_GOLD, localCurrency: "TWD" as const, localLabel: "TWD", localSymbol: "NT$", parties: getBillTabPartyOptions(trip) };
     if (trip === "okinawaJapan") return { trip, label: "Okinawa Japan 2026", accent: BABY_BLUE, localCurrency: "JPY" as const, localLabel: "JPY", localSymbol: "¥", parties: getBillTabPartyOptions(trip) };
     return { trip, label: "Morocco 2026", accent: MOROCCO_BROWN, localCurrency: "MAD" as const, localLabel: "MAD", localSymbol: "", parties: getBillTabPartyOptions(trip) };
+  };
+
+  const buildTripUrl = (trip: TripKey, options: { guest?: string; view?: "map" | "checklist" | "itinerary"; chapter?: PageName } = {}) => {
+    const searchParams = new URLSearchParams();
+    if (options.guest) searchParams.set("guest", options.guest);
+    if (options.view) searchParams.set("view", options.view);
+    if (options.chapter) searchParams.set("chapter", options.chapter);
+    const query = searchParams.toString();
+    return `/trip/${TRIP_PATHS[trip]}${query ? `?${query}` : ""}`;
+  };
+
+  const setBrowserRoute = (url: string, replace = false) => {
+    if (window.location.pathname + window.location.search === url) return;
+    if (replace) {
+      window.history.replaceState({}, "", url);
+    } else {
+      window.history.pushState({}, "", url);
+    }
   };
 
   const openTripPage = (trip: TripKey) => {
     setGuestName("");
     setShowGuestActions(false);
+    setIsGuestConfirmed(false);
+    setShowMoroccoItinerary(false);
+    setShowMoroccoChecklist(false);
     setSelectedTrip(trip);
-    window.history.pushState({}, "", `/trip/${TRIP_PATHS[trip]}`);
+    setBrowserRoute(buildTripUrl(trip));
+  };
+
+  const openTripDashboard = (guest: string, replace = false) => {
+    if (!selectedTrip) return;
+    setGuestName(guest);
+    setShowGuestActions(selectedTrip !== "morocco");
+    setIsGuestConfirmed(false);
+    setShowMoroccoItinerary(false);
+    setShowMoroccoChecklist(false);
+    setBrowserRoute(buildTripUrl(selectedTrip, { guest }), replace);
+  };
+
+  const openTripView = (nextView: "map" | "checklist" | "itinerary", replace = false) => {
+    if (!selectedTrip) return;
+    if (nextView === "itinerary" && selectedTrip === "morocco") {
+      setShowMoroccoItinerary(true);
+      setBrowserRoute(buildTripUrl(selectedTrip, { guest: guestName || "Guest", view: "itinerary" }), replace);
+      return;
+    }
+    setPage(nextView === "checklist" ? "checklist" : "map");
+    setIsGuestConfirmed(true);
+    setShowGuestActions(true);
+    setBrowserRoute(buildTripUrl(selectedTrip, { guest: guestName || "Guest", view: nextView }), replace);
+  };
+
+  const openChapterPage = (chapter: PageName, replace = false) => {
+    if (!selectedTrip) return;
+    setPage(chapter);
+    setIsGuestConfirmed(true);
+    setShowGuestActions(true);
+    setBrowserRoute(buildTripUrl(selectedTrip, { guest: guestName || "Guest", chapter }), replace);
+  };
+
+  const goToMainPage = () => {
+    setIsGuestConfirmed(false);
+    setSelectedTrip("");
+    setShowGuestActions(false);
+    setGuestName("");
+    setPage("map");
+    setShowMoroccoItinerary(false);
+    setShowMoroccoNameInput(false);
+    setMoroccoNameInput("");
+    setShowMoroccoBudget(false);
+    setShowMoroccoUsefulInfo(false);
+    setShowMoroccoMap(false);
+    setShowMoroccoChecklist(false);
+    setTaiwanDashboardAlbumMode("");
+    setAlbumPopupUrl("");
+    setBrowserRoute("/");
+  };
+
+  const applyRouteFromLocation = () => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const chapter = searchParams.get("chapter");
+    const view = searchParams.get("view");
+    const returningGuest = searchParams.get("guest") || "";
+    const tripPath = window.location.pathname.match(/^\/trip\/([^/]+)\/?$/)?.[1];
+    const tripFromUrl = tripPath ? TRIP_KEYS_BY_PATH[tripPath] : null;
+    const chapterPages = ["xiaoliuqiu", "taipei", "onna", "nago", "nanjo", "naha", "nahaearly", "yilan"];
+
+    setAlbumPopupUrl("");
+    setTaiwanDashboardAlbumMode("");
+    setShowMoroccoBudget(false);
+    setShowMoroccoUsefulInfo(false);
+    setShowMoroccoMap(false);
+    setShowMoroccoChecklist(false);
+
+    if (tripFromUrl) {
+      setSelectedTrip(tripFromUrl);
+      setGuestName(returningGuest);
+      setPage("map");
+      setShowMoroccoItinerary(false);
+      if (tripFromUrl === "morocco") {
+        setShowGuestActions(false);
+        setIsGuestConfirmed(false);
+        if (view === "itinerary") setShowMoroccoItinerary(true);
+        return;
+      }
+      if (chapter && chapterPages.includes(chapter)) {
+        setPage(chapter as PageName);
+        setShowGuestActions(true);
+        setIsGuestConfirmed(true);
+        return;
+      }
+      if (view === "map" || view === "checklist") {
+        setPage(view);
+        setShowGuestActions(true);
+        setIsGuestConfirmed(true);
+        return;
+      }
+      setShowGuestActions(Boolean(returningGuest));
+      setIsGuestConfirmed(false);
+      return;
+    }
+
+    if (chapter === "morocco") {
+      if (returningGuest) setGuestName(returningGuest);
+      setSelectedTrip("morocco");
+      setShowMoroccoItinerary(true);
+      return;
+    }
+    if (chapterPages.includes(chapter || "")) {
+      setPage(chapter as PageName);
+      if (returningGuest) setGuestName(returningGuest);
+      setSelectedTrip(chapter === "xiaoliuqiu" || chapter === "taipei" || chapter === "yilan" ? "taiwan" : "okinawaJapan");
+      setIsGuestConfirmed(true);
+      setShowGuestActions(true);
+      return;
+    }
+
+    setIsGuestConfirmed(false);
+    setSelectedTrip("");
+    setShowGuestActions(false);
+    setGuestName("");
+    setPage("map");
+    setShowMoroccoItinerary(false);
   };
 
   useEffect(() => {
@@ -703,27 +840,11 @@ export default function TravelSite() {
   }, []);
 
   useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-    const chapter = searchParams.get("chapter");
-    const returningGuest = searchParams.get("guest");
-    const tripPath = window.location.pathname.match(/^\/trip\/([^/]+)\/?$/)?.[1];
-    const tripFromUrl = tripPath ? TRIP_KEYS_BY_PATH[tripPath] : null;
-    if (tripFromUrl) {
-      setSelectedTrip(tripFromUrl);
-      setGuestName("");
-      setShowGuestActions(false);
-      setIsGuestConfirmed(false);
-    } else if (chapter === "morocco") {
-      if (returningGuest) setGuestName(returningGuest);
-      setSelectedTrip("morocco");
-      setShowMoroccoItinerary(true);
-    } else if (["xiaoliuqiu", "taipei", "onna", "nago", "nanjo", "naha", "nahaearly", "yilan"].includes(chapter || "")) {
-      setPage(chapter as PageName);
-      if (returningGuest) setGuestName(returningGuest);
-      setSelectedTrip(chapter === "xiaoliuqiu" || chapter === "taipei" || chapter === "yilan" ? "taiwan" : "okinawaJapan");
-      setIsGuestConfirmed(true);
-    }
+    applyRouteFromLocation();
+    const handlePopState = () => applyRouteFromLocation();
+    window.addEventListener("popstate", handlePopState);
     setIsInitialRouteReady(true);
+    return () => window.removeEventListener("popstate", handlePopState);
   }, []);
 
   useEffect(() => {
@@ -861,7 +982,7 @@ export default function TravelSite() {
   };
 
   const openChapterForLocation = (id: string) => {
-    if (["xiaoliuqiu", "taipei", "nahaearly", "onna", "nago", "nanjo", "naha", "yilan"].includes(id)) setPage(id as PageName);
+    if (["xiaoliuqiu", "taipei", "nahaearly", "onna", "nago", "nanjo", "naha", "yilan"].includes(id)) openChapterPage(id as PageName);
   };
 
   const getGuestChapterOrder = (guest: string): PageName[] => {
@@ -988,17 +1109,17 @@ export default function TravelSite() {
     return (
       <div className="mb-10 flex items-start justify-between gap-4">
         <div className="flex flex-col items-start gap-3">
-          {current !== "checklist" && <button type="button" onClick={() => setPage("map")} className="rounded-full border border-white/30 px-4 py-2 text-sm text-white/80 transition hover:border-white hover:text-white">← Back to Map</button>}
+          {current !== "checklist" && <button type="button" onClick={() => openTripView("map")} className="rounded-full border border-white/30 px-4 py-2 text-sm text-white/80 transition hover:border-white hover:text-white">← Back to Map</button>}
           {guestName && guestName !== "I am just a random Guest" && (
-            <button type="button" onClick={() => { setIsGuestConfirmed(false); setShowGuestActions(true); }} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70 transition hover:border-white/40 hover:bg-white/[0.08] hover:text-white">← Back to Dashboard</button>
+            <button type="button" onClick={() => openTripDashboard(guestName)} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70 transition hover:border-white/40 hover:bg-white/[0.08] hover:text-white">← Back to Dashboard</button>
           )}
         </div>
         <div className="flex flex-wrap justify-end gap-3">
           {previousChapter && (
-            <button type="button" onClick={() => setPage(previousChapter)} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70">← Previous Chapter<span className="hidden sm:inline"> · {chapterLabels[previousChapter]}</span></button>
+            <button type="button" onClick={() => openChapterPage(previousChapter)} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70">← Previous Chapter<span className="hidden sm:inline"> · {chapterLabels[previousChapter]}</span></button>
           )}
           {nextChapter && (
-            <button type="button" onClick={() => setPage(nextChapter)} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70">Next Chapter<span className="hidden sm:inline"> · {chapterLabels[nextChapter]}</span> →</button>
+            <button type="button" onClick={() => openChapterPage(nextChapter)} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70">Next Chapter<span className="hidden sm:inline"> · {chapterLabels[nextChapter]}</span> →</button>
           )}
         </div>
       </div>
@@ -1031,10 +1152,22 @@ export default function TravelSite() {
     const accentColor = selectedTrip === "taiwan" ? TAIWAN_GOLD : BABY_BLUE;
     const actionStyle = { borderColor: `${accentColor}59`, backgroundColor: `${accentColor}18`, color: accentColor };
     const actionClass = "flex min-h-14 items-center justify-center gap-3 rounded-2xl border px-4 py-3 text-center transition";
+    if (guestName === "Guest") {
+      return (
+        <div className="mt-5 grid gap-3 sm:grid-cols-2">
+          <button type="button" onClick={() => openTripView("map")} className={actionClass} style={actionStyle}><span className="text-xl">🗺️</span><span className="text-xs font-light uppercase tracking-[0.16em]">Map View</span></button>
+          {selectedTrip === "taiwan" ? (
+            <button type="button" onClick={() => setTaiwanDashboardAlbumMode("view")} className={actionClass} style={actionStyle}><span className="text-xl">🖼️</span><span className="text-xs font-light uppercase tracking-[0.16em]">View Album</span></button>
+          ) : (
+            <MemoryMaker albumKey="japanNovember" albumName="Japan November" accentColor={accentColor} guestName={guestName} returnChapter="map" onViewAlbum={openAlbumPopup} inlineButtons inlineMode="view" viewLabel="View Album" />
+          )}
+        </div>
+      );
+    }
     return (
       <div className="mt-5 grid gap-3 sm:grid-cols-2">
-        <button type="button" onClick={() => { setPage("map"); setIsGuestConfirmed(true); }} className={actionClass} style={actionStyle}><span className="text-xl">🗺️</span><span className="text-xs font-light uppercase tracking-[0.16em]">Map View</span></button>
-        <button type="button" disabled={guestName === "Jim"} onClick={() => { setPage("checklist"); setIsGuestConfirmed(true); }} className={guestName === "Jim" ? `${actionClass} cursor-not-allowed opacity-45` : actionClass} style={actionStyle}><span className="text-xl">🎒</span><span className="text-xs font-light uppercase tracking-[0.16em]">Packing List</span></button>
+        <button type="button" onClick={() => openTripView("map")} className={actionClass} style={actionStyle}><span className="text-xl">🗺️</span><span className="text-xs font-light uppercase tracking-[0.16em]">Map View</span></button>
+        <button type="button" disabled={guestName === "Jim"} onClick={() => openTripView("checklist")} className={guestName === "Jim" ? `${actionClass} cursor-not-allowed opacity-45` : actionClass} style={actionStyle}><span className="text-xl">🎒</span><span className="text-xs font-light uppercase tracking-[0.16em]">Packing List</span></button>
         <button type="button" disabled className={`${actionClass} cursor-not-allowed opacity-45`} style={actionStyle}><span className="text-xl">☀️</span><span className="text-xs font-light uppercase tracking-[0.16em]">What's Today?</span></button>
         <button type="button" onClick={() => openMoroccoCostTracker(selectedTrip)} className={actionClass} style={actionStyle}><span className="text-xl">💰</span><span className="text-xs font-light uppercase tracking-[0.16em]">BillTab</span></button>
         {selectedTrip === "taiwan" ? (
@@ -1097,7 +1230,7 @@ export default function TravelSite() {
                   return (
                     <div key={segment.id}>
                       <div className="pointer-events-none absolute top-1/2 h-[5px] -translate-y-1/2 rounded-full transition-all duration-150" style={{ left: `${left}%`, width: `${width}%`, backgroundColor: active ? segment.color : "transparent", boxShadow: active ? `0 0 14px ${segment.color}` : "none" }} />
-                      <div className="absolute -top-5 h-10 cursor-pointer" style={{ left: `${left}%`, width: `${width}%` }} onMouseEnter={() => setHovered(segment.id)} onMouseLeave={() => setHovered(null)} onClick={() => setPage(segment.page as PageName)} />
+                      <div className="absolute -top-5 h-10 cursor-pointer" style={{ left: `${left}%`, width: `${width}%` }} onMouseEnter={() => setHovered(segment.id)} onMouseLeave={() => setHovered(null)} onClick={() => openChapterPage(segment.page as PageName)} />
                     </div>
                   );
                 })}
@@ -1114,7 +1247,7 @@ export default function TravelSite() {
                   return (
                     <div key={segment.id}>
                       <div className="pointer-events-none absolute top-1/2 h-[5px] -translate-y-1/2 rounded-full transition-all duration-150" style={{ left: `${left}%`, width: `${width}%`, backgroundColor: active ? segment.color : "transparent", boxShadow: active ? `0 0 14px ${segment.color}` : "none" }} />
-                      <div className="absolute -top-5 h-10 cursor-pointer" style={{ left: `${left}%`, width: `${width}%` }} onMouseEnter={() => setHovered(segment.id)} onMouseLeave={() => setHovered(null)} onClick={() => setPage("yilan")} />
+                      <div className="absolute -top-5 h-10 cursor-pointer" style={{ left: `${left}%`, width: `${width}%` }} onMouseEnter={() => setHovered(segment.id)} onMouseLeave={() => setHovered(null)} onClick={() => openChapterPage("yilan")} />
                     </div>
                   );
                 })}
@@ -1357,6 +1490,40 @@ export default function TravelSite() {
   };
 
   const moroccoExpenseTotal = moroccoExpenses.reduce((sum, expense) => sum + (expense.convertedAmountCad ?? expense.amountCad ?? 0), 0);
+  const getExpensePaidForParties = (expense: MoroccoExpense) => {
+    if (!expense.paidFor || expense.paidFor === "Everyone") return activeBillTabParties;
+    return expense.paidFor.split(",").map((name) => name.trim()).filter((name) => activeBillTabParties.includes(name));
+  };
+  const billTabBalances = activeBillTabParties.map((name) => ({ name, balance: 0 }));
+  const billTabBalanceByName = new Map(billTabBalances.map((party) => [party.name, party]));
+  moroccoExpenses.forEach((expense) => {
+    const amountCad = expense.convertedAmountCad ?? expense.amountCad ?? 0;
+    if (!amountCad) return;
+    const paidForParties = getExpensePaidForParties(expense);
+    if (!paidForParties.length) return;
+    const payer = billTabBalanceByName.get(expense.paidBy);
+    if (payer) payer.balance += amountCad;
+    const share = amountCad / paidForParties.length;
+    paidForParties.forEach((partyName) => {
+      const party = billTabBalanceByName.get(partyName);
+      if (party) party.balance -= share;
+    });
+  });
+  const billTabSettlements: { from: string; to: string; amount: number }[] = [];
+  const billTabDebtors = billTabBalances.filter((party) => party.balance < -0.01).map((party) => ({ name: party.name, amount: -party.balance }));
+  const billTabCreditors = billTabBalances.filter((party) => party.balance > 0.01).map((party) => ({ name: party.name, amount: party.balance }));
+  let debtorIndex = 0;
+  let creditorIndex = 0;
+  while (debtorIndex < billTabDebtors.length && creditorIndex < billTabCreditors.length) {
+    const debtor = billTabDebtors[debtorIndex];
+    const creditor = billTabCreditors[creditorIndex];
+    const amount = Math.min(debtor.amount, creditor.amount);
+    if (amount > 0.01) billTabSettlements.push({ from: debtor.name, to: creditor.name, amount });
+    debtor.amount -= amount;
+    creditor.amount -= amount;
+    if (debtor.amount <= 0.01) debtorIndex += 1;
+    if (creditor.amount <= 0.01) creditorIndex += 1;
+  }
   const renderMoroccoPaidForSelector = () => (
     <fieldset className="grid gap-2 text-xs text-white/45 sm:col-span-2">
       <legend>Paid For</legend>
@@ -1417,7 +1584,7 @@ export default function TravelSite() {
           {moroccoExpenseMessage && <p className="mb-4 text-sm text-white/50">{moroccoExpenseMessage}</p>}
           <div className="space-y-3">
             {moroccoExpenses.map((expense) => <div key={expense.id} className={`flex items-start justify-between gap-4 rounded-xl border bg-white/[0.04] px-4 py-3 ${moroccoEditingExpenseId === expense.id ? "" : "border-white/10"}`} style={moroccoEditingExpenseId === expense.id ? { borderColor: `${activeBillTabConfig.accent}99` } : undefined}><div className="min-w-0"><p className="truncate text-sm text-white/80">{expense.description}</p><p className="mt-1 text-xs text-white/40">{new Intl.DateTimeFormat("en-CA", { year: "numeric", month: "short", day: "numeric" }).format(new Date(expense.createdAt))} · Paid By {expense.paidBy} · Paid For {expense.paidFor || "Everyone"}</p>{expense.exchangeRateToCad !== null && expense.amountCad === null && <p className="mt-1 text-[11px] text-white/30">1 {expense.amountUsd !== null ? "USD" : activeBillTabConfig.localLabel} = {expense.exchangeRateToCad.toFixed(4)} CAD</p>}</div><div className="shrink-0 text-right"><p className="text-sm font-medium" style={{ color: activeBillTabConfig.accent }}>{expense.amountCad !== null ? `$${expense.amountCad.toFixed(2)} CAD` : expense.amountUsd !== null ? `$${expense.amountUsd.toFixed(2)} USD` : `${activeBillTabConfig.localSymbol}${expense.amountLocal?.toFixed(2)} ${activeBillTabConfig.localLabel}`}</p>{expense.convertedAmountCad !== null && expense.amountCad === null && <p className="mt-1 text-xs text-white/40">≈ ${expense.convertedAmountCad.toFixed(2)} CAD</p>}<div className="mt-2 flex justify-end gap-3"><button type="button" onClick={() => editMoroccoExpense(expense)} className="text-[10px] uppercase tracking-[0.12em] transition" style={{ color: activeBillTabConfig.accent }}>Edit</button><button type="button" onClick={() => deleteMoroccoExpense(expense)} className="text-[10px] uppercase tracking-[0.12em] text-red-300/60 transition hover:text-red-300">Delete</button></div></div></div>)}
-            {!moroccoExpenses.length && !moroccoExpenseMessage && <p className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-8 text-center text-sm text-white/40">No shared expenses recorded yet.</p>}
+            {!moroccoExpenses.length && !moroccoExpenseMessage && <p className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-8 text-center text-sm text-white/40">No shared expenses yet. Add the first expense above when the trip starts.</p>}
           </div>
         </div>
       </section>
@@ -1425,11 +1592,45 @@ export default function TravelSite() {
   ) : null;
 
   const moroccoAccountingSummaryPopup = showMoroccoAccountingSummary ? (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Morocco accounting summary">
-      <section className="w-full max-w-lg rounded-2xl border border-white/15 bg-[#111] p-6 shadow-2xl">
-        <div className="flex items-start justify-between gap-5">
-          <div><p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: MOROCCO_BROWN }}>Morocco 2026</p><h2 className="text-2xl font-light">Accounting Summary</h2><p className="mt-3 text-sm leading-6 text-white/45">Who owes whom and settlement amounts will appear here once expense-sharing rules are added.</p></div>
+    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label={`${activeBillTabConfig.label} accounting summary`}>
+      <section className="flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] shadow-2xl">
+        <div className="flex items-start justify-between gap-5 border-b border-white/10 p-6">
+          <div><p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: activeBillTabConfig.accent }}>{activeBillTabConfig.label}</p><h2 className="text-2xl font-light">Accounting Summary</h2><p className="mt-3 text-sm leading-6 text-white/45">Approximate settlement based on each expense's converted CAD value.</p></div>
           <button type="button" onClick={() => setShowMoroccoAccountingSummary(false)} aria-label="Close accounting summary" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65">x</button>
+        </div>
+        <div className="min-h-0 overflow-y-auto p-6">
+          {!moroccoExpenses.length ? (
+            <p className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-8 text-center text-sm leading-6 text-white/40">No shared expenses yet. Add expenses in BillTab to generate settlement suggestions.</p>
+          ) : (
+            <div className="space-y-5">
+              <section>
+                <h3 className="mb-3 text-xs uppercase tracking-[0.2em] text-white/45">Suggested Payments</h3>
+                {billTabSettlements.length ? (
+                  <div className="space-y-2">
+                    {billTabSettlements.map((settlement) => (
+                      <div key={`${settlement.from}-${settlement.to}-${settlement.amount}`} className="rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3">
+                        <p className="text-sm text-white/75"><span className="text-white">{settlement.from}</span> pays <span className="text-white">{settlement.to}</span></p>
+                        <p className="mt-1 text-sm font-medium" style={{ color: activeBillTabConfig.accent }}>${settlement.amount.toFixed(2)} CAD</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-5 text-sm text-white/45">Everyone is settled based on the current entries.</p>
+                )}
+              </section>
+              <section>
+                <h3 className="mb-3 text-xs uppercase tracking-[0.2em] text-white/45">Party Balances</h3>
+                <div className="space-y-2">
+                  {billTabBalances.map((party) => (
+                    <div key={party.name} className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm">
+                      <span className="min-w-0 truncate text-white/70">{party.name}</span>
+                      <span className={party.balance >= 0 ? "text-emerald-200/80" : "text-rose-200/80"}>{party.balance >= 0 ? "+" : "-"}${Math.abs(party.balance).toFixed(2)} CAD</span>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            </div>
+          )}
         </div>
       </section>
     </div>
@@ -1477,8 +1678,8 @@ export default function TravelSite() {
     return (
       <div className="min-h-screen bg-black px-6 py-10 text-white" style={{ "--chapter-accent": MOROCCO_BROWN } as React.CSSProperties}>
         <header className="mx-auto mb-10 flex max-w-5xl flex-wrap items-center justify-between gap-3">
-          <button type="button" onClick={() => setShowMoroccoItinerary(false)} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white">← Back to Dashboard</button>
-          <button type="button" onClick={() => { setShowMoroccoItinerary(false); setGuestName(""); setSelectedTrip(""); }} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white">Main Page</button>
+          <button type="button" onClick={() => openTripDashboard(guestName || "Guest")} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white">← Back to Dashboard</button>
+          <button type="button" onClick={goToMainPage} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white">Main Page</button>
         </header>
         <main className="mx-auto max-w-5xl">
           <p className="mb-3 text-sm uppercase tracking-[0.35em]" style={{ color: MOROCCO_BROWN }}>Morocco · G-Adventures</p>
@@ -1552,7 +1753,7 @@ export default function TravelSite() {
                 {moroccoExpenseMessage && <p className="mb-4 text-sm text-white/50">{moroccoExpenseMessage}</p>}
                 <div className="space-y-3">
                   {moroccoExpenses.map((expense) => <div key={expense.id} className={`flex items-start justify-between gap-4 rounded-xl border bg-white/[0.04] px-4 py-3 ${moroccoEditingExpenseId === expense.id ? "border-[#D6B48C]/60" : "border-white/10"}`}><div className="min-w-0"><p className="truncate text-sm text-white/80">{expense.description}</p><p className="mt-1 text-xs text-white/40">{new Intl.DateTimeFormat("en-CA", { year: "numeric", month: "short", day: "numeric" }).format(new Date(expense.createdAt))} · Paid By {expense.paidBy} · Paid For {expense.paidFor || "Everyone"}</p>{expense.exchangeRateToCad !== null && expense.amountCad === null && <p className="mt-1 text-[11px] text-white/30">1 {expense.amountUsd !== null ? "USD" : "MAD"} = {expense.exchangeRateToCad.toFixed(4)} CAD</p>}</div><div className="shrink-0 text-right"><p className="text-sm font-medium" style={{ color: MOROCCO_BROWN }}>{expense.amountCad !== null ? `$${expense.amountCad.toFixed(2)} CAD` : expense.amountUsd !== null ? `$${expense.amountUsd.toFixed(2)} USD` : `${expense.amountLocal?.toFixed(2)} MAD`}</p>{expense.convertedAmountCad !== null && expense.amountCad === null && <p className="mt-1 text-xs text-white/40">≈ ${expense.convertedAmountCad.toFixed(2)} CAD</p>}<div className="mt-2 flex justify-end gap-3"><button type="button" onClick={() => editMoroccoExpense(expense)} className="text-[10px] uppercase tracking-[0.12em] text-[#D6B48C]/75 transition hover:text-[#D6B48C]">Edit</button><button type="button" onClick={() => deleteMoroccoExpense(expense)} className="text-[10px] uppercase tracking-[0.12em] text-red-300/60 transition hover:text-red-300">Delete</button></div></div></div>)}
-                  {!moroccoExpenses.length && !moroccoExpenseMessage && <p className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-8 text-center text-sm text-white/40">No shared expenses recorded yet.</p>}
+                  {!moroccoExpenses.length && !moroccoExpenseMessage && <p className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-8 text-center text-sm text-white/40">No shared expenses yet. Add the first expense above when the trip starts.</p>}
                 </div>
               </div>
             </section>
@@ -1574,11 +1775,16 @@ export default function TravelSite() {
   }
 
   if (!isGuestConfirmed) {
-    const isPosterHeroSelection = ((selectedTrip === "okinawaJapan" || selectedTrip === "taiwan") && !showGuestActions) || selectedTrip === "morocco";
+    const isPosterHeroSelection = selectedTrip === "morocco" || selectedTrip === "okinawaJapan" || selectedTrip === "taiwan";
+    const isConfirmedTripAppCard = selectedTrip === "morocco" || selectedTrip === "taiwan" || selectedTrip === "okinawaJapan";
+    const isSplitTripDashboard = showGuestActions && (selectedTrip === "taiwan" || selectedTrip === "okinawaJapan");
+    const selectedTripAccent = selectedTrip === "taiwan" ? TAIWAN_GOLD : selectedTrip === "okinawaJapan" ? BABY_BLUE : MOROCCO_BROWN;
+    const selectedTripDashboardLabel = selectedTrip === "taiwan" ? "Taiwan 2026" : selectedTrip === "okinawaJapan" ? "Okinawa Japan 2026" : "Morocco · G-Adventures";
+    const selectedTripDashboardDate = selectedTrip === "taiwan" ? "Nov 21 - Dec 21 2026" : selectedTrip === "okinawaJapan" ? "Nov 25 - Dec 6 2026" : "Sept 4 - Sept 16 2026";
     return (
       <div className="flex min-h-screen items-center justify-center bg-black px-6 text-white">
-        <div className={`w-full max-w-md rounded-[2rem] border border-white/10 text-center backdrop-blur-xl ${isPosterHeroSelection ? `overflow-hidden ${selectedTrip === "taiwan" || selectedTrip === "morocco" ? "bg-black" : "bg-[#020B18]"} shadow-[0_0_44px_rgba(158,220,255,0.16)]` : "bg-white/[0.04] p-8 shadow-[0_0_40px_rgba(255,255,255,0.06)]"}`}>
-          <p className={isPosterHeroSelection ? "px-8 pt-8 pb-3 text-xs uppercase tracking-[0.35em] text-white/75" : "mb-3 text-xs uppercase tracking-[0.35em] text-white/70"}>Private Group Event</p>
+        <div className={`w-full max-w-md rounded-[2rem] border border-white/10 text-center backdrop-blur-xl ${isConfirmedTripAppCard ? "flex h-[min(760px,calc(100dvh-2rem))] flex-col overflow-hidden" : ""} ${isPosterHeroSelection ? `overflow-hidden ${selectedTrip === "taiwan" || selectedTrip === "morocco" ? "bg-black" : "bg-[#020B18]"} shadow-[0_0_44px_rgba(158,220,255,0.16)]` : "bg-white/[0.04] p-8 shadow-[0_0_40px_rgba(255,255,255,0.06)]"}`}>
+          {!isSplitTripDashboard && <p className={isPosterHeroSelection ? "shrink-0 px-8 pt-8 pb-3 text-xs uppercase tracking-[0.35em] text-white/75" : "mb-3 text-xs uppercase tracking-[0.35em] text-white/70"}>Private Group Event</p>}
           {!selectedTrip ? (
             <>
               <h1 className="mb-4 text-3xl font-light tracking-wide">
@@ -1604,21 +1810,28 @@ export default function TravelSite() {
             <>
               {guestName ? (
                 <>
-                  <section className="relative flex min-h-[720px] flex-col overflow-hidden bg-[#120D09] px-5 pb-5 text-left sm:min-h-[760px]">
+                  <section className="relative flex min-h-0 flex-1 flex-col overflow-hidden bg-[#120D09] px-5 pb-5 text-left">
                     <img src="/morocco-2026-poster.png" alt="" aria-hidden="true" className="absolute inset-0 h-full w-full scale-110 object-cover opacity-35 blur-xl" />
                     <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-[#120D09]/82 to-black/92" />
                     <div className="relative z-10 mb-5 grid grid-cols-2 gap-2">
-                      <button type="button" onClick={() => { setGuestName(""); setShowMoroccoChecklist(false); }} className="rounded-full border border-white/20 bg-white/[0.06] px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-white/65 transition hover:border-white/35 hover:bg-white/[0.1]">Back</button>
-                      <button type="button" onClick={() => { setGuestName(""); setSelectedTrip(""); setShowMoroccoNameInput(false); setMoroccoNameInput(""); setShowMoroccoBudget(false); setShowMoroccoUsefulInfo(false); setShowMoroccoMap(false); setShowMoroccoChecklist(false); }} className="rounded-full border border-white/20 bg-white/[0.06] px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-white/65 transition hover:border-white/35 hover:bg-white/[0.1]">Main Page</button>
+                      <button type="button" onClick={() => { setGuestName(""); setShowMoroccoChecklist(false); setBrowserRoute(buildTripUrl("morocco")); }} className="rounded-full border border-white/20 bg-white/[0.06] px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-white/65 transition hover:border-white/35 hover:bg-white/[0.1]">Back</button>
+                      <button type="button" onClick={goToMainPage} className="rounded-full border border-white/20 bg-white/[0.06] px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-white/65 transition hover:border-white/35 hover:bg-white/[0.1]">Main Page</button>
                     </div>
-                    <div className="relative z-10 flex flex-1 flex-col justify-center space-y-5">
+                    <div className="relative z-10 flex min-h-0 flex-1 flex-col justify-center space-y-5 overflow-y-auto">
                     <div>
                       <p className="text-xs uppercase tracking-[0.28em] text-[#D6B48C]/80">Morocco · G-Adventures</p>
                       <h2 className="mt-2 text-3xl font-light tracking-wide text-white">Hello {guestName}</h2>
                       <p className="mt-2 text-sm text-white/45">Sept 4 - Sept 16 2026</p>
                     </div>
+                    {guestName === "Guest" ? (
                     <div className="grid gap-3 sm:grid-cols-2">
-                      <button type="button" onClick={() => setShowMoroccoItinerary(true)} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-3 text-center text-sm font-light uppercase tracking-[0.18em] text-[#D6B48C] transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15 sm:col-span-2"><span className="text-xl">🗓️</span><span>Trip Itinerary</span></button>
+                      <button type="button" onClick={() => openTripView("itinerary")} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-3 text-center transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15"><span className="text-xl">🗓️</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#D6B48C]">Trip Itinerary</span></button>
+                      <button type="button" onClick={() => openAlbumPopup(`/memory-maker/moroccoSeptember?returnChapter=morocco&guest=${encodeURIComponent("Guest")}`)} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-3 text-center transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15"><span className="text-xl">🖼️</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#D6B48C]">View Album</span></button>
+                    </div>
+                    ) : (
+                    <>
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <button type="button" onClick={() => openTripView("itinerary")} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-3 text-center transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15 sm:col-span-2"><span className="text-xl">🗓️</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#D6B48C]">Trip Itinerary</span></button>
                       <button type="button" onClick={() => setShowMoroccoChecklist(true)} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-3 text-center transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">
                         <span className="text-xl">🎒</span>
                         <span className="text-xs font-light uppercase tracking-[0.16em] text-[#D6B48C]">Packing List</span>
@@ -1629,14 +1842,16 @@ export default function TravelSite() {
                       </button>
                     </div>
                     <MemoryMaker albumKey="moroccoSeptember" albumName="Morocco" accentColor={MOROCCO_BROWN} guestName={guestName} returnChapter="morocco" onViewAlbum={openAlbumPopup} compact />
+                    </>
+                    )}
                     </div>
                   </section>
                 </>
               ) : (
-                <div className="relative overflow-hidden bg-[#100D16]">
-                  <div className="px-5 pb-5">
+                <div className="relative min-h-0 flex-1 overflow-hidden bg-[#100D16]">
+                  <div className="relative z-10 px-5 pb-5">
                     <div className="mb-3 grid grid-cols-2 gap-2">
-                      <button type="button" onClick={() => { setGuestName(""); setSelectedTrip(""); setShowMoroccoNameInput(false); setMoroccoNameInput(""); setShowMoroccoBudget(false); setShowMoroccoUsefulInfo(false); setShowMoroccoMap(false); setShowMoroccoChecklist(false); }} className="rounded-full border border-white/20 bg-white/[0.06] px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-white/65 transition hover:border-white/35 hover:bg-white/[0.1]">Main Page</button>
+                      <button type="button" onClick={goToMainPage} className="rounded-full border border-white/20 bg-white/[0.06] px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-white/65 transition hover:border-white/35 hover:bg-white/[0.1]">Main Page</button>
                       <button type="button" onClick={() => setShowMoroccoMap(true)} className="rounded-full border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-[#D6B48C] transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">Map View</button>
                     </div>
                     <div className="grid grid-cols-2 gap-2">
@@ -1644,20 +1859,21 @@ export default function TravelSite() {
                       <button type="button" onClick={() => setShowMoroccoUsefulInfo(true)} className="rounded-full border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-[#D6B48C] transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">Useful Info</button>
                     </div>
                   </div>
-                  <img src="/morocco-2026-poster.png" alt="Morocco 2026 travel poster" className="h-auto w-full object-cover" />
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/72 to-transparent px-4 pb-4 pt-20">
+                  <img src="/morocco-2026-poster.png" alt="Morocco 2026 travel poster" className="absolute inset-x-0 bottom-0 top-20 h-[calc(100%-5rem)] w-full object-cover" />
+                  <div className="absolute inset-x-0 bottom-0 grid grid-cols-2 gap-2 bg-gradient-to-t from-black via-black/72 to-transparent px-4 pb-4 pt-20">
                     <select
                       defaultValue=""
                       onChange={(event) => {
                         const selectedGuest = event.target.value;
                         if (!selectedGuest) return;
-                        setGuestName(selectedGuest);
+                        openTripDashboard(selectedGuest);
                       }}
                       className="w-full rounded-2xl border border-white/25 bg-black/75 px-4 py-3 text-sm font-light tracking-wide text-white outline-none backdrop-blur-md transition focus:border-[#D6B48C]/70"
                     >
                       <option value="" disabled>{moroccoInterestedNames.length ? "Select your party" : "No parties added yet"}</option>
                       {moroccoInterestedNames.map((name) => <option key={name} value={name}>{name}</option>)}
                     </select>
+                    <button type="button" onClick={() => openTripDashboard("Guest")} className="rounded-2xl border border-[#D6B48C]/40 bg-black/75 px-4 py-3 text-sm font-light uppercase tracking-[0.16em] text-[#D6B48C] outline-none backdrop-blur-md transition hover:border-[#D6B48C]/70 hover:bg-[#D6B48C]/10">Guest</button>
                   </div>
                 </div>
               )}
@@ -1786,7 +2002,7 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "vietnam" ? (
             <>
-              <button type="button" onClick={() => { setSelectedTrip(""); setShowVietnamNameInput(false); setVietnamNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
+              <button type="button" onClick={goToMainPage} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
               <TripPanelTitle location="Vietnam" date="Nov 12 - Nov 21 2026" description="A Vietnam adventure in the early planning stage, with cities, food, culture, and landscapes still waiting to take shape." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
@@ -1819,7 +2035,7 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "skiMyoko" ? (
             <>
-              <button type="button" onClick={() => { setSelectedTrip(""); setShowSkiMyokoNameInput(false); setSkiMyokoNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
+              <button type="button" onClick={goToMainPage} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
               <TripPanelTitle location="Ski Shiga Kogen & Nagano Japan" date="Jan 23 - Jan 31 2027" description="A winter ski week in the Nagano mountains with onsen time, snow days, and cozy Japanese food." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
@@ -1852,7 +2068,7 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "skiDeerValley" ? (
             <>
-              <button type="button" onClick={() => { setSelectedTrip(""); setShowSkiDeerValleyNameInput(false); setSkiDeerValleyNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
+              <button type="button" onClick={goToMainPage} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
               <TripPanelTitle location="Ski Deer Valley UT USA" date="Feb 2027" description="A polished Utah ski escape built around groomed runs, mountain views, and relaxed resort evenings." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
@@ -1885,7 +2101,7 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "skiBig3" ? (
             <>
-              <button type="button" onClick={() => { setSelectedTrip(""); setShowSkiBig3NameInput(false); setSkiBig3NameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
+              <button type="button" onClick={goToMainPage} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
               <TripPanelTitle location="SkiBig3 AB Canada" date="Mar 2027" description="A Canadian Rockies ski trip across Banff's big mountain terrain, with plenty of alpine scenery between runs." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
@@ -1918,7 +2134,7 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "houston" ? (
             <>
-              <button type="button" onClick={() => { setSelectedTrip(""); setShowHoustonNameInput(false); setHoustonNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
+              <button type="button" onClick={goToMainPage} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
               <TripPanelTitle location="Houston & Galveston TX USA" subtitle="FRC & Disney Cruise" date="April 28 - May 7 2027" description="Arriving Houston to witness the exciting First Robotics Competition at the George R. Brown Convention Center from April 28 - May 1; followed by Mark's birthday celebration on May 1. On May 2, we board Disney Magic from Galveston for a 5-night Western Caribbean Disney cruise." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
@@ -1951,7 +2167,7 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "azoresPortugal" ? (
             <>
-              <button type="button" onClick={() => { setSelectedTrip(""); setShowAzoresNameInput(false); setAzoresNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
+              <button type="button" onClick={goToMainPage} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
               <TripPanelTitle location="Azores Portugal" date="Sept 2027" description="An island nature trip with volcanic landscapes, ocean views, hot springs, and unhurried Atlantic days." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
@@ -1984,7 +2200,7 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "similanThailand" ? (
             <>
-              <button type="button" onClick={() => { setSelectedTrip(""); setShowSimilanNameInput(false); setSimilanNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
+              <button type="button" onClick={goToMainPage} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
               <TripPanelTitle location="Similan & Phuket Thailand" subtitle="Scuba Diving Liveaboard" date="Mar 2028" description="A warm-water dive adventure centered on liveaboard days, reefs, beaches, and Phuket time before or after the boat." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
@@ -2017,7 +2233,7 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "disneyWorld" ? (
             <>
-              <button type="button" onClick={() => { setSelectedTrip(""); setShowDisneyWorldNameInput(false); setDisneyWorldNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
+              <button type="button" onClick={goToMainPage} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
               <TripPanelTitle location="Orlando FL USA" subtitle="Disney World" date="Nov 2028" description="A Disney World holiday with park days, character moments, resort downtime, and room for family pacing." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
@@ -2050,7 +2266,7 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "fiveStans" ? (
             <>
-              <button type="button" onClick={() => { setSelectedTrip(""); setShowFiveStansNameInput(false); setFiveStansNameInput(""); }} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
+              <button type="button" onClick={goToMainPage} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
               <TripPanelTitle location="The 5 Stans & Silk Road" date="TBD" description="Trace the legendary Silk Road across five nations: Kyrgyzstan, Kazakhstan, Tajikistan, Turkmenistan, Uzbekistan. This is Central Asia in full, gloriously unfiltered widescreen. Gonna be gorgeous and totally unforgettable." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
@@ -2096,24 +2312,26 @@ export default function TravelSite() {
             </>
           ) : !showGuestActions ? (
             <>
-              <button type="button" onClick={() => { setSelectedTrip(""); setShowGuestActions(false); setGuestName(""); }} className={selectedTrip === "okinawaJapan" || selectedTrip === "taiwan" ? "mx-8 mb-5 rounded-full border border-white/20 bg-white/[0.06] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/65 transition hover:border-white/35 hover:bg-white/[0.1]" : "mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45"}>Main Page</button>
+              <button type="button" onClick={goToMainPage} className={selectedTrip === "okinawaJapan" || selectedTrip === "taiwan" ? "mx-8 mb-5 shrink-0 rounded-full border border-white/20 bg-white/[0.06] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/65 transition hover:border-white/35 hover:bg-white/[0.1]" : "mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45"}>Main Page</button>
               {selectedTrip === "okinawaJapan" || selectedTrip === "taiwan" ? (
-                <div className={`relative overflow-hidden ${selectedTrip === "taiwan" ? "bg-black" : "bg-[#020B18]"}`}>
-                  <img src={selectedTrip === "taiwan" ? "/taiwan-2026-poster.png" : "/okinawa-2026-poster.png"} alt={selectedTrip === "taiwan" ? "Taiwan 2026 travel poster" : "Okinawa Japan 2026 travel poster"} className={`h-auto w-full object-cover ${selectedTrip === "taiwan" ? "scale-[1.04] -translate-y-7" : ""}`} />
+                <div className={`relative min-h-0 flex-1 overflow-hidden ${selectedTrip === "taiwan" ? "bg-black" : "bg-[#020B18]"}`}>
+                  <img src={selectedTrip === "taiwan" ? "/taiwan-2026-poster.png" : "/okinawa-2026-poster.png"} alt={selectedTrip === "taiwan" ? "Taiwan 2026 travel poster" : "Okinawa Japan 2026 travel poster"} className={`absolute inset-0 h-full w-full object-cover ${selectedTrip === "taiwan" ? "scale-[1.08] -translate-y-6 object-center" : "object-center"}`} />
                   <div className={`absolute inset-x-0 bottom-0 bg-gradient-to-t from-black px-4 pb-4 ${selectedTrip === "taiwan" ? "via-black/90 pt-28" : "via-black/72 pt-20"} to-transparent`}>
-                    <select
-                      defaultValue=""
-                      onChange={(event) => {
-                        const selectedGuest = event.target.value;
-                        if (!selectedGuest) return;
-                        setGuestName(selectedGuest);
-                        setShowGuestActions(true);
-                      }}
-                      className={`w-full rounded-2xl border border-white/25 bg-black/75 px-4 py-3 text-sm font-light tracking-wide text-white outline-none backdrop-blur-md transition ${selectedTrip === "taiwan" ? "focus:border-[#FFD76A]/70" : "focus:border-[#9EDCFF]/70"}`}
-                    >
-                      <option value="" disabled>Select your party</option>
-                      {getVisibleGuestOptions().map((guest) => <option key={guest} value={guest}>{guest}</option>)}
-                    </select>
+                    <div className="grid grid-cols-2 gap-2">
+                      <select
+                        defaultValue=""
+                        onChange={(event) => {
+                          const selectedGuest = event.target.value;
+                          if (!selectedGuest) return;
+                          openTripDashboard(selectedGuest);
+                        }}
+                        className={`min-w-0 rounded-2xl border border-white/25 bg-black/75 px-4 py-3 text-sm font-light tracking-wide text-white outline-none backdrop-blur-md transition ${selectedTrip === "taiwan" ? "focus:border-[#FFD76A]/70" : "focus:border-[#9EDCFF]/70"}`}
+                      >
+                        <option value="" disabled>Select your party</option>
+                        {getVisibleGuestOptions().map((guest) => <option key={guest} value={guest}>{guest}</option>)}
+                      </select>
+                      <button type="button" onClick={() => openTripDashboard("Guest")} className={`rounded-2xl border bg-black/75 px-4 py-3 text-sm font-light uppercase tracking-[0.16em] outline-none backdrop-blur-md transition ${selectedTrip === "taiwan" ? "border-[#FFD76A]/40 text-[#FFD76A] hover:border-[#FFD76A]/70 hover:bg-[#FFD76A]/10" : "border-[#9EDCFF]/40 text-[#9EDCFF] hover:border-[#9EDCFF]/70 hover:bg-[#9EDCFF]/10"}`}>Guest</button>
+                    </div>
                   </div>
                 </div>
               ) : (
@@ -2121,32 +2339,41 @@ export default function TravelSite() {
                   <h1 className="mb-4 text-3xl font-light tracking-wide">Taiwan 2026</h1>
                   <p className="mb-8 text-sm leading-6 text-white/55">Please select your party to continue.</p>
                   <label className="mb-5 block text-left">
-                    <select
-                      defaultValue=""
-                      onChange={(event) => {
-                        const selectedGuest = event.target.value;
-                        if (!selectedGuest) return;
-                        setGuestName(selectedGuest);
-                        setShowGuestActions(true);
-                      }}
-                      className="w-full rounded-2xl border border-white/15 bg-[#111] px-4 py-3 text-sm font-light tracking-wide text-white/75 outline-none transition focus:border-white/35"
-                    >
-                      <option value="" disabled>Select your party</option>
-                      {getVisibleGuestOptions().map((guest) => <option key={guest} value={guest}>{guest}</option>)}
-                    </select>
+                    <div className="grid grid-cols-2 gap-2">
+                      <select
+                        defaultValue=""
+                        onChange={(event) => {
+                          const selectedGuest = event.target.value;
+                          if (!selectedGuest) return;
+                          openTripDashboard(selectedGuest);
+                        }}
+                        className="min-w-0 rounded-2xl border border-white/15 bg-[#111] px-4 py-3 text-sm font-light tracking-wide text-white/75 outline-none transition focus:border-white/35"
+                      >
+                        <option value="" disabled>Select your party</option>
+                        {getVisibleGuestOptions().map((guest) => <option key={guest} value={guest}>{guest}</option>)}
+                      </select>
+                      <button type="button" onClick={() => openTripDashboard("Guest")} className="rounded-2xl border border-white/15 bg-[#111] px-4 py-3 text-sm font-light uppercase tracking-[0.16em] text-white/65 transition hover:border-white/35 hover:text-white">Guest</button>
+                    </div>
                   </label>
                 </>
               )}
             </>
           ) : (
             <>
-              <div className="mb-5 grid grid-cols-2 gap-3">
-                <button type="button" onClick={() => { setShowGuestActions(false); setGuestName(""); }} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45 transition hover:border-white/30 hover:bg-white/[0.05]">Back</button>
-                <button type="button" onClick={() => { setSelectedTrip(""); setShowGuestActions(false); setGuestName(""); }} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45 transition hover:border-white/30 hover:bg-white/[0.05]">Main Page</button>
-              </div>
-              <div className="mb-8 rounded-3xl border border-white/10 bg-white/[0.04] p-6 text-left shadow-[0_0_30px_rgba(255,255,255,0.05)]">
-                <p className="text-sm uppercase tracking-[0.28em] text-white/70">Welcome</p>
-                <h2 className="mt-2 text-3xl font-light tracking-wide text-white">Hello {guestName} 👋</h2>
+              <section className="relative flex min-h-0 flex-1 flex-col overflow-hidden bg-black px-5 pb-5 pt-8 text-left">
+                <img src={selectedTrip === "taiwan" ? "/taiwan-2026-poster.png" : "/okinawa-2026-poster.png"} alt="" aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 h-full w-full scale-110 object-cover opacity-18 blur-xl" />
+                <div className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-b from-black/75 via-black/80 to-black/90" />
+                <p className="relative z-10 mb-3 text-center text-xs uppercase tracking-[0.35em] text-white/75">Private Group Event</p>
+                <div className="relative z-10 mb-5 grid grid-cols-2 gap-2">
+                  <button type="button" onClick={() => { setShowGuestActions(false); setGuestName(""); if (selectedTrip) setBrowserRoute(buildTripUrl(selectedTrip)); }} className="rounded-full border border-white/20 bg-white/[0.06] px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-white/65 transition hover:border-white/35 hover:bg-white/[0.1]">Back</button>
+                  <button type="button" onClick={goToMainPage} className="rounded-full border border-white/20 bg-white/[0.06] px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-white/65 transition hover:border-white/35 hover:bg-white/[0.1]">Main Page</button>
+                </div>
+                <div className="relative z-10 flex min-h-0 flex-1 flex-col space-y-5 overflow-y-auto overflow-x-hidden py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.28em]" style={{ color: selectedTripAccent }}>{selectedTripDashboardLabel}</p>
+                  <h2 className="mt-2 text-3xl font-light tracking-wide text-white">Hello {guestName}</h2>
+                  <p className="mt-2 text-sm text-white/45">{selectedTripDashboardDate}</p>
+                </div>
                 {renderTripDashboardActions()}
                 {guestName === "Xenia & David & Naomi (3)" && <CountrySegmentButtons segments={[{ label: "Nov 21–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }, { label: "Day Trips · Taipei", page: "taipei", color: TAIWAN_GOLD }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Jim" && <CountrySegmentButtons segments={[{ label: "Nov 20–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
@@ -2158,14 +2385,15 @@ export default function TravelSite() {
                 {guestName === "Dave & Christina & Xixi (2)" && <CountrySegmentButtons segments={[{ label: "Day Trips · Taipei", page: "taipei", color: TAIWAN_GOLD }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Heather & Jack & Aizen (8) & Kaien (3)" && <CountrySegmentButtons segments={[{ label: "Day Trips · Taipei", page: "taipei", color: TAIWAN_GOLD }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Julie & Adrian & Ethan (4) & Tyrell (1)" && <CountrySegmentButtons segments={[{ label: "Day Trips · Taipei", page: "taipei", color: TAIWAN_GOLD }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
-                {!["Xenia & David & Naomi (3)", "Jim", "Mark Wang", "Anthony & Christine & Mona (1)", "Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Mei & Emilia (8)", "Steven Wang", "Dave & Christina & Xixi (2)", "Heather & Jack & Aizen (8) & Kaien (3)", "Julie & Adrian & Ethan (4) & Tyrell (1)"].includes(guestName) && (
+                {guestName !== "Guest" && !["Xenia & David & Naomi (3)", "Jim", "Mark Wang", "Anthony & Christine & Mona (1)", "Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Mei & Emilia (8)", "Steven Wang", "Dave & Christina & Xixi (2)", "Heather & Jack & Aizen (8) & Kaien (3)", "Julie & Adrian & Ethan (4) & Tyrell (1)"].includes(guestName) && (
                   <div className="mt-5 rounded-2xl border border-amber-300/20 bg-amber-300/5 p-4">
                     <p className="text-sm leading-6 text-amber-100/80">
                       No trip segment found, please confirm your trip with Xenia ASAP.
                     </p>
                   </div>
                 )}
-              </div>
+                </div>
+              </section>
             </>
           )}
         </div>
@@ -2393,16 +2621,16 @@ export default function TravelSite() {
     <div className="min-h-screen bg-black text-white">
       <section className="relative flex min-h-screen flex-col items-center justify-start overflow-visible px-6 pb-10 pt-16 md:h-[90vh] md:min-h-0 md:justify-center md:overflow-hidden md:pt-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.06),transparent_55%)]" />
-        <button type="button" onClick={() => { setIsGuestConfirmed(false); setSelectedTrip(""); setShowGuestActions(false); setGuestName(""); setPage("map"); window.history.replaceState({}, "", "/"); }} className="absolute right-5 top-5 z-30 rounded-full border border-white/25 bg-black/30 px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/75 backdrop-blur-md transition hover:border-white/50 hover:bg-white/10">Main Page</button>
-        {guestName && guestName !== "I am just a random Guest" && <button type="button" onClick={() => { setIsGuestConfirmed(false); setShowGuestActions(true); }} className="absolute left-5 top-5 z-30 rounded-full border border-white/25 bg-black/30 px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/75 backdrop-blur-md">← Back to Dashboard</button>}
+        <button type="button" onClick={goToMainPage} className="absolute right-5 top-5 z-30 rounded-full border border-white/25 bg-black/30 px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/75 backdrop-blur-md transition hover:border-white/50 hover:bg-white/10">Main Page</button>
+        {guestName && guestName !== "I am just a random Guest" && <button type="button" onClick={() => openTripDashboard(guestName)} className="absolute left-5 top-5 z-30 rounded-full border border-white/25 bg-black/30 px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/75 backdrop-blur-md">← Back to Dashboard</button>}
         <div className="relative z-10 flex w-full max-w-5xl items-center justify-center gap-8 md:gap-20">
           {isTaiwanMap && <svg viewBox="0 0 140 260" className="h-[340px] w-[166px] opacity-90 md:h-[520px] md:w-[255px]" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M110 0 L105 0 L94 12 L80 16 L69 24 L58 47 L47 57 L29 90 L10 117 L8 147 L0 173 L10 181 L16 205 L21 213 L43 230 L48 242 L47 254 L50 259 L61 254 L62 227 L68 210 L84 193 L98 163 L107 132 L113 96 L130 61 L127 36 L139 24 L134 15 L120 10 Z" />
-            <SvgPin id="taipei" label="Taipei" cx={108} cy={18} hovered={hovered} setHovered={setHovered} activeColor={TAIWAN_GOLD} scale={0.9} labelFontSize={8} labelOffset={12} onDoubleClick={() => setPage("taipei")} />
-            <SvgPin id="xiaoliuqiu" label="Xiaoliuqiu" cx={39} cy={234} hovered={hovered} setHovered={setHovered} activeColor={TAIWAN_GOLD} scale={0.9} labelFontSize={8} labelOffset={12} onDoubleClick={() => setPage("xiaoliuqiu")} />
-            <SvgPin id="yilan" label="Yilan" cx={120} cy={45} hovered={hovered} setHovered={setHovered} activeColor={TAIWAN_GOLD} scale={0.9} labelFontSize={8} labelOffset={12} onDoubleClick={() => setPage("yilan")} />
+            <SvgPin id="taipei" label="Taipei" cx={108} cy={18} hovered={hovered} setHovered={setHovered} activeColor={TAIWAN_GOLD} scale={0.9} labelFontSize={8} labelOffset={12} onDoubleClick={() => openChapterPage("taipei")} />
+            <SvgPin id="xiaoliuqiu" label="Xiaoliuqiu" cx={39} cy={234} hovered={hovered} setHovered={setHovered} activeColor={TAIWAN_GOLD} scale={0.9} labelFontSize={8} labelOffset={12} onDoubleClick={() => openChapterPage("xiaoliuqiu")} />
+            <SvgPin id="yilan" label="Yilan" cx={120} cy={45} hovered={hovered} setHovered={setHovered} activeColor={TAIWAN_GOLD} scale={0.9} labelFontSize={8} labelOffset={12} onDoubleClick={() => openChapterPage("yilan")} />
           </svg>}
-          {!isTaiwanMap && <svg viewBox="0 0 331 520" className="h-[350px] w-[350px] md:h-[520px] md:w-[520px]" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M291 5 L282 5 L280 12 L283 27 L277 42 L262 65 L257 79 L251 83 L242 82 L239 85 L238 90 L243 93 L243 97 L237 105 L223 112 L216 127 L222 134 L213 135 L212 144 L209 147 L196 150 L192 156 L180 154 L177 160 L169 160 L162 154 L164 149 L173 147 L181 151 L185 145 L176 133 L167 132 L167 125 L154 124 L142 115 L130 115 L121 120 L113 118 L106 120 L104 136 L111 144 L108 157 L110 173 L120 186 L134 182 L141 189 L158 192 L159 204 L124 235 L120 235 L115 244 L108 240 L99 244 L89 264 L80 273 L74 287 L62 285 L53 293 L40 288 L35 291 L36 314 L54 350 L53 358 L60 367 L60 377 L52 380 L47 389 L36 391 L27 407 L19 405 L17 418 L20 426 L8 425 L5 431 L4 441 L10 448 L10 456 L19 465 L19 468 L15 470 L15 479 L20 486 L19 507 L23 514 L32 516 L41 509 L51 507 L69 484 L85 479 L89 470 L103 459 L103 450 L97 438 L92 435 L85 437 L79 449 L68 431 L79 420 L80 408 L84 400 L94 391 L90 379 L97 374 L98 369 L107 367 L102 355 L112 346 L120 361 L132 374 L140 372 L139 361 L118 333 L115 321 L108 318 L95 298 L99 294 L99 289 L111 279 L138 279 L141 284 L147 282 L150 278 L149 272 L153 269 L162 269 L175 254 L172 245 L174 240 L182 241 L194 232 L196 224 L192 217 L195 214 L221 219 L229 211 L237 209 L240 204 L239 199 L245 189 L237 183 L236 179 L244 164 L253 161 L266 166 L277 159 L286 157 L290 153 L292 142 L304 129 L311 105 L325 84 L322 73 L327 59 L322 50 L320 35 L309 24 L310 18 L298 13 Z" /><SvgPin id="naha" label="Naha" cx={34} cy={437} hovered={hovered} setHovered={setHovered} activeColor={BABY_BLUE} scale={2.25} labelFontSize={20} labelOffset={38} onDoubleClick={() => setPage("naha")} /><SvgPin id="onna" label="Onna" cx={50} cy={300} hovered={hovered} setHovered={setHovered} activeColor={BABY_BLUE} scale={2.25} labelFontSize={20} labelOffset={38} onDoubleClick={() => setPage("onna")} /><SvgPin id="nago" label="Nago" cx={152} cy={172} hovered={hovered} setHovered={setHovered} activeColor={BABY_BLUE} scale={2.25} labelFontSize={20} labelOffset={38} onDoubleClick={() => setPage("nago")} /><SvgPin id="nanjo" label="Nanjo" cx={70} cy={468} hovered={hovered} setHovered={setHovered} activeColor={BABY_BLUE} scale={2.25} labelFontSize={20} labelOffset={38} onDoubleClick={() => setPage("nanjo")} /></svg>}
+          {!isTaiwanMap && <svg viewBox="0 0 331 520" className="h-[350px] w-[350px] md:h-[520px] md:w-[520px]" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M291 5 L282 5 L280 12 L283 27 L277 42 L262 65 L257 79 L251 83 L242 82 L239 85 L238 90 L243 93 L243 97 L237 105 L223 112 L216 127 L222 134 L213 135 L212 144 L209 147 L196 150 L192 156 L180 154 L177 160 L169 160 L162 154 L164 149 L173 147 L181 151 L185 145 L176 133 L167 132 L167 125 L154 124 L142 115 L130 115 L121 120 L113 118 L106 120 L104 136 L111 144 L108 157 L110 173 L120 186 L134 182 L141 189 L158 192 L159 204 L124 235 L120 235 L115 244 L108 240 L99 244 L89 264 L80 273 L74 287 L62 285 L53 293 L40 288 L35 291 L36 314 L54 350 L53 358 L60 367 L60 377 L52 380 L47 389 L36 391 L27 407 L19 405 L17 418 L20 426 L8 425 L5 431 L4 441 L10 448 L10 456 L19 465 L19 468 L15 470 L15 479 L20 486 L19 507 L23 514 L32 516 L41 509 L51 507 L69 484 L85 479 L89 470 L103 459 L103 450 L97 438 L92 435 L85 437 L79 449 L68 431 L79 420 L80 408 L84 400 L94 391 L90 379 L97 374 L98 369 L107 367 L102 355 L112 346 L120 361 L132 374 L140 372 L139 361 L118 333 L115 321 L108 318 L95 298 L99 294 L99 289 L111 279 L138 279 L141 284 L147 282 L150 278 L149 272 L153 269 L162 269 L175 254 L172 245 L174 240 L182 241 L194 232 L196 224 L192 217 L195 214 L221 219 L229 211 L237 209 L240 204 L239 199 L245 189 L237 183 L236 179 L244 164 L253 161 L266 166 L277 159 L286 157 L290 153 L292 142 L304 129 L311 105 L325 84 L322 73 L327 59 L322 50 L320 35 L309 24 L310 18 L298 13 Z" /><SvgPin id="naha" label="Naha" cx={34} cy={437} hovered={hovered} setHovered={setHovered} activeColor={BABY_BLUE} scale={2.25} labelFontSize={20} labelOffset={38} onDoubleClick={() => openChapterPage("naha")} /><SvgPin id="onna" label="Onna" cx={50} cy={300} hovered={hovered} setHovered={setHovered} activeColor={BABY_BLUE} scale={2.25} labelFontSize={20} labelOffset={38} onDoubleClick={() => openChapterPage("onna")} /><SvgPin id="nago" label="Nago" cx={152} cy={172} hovered={hovered} setHovered={setHovered} activeColor={BABY_BLUE} scale={2.25} labelFontSize={20} labelOffset={38} onDoubleClick={() => openChapterPage("nago")} /><SvgPin id="nanjo" label="Nanjo" cx={70} cy={468} hovered={hovered} setHovered={setHovered} activeColor={BABY_BLUE} scale={2.25} labelFontSize={20} labelOffset={38} onDoubleClick={() => openChapterPage("nanjo")} /></svg>}
         </div>
         <div className="relative z-20 mt-2 flex flex-col items-center gap-3 px-4 text-center md:absolute md:bottom-44 md:mt-0 md:flex-row md:gap-6">
           <h1 className="text-2xl font-light leading-tight tracking-wide md:text-4xl">{isTaiwanMap ? "Taiwan" : "Okinawa Japan"}</h1>
@@ -2425,8 +2653,11 @@ export default function TravelSite() {
   );
 }
 
-function SegmentButtons({ segments, setIsGuestConfirmed, setPage }: { segments: { label: string; page: PageName; color: string }[]; setIsGuestConfirmed: React.Dispatch<React.SetStateAction<boolean>>; setPage: React.Dispatch<React.SetStateAction<PageName>> }) {
-  return <div className="mt-5 space-y-3 text-sm leading-7 text-white/70"><p className="text-xs uppercase tracking-[0.22em] text-white/35">You are joining:</p>{segments.map((segment) => <button key={segment.label} type="button" onClick={() => { setIsGuestConfirmed(true); setPage(segment.page); }} className="w-full rounded-2xl border px-4 py-3 text-left transition" style={{ borderColor: `${segment.color}44`, backgroundColor: `${segment.color}12` }}><p className="font-medium" style={{ color: segment.color }}>{segment.label}</p></button>)}</div>;
+function SegmentButtons({ segments, onOpenSegment }: { segments: { label: string; page: PageName; color: string }[]; onOpenSegment: (page: PageName) => void }) {
+  if (!segments.length) {
+    return <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm leading-6 text-white/40">No trip segments are linked to this party yet.</div>;
+  }
+  return <div className="mt-5 space-y-3 text-sm leading-7 text-white/70"><p className="text-xs uppercase tracking-[0.22em] text-white/35">You are joining:</p>{segments.map((segment) => <button key={segment.label} type="button" onClick={() => onOpenSegment(segment.page)} className="w-full rounded-2xl border px-4 py-3 text-left transition" style={{ borderColor: `${segment.color}44`, backgroundColor: `${segment.color}12` }}><p className="font-medium" style={{ color: segment.color }}>{segment.label}</p></button>)}</div>;
 }
 
 function RentalCarPlanner({ date, dateLabel }: { date: string; dateLabel: string }) {
