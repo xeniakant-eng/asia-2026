@@ -1073,6 +1073,8 @@ export default function TravelSite() {
       "Action camera + charger",
     ];
     const okinawaSegment = ["Wedding attire", "Resort casual outfit", "International driving permit / car documents"];
+    const okinawaFunPassThree = "Purchase Okinawa FunPASS Churaumi 3 in 1 for 2 adults + 1 child (For Churaumi Aquarium + Pinappleland + Okinawa World + Shopping Discount)";
+    const okinawaFunPassTwo = "Purchase Okinawa FunPASS Churaumi 3 in 1 for 1 adult + 1 child (For Churaumi Aquarium + Pinappleland + Okinawa World + Shopping Discount)";
     const babyToddlerItems = [
       "Formula / milk / snacks",
       "Diapers / wipes / rash cream / small plastic bags",
@@ -1097,18 +1099,26 @@ export default function TravelSite() {
       { title: "Clothes", items: clothes },
       { title: "Personal", items: personal },
     ];
+    const sectionsWithEssentials = (extraEssentials: string[]): PackingSection[] => [
+      { title: "Essentials", items: [...essentials, ...extraEssentials] },
+      { title: "Clothes", items: clothes },
+      { title: "Personal", items: personal },
+    ];
 
     if (guest === "Mark Wang") {
       return { title: "Mark's Packing Checklist", sections: [...standardSections, { title: "Xiaoliuqiu Dive Segment", items: xiaoliuqiuDive }, { title: "Okinawa Wedding Segment", items: okinawaSegment }] };
     }
-    if (["Xenia & David & Naomi (3)", "Heather & Jack & Aizen (8) & Kaien (3)"].includes(guest)) {
+    if (guest === "Xenia & David & Naomi (3)") {
+      return { title: `${guest} Packing Checklist`, sections: [...sectionsWithEssentials([okinawaFunPassThree]), { title: "Okinawa Segment", items: okinawaSegment }, { title: "Baby / Toddler Items", items: babyToddlerItems }] };
+    }
+    if (guest === "Heather & Jack & Aizen (8) & Kaien (3)") {
       return { title: `${guest} Packing Checklist`, sections: [...standardSections, { title: "Okinawa Segment", items: okinawaSegment }, { title: "Baby / Toddler Items", items: babyToddlerItems }] };
     }
     if (guest === "Mei & Emilia (8)") {
-      return { title: `${guest} Packing Checklist`, sections: standardSections };
+      return { title: `${guest} Packing Checklist`, sections: sectionsWithEssentials([okinawaFunPassTwo]) };
     }
     if (guest === "Dave & Christina & Xixi (2)") {
-      return { title: `${guest} Packing Checklist`, sections: [...standardSections, { title: "Baby / Toddler Items", items: babyToddlerItems }] };
+      return { title: `${guest} Packing Checklist`, sections: [...sectionsWithEssentials([okinawaFunPassThree]), { title: "Baby / Toddler Items", items: babyToddlerItems }] };
     }
     if (guest === "Mei & Emilia (8)") return { title: `${guest} Packing Checklist`, sections: standardSections };
     if (["Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Julie & Adrian & Ethan (4) & Tyrell (1)"].includes(guest)) return { title: `${guest} Packing Checklist`, sections: [...standardSections, { title: "Baby / Toddler Items", items: babyToddlerItems }] };
@@ -2973,7 +2983,7 @@ function XiaoliuqiuContent({ card }: { card: (children: React.ReactNode) => Reac
 }
 
 function OnnaContent({ card, linkedImage }: { card: (children: React.ReactNode) => React.ReactNode; linkedImage: (src: string, alt: string) => React.ReactNode }) {
-  return <><DayArticle date="Friday, November 27, 2026" rentalCarDate="2026-11-27" title="Morning Arrival · Naha">{card(<><p>✈ EVA Air BR112 · Arrive 9:15 AM at Naha Airport</p><p>🚗 Pick up rental car · Rental Company TBD</p></>)}{card(<><p>🕛 <a href="https://maps.google.com/?q=Senaga+Island+Umikaji+Terrace" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Senaga Island · Umikaji Terrace</a></p>{linkedImage("/umikaji-terrace.png", "Umikaji Terrace Okinawa")}<p className="mt-4">MKCafe → ocean views and Mackerel Bitter Melon Burger.</p></>)}{card(<><p className="text-[var(--chapter-accent)]">Afternoon · PART I</p><p>🛍 <a href="https://maps.google.com/?q=San-A+PARCO+CITY+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">PARCO City</a></p><p>☕ <a href="https://maps.google.com/?q=Minatogawa+Stateside+Town+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">港川外人住宅 Minatogawa State Side Town</a></p></>)}{card(<><p className="text-[var(--chapter-accent)]">Afternoon · PART II</p><p>🏖 <a href="https://maps.google.com/?q=Araha+Beach+Park+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Araha Beach Park</a></p><p>🛒 <a href="https://maps.google.com/?q=AEON+Mall+Rycom+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Aeon Mall Rycom</a></p><p>🚗 <a href="https://maps.google.com/?q=Hotel+Monterey+Okinawa+Spa+%26+Resort" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Drive to resort</a> · approximately 45 minutes.</p></>)}</DayArticle><DayArticle date="Saturday, November 28, 2026" rentalCarDate="2026-11-28" title="Resort Day · Beach / Culture / Blue Cave">{card(<p>🍳 Breakfast · Hotel buffet</p>)}{card(<><p>🤿 Blue Cave dive & snorkel 青之洞窟潛水</p><p className="text-white/50">Weather dependent</p>{linkedImage("/bluecave.png", "Blue Cave Okinawa")}</>)}{card(<a href="https://www.ryukyumura.co.jp/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🏯 Ryukyu Mura with FunPass</a>)}{card(<><a href="https://www.hotelmonterey.co.jp/en/okinawa/activity/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🏖 Resort & Beach Activities</a>{linkedImage("/hotel.png", "Hotel Monterey Okinawa")}</>)}{card(<p>🍽 Dinner · TBD</p>)}</DayArticle><DayArticle date="Sunday, November 29, 2026" rentalCarDate="2026-11-29" title="Albert & Quinn Wedding Day">{card(<><p>Breakfast · Hotel buffet</p><p>💍 Albert & Quinn Wedding at Hotel Monterey Okinawa Spa & Resort</p>{linkedImage("/chapel.png", "Wedding Chapel Okinawa")}</>)}</DayArticle></>;
+  return <><DayArticle date="Friday, November 27, 2026" rentalCarDate="2026-11-27" title="Morning Arrival · Naha">{card(<><p>✈ EVA Air BR112 · Arrive 9:15 AM at Naha Airport</p><p>🚗 Pick up rental car · Rental Company TBD</p></>)}{card(<><p>🕛 <a href="https://maps.google.com/?q=Senaga+Island+Umikaji+Terrace" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Senaga Island · Umikaji Terrace</a></p>{linkedImage("/umikaji-terrace.png", "Umikaji Terrace Okinawa")}<p className="mt-4">MKCafe → ocean views and Mackerel Bitter Melon Burger.</p></>)}{card(<><p className="text-[var(--chapter-accent)]">Afternoon · PART I</p><p>🛍 <a href="https://maps.google.com/?q=San-A+PARCO+CITY+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">PARCO City</a></p><p>☕ <a href="https://maps.google.com/?q=Minatogawa+Stateside+Town+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">港川外人住宅 Minatogawa State Side Town</a></p></>)}{card(<><p className="text-[var(--chapter-accent)]">Afternoon · PART II</p><p>🏖 <a href="https://maps.google.com/?q=Araha+Beach+Park+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Araha Beach Park</a></p><p>🛒 <a href="https://maps.google.com/?q=AEON+Mall+Rycom+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Aeon Mall Rycom</a></p><p>🚗 <a href="https://maps.google.com/?q=Hotel+Monterey+Okinawa+Spa+%26+Resort" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Drive to resort</a> · approximately 45 minutes.</p></>)}</DayArticle><DayArticle date="Saturday, November 28, 2026" rentalCarDate="2026-11-28" title="Resort Day · Beach / Culture / Blue Cave">{card(<p>🍳 Breakfast · Hotel buffet</p>)}{card(<><p>🤿 Blue Cave dive & snorkel 青之洞窟潛水</p><p className="text-white/50">Weather dependent</p>{linkedImage("/bluecave.png", "Blue Cave Okinawa")}</>)}{card(<a href="https://www.ryukyumura.co.jp/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🏯 Ryukyu Mura with FunPass</a>)}{card(<><a href="https://www.hotelmonterey.co.jp/en/okinawa/activity/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🏖 Resort & Beach Activities</a>{linkedImage("/hotel.png", "Hotel Monterey Okinawa")}</>)}{card(<p>🍽 Dinner · TBD</p>)}</DayArticle><DayArticle date="Sunday, November 29, 2026" rentalCarDate="2026-11-29" title="Albert & Quinn Wedding Day">{card(<><p>🍳 Breakfast · Hotel buffet</p><p>💍 11:00 AM · Albert & Quinn Wedding Ceremony at Hotel Monterey Chapel</p><p>🥂 12:30 PM - 1:30 PM · Cocktail Hour &amp; Hors d&apos;Oeuvres</p><p>🍽 1:30 PM - 3:30 PM · Wedding Lunch Reception</p><p>🎉 7:30 PM · After Party</p>{linkedImage("/chapel.png", "Wedding Chapel Okinawa")}</>)}</DayArticle></>;
 }
 
 function NagoContent({ card, linkedImage }: { card: (children: React.ReactNode) => React.ReactNode; linkedImage: (src: string, alt: string) => React.ReactNode }) {
