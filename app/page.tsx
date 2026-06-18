@@ -30,6 +30,10 @@ const TRIP_PATHS: Record<TripKey, string> = {
 
 const TRIP_KEYS_BY_PATH = Object.fromEntries(Object.entries(TRIP_PATHS).map(([key, path]) => [path, key])) as Record<string, TripKey>;
 
+const GUEST_NAME_ALIASES: Record<string, string> = {
+  "Heather & Jack & Aizen (8) & Kaien (3)": "Heather & Jack & Aizen (8) & Kaien (3) & Norma",
+};
+
 type TimelineItem = {
   id: PageName | "taipei" | "yilan";
   label: string;
@@ -671,7 +675,7 @@ export default function TravelSite() {
     "Jim",
     "Anthony & Christine & Mona (1)",
     "Jenn & Hiroshi & Masashi (6) & Miyari (3)",
-    "Heather & Jack & Aizen (8) & Kaien (3)",
+    "Heather & Jack & Aizen (8) & Kaien (3) & Norma",
     "Steven Wang",
     "Mark Wang",
     "Mei & Emilia (8)",
@@ -700,11 +704,11 @@ export default function TravelSite() {
     return true;
   }).sort((firstGuest, secondGuest) => {
     if (selectedTrip === "okinawaJapan") {
-      const okinawaPartyOrder = ["Xenia & David & Naomi (3)", "Dave & Christina & Xixi (2)", "Heather & Jack & Aizen (8) & Kaien (3)", "Steven Wang", "Mark Wang", "Mei & Emilia (8)"];
+      const okinawaPartyOrder = ["Xenia & David & Naomi (3)", "Dave & Christina & Xixi (2)", "Heather & Jack & Aizen (8) & Kaien (3) & Norma", "Steven Wang", "Mark Wang", "Mei & Emilia (8)"];
       return okinawaPartyOrder.indexOf(firstGuest) - okinawaPartyOrder.indexOf(secondGuest);
     }
     if (selectedTrip !== "taiwan") return 0;
-    const taiwanPartyOrder = ["Xenia & David & Naomi (3)", "Jim", "Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Anthony & Christine & Mona (1)", "Mark Wang", "Dave & Christina & Xixi (2)", "Mei & Emilia (8)", "Heather & Jack & Aizen (8) & Kaien (3)", "Julie & Adrian & Ethan (4) & Tyrell (1)"];
+    const taiwanPartyOrder = ["Xenia & David & Naomi (3)", "Jim", "Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Anthony & Christine & Mona (1)", "Mark Wang", "Dave & Christina & Xixi (2)", "Mei & Emilia (8)", "Heather & Jack & Aizen (8) & Kaien (3) & Norma", "Julie & Adrian & Ethan (4) & Tyrell (1)"];
     return taiwanPartyOrder.indexOf(firstGuest) - taiwanPartyOrder.indexOf(secondGuest);
   });
 
@@ -808,7 +812,8 @@ export default function TravelSite() {
     const searchParams = new URLSearchParams(window.location.search);
     const chapter = searchParams.get("chapter");
     const view = searchParams.get("view");
-    const returningGuest = searchParams.get("guest") || "";
+    const guestFromUrl = searchParams.get("guest") || "";
+    const returningGuest = GUEST_NAME_ALIASES[guestFromUrl] || guestFromUrl;
     const tripPath = window.location.pathname.match(/^\/trip\/([^/]+)\/?$/)?.[1];
     const tripFromUrl = tripPath ? TRIP_KEYS_BY_PATH[tripPath] : null;
     const chapterPages = ["xiaoliuqiu", "taipei", "onna", "nago", "nanjo", "naha", "nahaearly", "yilan"];
@@ -1036,7 +1041,7 @@ export default function TravelSite() {
       "Jim": ["xiaoliuqiu"],
       "Anthony & Christine & Mona (1)": ["xiaoliuqiu", "taipei"],
       "Jenn & Hiroshi & Masashi (6) & Miyari (3)": ["xiaoliuqiu", "taipei"],
-      "Heather & Jack & Aizen (8) & Kaien (3)": ["taipei", "onna", "nago", "nanjo", "yilan"],
+      "Heather & Jack & Aizen (8) & Kaien (3) & Norma": ["taipei", "onna", "nago", "nanjo", "yilan"],
       "Steven Wang": ["nahaearly", "onna", "nago", "nanjo"],
       "Mark Wang": ["xiaoliuqiu", "taipei", "nahaearly", "onna"],
       "Mei & Emilia (8)": ["taipei", "nago", "nanjo", "naha", "yilan"],
@@ -1091,7 +1096,7 @@ export default function TravelSite() {
     ];
     const okinawaSegment = ["Wedding attire", "Resort casual outfit", "International driving permit / car documents"];
     const okinawaFunPassThree = "Purchase Okinawa FunPASS Churaumi 3 in 1 for 2 adults + 1 child (For Churaumi Aquarium + Pinappleland + Okinawa World + Shopping Discount)";
-    const okinawaFunPassFour = "Purchase Okinawa FunPASS Churaumi 3 in 1 for 2 adults + 2 child (For Churaumi Aquarium + Pinappleland + Okinawa World + Shopping Discount)";
+    const okinawaFunPassFour = "Purchase Okinawa FunPASS Churaumi 3 in 1 for 3 adults + 2 child (For Churaumi Aquarium + Pinappleland + Okinawa World + Shopping Discount)";
     const okinawaFunPassTwo = "Purchase Okinawa FunPASS Churaumi 3 in 1 for 1 adult + 1 child (For Churaumi Aquarium + Pinappleland + Okinawa World + Shopping Discount)";
     const babyToddlerItems = [
       "Formula / milk / snacks",
@@ -1129,7 +1134,7 @@ export default function TravelSite() {
     if (guest === "Xenia & David & Naomi (3)") {
       return { title: `${guest} Packing Checklist`, sections: [...sectionsWithEssentials([okinawaFunPassThree]), { title: "Okinawa Segment", items: okinawaSegment }, { title: "Baby / Toddler Items", items: babyToddlerItems }] };
     }
-    if (guest === "Heather & Jack & Aizen (8) & Kaien (3)") {
+    if (guest === "Heather & Jack & Aizen (8) & Kaien (3) & Norma") {
       return { title: `${guest} Packing Checklist`, sections: [...sectionsWithEssentials([okinawaFunPassFour]), { title: "Okinawa Segment", items: okinawaSegment }, { title: "Baby / Toddler Items", items: babyToddlerItems }] };
     }
     if (guest === "Mei & Emilia (8)") {
@@ -1845,7 +1850,7 @@ export default function TravelSite() {
     const okinawaDashboardDates: Record<string, string> = {
       "Xenia & David & Naomi (3)": "Nov 27 - Dec 6 2026",
       "Dave & Christina & Xixi (2)": "Nov 27 - Dec 6 2026",
-      "Heather & Jack & Aizen (8) & Kaien (3)": "Nov 26 - Dec 4 2026",
+      "Heather & Jack & Aizen (8) & Kaien (3) & Norma": "Nov 26 - Dec 4 2026",
       "Steven Wang": "Nov 25 - Dec 3 2026",
       "Mark Wang": "Nov 25 - Nov 30 2026",
       "Mei & Emilia (8)": "Nov 29 - Dec 6 2026",
@@ -2534,9 +2539,9 @@ export default function TravelSite() {
                 {guestName === "Mei & Emilia (8)" && <CountrySegmentButtons segments={[{ label: "Day Trips · Taipei", page: "taipei", color: TAIWAN_GOLD }, { label: "Nov 29–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Steven Wang" && <CountrySegmentButtons segments={[{ label: "Nov 25–27 · Naha + Okinawa World", page: "nahaearly", color: BABY_BLUE }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–3 · Nanjo", page: "nanjo", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Dave & Christina & Xixi (2)" && <CountrySegmentButtons segments={[{ label: "Day Trips · Taipei", page: "taipei", color: TAIWAN_GOLD }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
-                {guestName === "Heather & Jack & Aizen (8) & Kaien (3)" && <CountrySegmentButtons segments={[{ label: "Day Trips · Taipei", page: "taipei", color: TAIWAN_GOLD }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
+                {guestName === "Heather & Jack & Aizen (8) & Kaien (3) & Norma" && <CountrySegmentButtons segments={[{ label: "Day Trips · Taipei", page: "taipei", color: TAIWAN_GOLD }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Julie & Adrian & Ethan (4) & Tyrell (1)" && <CountrySegmentButtons segments={[{ label: "Day Trips · Taipei", page: "taipei", color: TAIWAN_GOLD }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
-                {guestName !== "Guest" && !["Xenia & David & Naomi (3)", "Jim", "Mark Wang", "Anthony & Christine & Mona (1)", "Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Mei & Emilia (8)", "Steven Wang", "Dave & Christina & Xixi (2)", "Heather & Jack & Aizen (8) & Kaien (3)", "Julie & Adrian & Ethan (4) & Tyrell (1)"].includes(guestName) && (
+                {guestName !== "Guest" && !["Xenia & David & Naomi (3)", "Jim", "Mark Wang", "Anthony & Christine & Mona (1)", "Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Mei & Emilia (8)", "Steven Wang", "Dave & Christina & Xixi (2)", "Heather & Jack & Aizen (8) & Kaien (3) & Norma", "Julie & Adrian & Ethan (4) & Tyrell (1)"].includes(guestName) && (
                   <div className="mt-5 rounded-2xl border border-amber-300/20 bg-amber-300/5 p-4">
                     <p className="text-sm leading-6 text-amber-100/80">
                       No trip segment found, please confirm your trip with Xenia ASAP.
@@ -2579,12 +2584,12 @@ export default function TravelSite() {
   const chapterPeople: Record<PageName, Person[]> = {
     map: [],
     checklist: [],
-    taipei: [["Xenia & David & Naomi (3)", "Taipei · Day Trips"], ["Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Taipei · Day Trips"], ["Anthony & Christine & Mona (1)", "Taipei · Day Trips"], ["Mark Wang", "Taipei · Day Trips"], ["Dave & Christina & Xixi (2)", "Taipei · Day Trips"], ["Mei & Emilia (8)", "Taipei · Day Trips"], ["Heather & Jack & Aizen (8) & Kaien (3)", "Taipei · Day Trips"], ["Julie & Adrian & Ethan (4) & Tyrell (1)", "Taipei · Day Trips"]],
-    yilan: [["Xenia & David & Naomi (3)", "Dec 8 – Dec 11 · Yilan"], ["Mei & Emilia (8)", "Dec 8 – Dec 11 · Yilan"], ["Dave & Christina & Xixi (2)", "Dec 8 – Dec 11 · Yilan"], ["Heather & Jack & Aizen (8) & Kaien (3)", "Dec 8 – Dec 11 · Yilan"]],
+    taipei: [["Xenia & David & Naomi (3)", "Taipei · Day Trips"], ["Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Taipei · Day Trips"], ["Anthony & Christine & Mona (1)", "Taipei · Day Trips"], ["Mark Wang", "Taipei · Day Trips"], ["Dave & Christina & Xixi (2)", "Taipei · Day Trips"], ["Mei & Emilia (8)", "Taipei · Day Trips"], ["Heather & Jack & Aizen (8) & Kaien (3) & Norma", "Taipei · Day Trips"], ["Julie & Adrian & Ethan (4) & Tyrell (1)", "Taipei · Day Trips"]],
+    yilan: [["Xenia & David & Naomi (3)", "Dec 8 – Dec 11 · Yilan"], ["Mei & Emilia (8)", "Dec 8 – Dec 11 · Yilan"], ["Dave & Christina & Xixi (2)", "Dec 8 – Dec 11 · Yilan"], ["Heather & Jack & Aizen (8) & Kaien (3) & Norma", "Dec 8 – Dec 11 · Yilan"]],
     xiaoliuqiu: [["Anthony & Christine & Mona (1)", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Mark Wang", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Jim", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Xenia & David & Naomi (3)", "Nov 21 – Nov 23 · Xiaoliuqiu"], ["Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Nov 21 – Nov 23 · Xiaoliuqiu"]],
-    onna: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 3 · Okinawa"], ["Mark Wang", "Nov 25 – Nov 30 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Jack & Aizen (8) & Kaien (3)", "Nov 26 – Dec 4 · Okinawa"]],
-    nago: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 3 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Jack & Aizen (8) & Kaien (3)", "Nov 26 – Dec 4 · Okinawa"]],
-    nanjo: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 3 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Jack & Aizen (8) & Kaien (3)", "Nov 26 – Dec 4 · Okinawa"]],
+    onna: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 3 · Okinawa"], ["Mark Wang", "Nov 25 – Nov 30 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Jack & Aizen (8) & Kaien (3) & Norma", "Nov 26 – Dec 4 · Okinawa"]],
+    nago: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 3 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Jack & Aizen (8) & Kaien (3) & Norma", "Nov 26 – Dec 4 · Okinawa"]],
+    nanjo: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 3 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Jack & Aizen (8) & Kaien (3) & Norma", "Nov 26 – Dec 4 · Okinawa"]],
     naha: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 27 – Dec 6 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"]],
     nahaearly: [["Steven Wang", "Nov 25 – Dec 3 · Okinawa"], ["Mark Wang", "Nov 25 – Nov 30 · Okinawa"]],
   };
