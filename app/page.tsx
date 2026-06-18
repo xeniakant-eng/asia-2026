@@ -808,6 +808,26 @@ export default function TravelSite() {
     setBrowserRoute("/");
   };
 
+  const goToFutureTrips = () => {
+    setIsGuestConfirmed(false);
+    setSelectedTrip("");
+    setShowGuestActions(false);
+    setGuestName("");
+    setMainPageView("future");
+    setPage("map");
+    setBrowserRoute("/");
+  };
+
+  const goToSkiTrips = () => {
+    setIsGuestConfirmed(false);
+    setSelectedTrip("");
+    setShowGuestActions(false);
+    setGuestName("");
+    setMainPageView("ski");
+    setPage("map");
+    setBrowserRoute("/");
+  };
+
   const applyRouteFromLocation = () => {
     const searchParams = new URLSearchParams(window.location.search);
     const chapter = searchParams.get("chapter");
@@ -2147,7 +2167,10 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "skiMyoko" ? (
             <>
-              <button type="button" onClick={goToMainPage} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
+              <div className="mb-5 grid grid-cols-2 gap-2">
+                <button type="button" onClick={goToSkiTrips} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
+                <button type="button" onClick={goToMainPage} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
+              </div>
               <TripPanelTitle location="Ski Shiga Kogen & Nagano Japan" date="Jan 23 - Jan 31 2027" description="A winter ski week in the Nagano mountains with onsen time, snow days, and cozy Japanese food." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
@@ -2180,7 +2203,10 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "skiDeerValley" ? (
             <>
-              <button type="button" onClick={goToMainPage} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
+              <div className="mb-5 grid grid-cols-2 gap-2">
+                <button type="button" onClick={goToSkiTrips} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
+                <button type="button" onClick={goToMainPage} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
+              </div>
               <TripPanelTitle location="Ski Deer Valley UT USA" date="Feb 2027" description="A polished Utah ski escape built around groomed runs, mountain views, and relaxed resort evenings." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
@@ -2213,7 +2239,10 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "skiBig3" ? (
             <>
-              <button type="button" onClick={goToMainPage} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
+              <div className="mb-5 grid grid-cols-2 gap-2">
+                <button type="button" onClick={goToSkiTrips} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
+                <button type="button" onClick={goToMainPage} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
+              </div>
               <TripPanelTitle location="SkiBig3 AB Canada" date="Mar 2027" description="A Canadian Rockies ski trip across Banff's big mountain terrain, with plenty of alpine scenery between runs." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
@@ -2246,7 +2275,10 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "houston" ? (
             <>
-              <button type="button" onClick={goToMainPage} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
+              <div className="mb-5 grid grid-cols-2 gap-2">
+                <button type="button" onClick={goToFutureTrips} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
+                <button type="button" onClick={goToMainPage} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
+              </div>
               <TripPanelTitle location="Houston & Galveston TX USA" subtitle="FRC & Disney Cruise" date="April 28 - May 7 2027" description="Arriving Houston to witness the exciting First Robotics Competition at the George R. Brown Convention Center from April 28 - May 1; followed by Mark's birthday celebration on May 1. On May 2, we board Disney Magic from Galveston for a 5-night Western Caribbean Disney cruise." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
@@ -2279,7 +2311,10 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "azoresPortugal" ? (
             <>
-              <button type="button" onClick={goToMainPage} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
+              <div className="mb-5 grid grid-cols-2 gap-2">
+                <button type="button" onClick={goToFutureTrips} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
+                <button type="button" onClick={goToMainPage} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
+              </div>
               <TripPanelTitle location="Azores Portugal" date="Sept 2027" description="An island nature trip with volcanic landscapes, ocean views, hot springs, and unhurried Atlantic days." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
@@ -2312,7 +2347,10 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "similanThailand" ? (
             <>
-              <button type="button" onClick={goToMainPage} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
+              <div className="mb-5 grid grid-cols-2 gap-2">
+                <button type="button" onClick={goToFutureTrips} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
+                <button type="button" onClick={goToMainPage} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
+              </div>
               <TripPanelTitle location="Similan & Phuket Thailand" subtitle="Scuba Diving Liveaboard" date="Mar 2028" description="A warm-water dive adventure centered on liveaboard days, reefs, beaches, and Phuket time before or after the boat." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
@@ -2345,7 +2383,10 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "disneyWorld" ? (
             <>
-              <button type="button" onClick={goToMainPage} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
+              <div className="mb-5 grid grid-cols-2 gap-2">
+                <button type="button" onClick={goToFutureTrips} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
+                <button type="button" onClick={goToMainPage} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
+              </div>
               <TripPanelTitle location="Orlando FL USA" subtitle="Disney World" date="Nov 2028" description="A Disney World holiday with park days, character moments, resort downtime, and room for family pacing." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
@@ -2378,7 +2419,10 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "panama" ? (
             <>
-              <button type="button" onClick={goToMainPage} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
+              <div className="mb-5 grid grid-cols-2 gap-2">
+                <button type="button" onClick={goToFutureTrips} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
+                <button type="button" onClick={goToMainPage} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
+              </div>
               <TripPanelTitle location="Panama" date="March 2027" description="Hiking, diving, beach, canal." />
               <section className="mb-5 rounded-3xl border border-white/10 bg-white/[0.03] p-5 text-left">
                 <h2 className="mb-4 text-sm uppercase tracking-[0.24em] text-white/55">Trip Ideas</h2>
@@ -2422,7 +2466,10 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "fiveStans" ? (
             <>
-              <button type="button" onClick={goToMainPage} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
+              <div className="mb-5 grid grid-cols-2 gap-2">
+                <button type="button" onClick={goToFutureTrips} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
+                <button type="button" onClick={goToMainPage} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
+              </div>
               <TripPanelTitle location="The 5 Stans & Silk Road" date="TBD" description="Trace the legendary Silk Road across five nations: Kyrgyzstan, Kazakhstan, Tajikistan, Turkmenistan, Uzbekistan. This is Central Asia in full, gloriously unfiltered widescreen. Gonna be gorgeous and totally unforgettable." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
