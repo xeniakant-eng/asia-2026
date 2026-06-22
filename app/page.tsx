@@ -699,7 +699,7 @@ export default function TravelSite() {
 
   const getVisibleGuestOptions = () => guestOptions.filter((guest) => {
     if (guest === "I am just a random Guest") return false;
-    if (selectedTrip === "taiwan") return guest !== "Steven Wang";
+    if (selectedTrip === "taiwan") return !["Steven Wang", "Heather & Jack & Aizen (8) & Kaien (3) & Norma"].includes(guest);
     if (selectedTrip === "okinawaJapan") return !["Jim", "Anthony & Christine & Mona (1)", "Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Julie & Adrian & Ethan (4) & Tyrell (1)"].includes(guest);
     return true;
   }).sort((firstGuest, secondGuest) => {
@@ -708,7 +708,7 @@ export default function TravelSite() {
       return okinawaPartyOrder.indexOf(firstGuest) - okinawaPartyOrder.indexOf(secondGuest);
     }
     if (selectedTrip !== "taiwan") return 0;
-    const taiwanPartyOrder = ["Xenia & David & Naomi (3)", "Jim", "Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Anthony & Christine & Mona (1)", "Mark Wang", "Dave & Christina & Xixi (2)", "Mei & Emilia (8)", "Heather & Jack & Aizen (8) & Kaien (3) & Norma", "Julie & Adrian & Ethan (4) & Tyrell (1)"];
+    const taiwanPartyOrder = ["Xenia & David & Naomi (3)", "Jim", "Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Anthony & Christine & Mona (1)", "Mark Wang", "Dave & Christina & Xixi (2)", "Mei & Emilia (8)", "Julie & Adrian & Ethan (4) & Tyrell (1)"];
     return taiwanPartyOrder.indexOf(firstGuest) - taiwanPartyOrder.indexOf(secondGuest);
   });
 
@@ -718,7 +718,7 @@ export default function TravelSite() {
     if (previousSelectedTrip === trip) return getVisibleGuestOptions();
     return guestOptions.filter((guest) => {
       if (guest === "I am just a random Guest") return false;
-      if (trip === "taiwan") return guest !== "Steven Wang";
+      if (trip === "taiwan") return !["Steven Wang", "Heather & Jack & Aizen (8) & Kaien (3) & Norma"].includes(guest);
       return !["Jim", "Anthony & Christine & Mona (1)", "Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Julie & Adrian & Ethan (4) & Tyrell (1)"].includes(guest);
     });
   };
@@ -1061,7 +1061,7 @@ export default function TravelSite() {
       "Jim": ["xiaoliuqiu"],
       "Anthony & Christine & Mona (1)": ["xiaoliuqiu", "taipei"],
       "Jenn & Hiroshi & Masashi (6) & Miyari (3)": ["xiaoliuqiu", "taipei"],
-      "Heather & Jack & Aizen (8) & Kaien (3) & Norma": ["taipei", "onna", "nago", "nanjo", "yilan"],
+      "Heather & Jack & Aizen (8) & Kaien (3) & Norma": ["onna", "nago", "nanjo"],
       "Steven Wang": ["nahaearly", "onna", "nago", "nanjo"],
       "Mark Wang": ["xiaoliuqiu", "taipei", "nahaearly", "onna"],
       "Mei & Emilia (8)": ["taipei", "nago", "nanjo", "naha", "yilan"],
@@ -2586,7 +2586,7 @@ export default function TravelSite() {
                 {guestName === "Mei & Emilia (8)" && <CountrySegmentButtons segments={[{ label: "Day Trips · Taipei", page: "taipei", color: TAIWAN_GOLD }, { label: "Nov 29–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Steven Wang" && <CountrySegmentButtons segments={[{ label: "Nov 25–27 · Naha + Okinawa World", page: "nahaearly", color: BABY_BLUE }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–3 · Nanjo", page: "nanjo", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Dave & Christina & Xixi (2)" && <CountrySegmentButtons segments={[{ label: "Day Trips · Taipei", page: "taipei", color: TAIWAN_GOLD }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
-                {guestName === "Heather & Jack & Aizen (8) & Kaien (3) & Norma" && <CountrySegmentButtons segments={[{ label: "Day Trips · Taipei", page: "taipei", color: TAIWAN_GOLD }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 8–11 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
+                {guestName === "Heather & Jack & Aizen (8) & Kaien (3) & Norma" && <CountrySegmentButtons segments={[{ label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Julie & Adrian & Ethan (4) & Tyrell (1)" && <CountrySegmentButtons segments={[{ label: "Day Trips · Taipei", page: "taipei", color: TAIWAN_GOLD }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName !== "Guest" && !["Xenia & David & Naomi (3)", "Jim", "Mark Wang", "Anthony & Christine & Mona (1)", "Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Mei & Emilia (8)", "Steven Wang", "Dave & Christina & Xixi (2)", "Heather & Jack & Aizen (8) & Kaien (3) & Norma", "Julie & Adrian & Ethan (4) & Tyrell (1)"].includes(guestName) && (
                   <div className="mt-5 rounded-2xl border border-amber-300/20 bg-amber-300/5 p-4">
@@ -2631,8 +2631,8 @@ export default function TravelSite() {
   const chapterPeople: Record<PageName, Person[]> = {
     map: [],
     checklist: [],
-    taipei: [["Xenia & David & Naomi (3)", "Taipei · Day Trips"], ["Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Taipei · Day Trips"], ["Anthony & Christine & Mona (1)", "Taipei · Day Trips"], ["Mark Wang", "Taipei · Day Trips"], ["Dave & Christina & Xixi (2)", "Taipei · Day Trips"], ["Mei & Emilia (8)", "Taipei · Day Trips"], ["Heather & Jack & Aizen (8) & Kaien (3) & Norma", "Taipei · Day Trips"], ["Julie & Adrian & Ethan (4) & Tyrell (1)", "Taipei · Day Trips"]],
-    yilan: [["Xenia & David & Naomi (3)", "Dec 8 – Dec 11 · Yilan"], ["Mei & Emilia (8)", "Dec 8 – Dec 11 · Yilan"], ["Dave & Christina & Xixi (2)", "Dec 8 – Dec 11 · Yilan"], ["Heather & Jack & Aizen (8) & Kaien (3) & Norma", "Dec 8 – Dec 11 · Yilan"]],
+    taipei: [["Xenia & David & Naomi (3)", "Taipei · Day Trips"], ["Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Taipei · Day Trips"], ["Anthony & Christine & Mona (1)", "Taipei · Day Trips"], ["Mark Wang", "Taipei · Day Trips"], ["Dave & Christina & Xixi (2)", "Taipei · Day Trips"], ["Mei & Emilia (8)", "Taipei · Day Trips"], ["Julie & Adrian & Ethan (4) & Tyrell (1)", "Taipei · Day Trips"]],
+    yilan: [["Xenia & David & Naomi (3)", "Dec 8 – Dec 11 · Yilan"], ["Mei & Emilia (8)", "Dec 8 – Dec 11 · Yilan"], ["Dave & Christina & Xixi (2)", "Dec 8 – Dec 11 · Yilan"]],
     xiaoliuqiu: [["Anthony & Christine & Mona (1)", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Mark Wang", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Jim", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Xenia & David & Naomi (3)", "Nov 21 – Nov 23 · Xiaoliuqiu"], ["Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Nov 21 – Nov 23 · Xiaoliuqiu"]],
     onna: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 3 · Okinawa"], ["Mark Wang", "Nov 25 – Nov 30 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Jack & Aizen (8) & Kaien (3) & Norma", "Nov 26 – Dec 4 · Okinawa"]],
     nago: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 3 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Jack & Aizen (8) & Kaien (3) & Norma", "Nov 26 – Dec 4 · Okinawa"]],
@@ -2660,7 +2660,7 @@ export default function TravelSite() {
 
   if (page === "xiaoliuqiu") return renderChapter("xiaoliuqiu", "Taiwan · Xiaoliuqiu", "Scuba Dive Chapter", "Taiwan November", "November", "3 Nights", <p className="mt-1 text-sm font-medium" style={{ color: TAIWAN_GOLD }}>小琉球民宿 TBD</p>, "taiwan", TAIWAN_GOLD, <XiaoliuqiuContent card={card} />);
   if (page === "taipei") {
-    const taipeiFoodieItems = ["饗 A Joy (101)", "施家腰花 (永春)", "鼎泰豐總店 (東門)", "門前隱味牛肉麵 (西門漢口)", "晶華故宮", "大腕燒肉", "胡同燒肉", "欣葉台菜", "金蓬萊台菜", "橘色火鍋", "士林夜市", "公館夜市", "饒河夜市", "雙月", "雞窩餐廳 (麟光站)", "Nomura", "康寧街七里香臭豆腐", "清河鵝肉 (天母)", "香帥芋泥蛋糕", "舊振南傳統糕餅", "大稻埕滷肉飯 (台北車站)", "天下三絕 (忠孝復興)"];
+    const taipeiFoodieItems = ["饗 A Joy (101)", "施家腰花 (永春)", "鼎泰豐總店 (東門)", "門前隱味牛肉麵 (西門漢口)", "晶華故宮", "大腕燒肉", "胡同燒肉", "欣葉台菜", "金蓬萊台菜", "橘色火鍋", "士林夜市", "公館夜市", "饒河夜市", "雙月", "雞窩餐廳 (麟光站)", "Nomura", "康寧街七里香臭豆腐", "清河鵝肉 (天母)", "香帥芋泥蛋糕", "舊振南傳統糕餅", "大稻埕滷肉飯 (台北車站)", "天下三絕 (忠孝復興)", "一品活蝦", "BarWu"];
     const taipeiDayTrips = [
       { titleZh: "台北市東區", titleEn: "Taipei City East", details: [{ zh: "松山文創園區", en: "Songshan Cultural and Creative Park" }, { zh: "國父紀念館", en: "Sun Yat-sen Memorial Hall" }, { zh: "Taipei 101", en: "Taipei 101" }, { zh: "象山步道", en: "Xiangshan Trail" }] },
       { titleZh: "台北市西區", titleEn: "Taipei City West", details: [{ zh: "中正紀念堂", en: "Chiang Kai-shek Memorial Hall" }, { zh: "龍山寺", en: "Longshan Temple" }, { zh: "西門町", en: "Ximending" }, { zh: "台北車站", en: "Taipei Main Station" }, { zh: "總統府", en: "Presidential Office Building" }, { zh: "華山文創園區", en: "Huashan 1914 Creative Park" }] },
