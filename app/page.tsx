@@ -4,7 +4,7 @@ import React, { createContext, useContext, useEffect, useMemo, useRef, useState 
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
 const BABY_BLUE = "#9EDCFF";
-const TAIWAN_GOLD = "#FFD76A";
+const TAIWAN_GOLD = "#72E49A";
 const MOROCCO_BROWN = "#D6B48C";
 const VIETNAM_GOLD = "#F6C65B";
 
@@ -532,6 +532,7 @@ export default function TravelSite() {
   const [showMoroccoMap, setShowMoroccoMap] = useState(false);
   const [showVietnamItinerary, setShowVietnamItinerary] = useState(false);
   const [showVietnamRouteMap, setShowVietnamRouteMap] = useState(false);
+  const [showVietnamFlightSummary, setShowVietnamFlightSummary] = useState(false);
   const [showTaipeiMrtMap, setShowTaipeiMrtMap] = useState(false);
   const [showTaipeiFoodieList, setShowTaipeiFoodieList] = useState(false);
   const [taiwanDashboardAlbumMode, setTaiwanDashboardAlbumMode] = useState<"" | "upload" | "view">("");
@@ -707,9 +708,9 @@ export default function TravelSite() {
       title: "Arrival in Hanoi",
       items: [
         "Fly EVA Air Taipei to Hanoi, 2:50 PM-5:15 PM.",
-        "Transfer to hotel, check in, easy dinner, and rest.",
+        "Transfer from airport to Airbnb (40 min drive), check in, easy dinner, and rest.",
       ],
-      stay: "Hotel TBD",
+      stay: "Heart of Hoan Kiem Homestay Airbnb, 23C Phố Tông Đản, Hoàn Kiếm, Hà Nội",
     },
     {
       date: "Fri Nov 13",
@@ -721,15 +722,22 @@ export default function TravelSite() {
         "Try egg coffee.",
         "Evening Water Puppet Show.",
       ],
-      stay: "Hotel TBD",
+      stay: "Heart of Hoan Kiem Homestay Airbnb, 23C Phố Tông Đản, Hoàn Kiếm, Hà Nội",
     },
     {
       date: "Sat Nov 14",
       location: "Peony Cruises",
       title: "Ha Long Bay & Lan Ha Bay Peony Cruise",
       items: [
-        "Peony Cruises-arranged transfer from Hanoi hotel to Ha Long Bay / cruise port.",
-        "Board Peony Cruises 2 day / 1 night Ha Long Bay cruise.",
+        "8:30 AM: Pre-arranged van transfer pickup from Hanoi Airbnb to Tuan Chau Marina (2.5 hrs ride).",
+        "Noon: Board 2 day 1 night Peony Cruise.",
+        "Afternoon: Tuan Chau - Ha Long Bay - Lan Ha Bay.",
+      ],
+      links: [
+        {
+          label: "2D1N Cruise Itinerary",
+          href: "https://drive.google.com/file/d/1v5NbCUyXsXEukv5fq-0mk74ojoMTv6DV/view",
+        },
       ],
       stay: "Peony Cruise",
     },
@@ -738,8 +746,11 @@ export default function TravelSite() {
       location: "Ninh Binh",
       title: "Check-in Ninh Binh",
       items: [
-        "Peony Cruises morning activities and brunch.",
-        "Disembark and take Peony Cruises-arranged private transfer from Ha Long Bay to Ninh Binh.",
+        "6:45 AM: Breakfast.",
+        "7:30 AM: Tour of Cat Ba World Biosphere (Cat Ba Island Caves).",
+        "11:00 AM: Disembark the Peony Cruise.",
+        "Noon: Pre-arranged van transfer from Tuan Chau Marina to Ninh Binh Xuan Son Lakeside Bungalow (3 hr ride).",
+        "Evening: Check in, relax, dinner on site.",
       ],
       stay: "Xuan Son Lakeside Bungalow",
     },
@@ -770,28 +781,32 @@ export default function TravelSite() {
       location: "Ho Chi Minh City",
       title: "Saigon City Tour",
       items: [
-        "Morning stop at Cafe Apartment.",
-        "Saigon City Tour: Independence Palace, War Remnants Museum, Central Post Office, Notre-Dame Cathedral area, and cafes.",
+        "Independence Palace.",
+        "Central Post Office.",
+        "Notre Dame area.",
+        "Lunch.",
+        "War Remnants Museum.",
       ],
       stay: "Airbnb TBD",
     },
     {
       date: "Thu Nov 19",
       location: "Ho Chi Minh City",
-      title: "Cu Chi Tunnels",
+      title: "Ben Tre Mekong Tour",
       items: [
-        "Cu Chi Tunnels day tour.",
-        "Relaxed evening / early dinner after returning to the city.",
+        "Shorter private Ben Tre Mekong Tour with early pickup.",
+        "Target return by 5:00-6:00 PM.",
+        "Relaxed evening after returning to the city.",
       ],
       stay: "Airbnb TBD",
     },
     {
       date: "Fri Nov 20",
       location: "Ho Chi Minh City",
-      title: "Mekong Delta",
+      title: "Cu Chi Tunnels",
       items: [
-        "Shorter private Mekong Delta day tour with early pickup.",
-        "Target return by 5:00-6:00 PM.",
+        "Cu Chi Tunnels half-day tour.",
+        "Relaxed afternoon / early dinner after returning to the city.",
         "Pack and sleep early.",
       ],
       stay: "Airbnb TBD",
@@ -806,6 +821,140 @@ export default function TravelSite() {
       ],
     },
   ];
+  type VietnamBookingCost = { category: string; detail: string | string[]; amountCad: number | null };
+  const vietnamBookingCosts: VietnamBookingCost[] = [
+    {
+      category: "Flights",
+      detail: "EVA Air Taipei to Hanoi; VietJet Ho Chi Minh City to Kaohsiung.",
+      amountCad: null,
+    },
+    {
+      category: "Accommodations",
+      detail: [
+        "Hanoi stay Nov 12-13 at Heart of Hoan Kiem Homestay Airbnb (reserved): $258.30 CAD.",
+        "Ninh Binh stay Nov 15-16 at Xuan Son Lakeside Bungalow: $400 CAD.",
+        "Peony Cruise Deluxe Balcony Cabins: Xenia's family $385 USD (approx. $527.45 CAD); Jenn's family $552 USD (approx. $756.24 CAD).",
+        "Ho Chi Minh City Airbnb: TBD.",
+      ],
+      amountCad: 1941.99,
+    },
+    {
+      category: "Tours & Attraction Tickets",
+      detail: "Water Puppet Show, city sights, Ben Tre Mekong Tour, Cu Chi Tunnels, and other admission tickets.",
+      amountCad: null,
+    },
+    {
+      category: "Transfers",
+      detail: "Nov 12 7-seater van from Hanoi airport to Airbnb: 450,000 VND (approx. $24 CAD).",
+      amountCad: 24.00,
+    },
+    {
+      category: "Remaining Transfers",
+      detail: "Cruise transfer, private van, and other local transportation.",
+      amountCad: null,
+    },
+  ];
+  const vietnamBookingTotalCad = vietnamBookingCosts.reduce((total, cost) => total + (cost.amountCad ?? 0), 0);
+  const vietnamFlightSummary = [
+    {
+      date: "Thu Nov 12, 2026",
+      route: "Taipei to Hanoi",
+      airline: "EVA Air",
+      time: "2:50 PM - 5:15 PM",
+      notes: "Arrive in Hanoi, then transfer to Airbnb.",
+    },
+    {
+      date: "Tue Nov 17, 2026",
+      route: "Hanoi to Ho Chi Minh City",
+      airline: "VietJet",
+      time: "11:30 AM - 1:40 PM",
+      notes: "Nonstop HAN to SGN, 2 hr 10 min.",
+    },
+    {
+      date: "Sat Nov 21, 2026",
+      route: "Ho Chi Minh City to Kaohsiung",
+      airline: "VietJet",
+      time: "7:35 AM - 11:45 AM",
+      notes: "Nonstop flight. Leave hotel around 4:30-5:00 AM.",
+    },
+  ];
+  const getVietnamBookingCostsForGuest = (guest: string): VietnamBookingCost[] => {
+    if (guest.startsWith("Jenn")) {
+      return [
+        {
+          category: "Accommodations",
+          detail: [
+            "Peony Cruise Deluxe Balcony Cabin for Jenn's family, 2 adults + 2 kids: $552 USD (approx. $756.24 CAD).",
+            "Hanoi stay Nov 12-13 at Heart of Hoan Kiem Homestay Airbnb (reserved): Total = $258.30 CAD, Half = $129.15 CAD.",
+            "Ninh Binh stay Nov 15-16 at Xuan Son Lakeside Bungalow: Total = $400 CAD, Half = $200 CAD.",
+            "Ho Chi Minh City Airbnb: TBD.",
+          ],
+          amountCad: 1085.39,
+        },
+        {
+          category: "Flights",
+          detail: [
+            "Nov 12 EVA Air Taipei to Hanoi: $285 CAD x 4 people = $1,140 CAD.",
+            "Nov 16 VietJet Hanoi to Ho Chi Minh City: $84 CAD x 4 people + $16 CAD checked bag = $352 CAD.",
+            "Nov 21 VietJet Ho Chi Minh City to Kaohsiung: $180 CAD x 4 people + $45 CAD checked bag = $765 CAD.",
+          ],
+          amountCad: 2257.00,
+        },
+        {
+          category: "Tours & Attraction Tickets",
+          detail: "Water Puppet Show, city sights, Ben Tre Mekong Tour, Cu Chi Tunnels, and other admission tickets.",
+          amountCad: null,
+        },
+        {
+          category: "Transfers",
+          detail: [
+            "Nov 12 7-seater van from Hanoi airport to Airbnb: Total = 450,000 VND (approx. $24 CAD), Half = approx. $12 CAD.",
+            "Remaining shared transfers: TBD.",
+          ],
+          amountCad: 12.00,
+        },
+      ];
+    }
+
+    if (guest.startsWith("Xenia")) {
+      return [
+        {
+          category: "Accommodations",
+          detail: [
+            "Hanoi stay Nov 12-13 at Heart of Hoan Kiem Homestay Airbnb (reserved): Total = $258.30 CAD, Half = $129.15 CAD.",
+            "Ninh Binh stay Nov 15-16 at Xuan Son Lakeside Bungalow: Total = $400 CAD, Half = $200 CAD.",
+            "Peony Cruise Deluxe Balcony Cabin for Xenia's family, 2 adults + 1 kid: $385 USD (approx. $527.45 CAD).",
+            "Ho Chi Minh City Airbnb: TBD.",
+          ],
+          amountCad: 856.60,
+        },
+        {
+          category: "Flights",
+          detail: [
+            "Nov 12 EVA Air Taipei to Hanoi: $285 CAD x 3 people = $855 CAD.",
+            "Nov 16 VietJet Hanoi to Ho Chi Minh City: $84 CAD x 3 people + $16 CAD checked bag = $268 CAD.",
+            "Nov 21 VietJet Ho Chi Minh City to Kaohsiung: $180 CAD x 3 people + $45 CAD checked bag = $585 CAD.",
+          ],
+          amountCad: 1708.00,
+        },
+        {
+          category: "Tours & Attraction Tickets",
+          detail: "Water Puppet Show, city sights, Ben Tre Mekong Tour, Cu Chi Tunnels, and other admission tickets.",
+          amountCad: null,
+        },
+        {
+          category: "Transfers",
+          detail: [
+            "Nov 12 7-seater van from Hanoi airport to Airbnb: Total = 450,000 VND (approx. $24 CAD), Half = approx. $12 CAD.",
+            "Remaining shared transfers: TBD.",
+          ],
+          amountCad: 12.00,
+        },
+      ];
+    }
+
+    return vietnamBookingCosts;
+  };
 
   const filterDashboardSegments = (segments: DashboardSegment[]) => {
     if (selectedTrip === "taiwan") {
@@ -882,6 +1031,7 @@ export default function TravelSite() {
     setShowMoroccoChecklist(false);
     setShowVietnamItinerary(false);
     setShowVietnamRouteMap(false);
+    setShowVietnamFlightSummary(false);
     setSelectedTrip(trip);
     setBrowserRoute(buildTripUrl(trip));
   };
@@ -895,6 +1045,7 @@ export default function TravelSite() {
     setShowMoroccoChecklist(false);
     setShowVietnamItinerary(false);
     setShowVietnamRouteMap(false);
+    setShowVietnamFlightSummary(false);
     setBrowserRoute(buildTripUrl(selectedTrip, { guest }), replace);
   };
 
@@ -916,6 +1067,7 @@ export default function TravelSite() {
     setShowMoroccoItinerary(false);
     setShowVietnamItinerary(false);
     setShowVietnamRouteMap(false);
+    setShowVietnamFlightSummary(false);
     setBrowserRoute(buildTripUrl(selectedTrip, { guest: guestName || "Guest", view: nextView }), replace);
   };
 
@@ -943,6 +1095,7 @@ export default function TravelSite() {
     setShowMoroccoChecklist(false);
     setShowVietnamItinerary(false);
     setShowVietnamRouteMap(false);
+    setShowVietnamFlightSummary(false);
     setTaiwanDashboardAlbumMode("");
     setAlbumPopupUrl("");
     setBrowserRoute("/");
@@ -986,6 +1139,7 @@ export default function TravelSite() {
     setShowMoroccoChecklist(false);
     setShowVietnamItinerary(false);
     setShowVietnamRouteMap(false);
+    setShowVietnamFlightSummary(false);
 
     if (tripFromUrl) {
       setSelectedTrip(tripFromUrl);
@@ -1438,7 +1592,7 @@ export default function TravelSite() {
             const isYilan = item.color === "yilan";
             const active = hovered === item.id;
             return (
-              <button key={item.id} type="button" onClick={() => setHovered(item.id)} onDoubleClick={() => openChapterForLocation(item.id)} className={`flex items-center justify-between rounded-2xl border px-4 py-3 text-left transition ${active ? isYilan || isTaiwan ? "border-[#FFD76A]/70 bg-[#FFD76A]/10" : "border-[#9EDCFF]/70 bg-[#9EDCFF]/10" : "border-white/10 bg-white/[0.04]"}`}>
+              <button key={item.id} type="button" onClick={() => setHovered(item.id)} onDoubleClick={() => openChapterForLocation(item.id)} className={`flex items-center justify-between rounded-2xl border px-4 py-3 text-left transition ${active ? isYilan || isTaiwan ? "border-[#72E49A]/70 bg-[#72E49A]/10" : "border-[#9EDCFF]/70 bg-[#9EDCFF]/10" : "border-white/10 bg-white/[0.04]"}`}>
                 <span className="flex items-center gap-3"><span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: isYilan || isTaiwan ? TAIWAN_GOLD : BABY_BLUE }} /><span className="text-sm font-light tracking-wide text-white">{item.label}</span></span>
                 <span className="text-[10px] uppercase tracking-[0.18em] text-white/45">{item.range}</span>
               </button>
@@ -1933,7 +2087,6 @@ export default function TravelSite() {
         <main className="mx-auto max-w-5xl">
           <p className="mb-3 text-sm uppercase tracking-[0.35em]" style={{ color: MOROCCO_BROWN }}>Morocco · G-Adventures</p>
           <h1 className="mb-6 text-4xl font-light tracking-wide md:text-6xl">Trip Itinerary</h1>
-          <MemoryMaker albumKey="moroccoSeptember" albumName="Morocco" accentColor={MOROCCO_BROWN} guestName={guestName} returnChapter="morocco" onViewAlbum={openAlbumPopup} />
           <section className="mb-10 grid grid-cols-2 gap-3 md:grid-cols-4">
             <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:text-2xl">💵</p><p className="text-[10px] text-gray-400 md:text-xs">Currency</p><p className="mt-1 text-xs font-medium md:text-sm">MAD د.م.</p><p className="mt-1 text-xs text-gray-400">1 USD ≈ {usdToMad} MAD</p></div>
             <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:text-2xl">🌤️</p><p className="text-[10px] text-gray-400 md:text-xs">September Temp</p><p className="mt-1 text-xs font-medium md:text-sm">18–32°C</p><p className="mt-1 text-[9px] text-gray-500">Live forecast once trip begins</p></div>
@@ -2024,7 +2177,11 @@ export default function TravelSite() {
   }
 
   if (showVietnamItinerary && guestName) {
-    const vietnamLocalTime = new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Ho_Chi_Minh", hour: "numeric", minute: "2-digit", second: "2-digit", hour12: true }).format(now);
+    const vietnamBudgetCostsForGuest = getVietnamBookingCostsForGuest(guestName);
+    const vietnamBudgetTotalForGuest = vietnamBudgetCostsForGuest.reduce((total, cost) => total + (cost.amountCad ?? 0), 0);
+    const hanoiAccommodationName = "Heart of Hoan Kiem Homestay Airbnb";
+    const hanoiAccommodationAddress = "23C Phố Tông Đản, Hoàn Kiếm, Hà Nội";
+    const hanoiAccommodationMapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(hanoiAccommodationAddress)}`;
     return (
       <div className="min-h-screen bg-black px-6 py-10 text-white" style={{ "--chapter-accent": VIETNAM_GOLD } as React.CSSProperties}>
         <header className="mx-auto mb-10 flex max-w-5xl flex-wrap items-center justify-between gap-3">
@@ -2035,11 +2192,10 @@ export default function TravelSite() {
           <p className="mb-3 text-sm uppercase tracking-[0.35em]" style={{ color: VIETNAM_GOLD }}>Vietnam · North & South</p>
           <h1 className="mb-3 text-4xl font-light tracking-wide md:text-6xl">Trip Itinerary</h1>
           <p className="mb-6 text-sm text-white/45">Nov 12 - Nov 21 2026</p>
-          <MemoryMaker albumKey="vietnamNovember" albumName="Vietnam" accentColor={VIETNAM_GOLD} guestName={guestName} returnChapter="vietnam" onViewAlbum={openAlbumPopup} />
           <section className="mb-10 grid grid-cols-2 gap-3 md:grid-cols-4">
             <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:text-2xl">💵</p><p className="text-[10px] text-gray-400 md:text-xs">Currency</p><p className="mt-1 text-xs font-medium md:text-sm">VND ₫</p><p className="mt-1 text-xs text-gray-400">BillTab tracks VND</p></div>
             <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:text-2xl">🌤️</p><p className="text-[10px] text-gray-400 md:text-xs">November Temp</p><p className="mt-1 text-xs font-medium md:text-sm">22-31°C</p><p className="mt-1 text-[9px] text-gray-500">Live forecast once trip begins</p></div>
-            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:text-2xl">🕘</p><p className="text-[10px] text-gray-400 md:text-xs">Local Time</p><p className="mt-1 text-xs font-medium md:text-sm">{vietnamLocalTime}</p><p className="mt-1 text-[9px] text-gray-500">Vietnam · Hanoi / HCMC</p></div>
+            <button type="button" onClick={() => setShowMoroccoBudget(true)} className="rounded-2xl border border-[#F6C65B]/30 bg-[#F6C65B]/10 p-3 text-center transition hover:border-[#F6C65B]/60 hover:bg-[#F6C65B]/15 md:p-4"><p className="mb-1 text-xl md:text-2xl">🧾</p><p className="text-[10px] text-[#F6C65B]/75 md:text-xs">Budget</p><p className="mt-1 text-xs font-medium text-[#F6C65B] md:text-sm">${vietnamBudgetTotalForGuest.toLocaleString("en-CA", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} CAD</p><p className="mt-1 text-[9px] text-white/40">Known total</p></button>
             <button type="button" onClick={() => setShowVietnamRouteMap(true)} className="rounded-2xl border border-[#F6C65B]/30 bg-[#F6C65B]/10 p-3 text-center transition hover:border-[#F6C65B]/60 hover:bg-[#F6C65B]/15 md:p-4"><p className="mb-1 text-xl md:text-2xl">🗺️</p><p className="text-[10px] text-[#F6C65B]/75 md:text-xs">Map Route</p><p className="mt-1 text-xs font-medium text-[#F6C65B] md:text-sm">North & South</p><p className="mt-1 text-[9px] text-white/40">Route overview</p></button>
           </section>
           <section className="space-y-5">
@@ -2058,16 +2214,84 @@ export default function TravelSite() {
                     </li>
                   ))}
                 </ul>
+                {"links" in day && day.links && day.stay !== "Peony Cruise" && (
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {day.links.map((link) => (
+                      <a key={link.href} href={link.href} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center rounded-full border border-[#F6C65B]/35 bg-[#F6C65B]/10 px-4 py-2 text-xs uppercase tracking-[0.14em] text-[#F6C65B] transition hover:border-[#F6C65B]/60 hover:bg-[#F6C65B]/15">
+                        {link.label}
+                      </a>
+                    ))}
+                  </div>
+                )}
                 {day.stay && (
                   <div className="mt-4 rounded-xl border border-white/10 bg-white/[0.04] p-3">
                     <p className="text-[10px] uppercase tracking-[0.18em] text-white/40">Nightly Accommodation</p>
-                    <p className="mt-1 text-sm text-white/75">{day.stay}</p>
+                    {day.stay.startsWith(hanoiAccommodationName) ? (
+                      <div className="mt-1 space-y-1">
+                        <p className="text-sm text-white/75">{hanoiAccommodationName}</p>
+                        <a href={hanoiAccommodationMapUrl} target="_blank" rel="noreferrer" className="block text-sm text-[#F6C65B] underline decoration-[#F6C65B]/35 underline-offset-4 transition hover:text-[#FFE19A]">
+                          {hanoiAccommodationAddress}
+                        </a>
+                      </div>
+                    ) : (
+                      <p className="mt-1 text-sm text-white/75">{day.stay}</p>
+                    )}
+                    {"links" in day && day.links && day.stay === "Peony Cruise" && (
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {day.links.map((link) => (
+                          <a key={link.href} href={link.href} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center rounded-full border border-[#F6C65B]/35 bg-[#F6C65B]/10 px-4 py-2 text-xs uppercase tracking-[0.14em] text-[#F6C65B] transition hover:border-[#F6C65B]/60 hover:bg-[#F6C65B]/15">
+                            {link.label}
+                          </a>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
               </article>
             ))}
           </section>
         </main>
+        {showMoroccoBudget && (
+          <div className="fixed inset-0 z-50 flex items-stretch justify-center bg-black/80 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-[max(0.5rem,env(safe-area-inset-top))] backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-label="Vietnam party budget">
+            <section className="flex h-[calc(100dvh-1rem)] max-h-[calc(100dvh-1rem)] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] text-left shadow-2xl sm:h-[82dvh] sm:max-h-[760px]">
+              <div className="flex shrink-0 items-start justify-between gap-4 border-b border-white/10 px-4 py-3 sm:px-6 sm:py-5">
+                <div>
+                  <p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: VIETNAM_GOLD }}>Vietnam 2026</p>
+                  <h2 className="text-xl font-light text-white sm:text-2xl">Trip Budget</h2>
+                  <p className="mt-1 text-xs text-white/45">{guestName}</p>
+                </div>
+                <button type="button" onClick={() => setShowMoroccoBudget(false)} aria-label="Close Vietnam party budget" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">×</button>
+              </div>
+              <div className="min-h-0 flex-1 space-y-3 overflow-y-scroll overscroll-contain p-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-6">
+                {vietnamBudgetCostsForGuest.map((cost) => (
+                  <article key={cost.category} className="rounded-xl border border-white/10 bg-white/[0.04] p-3 sm:p-4">
+                    <div className="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-start sm:gap-4">
+                      <div>
+                        <h3 className="text-base font-light text-white">{cost.category}</h3>
+                        {Array.isArray(cost.detail) ? (
+                          <ul className="mt-2 space-y-1.5 text-sm leading-6 text-white/60">
+                            {cost.detail.map((detail) => (
+                              <li key={detail} className="flex gap-2">
+                                <span className="shrink-0 text-[#F6C65B]">•</span>
+                                <span>{detail}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p className="mt-2 text-sm leading-6 text-white/60">{cost.detail}</p>
+                        )}
+                      </div>
+                      <p className="text-sm text-[#F6C65B] sm:text-right">{cost.amountCad === null ? "TBD" : `$${cost.amountCad.toLocaleString("en-CA", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} CAD`}</p>
+                    </div>
+                  </article>
+                ))}
+                <div className="rounded-xl border border-[#F6C65B]/30 bg-[#F6C65B]/10 p-4 text-sm text-[#F6C65B]">
+                  Known party total = ${vietnamBudgetTotalForGuest.toLocaleString("en-CA", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} CAD
+                </div>
+              </div>
+            </section>
+          </div>
+        )}
         {showVietnamRouteMap && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-3 backdrop-blur-sm sm:p-4" role="dialog" aria-modal="true" aria-label="Vietnam route map">
             <section className="flex max-h-[92dvh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] shadow-2xl">
@@ -2426,6 +2650,8 @@ export default function TravelSite() {
                   <div className="relative z-10 grid shrink-0 grid-cols-2 gap-2 px-5 pb-3">
                     <button type="button" onClick={goToMainPage} className="rounded-full border border-white/20 bg-white/[0.06] px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-white/65 transition hover:border-white/35 hover:bg-white/[0.1]">Main Page</button>
                     <button type="button" onClick={() => setShowMoroccoUsefulInfo(true)} className="rounded-full border border-[#F6C65B]/35 bg-[#F6C65B]/10 px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-[#F6C65B] transition hover:border-[#F6C65B]/60 hover:bg-[#F6C65B]/15">Useful Info</button>
+                    <button type="button" onClick={() => setShowVietnamFlightSummary(true)} className="rounded-full border border-[#F6C65B]/35 bg-[#F6C65B]/10 px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-[#F6C65B] transition hover:border-[#F6C65B]/60 hover:bg-[#F6C65B]/15">Flight Summary</button>
+                    <button type="button" onClick={() => setShowVietnamRouteMap(true)} className="rounded-full border border-[#F6C65B]/35 bg-[#F6C65B]/10 px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-[#F6C65B] transition hover:border-[#F6C65B]/60 hover:bg-[#F6C65B]/15">Route Map</button>
                   </div>
                   <div className="relative min-h-0 flex-1 overflow-hidden bg-black">
                     <img src="/vietnam-2026-poster.png" alt="Vietnam 2026 travel poster" className="absolute inset-0 h-full w-full object-cover object-[center_38%]" />
@@ -2450,16 +2676,84 @@ export default function TravelSite() {
                 </>
               )}
               {showMoroccoBudget && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Vietnam trip budget">
-                  <section className="w-full max-w-lg rounded-2xl border border-white/15 bg-[#111] p-6 text-left shadow-2xl">
-                    <div className="mb-5 flex items-start justify-between gap-5 border-b border-white/10 pb-5">
+                <div className="fixed inset-0 z-50 flex items-stretch justify-center bg-black/80 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-[max(0.5rem,env(safe-area-inset-top))] backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-label="Vietnam trip budget">
+                  <section className="flex h-[calc(100dvh-1rem)] max-h-[calc(100dvh-1rem)] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] text-left shadow-2xl sm:h-[82dvh] sm:max-h-[760px]">
+                    <div className="flex shrink-0 items-start justify-between gap-4 border-b border-white/10 px-4 py-3 sm:px-6 sm:py-5">
                       <div>
                         <p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: VIETNAM_GOLD }}>Vietnam 2026</p>
-                        <h2 className="text-2xl font-light text-white">Trip Budget</h2>
+                        <h2 className="text-xl font-light text-white sm:text-2xl">Trip Budget</h2>
                       </div>
                       <button type="button" onClick={() => setShowMoroccoBudget(false)} aria-label="Close Vietnam budget" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">×</button>
                     </div>
-                    <p className="rounded-xl border border-white/10 bg-white/[0.04] p-4 text-sm leading-6 text-white/70">Budget details are coming soon.</p>
+                    <div className="min-h-0 flex-1 space-y-3 overflow-y-scroll overscroll-contain p-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-6">
+                      {vietnamBookingCosts.map((cost) => (
+                        <article key={cost.category} className="rounded-xl border border-white/10 bg-white/[0.04] p-3 sm:p-4">
+                          <div className="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-start sm:gap-4">
+                            <div>
+                              <h3 className="text-base font-light text-white">{cost.category}</h3>
+                              {Array.isArray(cost.detail) ? (
+                                <ul className="mt-2 space-y-1.5 text-sm leading-6 text-white/60">
+                                  {cost.detail.map((detail) => (
+                                    <li key={detail} className="flex gap-2">
+                                      <span className="shrink-0 text-[#F6C65B]">•</span>
+                                      <span>{detail}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              ) : (
+                                <p className="mt-2 text-sm leading-6 text-white/60">{cost.detail}</p>
+                              )}
+                            </div>
+                            <p className="text-sm text-[#F6C65B] sm:text-right">{cost.amountCad === null ? "TBD" : `$${cost.amountCad.toLocaleString("en-CA")} CAD`}</p>
+                          </div>
+                        </article>
+                      ))}
+                      <div className="rounded-xl border border-[#F6C65B]/30 bg-[#F6C65B]/10 p-4 text-sm text-[#F6C65B]">
+                        Known booking total = ${vietnamBookingTotalCad.toLocaleString("en-CA")} CAD
+                      </div>
+                    </div>
+                  </section>
+                </div>
+              )}
+              {showVietnamRouteMap && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-3 backdrop-blur-sm sm:p-4" role="dialog" aria-modal="true" aria-label="Vietnam route map">
+                  <section className="flex max-h-[92dvh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] shadow-2xl">
+                    <div className="flex shrink-0 items-start justify-between gap-4 border-b border-white/10 px-4 py-3 sm:px-6 sm:py-4">
+                      <div>
+                        <p className="mb-1 text-xs uppercase tracking-[0.24em]" style={{ color: VIETNAM_GOLD }}>Vietnam 2026</p>
+                        <h2 className="text-xl font-light text-white sm:text-2xl">Route Map</h2>
+                      </div>
+                      <button type="button" onClick={() => setShowVietnamRouteMap(false)} aria-label="Close Vietnam route map" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">×</button>
+                    </div>
+                    <div className="min-h-0 flex-1 overflow-auto bg-white p-2 sm:p-4">
+                      <img src="/nsviet.png" alt="Vietnam north and south trip route map" className="mx-auto h-auto max-h-[78dvh] w-auto max-w-full object-contain" />
+                    </div>
+                  </section>
+                </div>
+              )}
+              {showVietnamFlightSummary && (
+                <div className="fixed inset-0 z-50 flex items-stretch justify-center bg-black/80 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-[max(0.5rem,env(safe-area-inset-top))] backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-label="Vietnam flight summary">
+                  <section className="flex h-[calc(100dvh-1rem)] max-h-[calc(100dvh-1rem)] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] text-left shadow-2xl sm:h-auto sm:max-h-[82dvh]">
+                    <div className="flex shrink-0 items-start justify-between gap-4 border-b border-white/10 px-4 py-3 sm:px-6 sm:py-5">
+                      <div>
+                        <p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: VIETNAM_GOLD }}>Vietnam 2026</p>
+                        <h2 className="text-xl font-light text-white sm:text-2xl">Flight Summary</h2>
+                      </div>
+                      <button type="button" onClick={() => setShowVietnamFlightSummary(false)} aria-label="Close Vietnam flight summary" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">×</button>
+                    </div>
+                    <div className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain p-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-6">
+                      {vietnamFlightSummary.map((flight) => (
+                        <article key={`${flight.date}-${flight.route}`} className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
+                          <p className="text-xs uppercase tracking-[0.18em] text-white/40">{flight.date}</p>
+                          <h3 className="mt-2 text-lg font-light text-white">{flight.route}</h3>
+                          <div className="mt-3 grid gap-2 text-sm leading-6 text-white/65">
+                            <p><span className="text-white/35">Airline:</span> {flight.airline}</p>
+                            <p><span className="text-white/35">Time:</span> {flight.time}</p>
+                            <p><span className="text-white/35">Notes:</span> {flight.notes}</p>
+                          </div>
+                        </article>
+                      ))}
+                    </div>
                   </section>
                 </div>
               )}
@@ -2944,12 +3238,12 @@ export default function TravelSite() {
                           if (!selectedGuest) return;
                           openTripDashboard(selectedGuest);
                         }}
-                        className={`min-w-0 rounded-2xl border border-white/25 bg-black/75 px-4 py-3 text-sm font-light tracking-wide text-white outline-none backdrop-blur-md transition ${selectedTrip === "taiwan" ? "focus:border-[#FFD76A]/70" : "focus:border-[#9EDCFF]/70"}`}
+                        className={`min-w-0 rounded-2xl border border-white/25 bg-black/75 px-4 py-3 text-sm font-light tracking-wide text-white outline-none backdrop-blur-md transition ${selectedTrip === "taiwan" ? "focus:border-[#72E49A]/70" : "focus:border-[#9EDCFF]/70"}`}
                       >
                         <option value="" disabled>Select your party</option>
                         {getVisibleGuestOptions().map((guest) => <option key={guest} value={guest}>{guest}</option>)}
                       </select>
-                      <button type="button" onClick={() => openTripDashboard("Guest")} className={`rounded-2xl border bg-black/75 px-4 py-3 text-sm font-light uppercase tracking-[0.16em] outline-none backdrop-blur-md transition ${selectedTrip === "taiwan" ? "border-[#FFD76A]/40 text-[#FFD76A] hover:border-[#FFD76A]/70 hover:bg-[#FFD76A]/10" : "border-[#9EDCFF]/40 text-[#9EDCFF] hover:border-[#9EDCFF]/70 hover:bg-[#9EDCFF]/10"}`}>Guest</button>
+                      <button type="button" onClick={() => openTripDashboard("Guest")} className={`rounded-2xl border bg-black/75 px-4 py-3 text-sm font-light uppercase tracking-[0.16em] outline-none backdrop-blur-md transition ${selectedTrip === "taiwan" ? "border-[#72E49A]/40 text-[#72E49A] hover:border-[#72E49A]/70 hover:bg-[#72E49A]/10" : "border-[#9EDCFF]/40 text-[#9EDCFF] hover:border-[#9EDCFF]/70 hover:bg-[#9EDCFF]/10"}`}>Guest</button>
                     </div>
                   </div>
                 </div>
@@ -3032,7 +3326,7 @@ export default function TravelSite() {
       <div className="min-h-screen bg-black px-6 py-10 text-white">
         {chapterNav("checklist")}
         <main className="mx-auto max-w-4xl">
-          <p className="mb-3 text-sm uppercase tracking-[0.35em] text-[#FFD76A]">Personal Travel Prep</p>
+          <p className="mb-3 text-sm uppercase tracking-[0.35em] text-[#72E49A]">Personal Travel Prep</p>
           <h1 className="mb-4 text-4xl font-light tracking-wide md:text-6xl">{checklist.title}</h1>
           <p className="mb-8 text-sm text-white/50">{completedItems} of {totalItems} items packed</p>
           <div className="mb-10 h-2 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full bg-[#72E49A] transition-all" style={{ width: `${totalItems ? (completedItems / totalItems) * 100 : 0}%` }} /></div>
@@ -3195,7 +3489,7 @@ export default function TravelSite() {
                             return next;
                           });
                         }}
-                        className="h-5 w-5 shrink-0 accent-[#FFD76A]"
+                        className="h-5 w-5 shrink-0 accent-[#72E49A]"
                       />
                       <span className={isChecked ? "text-sm text-white/40 line-through" : "text-sm text-white/80"}>{item}</span>
                     </label>
