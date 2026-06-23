@@ -824,39 +824,6 @@ export default function TravelSite() {
     },
   ];
   type VietnamBookingCost = { category: string; detail: string | string[]; amountCad: number | null };
-  const vietnamBookingCosts: VietnamBookingCost[] = [
-    {
-      category: "Flights",
-      detail: "EVA Air Taipei to Hanoi; VietJet Ho Chi Minh City to Kaohsiung.",
-      amountCad: null,
-    },
-    {
-      category: "Accommodations",
-      detail: [
-        "Hanoi stay Nov 12-13 at Heart of Hoan Kiem Homestay Airbnb (reserved): $258.30 CAD.",
-        "Ninh Binh stay Nov 15-16 at Xuan Son Lakeside Bungalow: $400 CAD.",
-        "Peony Cruise Deluxe Balcony Cabins: Xenia's family $385 USD (approx. $527.45 CAD); Jenn's family $552 USD (approx. $756.24 CAD).",
-        "Ho Chi Minh City Airbnb: TBD.",
-      ],
-      amountCad: 1941.99,
-    },
-    {
-      category: "Tours & Attraction Tickets",
-      detail: "Water Puppet Show, city sights, Ben Tre Mekong Tour, Cu Chi Tunnels, and other admission tickets.",
-      amountCad: null,
-    },
-    {
-      category: "Transfers",
-      detail: "Nov 12 7-seater van from Hanoi airport to Airbnb: 450,000 VND (approx. $24 CAD).",
-      amountCad: 24.00,
-    },
-    {
-      category: "Remaining Transfers",
-      detail: "Cruise transfer, private van, and other local transportation.",
-      amountCad: null,
-    },
-  ];
-  const vietnamBookingTotalCad = vietnamBookingCosts.reduce((total, cost) => total + (cost.amountCad ?? 0), 0);
   const vietnamFlightSummary = [
     {
       date: "Thu Nov 12, 2026",
@@ -955,7 +922,7 @@ export default function TravelSite() {
       ];
     }
 
-    return vietnamBookingCosts;
+    return [];
   };
 
   const filterDashboardSegments = (segments: DashboardSegment[]) => {
@@ -2189,6 +2156,7 @@ export default function TravelSite() {
   if (showVietnamItinerary && guestName) {
     const vietnamBudgetCostsForGuest = getVietnamBookingCostsForGuest(guestName);
     const vietnamBudgetTotalForGuest = vietnamBudgetCostsForGuest.reduce((total, cost) => total + (cost.amountCad ?? 0), 0);
+    const vietnamLocalTime = new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Ho_Chi_Minh", hour: "numeric", minute: "2-digit", second: "2-digit", hour12: true }).format(now);
     const hanoiAccommodationName = "Heart of Hoan Kiem Homestay Airbnb";
     const hanoiAccommodationAddress = "23C Phố Tông Đản, Hoàn Kiếm, Hà Nội";
     const hanoiAccommodationMapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(hanoiAccommodationAddress)}`;
@@ -2205,7 +2173,7 @@ export default function TravelSite() {
           <section className="mb-10 grid grid-cols-2 gap-3 md:grid-cols-4">
             <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:text-2xl">💵</p><p className="text-[10px] text-gray-400 md:text-xs">Currency</p><p className="mt-1 text-xs font-medium md:text-sm">1 CAD ≈ {cadToVnd} VND</p><p className="mt-1 text-xs text-gray-400">Live exchange rate</p></div>
             <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:text-2xl">🌤️</p><p className="text-[10px] text-gray-400 md:text-xs">November Temp</p><p className="mt-1 text-xs font-medium md:text-sm">22-31°C</p><p className="mt-1 text-[9px] text-gray-500">Live forecast once trip begins</p></div>
-            <button type="button" onClick={() => setShowMoroccoBudget(true)} className="rounded-2xl border border-[#F6C65B]/30 bg-[#F6C65B]/10 p-3 text-center transition hover:border-[#F6C65B]/60 hover:bg-[#F6C65B]/15 md:p-4"><p className="mb-1 text-xl md:text-2xl">🧾</p><p className="text-[10px] text-[#F6C65B]/75 md:text-xs">Budget</p><p className="mt-1 text-xs font-medium text-[#F6C65B] md:text-sm">${vietnamBudgetTotalForGuest.toLocaleString("en-CA", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} CAD</p><p className="mt-1 text-[9px] text-white/40">Known total</p></button>
+            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:text-2xl">🕘</p><p className="text-[10px] text-gray-400 md:text-xs">Local Time</p><p className="mt-1 text-xs font-medium md:text-sm">{vietnamLocalTime}</p><p className="mt-1 text-[9px] text-gray-500">Vietnam · ICT</p></div>
             <button type="button" onClick={() => setShowVietnamRouteMap(true)} className="rounded-2xl border border-[#F6C65B]/30 bg-[#F6C65B]/10 p-3 text-center transition hover:border-[#F6C65B]/60 hover:bg-[#F6C65B]/15 md:p-4"><p className="mb-1 text-xl md:text-2xl">🗺️</p><p className="text-[10px] text-[#F6C65B]/75 md:text-xs">Map Route</p><p className="mt-1 text-xs font-medium text-[#F6C65B] md:text-sm">North & South</p><p className="mt-1 text-[9px] text-white/40">Route overview</p></button>
           </section>
           <section className="space-y-5">
@@ -2366,6 +2334,8 @@ export default function TravelSite() {
       Guest: "Nov 25 - Dec 6 2026",
     };
     const selectedTripDashboardDate = selectedTrip === "taiwan" ? "Nov 21 - Dec 21 2026" : selectedTrip === "okinawaJapan" ? okinawaDashboardDates[guestName] || "Nov 25 - Dec 6 2026" : selectedTrip === "vietnam" ? "Nov 12 - Nov 21 2026" : "Sept 4 - Sept 16 2026";
+    const vietnamDashboardBudgetCosts = getVietnamBookingCostsForGuest(guestName);
+    const vietnamDashboardBudgetTotal = vietnamDashboardBudgetCosts.reduce((total, cost) => total + (cost.amountCad ?? 0), 0);
     return (
       <div className="flex min-h-screen items-center justify-center bg-black px-6 text-white">
         <div className={`w-full max-w-md rounded-[2rem] border border-white/10 text-center backdrop-blur-xl ${isConfirmedTripAppCard ? "flex h-[min(760px,calc(100dvh-2rem))] flex-col overflow-hidden" : ""} ${isPosterHeroSelection ? `overflow-hidden ${selectedTrip === "taiwan" || selectedTrip === "morocco" || selectedTrip === "vietnam" ? "bg-black" : "bg-[#020B18]"} shadow-[0_0_44px_rgba(158,220,255,0.16)]` : "bg-white/[0.04] p-8 shadow-[0_0_40px_rgba(255,255,255,0.06)]"}`}>
@@ -2648,6 +2618,8 @@ export default function TravelSite() {
                         <div className="grid gap-3 sm:grid-cols-2">
                           <button type="button" onClick={() => openTripView("itinerary")} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#F6C65B]/35 bg-[#F6C65B]/10 px-4 py-3 text-center transition hover:border-[#F6C65B]/60 hover:bg-[#F6C65B]/15 sm:col-span-2"><span className="text-xl">🗓️</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#F6C65B]">Trip Itinerary</span></button>
                           <button type="button" onClick={() => setShowMoroccoChecklist(true)} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#F6C65B]/35 bg-[#F6C65B]/10 px-4 py-3 text-center transition hover:border-[#F6C65B]/60 hover:bg-[#F6C65B]/15"><span className="text-xl">🎒</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#F6C65B]">Packing List</span></button>
+                          <button type="button" onClick={() => setShowMoroccoBudget(true)} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#F6C65B]/35 bg-[#F6C65B]/10 px-4 py-3 text-center transition hover:border-[#F6C65B]/60 hover:bg-[#F6C65B]/15"><span className="text-xl">🧾</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#F6C65B]">Budget</span></button>
+                          <button type="button" disabled className="flex min-h-14 cursor-not-allowed items-center justify-center gap-3 rounded-2xl border border-[#F6C65B]/25 bg-[#F6C65B]/5 px-4 py-3 text-center opacity-45"><span className="text-xl">☀️</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#F6C65B]">What's Today?</span></button>
                           <button type="button" onClick={() => openMoroccoCostTracker("vietnam")} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#F6C65B]/35 bg-[#F6C65B]/10 px-4 py-3 text-center transition hover:border-[#F6C65B]/60 hover:bg-[#F6C65B]/15"><span className="text-xl">💰</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#F6C65B]">BillTab</span></button>
                         </div>
                         <MemoryMaker albumKey="vietnamNovember" albumName="Vietnam" accentColor={VIETNAM_GOLD} guestName={guestName} returnChapter="vietnam" onViewAlbum={openAlbumPopup} compact />
@@ -2685,18 +2657,19 @@ export default function TravelSite() {
                   </div>
                 </>
               )}
-              {showMoroccoBudget && (
+              {showGuestActions && guestName !== "Guest" && showMoroccoBudget && (
                 <div className="fixed inset-0 z-50 flex items-stretch justify-center bg-black/80 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-[max(0.5rem,env(safe-area-inset-top))] backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-label="Vietnam trip budget">
                   <section className="flex h-[calc(100dvh-1rem)] max-h-[calc(100dvh-1rem)] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] text-left shadow-2xl sm:h-[82dvh] sm:max-h-[760px]">
                     <div className="flex shrink-0 items-start justify-between gap-4 border-b border-white/10 px-4 py-3 sm:px-6 sm:py-5">
                       <div>
                         <p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: VIETNAM_GOLD }}>Vietnam 2026</p>
                         <h2 className="text-xl font-light text-white sm:text-2xl">Trip Budget</h2>
+                        <p className="mt-1 text-xs text-white/45">{guestName}</p>
                       </div>
                       <button type="button" onClick={() => setShowMoroccoBudget(false)} aria-label="Close Vietnam budget" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">×</button>
                     </div>
                     <div className="min-h-0 flex-1 space-y-3 overflow-y-scroll overscroll-contain p-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-6">
-                      {vietnamBookingCosts.map((cost) => (
+                      {vietnamDashboardBudgetCosts.map((cost) => (
                         <article key={cost.category} className="rounded-xl border border-white/10 bg-white/[0.04] p-3 sm:p-4">
                           <div className="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-start sm:gap-4">
                             <div>
@@ -2719,7 +2692,7 @@ export default function TravelSite() {
                         </article>
                       ))}
                       <div className="rounded-xl border border-[#F6C65B]/30 bg-[#F6C65B]/10 p-4 text-sm text-[#F6C65B]">
-                        Known booking total = ${vietnamBookingTotalCad.toLocaleString("en-CA")} CAD
+                        Known party total = ${vietnamDashboardBudgetTotal.toLocaleString("en-CA", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} CAD
                       </div>
                     </div>
                   </section>
