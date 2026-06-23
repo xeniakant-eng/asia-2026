@@ -3,7 +3,7 @@ import { deleteGoogleDriveFile, isGoogleDriveConfigured, uploadMemoryMakerFile }
 
 export const runtime = "nodejs";
 
-const VALID_ALBUMS = new Set(["taiwanNovember", "japanNovember", "taiwanDecember", "moroccoSeptember"]);
+const VALID_ALBUMS = new Set(["taiwanNovember", "japanNovember", "taiwanDecember", "moroccoSeptember", "vietnamNovember"]);
 const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
 
 type MemoryMakerRow = {

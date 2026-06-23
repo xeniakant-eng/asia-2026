@@ -6,10 +6,11 @@ const MS_PER_DAY = 1000 * 60 * 60 * 24;
 const BABY_BLUE = "#9EDCFF";
 const TAIWAN_GOLD = "#FFD76A";
 const MOROCCO_BROWN = "#D6B48C";
+const VIETNAM_GOLD = "#F6C65B";
 
 type PageName = "map" | "xiaoliuqiu" | "taipei" | "onna" | "nago" | "nanjo" | "naha" | "nahaearly" | "yilan" | "checklist";
 type Region = "japan" | "taiwan";
-type TripKey = "morocco" | "vietnam" | "taiwan" | "okinawaJapan" | "skiMyoko" | "skiDeerValley" | "skiBig3" | "panama" | "houston" | "azoresPortugal" | "similanThailand" | "disneyWorld" | "fiveStans";
+type TripKey = "morocco" | "vietnam" | "taiwan" | "okinawaJapan" | "skiMyoko" | "skiDeerValley" | "skiBig3" | "panama" | "houston" | "azoresPortugal" | "similanThailand" | "centralVietnam" | "disneyWorld" | "fiveStans";
 type MainPageView = "active" | "ski" | "future" | "archive";
 
 const TRIP_PATHS: Record<TripKey, string> = {
@@ -24,6 +25,7 @@ const TRIP_PATHS: Record<TripKey, string> = {
   houston: "houston-galveston",
   azoresPortugal: "azores-portugal",
   similanThailand: "similan-thailand",
+  centralVietnam: "central-vietnam",
   disneyWorld: "disney-world",
   fiveStans: "five-stans",
 };
@@ -53,7 +55,7 @@ type PackingChecklist = {
 
 type Person = [string, string];
 type DashboardSegment = { label: string; page: PageName; color: string };
-type SignupTripKey = "morocco" | "vietnam" | "skiMyoko" | "skiDeerValley" | "skiBig3" | "panama" | "houston" | "azoresPortugal" | "similanThailand" | "disneyWorld" | "fiveStans";
+type SignupTripKey = "morocco" | "vietnam" | "skiMyoko" | "skiDeerValley" | "skiBig3" | "panama" | "houston" | "azoresPortugal" | "similanThailand" | "centralVietnam" | "disneyWorld" | "fiveStans";
 type TripStatus = "Planning" | "Confirmed" | "Dreaming";
 type RentalCarArrangement = {
   id: string;
@@ -528,6 +530,7 @@ export default function TravelSite() {
   const [showMoroccoBudget, setShowMoroccoBudget] = useState(false);
   const [showMoroccoUsefulInfo, setShowMoroccoUsefulInfo] = useState(false);
   const [showMoroccoMap, setShowMoroccoMap] = useState(false);
+  const [showVietnamItinerary, setShowVietnamItinerary] = useState(false);
   const [showTaipeiMrtMap, setShowTaipeiMrtMap] = useState(false);
   const [showTaipeiFoodieList, setShowTaipeiFoodieList] = useState(false);
   const [taiwanDashboardAlbumMode, setTaiwanDashboardAlbumMode] = useState<"" | "upload" | "view">("");
@@ -542,12 +545,12 @@ export default function TravelSite() {
   const [showMoroccoChecklist, setShowMoroccoChecklist] = useState(false);
   const [showMoroccoItinerary, setShowMoroccoItinerary] = useState(false);
   const [showMoroccoCostTracker, setShowMoroccoCostTracker] = useState(false);
-  const [activeBillTabTrip, setActiveBillTabTrip] = useState<"morocco" | "taiwan" | "okinawaJapan">("morocco");
+  const [activeBillTabTrip, setActiveBillTabTrip] = useState<"morocco" | "taiwan" | "okinawaJapan" | "vietnam">("morocco");
   const [showMoroccoAccountingSummary, setShowMoroccoAccountingSummary] = useState(false);
   const [moroccoExpenses, setMoroccoExpenses] = useState<MoroccoExpense[]>([]);
   const [moroccoExpenseDescription, setMoroccoExpenseDescription] = useState("");
   const [moroccoExpenseAmount, setMoroccoExpenseAmount] = useState("");
-  const [moroccoExpenseCurrency, setMoroccoExpenseCurrency] = useState<"CAD" | "MAD" | "JPY" | "TWD" | "USD">("MAD");
+  const [moroccoExpenseCurrency, setMoroccoExpenseCurrency] = useState<"CAD" | "MAD" | "JPY" | "TWD" | "VND" | "USD">("MAD");
   const [moroccoExpensePaidBy, setMoroccoExpensePaidBy] = useState("");
   const [moroccoExpensePaidFor, setMoroccoExpensePaidFor] = useState<string[]>(["Everyone"]);
   const [moroccoEditingExpenseId, setMoroccoEditingExpenseId] = useState("");
@@ -613,6 +616,16 @@ export default function TravelSite() {
   });
   const [showSimilanNameInput, setShowSimilanNameInput] = useState(false);
   const [similanNameInput, setSimilanNameInput] = useState("");
+  const [centralVietnamInterestedNames, setCentralVietnamInterestedNames] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      return JSON.parse(window.localStorage.getItem("centralVietnamInterestedNames") || "[]");
+    } catch {
+      return [];
+    }
+  });
+  const [showCentralVietnamNameInput, setShowCentralVietnamNameInput] = useState(false);
+  const [centralVietnamNameInput, setCentralVietnamNameInput] = useState("");
   const [disneyWorldInterestedNames, setDisneyWorldInterestedNames] = useState<string[]>(() => {
     if (typeof window === "undefined") return [];
     try {
@@ -682,6 +695,116 @@ export default function TravelSite() {
     "Julie & Adrian & Ethan (4) & Tyrell (1)",
     "Dave & Christina & Xixi (2)",
   ];
+  const vietnamConfirmedParties = [
+    "Xenia & David & Naomi (3)",
+    "Jenn & Hiroshi & Masashi (6) & Miyari (3)",
+  ];
+  const vietnamItineraryDays = [
+    {
+      date: "Thu Nov 12",
+      location: "Hanoi",
+      title: "Arrival in Hanoi",
+      items: [
+        "Fly EVA Air Taipei to Hanoi, 2:50 PM-5:15 PM.",
+        "Transfer to hotel, check in, easy dinner, and rest.",
+      ],
+      stay: "Hotel TBD",
+    },
+    {
+      date: "Fri Nov 13",
+      location: "Hanoi",
+      title: "Hanoi City Day",
+      items: [
+        "Train Street cafe stop.",
+        "Visit Temple of Literature, Old Quarter, Hoan Kiem Lake, and Ngoc Son Temple.",
+        "Try egg coffee.",
+        "Evening Water Puppet Show.",
+      ],
+      stay: "Hotel TBD",
+    },
+    {
+      date: "Sat Nov 14",
+      location: "Peony Cruises",
+      title: "Ha Long Bay & Lan Ha Bay Peony Cruise",
+      items: [
+        "Peony Cruises-arranged transfer from Hanoi hotel to Ha Long Bay / cruise port.",
+        "Board Peony Cruises 2 day / 1 night Ha Long Bay cruise.",
+      ],
+      stay: "Peony Cruise",
+    },
+    {
+      date: "Sun Nov 15",
+      location: "Ninh Binh",
+      title: "Check-in Ninh Binh",
+      items: [
+        "Peony Cruises morning activities and brunch.",
+        "Disembark and take Peony Cruises-arranged private transfer from Ha Long Bay to Ninh Binh.",
+      ],
+      stay: "Xuan Son Lakeside Bungalow",
+    },
+    {
+      date: "Mon Nov 16",
+      location: "Ninh Binh",
+      title: "Grottoes & Mountains & Architectures",
+      items: [
+        "Trang An boat ride in the morning.",
+        "Afternoon: Bich Dong Pagoda or countryside rest.",
+        "Optional: Hang Mua viewpoint if adults want the climb and the kids still have energy.",
+      ],
+      stay: "Xuan Son Lakeside Bungalow",
+    },
+    {
+      date: "Tue Nov 17",
+      location: "Ho Chi Minh City",
+      title: "North to South",
+      items: [
+        "Early private van from Ninh Binh to Hanoi airport.",
+        "Vietjet nonstop flight Hanoi (HAN) to Ho Chi Minh City (SGN), 11:30 AM-1:40 PM, 2 hr 10 min. Fare shown: CA$84.",
+        "Afternoon / evening: Ben Thanh Market and Nguyen Hue Walking Street.",
+      ],
+      stay: "Airbnb TBD",
+    },
+    {
+      date: "Wed Nov 18",
+      location: "Ho Chi Minh City",
+      title: "Saigon City Tour",
+      items: [
+        "Morning stop at Cafe Apartment.",
+        "Saigon City Tour: Independence Palace, War Remnants Museum, Central Post Office, Notre-Dame Cathedral area, and cafes.",
+      ],
+      stay: "Airbnb TBD",
+    },
+    {
+      date: "Thu Nov 19",
+      location: "Ho Chi Minh City",
+      title: "Cu Chi Tunnels",
+      items: [
+        "Cu Chi Tunnels day tour.",
+        "Relaxed evening / early dinner after returning to the city.",
+      ],
+      stay: "Airbnb TBD",
+    },
+    {
+      date: "Fri Nov 20",
+      location: "Ho Chi Minh City",
+      title: "Mekong Delta",
+      items: [
+        "Shorter private Mekong Delta day tour with early pickup.",
+        "Target return by 5:00-6:00 PM.",
+        "Pack and sleep early.",
+      ],
+      stay: "Airbnb TBD",
+    },
+    {
+      date: "Sat Nov 21",
+      location: "Depart",
+      title: "Ho Chi Minh City to Kaohsiung",
+      items: [
+        "VietJet Ho Chi Minh City to Kaohsiung, 7:35 AM-11:45 AM, nonstop.",
+        "Leave hotel around 4:30-5:00 AM.",
+      ],
+    },
+  ];
 
   const filterDashboardSegments = (segments: DashboardSegment[]) => {
     if (selectedTrip === "taiwan") {
@@ -712,8 +835,9 @@ export default function TravelSite() {
     return taiwanPartyOrder.indexOf(firstGuest) - taiwanPartyOrder.indexOf(secondGuest);
   });
 
-  const getBillTabPartyOptions = (trip: "morocco" | "taiwan" | "okinawaJapan") => {
+  const getBillTabPartyOptions = (trip: "morocco" | "taiwan" | "okinawaJapan" | "vietnam") => {
     if (trip === "morocco") return moroccoInterestedNames;
+    if (trip === "vietnam") return vietnamConfirmedParties;
     const previousSelectedTrip = selectedTrip;
     if (previousSelectedTrip === trip) return getVisibleGuestOptions();
     return guestOptions.filter((guest) => {
@@ -723,9 +847,10 @@ export default function TravelSite() {
     });
   };
 
-  const getBillTabConfig = (trip: "morocco" | "taiwan" | "okinawaJapan") => {
+  const getBillTabConfig = (trip: "morocco" | "taiwan" | "okinawaJapan" | "vietnam") => {
     if (trip === "taiwan") return { trip, label: "Taiwan 2026", accent: TAIWAN_GOLD, localCurrency: "TWD" as const, localLabel: "TWD", localSymbol: "NT$", parties: getBillTabPartyOptions(trip) };
     if (trip === "okinawaJapan") return { trip, label: "Okinawa Japan 2026", accent: BABY_BLUE, localCurrency: "JPY" as const, localLabel: "JPY", localSymbol: "¥", parties: getBillTabPartyOptions(trip) };
+    if (trip === "vietnam") return { trip, label: "Vietnam 2026", accent: VIETNAM_GOLD, localCurrency: "VND" as const, localLabel: "VND", localSymbol: "₫", parties: getBillTabPartyOptions(trip) };
     return { trip, label: "Morocco 2026", accent: MOROCCO_BROWN, localCurrency: "MAD" as const, localLabel: "MAD", localSymbol: "", parties: getBillTabPartyOptions(trip) };
   };
 
@@ -754,6 +879,7 @@ export default function TravelSite() {
     setMainPageView("active");
     setShowMoroccoItinerary(false);
     setShowMoroccoChecklist(false);
+    setShowVietnamItinerary(false);
     setSelectedTrip(trip);
     setBrowserRoute(buildTripUrl(trip));
   };
@@ -765,6 +891,7 @@ export default function TravelSite() {
     setIsGuestConfirmed(false);
     setShowMoroccoItinerary(false);
     setShowMoroccoChecklist(false);
+    setShowVietnamItinerary(false);
     setBrowserRoute(buildTripUrl(selectedTrip, { guest }), replace);
   };
 
@@ -775,9 +902,16 @@ export default function TravelSite() {
       setBrowserRoute(buildTripUrl(selectedTrip, { guest: guestName || "Guest", view: "itinerary" }), replace);
       return;
     }
+    if (nextView === "itinerary" && selectedTrip === "vietnam") {
+      setShowVietnamItinerary(true);
+      setBrowserRoute(buildTripUrl(selectedTrip, { guest: guestName || "Guest", view: "itinerary" }), replace);
+      return;
+    }
     setPage(nextView === "checklist" ? "checklist" : "map");
     setIsGuestConfirmed(true);
     setShowGuestActions(true);
+    setShowMoroccoItinerary(false);
+    setShowVietnamItinerary(false);
     setBrowserRoute(buildTripUrl(selectedTrip, { guest: guestName || "Guest", view: nextView }), replace);
   };
 
@@ -803,6 +937,7 @@ export default function TravelSite() {
     setShowMoroccoUsefulInfo(false);
     setShowMoroccoMap(false);
     setShowMoroccoChecklist(false);
+    setShowVietnamItinerary(false);
     setTaiwanDashboardAlbumMode("");
     setAlbumPopupUrl("");
     setBrowserRoute("/");
@@ -844,6 +979,7 @@ export default function TravelSite() {
     setShowMoroccoUsefulInfo(false);
     setShowMoroccoMap(false);
     setShowMoroccoChecklist(false);
+    setShowVietnamItinerary(false);
 
     if (tripFromUrl) {
       setSelectedTrip(tripFromUrl);
@@ -854,6 +990,12 @@ export default function TravelSite() {
         setShowGuestActions(false);
         setIsGuestConfirmed(false);
         if (view === "itinerary") setShowMoroccoItinerary(true);
+        return;
+      }
+      if (tripFromUrl === "vietnam" && view === "itinerary") {
+        setShowGuestActions(false);
+        setIsGuestConfirmed(false);
+        setShowVietnamItinerary(true);
         return;
       }
       if (chapter && chapterPages.includes(chapter)) {
@@ -911,7 +1053,7 @@ export default function TravelSite() {
 
   useEffect(() => {
     async function loadTripSignups() {
-      const [moroccoNames, vietnamNames, skiMyokoNames, skiDeerValleyNames, skiBig3Names, panamaNames, houstonNames, azoresNames, similanNames, disneyWorldNames, fiveStansNames] = await Promise.all([
+      const [moroccoNames, vietnamNames, skiMyokoNames, skiDeerValleyNames, skiBig3Names, panamaNames, houstonNames, azoresNames, similanNames, centralVietnamNames, disneyWorldNames, fiveStansNames] = await Promise.all([
         fetchTripSignupNames("morocco"),
         fetchTripSignupNames("vietnam"),
         fetchTripSignupNames("skiMyoko"),
@@ -921,6 +1063,7 @@ export default function TravelSite() {
         fetchTripSignupNames("houston"),
         fetchTripSignupNames("azoresPortugal"),
         fetchTripSignupNames("similanThailand"),
+        fetchTripSignupNames("centralVietnam"),
         fetchTripSignupNames("disneyWorld"),
         fetchTripSignupNames("fiveStans"),
       ]);
@@ -933,6 +1076,7 @@ export default function TravelSite() {
       if (houstonNames) setHoustonInterestedNames(houstonNames);
       if (azoresNames) setAzoresInterestedNames(azoresNames);
       if (similanNames) setSimilanInterestedNames(similanNames);
+      if (centralVietnamNames) setCentralVietnamInterestedNames(centralVietnamNames);
       if (disneyWorldNames) setDisneyWorldInterestedNames(disneyWorldNames);
       if (fiveStansNames) setFiveStansInterestedNames(fiveStansNames);
     }
@@ -987,6 +1131,10 @@ export default function TravelSite() {
   useEffect(() => {
     window.localStorage.setItem("similanInterestedNames", JSON.stringify(similanInterestedNames));
   }, [similanInterestedNames]);
+
+  useEffect(() => {
+    window.localStorage.setItem("centralVietnamInterestedNames", JSON.stringify(centralVietnamInterestedNames));
+  }, [centralVietnamInterestedNames]);
 
   useEffect(() => {
     window.localStorage.setItem("disneyWorldInterestedNames", JSON.stringify(disneyWorldInterestedNames));
@@ -1188,7 +1336,7 @@ export default function TravelSite() {
     return (
       <div className="mb-10 flex items-start justify-between gap-4">
         <div className="flex flex-col items-start gap-3">
-          {current !== "checklist" && <button type="button" onClick={() => openTripView("map")} className="rounded-full border border-white/30 px-4 py-2 text-sm text-white/80 transition hover:border-white hover:text-white">← Back to Map</button>}
+          {current !== "checklist" && <button type="button" onClick={() => openTripView("map")} className="rounded-full border border-white/30 px-4 py-2 text-sm text-white/80 transition hover:border-white hover:text-white">← Back to Map Itinerary</button>}
           {guestName && guestName !== "I am just a random Guest" && (
             <button type="button" onClick={() => openTripDashboard(guestName)} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70 transition hover:border-white/40 hover:bg-white/[0.08] hover:text-white">← Back to Dashboard</button>
           )}
@@ -1234,7 +1382,7 @@ export default function TravelSite() {
     if (guestName === "Guest") {
       return (
         <div className="mt-5 grid gap-3 sm:grid-cols-2">
-          <button type="button" onClick={() => openTripView("map")} className={actionClass} style={actionStyle}><span className="text-xl">🗺️</span><span className="text-xs font-light uppercase tracking-[0.16em]">Map View</span></button>
+          <button type="button" onClick={() => openTripView("map")} className={actionClass} style={actionStyle}><span className="text-xl">🗺️</span><span className="text-xs font-light uppercase tracking-[0.16em]">Map Itinerary</span></button>
           {selectedTrip === "taiwan" ? (
             <button type="button" onClick={() => setTaiwanDashboardAlbumMode("view")} className={actionClass} style={actionStyle}><span className="text-xl">🖼️</span><span className="text-xs font-light uppercase tracking-[0.16em]">View Album</span></button>
           ) : (
@@ -1245,7 +1393,7 @@ export default function TravelSite() {
     }
     return (
       <div className="mt-5 grid gap-3 sm:grid-cols-2">
-        <button type="button" onClick={() => openTripView("map")} className={actionClass} style={actionStyle}><span className="text-xl">🗺️</span><span className="text-xs font-light uppercase tracking-[0.16em]">Map View</span></button>
+        <button type="button" onClick={() => openTripView("map")} className={actionClass} style={actionStyle}><span className="text-xl">🗺️</span><span className="text-xs font-light uppercase tracking-[0.16em]">Map Itinerary</span></button>
         <button type="button" disabled={guestName === "Jim"} onClick={() => openTripView("checklist")} className={guestName === "Jim" ? `${actionClass} cursor-not-allowed opacity-45` : actionClass} style={actionStyle}><span className="text-xl">🎒</span><span className="text-xs font-light uppercase tracking-[0.16em]">Packing List</span></button>
         <button type="button" disabled className={`${actionClass} cursor-not-allowed opacity-45`} style={actionStyle}><span className="text-xl">☀️</span><span className="text-xs font-light uppercase tracking-[0.16em]">What's Today?</span></button>
         <button type="button" onClick={() => openMoroccoCostTracker(selectedTrip)} className={actionClass} style={actionStyle}><span className="text-xl">💰</span><span className="text-xs font-light uppercase tracking-[0.16em]">BillTab</span></button>
@@ -1408,6 +1556,14 @@ export default function TravelSite() {
     setShowSimilanNameInput(false);
   };
 
+  const addCentralVietnamInterestedName = async () => {
+    const nextName = centralVietnamNameInput.trim();
+    if (!nextName) return;
+    await saveInterestedName("centralVietnam", nextName, setCentralVietnamInterestedNames);
+    setCentralVietnamNameInput("");
+    setShowCentralVietnamNameInput(false);
+  };
+
   const addDisneyWorldInterestedName = async () => {
     const nextName = disneyWorldNameInput.trim();
     if (!nextName) return;
@@ -1482,7 +1638,7 @@ export default function TravelSite() {
     setMoroccoExpensePaidFor(uniqueNext.length === activeBillTabParties.length ? ["Everyone"] : uniqueNext);
   };
 
-  const openMoroccoCostTracker = async (trip: "morocco" | "taiwan" | "okinawaJapan" = "morocco") => {
+  const openMoroccoCostTracker = async (trip: "morocco" | "taiwan" | "okinawaJapan" | "vietnam" = "morocco") => {
     const config = getBillTabConfig(trip);
     setActiveBillTabTrip(trip);
     setShowMoroccoCostTracker(true);
@@ -1861,12 +2017,89 @@ export default function TravelSite() {
     );
   }
 
+  if (showVietnamItinerary && guestName) {
+    const vietnamLocalTime = new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Ho_Chi_Minh", hour: "numeric", minute: "2-digit", second: "2-digit", hour12: true }).format(now);
+    return (
+      <div className="min-h-screen bg-black px-6 py-10 text-white" style={{ "--chapter-accent": VIETNAM_GOLD } as React.CSSProperties}>
+        <header className="mx-auto mb-10 flex max-w-5xl flex-wrap items-center justify-between gap-3">
+          <button type="button" onClick={() => openTripDashboard(guestName || "Guest")} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white">← Back to Dashboard</button>
+          <button type="button" onClick={goToMainPage} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white">Main Page</button>
+        </header>
+        <main className="mx-auto max-w-5xl">
+          <p className="mb-3 text-sm uppercase tracking-[0.35em]" style={{ color: VIETNAM_GOLD }}>Vietnam · North & South</p>
+          <h1 className="mb-3 text-4xl font-light tracking-wide md:text-6xl">Trip Itinerary</h1>
+          <p className="mb-6 text-sm text-white/45">Nov 12 - Nov 21 2026</p>
+          <MemoryMaker albumKey="vietnamNovember" albumName="Vietnam" accentColor={VIETNAM_GOLD} guestName={guestName} returnChapter="vietnam" onViewAlbum={openAlbumPopup} />
+          <section className="mb-10 grid grid-cols-2 gap-3 md:grid-cols-4">
+            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:text-2xl">💵</p><p className="text-[10px] text-gray-400 md:text-xs">Currency</p><p className="mt-1 text-xs font-medium md:text-sm">VND ₫</p><p className="mt-1 text-xs text-gray-400">BillTab tracks VND</p></div>
+            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:text-2xl">🌤️</p><p className="text-[10px] text-gray-400 md:text-xs">November Temp</p><p className="mt-1 text-xs font-medium md:text-sm">22-31°C</p><p className="mt-1 text-[9px] text-gray-500">Live forecast once trip begins</p></div>
+            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:text-2xl">🕘</p><p className="text-[10px] text-gray-400 md:text-xs">Local Time</p><p className="mt-1 text-xs font-medium md:text-sm">{vietnamLocalTime}</p><p className="mt-1 text-[9px] text-gray-500">Vietnam · Hanoi / HCMC</p></div>
+            <button type="button" onClick={() => setShowMoroccoUsefulInfo(true)} className="rounded-2xl border border-[#F6C65B]/30 bg-[#F6C65B]/10 p-3 text-center transition hover:border-[#F6C65B]/60 hover:bg-[#F6C65B]/15 md:p-4"><p className="mb-1 text-xl md:text-2xl">ℹ️</p><p className="text-[10px] text-[#F6C65B]/75 md:text-xs">Useful Info</p><p className="mt-1 text-xs font-medium text-[#F6C65B] md:text-sm">Vietnam basics</p><p className="mt-1 text-[9px] text-white/40">Power, Grab, payment</p></button>
+          </section>
+          <section className="space-y-5">
+            {vietnamItineraryDays.map((day) => (
+              <article key={day.date} className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                <div className="mb-4">
+                  <p className="text-xs uppercase tracking-[0.2em]" style={{ color: VIETNAM_GOLD }}>{day.date}</p>
+                  <h2 className="mt-1 text-2xl font-light text-white">{day.title}</h2>
+                  <p className="mt-1 text-sm uppercase tracking-[0.16em] text-white/40">{day.location}</p>
+                </div>
+                <ul className="space-y-2 text-sm leading-6 text-white/70">
+                  {day.items.map((item) => (
+                    <li key={item} className="flex gap-2">
+                      <span className="shrink-0" style={{ color: VIETNAM_GOLD }}>•</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+                {day.stay && (
+                  <div className="mt-4 rounded-xl border border-white/10 bg-white/[0.04] p-3">
+                    <p className="text-[10px] uppercase tracking-[0.18em] text-white/40">Nightly Accommodation</p>
+                    <p className="mt-1 text-sm text-white/75">{day.stay}</p>
+                  </div>
+                )}
+              </article>
+            ))}
+          </section>
+        </main>
+        {showMoroccoUsefulInfo && (
+          <div className="fixed inset-0 z-50 flex items-stretch justify-center bg-black/80 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-[max(0.5rem,env(safe-area-inset-top))] backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-label="Vietnam useful information">
+            <section className="flex h-[calc(100dvh-1rem)] max-h-[calc(100dvh-1rem)] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] text-left shadow-2xl sm:h-auto sm:max-h-[82dvh]">
+              <div className="flex shrink-0 items-start justify-between gap-4 border-b border-white/10 px-4 py-3 sm:px-7 sm:py-5">
+                <div>
+                  <p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: VIETNAM_GOLD }}>Vietnam 2026</p>
+                  <h2 className="text-xl font-light text-white sm:text-2xl">Useful Information</h2>
+                </div>
+                <button type="button" onClick={() => setShowMoroccoUsefulInfo(false)} aria-label="Close Vietnam useful information" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">×</button>
+              </div>
+              <div className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain p-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-7">
+                {[
+                  ["Power", "Vietnam commonly uses 220V power with Type A, C, and F plugs."],
+                  ["Transportation", "Uber is not available in Vietnam. The equivalent ride-share app is Grab, which is fully operational across major cities such as Hanoi, Ho Chi Minh City, Da Nang, Can Tho, Hue, Nha Trang, and Vung Tau."],
+                  ["Payment", "Cards are useful in larger hotels and restaurants. Cash is still important for markets, smaller shops, taxis, and local food."],
+                  ["Local Currency", "Vietnamese dong (VND). BillTab will track VND, CAD, and USD."],
+                  ["SIM / eSIM", "Local SIM and eSIM options are widely available for Hanoi and central Vietnam."],
+                ].map(([title, text]) => (
+                  <div key={title} className="rounded-xl border border-white/10 bg-white/[0.04] p-3 sm:p-4">
+                    <p className="text-xs uppercase tracking-[0.18em] text-white/40">{title}</p>
+                    <p className="mt-2 text-sm leading-6 text-white/75">{text}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </div>
+        )}
+        {albumPopup}
+      </div>
+    );
+  }
+
   if (!isGuestConfirmed) {
-    const isPosterHeroSelection = selectedTrip === "morocco" || selectedTrip === "okinawaJapan" || selectedTrip === "taiwan";
-    const isConfirmedTripAppCard = selectedTrip === "morocco" || selectedTrip === "taiwan" || selectedTrip === "okinawaJapan";
+    const isPosterHeroSelection = selectedTrip === "morocco" || selectedTrip === "okinawaJapan" || selectedTrip === "taiwan" || selectedTrip === "vietnam";
+    const isConfirmedTripAppCard = selectedTrip === "morocco" || selectedTrip === "taiwan" || selectedTrip === "okinawaJapan" || selectedTrip === "vietnam";
     const isSplitTripDashboard = showGuestActions && (selectedTrip === "taiwan" || selectedTrip === "okinawaJapan");
-    const selectedTripAccent = selectedTrip === "taiwan" ? TAIWAN_GOLD : selectedTrip === "okinawaJapan" ? BABY_BLUE : MOROCCO_BROWN;
-    const selectedTripDashboardLabel = selectedTrip === "taiwan" ? "Taiwan 2026" : selectedTrip === "okinawaJapan" ? "Okinawa Japan 2026" : "Morocco · G-Adventures";
+    const selectedTripAccent = selectedTrip === "taiwan" ? TAIWAN_GOLD : selectedTrip === "okinawaJapan" ? BABY_BLUE : selectedTrip === "vietnam" ? VIETNAM_GOLD : MOROCCO_BROWN;
+    const selectedTripDashboardLabel = selectedTrip === "taiwan" ? "Taiwan 2026" : selectedTrip === "okinawaJapan" ? "Okinawa Japan 2026" : selectedTrip === "vietnam" ? "Vietnam 2026" : "Morocco · G-Adventures";
     const okinawaDashboardDates: Record<string, string> = {
       "Xenia & David & Naomi (3)": "Nov 27 - Dec 6 2026",
       "Dave & Christina & Xixi (2)": "Nov 27 - Dec 6 2026",
@@ -1876,10 +2109,10 @@ export default function TravelSite() {
       "Mei & Emilia (8)": "Nov 29 - Dec 6 2026",
       Guest: "Nov 25 - Dec 6 2026",
     };
-    const selectedTripDashboardDate = selectedTrip === "taiwan" ? "Nov 21 - Dec 21 2026" : selectedTrip === "okinawaJapan" ? okinawaDashboardDates[guestName] || "Nov 25 - Dec 6 2026" : "Sept 4 - Sept 16 2026";
+    const selectedTripDashboardDate = selectedTrip === "taiwan" ? "Nov 21 - Dec 21 2026" : selectedTrip === "okinawaJapan" ? okinawaDashboardDates[guestName] || "Nov 25 - Dec 6 2026" : selectedTrip === "vietnam" ? "Nov 12 - Nov 21 2026" : "Sept 4 - Sept 16 2026";
     return (
       <div className="flex min-h-screen items-center justify-center bg-black px-6 text-white">
-        <div className={`w-full max-w-md rounded-[2rem] border border-white/10 text-center backdrop-blur-xl ${isConfirmedTripAppCard ? "flex h-[min(760px,calc(100dvh-2rem))] flex-col overflow-hidden" : ""} ${isPosterHeroSelection ? `overflow-hidden ${selectedTrip === "taiwan" || selectedTrip === "morocco" ? "bg-black" : "bg-[#020B18]"} shadow-[0_0_44px_rgba(158,220,255,0.16)]` : "bg-white/[0.04] p-8 shadow-[0_0_40px_rgba(255,255,255,0.06)]"}`}>
+        <div className={`w-full max-w-md rounded-[2rem] border border-white/10 text-center backdrop-blur-xl ${isConfirmedTripAppCard ? "flex h-[min(760px,calc(100dvh-2rem))] flex-col overflow-hidden" : ""} ${isPosterHeroSelection ? `overflow-hidden ${selectedTrip === "taiwan" || selectedTrip === "morocco" || selectedTrip === "vietnam" ? "bg-black" : "bg-[#020B18]"} shadow-[0_0_44px_rgba(158,220,255,0.16)]` : "bg-white/[0.04] p-8 shadow-[0_0_40px_rgba(255,255,255,0.06)]"}`}>
           {!isSplitTripDashboard && <p className={isPosterHeroSelection ? "shrink-0 px-8 pt-8 pb-3 text-xs uppercase tracking-[0.35em] text-white/75" : "mb-3 text-xs uppercase tracking-[0.35em] text-white/70"}>Private Group Event</p>}
           {!selectedTrip ? (
             <>
@@ -1903,7 +2136,7 @@ export default function TravelSite() {
               {mainPageView === "active" && (
                 <div className="space-y-3">
                   <TripButton location="Morocco" date="Sept 4 - Sept 16 2026" status="Confirmed" onClick={() => openTripPage("morocco")} />
-                  <TripButton location="Vietnam" date="Nov 12 - Nov 21 2026" status="Planning" onClick={() => openTripPage("vietnam")} />
+                  <TripButton location="Vietnam" date="Nov 12 - Nov 21 2026" status="Confirmed" onClick={() => openTripPage("vietnam")} />
                   <TripButton location="Taiwan" date="Nov 21 - Dec 21 2026" status="Confirmed" onClick={() => openTripPage("taiwan")} />
                   <TripButton location="Okinawa Japan" date="Nov 25 - Dec 6 2026" status="Confirmed" onClick={() => openTripPage("okinawaJapan")} />
                   <div className="pt-3 space-y-3">
@@ -1926,6 +2159,7 @@ export default function TravelSite() {
                   <TripButton location="Houston & Galveston TX USA" subtitle="FRC & Disney Cruise" date="April 28 - May 7 2027" status="Dreaming" onClick={() => openTripPage("houston")} />
                   <TripButton location="Azores Portugal" date="Sept 2027" status="Dreaming" onClick={() => openTripPage("azoresPortugal")} />
                   <TripButton location="Similan & Phuket Thailand" subtitle="Scuba Diving Liveaboard" date="Mar 2028" status="Dreaming" onClick={() => openTripPage("similanThailand")} />
+                  <TripButton location="Central Vietnam" date="Mar 2028" status="Dreaming" onClick={() => openTripPage("centralVietnam")} />
                   <TripButton location="Orlando FL USA" subtitle="Disney World" date="Nov 2028" status="Dreaming" onClick={() => openTripPage("disneyWorld")} />
                   <TripButton location="The 5 Stans & Silk Road" date="TBD" status="Dreaming" onClick={() => openTripPage("fiveStans")} />
                 </div>
@@ -2134,36 +2368,160 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "vietnam" ? (
             <>
-              <button type="button" onClick={goToMainPage} className="mb-5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
-              <TripPanelTitle location="Vietnam" date="Nov 12 - Nov 21 2026" description="A Vietnam adventure in the early planning stage, with cities, food, culture, and landscapes still waiting to take shape." />
-              <div className="space-y-3">
-                <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
-                <button type="button" onClick={() => setShowVietnamNameInput(true)} className="w-full rounded-2xl border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#FF8FC7] transition hover:border-[#FF8FC7]/60 hover:bg-[#FF8FC7]/15">I am interested</button>
-              </div>
-
-              {showVietnamNameInput && (
-                <form onSubmit={(event) => { event.preventDefault(); addVietnamInterestedName(); }} className="mt-5 rounded-3xl border border-white/10 bg-white/[0.03] p-4 text-left">
-                  <label className="mb-2 block text-xs uppercase tracking-[0.22em] text-white/45" htmlFor="vietnam-interest-name">Name</label>
-                  <input id="vietnam-interest-name" value={vietnamNameInput} onChange={(event) => setVietnamNameInput(event.target.value)} autoFocus className="mb-3 w-full rounded-2xl border border-white/15 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-white/40" placeholder="Enter your name" />
-                  <button type="submit" className="w-full rounded-2xl border border-[#72E49A]/35 bg-[#72E49A]/10 px-4 py-3 text-sm uppercase tracking-[0.18em] text-[#72E49A] transition hover:bg-[#72E49A]/15">Add to list</button>
-                </form>
-              )}
-
-              <section className="mt-6 rounded-3xl border border-white/10 bg-black/20 p-5 text-left">
-                <div className="mb-4 flex items-center justify-between gap-3">
-                  <h2 className="text-sm uppercase tracking-[0.24em] text-white/55">Who signed up</h2>
-                  <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-white/45">{vietnamInterestedNames.length}</span>
-                </div>
-                {vietnamInterestedNames.length ? (
-                  <div className="space-y-2">
-                    {vietnamInterestedNames.map((name) => (
-                      <p key={name} className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/75">{name}</p>
-                    ))}
+              {guestName ? (
+                <section className="relative flex min-h-0 flex-1 flex-col overflow-hidden bg-black px-5 pb-5 text-left">
+                  <img src="/vietnam-2026-poster.png" alt="" aria-hidden="true" className="pointer-events-none absolute inset-0 h-full w-full scale-110 object-cover opacity-30 blur-xl" />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/82 via-black/80 to-black/95" />
+                  <div className="relative z-10 mb-5 grid grid-cols-2 gap-2">
+                    <button type="button" onClick={() => { setGuestName(""); setShowGuestActions(false); setBrowserRoute(buildTripUrl("vietnam")); }} className="rounded-full border border-white/20 bg-white/[0.06] px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-white/65 transition hover:border-white/35 hover:bg-white/[0.1]">Back</button>
+                    <button type="button" onClick={goToMainPage} className="rounded-full border border-white/20 bg-white/[0.06] px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-white/65 transition hover:border-white/35 hover:bg-white/[0.1]">Main Page</button>
                   </div>
-                ) : (
-                  <p className="rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm text-white/35">No names added yet.</p>
-                )}
-              </section>
+                  <div className="relative z-10 flex min-h-0 flex-1 flex-col justify-center space-y-5 overflow-y-auto">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.28em]" style={{ color: VIETNAM_GOLD }}>Vietnam 2026</p>
+                      <h2 className="mt-2 text-3xl font-light tracking-wide text-white">Hello {guestName}</h2>
+                      <p className="mt-2 text-sm text-white/45">Nov 12 - Nov 21 2026</p>
+                    </div>
+                    {guestName === "Guest" ? (
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        <button type="button" onClick={() => openTripView("itinerary")} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#F6C65B]/35 bg-[#F6C65B]/10 px-4 py-3 text-center transition hover:border-[#F6C65B]/60 hover:bg-[#F6C65B]/15"><span className="text-xl">🗓️</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#F6C65B]">Trip Itinerary</span></button>
+                        <button type="button" onClick={() => openAlbumPopup(`/memory-maker/vietnamNovember?returnChapter=vietnam&guest=${encodeURIComponent("Guest")}`)} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#F6C65B]/35 bg-[#F6C65B]/10 px-4 py-3 text-center transition hover:border-[#F6C65B]/60 hover:bg-[#F6C65B]/15"><span className="text-xl">🖼️</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#F6C65B]">View Album</span></button>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          <button type="button" onClick={() => openTripView("itinerary")} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#F6C65B]/35 bg-[#F6C65B]/10 px-4 py-3 text-center transition hover:border-[#F6C65B]/60 hover:bg-[#F6C65B]/15 sm:col-span-2"><span className="text-xl">🗓️</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#F6C65B]">Trip Itinerary</span></button>
+                          <button type="button" onClick={() => setShowMoroccoChecklist(true)} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#F6C65B]/35 bg-[#F6C65B]/10 px-4 py-3 text-center transition hover:border-[#F6C65B]/60 hover:bg-[#F6C65B]/15"><span className="text-xl">🎒</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#F6C65B]">Packing List</span></button>
+                          <button type="button" onClick={() => openMoroccoCostTracker("vietnam")} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#F6C65B]/35 bg-[#F6C65B]/10 px-4 py-3 text-center transition hover:border-[#F6C65B]/60 hover:bg-[#F6C65B]/15"><span className="text-xl">💰</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#F6C65B]">BillTab</span></button>
+                        </div>
+                        <MemoryMaker albumKey="vietnamNovember" albumName="Vietnam" accentColor={VIETNAM_GOLD} guestName={guestName} returnChapter="vietnam" onViewAlbum={openAlbumPopup} compact />
+                      </>
+                    )}
+                  </div>
+                </section>
+              ) : (
+                <>
+                  <div className="relative z-10 grid shrink-0 grid-cols-2 gap-2 px-5 pb-3">
+                    <button type="button" onClick={goToMainPage} className="rounded-full border border-white/20 bg-white/[0.06] px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-white/65 transition hover:border-white/35 hover:bg-white/[0.1]">Main Page</button>
+                    <button type="button" onClick={() => setShowMoroccoUsefulInfo(true)} className="rounded-full border border-[#F6C65B]/35 bg-[#F6C65B]/10 px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-[#F6C65B] transition hover:border-[#F6C65B]/60 hover:bg-[#F6C65B]/15">Useful Info</button>
+                  </div>
+                  <div className="relative min-h-0 flex-1 overflow-hidden bg-black">
+                    <img src="/vietnam-2026-poster.png" alt="Vietnam 2026 travel poster" className="absolute inset-x-0 -top-16 -bottom-4 h-auto w-full object-cover object-center" />
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/75 to-transparent px-4 pb-4 pt-24">
+                      <div className="grid grid-cols-2 gap-2">
+                        <select
+                          defaultValue=""
+                          onChange={(event) => {
+                            const selectedGuest = event.target.value;
+                            if (!selectedGuest) return;
+                            openTripDashboard(selectedGuest);
+                          }}
+                          className="min-w-0 rounded-2xl border border-white/25 bg-black/75 px-4 py-3 text-sm font-light tracking-wide text-white outline-none backdrop-blur-md transition focus:border-[#F6C65B]/70"
+                        >
+                          <option value="" disabled>Select your party</option>
+                          {vietnamConfirmedParties.map((name) => <option key={name} value={name}>{name}</option>)}
+                        </select>
+                        <button type="button" onClick={() => openTripDashboard("Guest")} className="rounded-2xl border border-[#F6C65B]/40 bg-black/75 px-4 py-3 text-sm font-light uppercase tracking-[0.16em] text-[#F6C65B] outline-none backdrop-blur-md transition hover:border-[#F6C65B]/70 hover:bg-[#F6C65B]/10">Guest</button>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+              {showMoroccoBudget && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Vietnam trip budget">
+                  <section className="w-full max-w-lg rounded-2xl border border-white/15 bg-[#111] p-6 text-left shadow-2xl">
+                    <div className="mb-5 flex items-start justify-between gap-5 border-b border-white/10 pb-5">
+                      <div>
+                        <p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: VIETNAM_GOLD }}>Vietnam 2026</p>
+                        <h2 className="text-2xl font-light text-white">Trip Budget</h2>
+                      </div>
+                      <button type="button" onClick={() => setShowMoroccoBudget(false)} aria-label="Close Vietnam budget" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">×</button>
+                    </div>
+                    <p className="rounded-xl border border-white/10 bg-white/[0.04] p-4 text-sm leading-6 text-white/70">Budget details are coming soon.</p>
+                  </section>
+                </div>
+              )}
+              {showMoroccoUsefulInfo && (
+                <div className="fixed inset-0 z-50 flex items-stretch justify-center bg-black/80 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-[max(0.5rem,env(safe-area-inset-top))] backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-label="Vietnam useful information">
+                  <section className="flex h-[calc(100dvh-1rem)] max-h-[calc(100dvh-1rem)] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] text-left shadow-2xl sm:h-auto sm:max-h-[82dvh]">
+                    <div className="flex shrink-0 items-start justify-between gap-4 border-b border-white/10 px-4 py-3 sm:px-7 sm:py-5">
+                      <div>
+                        <p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: VIETNAM_GOLD }}>Vietnam 2026</p>
+                        <h2 className="text-xl font-light text-white sm:text-2xl">Useful Information</h2>
+                      </div>
+                      <button type="button" onClick={() => setShowMoroccoUsefulInfo(false)} aria-label="Close Vietnam useful information" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">×</button>
+                    </div>
+                    <div className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain p-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-7">
+                      {[
+                        ["Power", "Vietnam commonly uses 220V power with Type A, C, and F plugs."],
+                        ["Transportation", "Uber is not available in Vietnam. The equivalent ride-share app is Grab, which is fully operational across major cities such as Hanoi, Ho Chi Minh City, Da Nang, Can Tho, Hue, Nha Trang, and Vung Tau."],
+                        ["Payment", "Cards are useful in larger hotels and restaurants. Cash is still important for markets, smaller shops, taxis, and local food."],
+                        ["Local Currency", "Vietnamese dong (VND). BillTab will track VND, CAD, and USD."],
+                        ["SIM / eSIM", "Local SIM and eSIM options are widely available for Hanoi and central Vietnam."],
+                      ].map(([title, text]) => (
+                        <div key={title} className="rounded-xl border border-white/10 bg-white/[0.04] p-3 sm:p-4">
+                          <p className="text-xs uppercase tracking-[0.18em] text-white/40">{title}</p>
+                          <p className="mt-2 text-sm leading-6 text-white/75">{text}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                </div>
+              )}
+              {showMoroccoMap && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Vietnam route map">
+                  <section className="flex max-h-[92vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] shadow-2xl">
+                    <div className="flex items-start justify-between gap-5 border-b border-white/10 px-5 py-4 sm:px-7">
+                      <div>
+                        <p className="mb-1 text-xs uppercase tracking-[0.24em]" style={{ color: VIETNAM_GOLD }}>Vietnam 2026</p>
+                        <h2 className="text-xl font-light text-white">Map View</h2>
+                      </div>
+                      <button type="button" onClick={() => setShowMoroccoMap(false)} aria-label="Close Vietnam map" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">×</button>
+                    </div>
+                    <div className="min-h-0 space-y-3 overflow-y-auto p-5 sm:p-7">
+                      {["Hanoi", "Ha Long Bay", "Da Nang", "Hoi An"].map((place, index) => (
+                        <div key={place} className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3">
+                          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#F6C65B]/40 text-xs text-[#F6C65B]">{index + 1}</span>
+                          <span className="text-sm text-white/75">{place}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                </div>
+              )}
+              {showMoroccoChecklist && guestName && guestName !== "Guest" && (
+                <div className="fixed inset-0 z-50 flex items-stretch justify-center bg-black/80 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-[max(0.5rem,env(safe-area-inset-top))] backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-label={`${guestName} Vietnam packing checklist`}>
+                  <section className="flex h-[calc(100dvh-1rem)] max-h-[calc(100dvh-1rem)] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] text-left shadow-2xl sm:h-[88dvh] sm:max-h-[760px]">
+                    <div className="flex shrink-0 items-start justify-between gap-4 border-b border-white/10 px-4 py-3 sm:px-7 sm:py-5">
+                      <div>
+                        <p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: VIETNAM_GOLD }}>Vietnam 2026</p>
+                        <h2 className="text-xl font-light text-white sm:text-2xl">Packing List</h2>
+                        <p className="mt-1 text-xs text-white/45 sm:mt-2 sm:text-sm">{guestName}</p>
+                      </div>
+                      <button type="button" onClick={() => setShowMoroccoChecklist(false)} aria-label="Close Vietnam checklist" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">×</button>
+                    </div>
+                    <div className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain p-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:space-y-4 sm:p-7">
+                      {getPackingChecklist(guestName).sections.filter((section) => ["Essentials", "Clothes", "Personal"].includes(section.title)).map((section) => (
+                        <article key={section.title} className="rounded-xl border border-white/10 bg-white/[0.04] p-3 sm:p-4">
+                          <h3 className="mb-3 text-base font-light text-white sm:mb-4 sm:text-lg">{section.title}</h3>
+                          <div className="grid gap-2">
+                            {section.items.map((item) => {
+                              const key = `Vietnam-${guestName}-${section.title}-${item}`;
+                              const checked = Boolean(checkedPackingItems[key]);
+                              return (
+                                <button key={key} type="button" onClick={() => togglePackingItem(key, checked)} className={`flex items-center gap-3 rounded-xl border px-3 py-2 text-left text-sm transition sm:py-2.5 ${checked ? "border-[#F6C65B]/55 bg-[#F6C65B]/10 text-white" : "border-white/10 bg-black/20 text-white/70 hover:border-white/25"}`}>
+                                  <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-xs ${checked ? "border-[#F6C65B] bg-[#F6C65B] text-black" : "border-white/25 text-transparent"}`}>✓</span>
+                                  <span className={checked ? "line-through decoration-[#F6C65B]/70" : ""}>{item}</span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </article>
+                      ))}
+                    </div>
+                  </section>
+                </div>
+              )}
             </>
           ) : selectedTrip === "skiMyoko" ? (
             <>
@@ -2373,6 +2731,42 @@ export default function TravelSite() {
                 {similanInterestedNames.length ? (
                   <div className="space-y-2">
                     {similanInterestedNames.map((name) => (
+                      <p key={name} className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/75">{name}</p>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm text-white/35">No names added yet.</p>
+                )}
+              </section>
+            </>
+          ) : selectedTrip === "centralVietnam" ? (
+            <>
+              <div className="mb-5 grid grid-cols-2 gap-2">
+                <button type="button" onClick={goToFutureTrips} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
+                <button type="button" onClick={goToMainPage} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
+              </div>
+              <TripPanelTitle location="Central Vietnam" date="Mar 2028" description="A 6-day family-oriented Central Vietnam trip centered on Da Nang, Ba Na Hills, Marble Mountains, My Khe Beach, Hoi An Ancient City, Coconut Forest basket boats, and VinWonders Hoi An, with a stay idea around Vinpearl Resort & Golf Nam Hoi An." />
+              <div className="space-y-3">
+                <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
+                <button type="button" onClick={() => setShowCentralVietnamNameInput(true)} className="w-full rounded-2xl border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#FF8FC7] transition hover:border-[#FF8FC7]/60 hover:bg-[#FF8FC7]/15">I am interested</button>
+              </div>
+
+              {showCentralVietnamNameInput && (
+                <form onSubmit={(event) => { event.preventDefault(); addCentralVietnamInterestedName(); }} className="mt-5 rounded-3xl border border-white/10 bg-white/[0.03] p-4 text-left">
+                  <label className="mb-2 block text-xs uppercase tracking-[0.22em] text-white/45" htmlFor="central-vietnam-interest-name">Name</label>
+                  <input id="central-vietnam-interest-name" value={centralVietnamNameInput} onChange={(event) => setCentralVietnamNameInput(event.target.value)} autoFocus className="mb-3 w-full rounded-2xl border border-white/15 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-white/40" placeholder="Enter your name" />
+                  <button type="submit" className="w-full rounded-2xl border border-[#72E49A]/35 bg-[#72E49A]/10 px-4 py-3 text-sm uppercase tracking-[0.18em] text-[#72E49A] transition hover:bg-[#72E49A]/15">Add to list</button>
+                </form>
+              )}
+
+              <section className="mt-6 rounded-3xl border border-white/10 bg-black/20 p-5 text-left">
+                <div className="mb-4 flex items-center justify-between gap-3">
+                  <h2 className="text-sm uppercase tracking-[0.24em] text-white/55">Who signed up</h2>
+                  <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-white/45">{centralVietnamInterestedNames.length}</span>
+                </div>
+                {centralVietnamInterestedNames.length ? (
+                  <div className="space-y-2">
+                    {centralVietnamInterestedNames.map((name) => (
                       <p key={name} className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/75">{name}</p>
                     ))}
                   </div>
