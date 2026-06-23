@@ -531,6 +531,7 @@ export default function TravelSite() {
   const [showMoroccoUsefulInfo, setShowMoroccoUsefulInfo] = useState(false);
   const [showMoroccoMap, setShowMoroccoMap] = useState(false);
   const [showVietnamItinerary, setShowVietnamItinerary] = useState(false);
+  const [showVietnamRouteMap, setShowVietnamRouteMap] = useState(false);
   const [showTaipeiMrtMap, setShowTaipeiMrtMap] = useState(false);
   const [showTaipeiFoodieList, setShowTaipeiFoodieList] = useState(false);
   const [taiwanDashboardAlbumMode, setTaiwanDashboardAlbumMode] = useState<"" | "upload" | "view">("");
@@ -880,6 +881,7 @@ export default function TravelSite() {
     setShowMoroccoItinerary(false);
     setShowMoroccoChecklist(false);
     setShowVietnamItinerary(false);
+    setShowVietnamRouteMap(false);
     setSelectedTrip(trip);
     setBrowserRoute(buildTripUrl(trip));
   };
@@ -892,6 +894,7 @@ export default function TravelSite() {
     setShowMoroccoItinerary(false);
     setShowMoroccoChecklist(false);
     setShowVietnamItinerary(false);
+    setShowVietnamRouteMap(false);
     setBrowserRoute(buildTripUrl(selectedTrip, { guest }), replace);
   };
 
@@ -912,6 +915,7 @@ export default function TravelSite() {
     setShowGuestActions(true);
     setShowMoroccoItinerary(false);
     setShowVietnamItinerary(false);
+    setShowVietnamRouteMap(false);
     setBrowserRoute(buildTripUrl(selectedTrip, { guest: guestName || "Guest", view: nextView }), replace);
   };
 
@@ -938,6 +942,7 @@ export default function TravelSite() {
     setShowMoroccoMap(false);
     setShowMoroccoChecklist(false);
     setShowVietnamItinerary(false);
+    setShowVietnamRouteMap(false);
     setTaiwanDashboardAlbumMode("");
     setAlbumPopupUrl("");
     setBrowserRoute("/");
@@ -980,6 +985,7 @@ export default function TravelSite() {
     setShowMoroccoMap(false);
     setShowMoroccoChecklist(false);
     setShowVietnamItinerary(false);
+    setShowVietnamRouteMap(false);
 
     if (tripFromUrl) {
       setSelectedTrip(tripFromUrl);
@@ -2034,7 +2040,7 @@ export default function TravelSite() {
             <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:text-2xl">💵</p><p className="text-[10px] text-gray-400 md:text-xs">Currency</p><p className="mt-1 text-xs font-medium md:text-sm">VND ₫</p><p className="mt-1 text-xs text-gray-400">BillTab tracks VND</p></div>
             <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:text-2xl">🌤️</p><p className="text-[10px] text-gray-400 md:text-xs">November Temp</p><p className="mt-1 text-xs font-medium md:text-sm">22-31°C</p><p className="mt-1 text-[9px] text-gray-500">Live forecast once trip begins</p></div>
             <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:text-2xl">🕘</p><p className="text-[10px] text-gray-400 md:text-xs">Local Time</p><p className="mt-1 text-xs font-medium md:text-sm">{vietnamLocalTime}</p><p className="mt-1 text-[9px] text-gray-500">Vietnam · Hanoi / HCMC</p></div>
-            <button type="button" onClick={() => setShowMoroccoUsefulInfo(true)} className="rounded-2xl border border-[#F6C65B]/30 bg-[#F6C65B]/10 p-3 text-center transition hover:border-[#F6C65B]/60 hover:bg-[#F6C65B]/15 md:p-4"><p className="mb-1 text-xl md:text-2xl">ℹ️</p><p className="text-[10px] text-[#F6C65B]/75 md:text-xs">Useful Info</p><p className="mt-1 text-xs font-medium text-[#F6C65B] md:text-sm">Vietnam basics</p><p className="mt-1 text-[9px] text-white/40">Power, Grab, payment</p></button>
+            <button type="button" onClick={() => setShowVietnamRouteMap(true)} className="rounded-2xl border border-[#F6C65B]/30 bg-[#F6C65B]/10 p-3 text-center transition hover:border-[#F6C65B]/60 hover:bg-[#F6C65B]/15 md:p-4"><p className="mb-1 text-xl md:text-2xl">🗺️</p><p className="text-[10px] text-[#F6C65B]/75 md:text-xs">Map Route</p><p className="mt-1 text-xs font-medium text-[#F6C65B] md:text-sm">North & South</p><p className="mt-1 text-[9px] text-white/40">Route overview</p></button>
           </section>
           <section className="space-y-5">
             {vietnamItineraryDays.map((day) => (
@@ -2062,6 +2068,22 @@ export default function TravelSite() {
             ))}
           </section>
         </main>
+        {showVietnamRouteMap && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-3 backdrop-blur-sm sm:p-4" role="dialog" aria-modal="true" aria-label="Vietnam route map">
+            <section className="flex max-h-[92dvh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] shadow-2xl">
+              <div className="flex shrink-0 items-start justify-between gap-4 border-b border-white/10 px-4 py-3 sm:px-6 sm:py-4">
+                <div>
+                  <p className="mb-1 text-xs uppercase tracking-[0.24em]" style={{ color: VIETNAM_GOLD }}>Vietnam 2026</p>
+                  <h2 className="text-xl font-light text-white sm:text-2xl">Map Route</h2>
+                </div>
+                <button type="button" onClick={() => setShowVietnamRouteMap(false)} aria-label="Close Vietnam route map" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">×</button>
+              </div>
+              <div className="min-h-0 flex-1 overflow-auto bg-white p-2 sm:p-4">
+                <img src="/nsviet.png" alt="Vietnam north and south trip route map" className="mx-auto h-auto max-h-[78dvh] w-auto max-w-full object-contain" />
+              </div>
+            </section>
+          </div>
+        )}
         {showMoroccoUsefulInfo && (
           <div className="fixed inset-0 z-50 flex items-stretch justify-center bg-black/80 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-[max(0.5rem,env(safe-area-inset-top))] backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-label="Vietnam useful information">
             <section className="flex h-[calc(100dvh-1rem)] max-h-[calc(100dvh-1rem)] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] text-left shadow-2xl sm:h-auto sm:max-h-[82dvh]">
