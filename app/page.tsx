@@ -146,16 +146,24 @@ async function compressPhoto(file: File) {
   }
 }
 
+function formatTripDateLine(date: string, duration?: string) {
+  if (!duration) return date;
+  if (date.toLowerCase() === "tbd") return `${duration}, dates TBD`;
+  return `${duration} in ${date}`;
+}
+
 function TripButton({
   location,
   subtitle,
   date,
+  duration,
   status,
   onClick,
 }: {
   location: string;
   subtitle?: string;
   date: string;
+  duration?: string;
   status: TripStatus;
   onClick: () => void;
 }) {
@@ -164,13 +172,14 @@ function TripButton({
     Confirmed: "border-[#72E49A]/35 bg-[#72E49A]/10 text-[#72E49A]",
     Dreaming: "border-[#FF8FC7]/35 bg-[#FF8FC7]/10 text-[#FF8FC7]",
   };
+  const dateLine = formatTripDateLine(date, duration);
 
   return (
     <button type="button" onClick={onClick} className="flex w-full items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-left text-sm font-light tracking-wide text-white/75 transition hover:border-white/30 hover:bg-white/[0.05]">
       <span className="min-w-0">
         <span className="block">{location}</span>
         {subtitle && <span className="mt-1 block text-xs text-white/60">{subtitle}</span>}
-        <span className="mt-1 block text-xs text-white/45">{date}</span>
+        <span className="mt-1 block text-xs text-white/45">{dateLine}</span>
       </span>
       <span className={`shrink-0 rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.18em] ${statusStyles[status]}`}>{status}</span>
     </button>
@@ -203,19 +212,23 @@ function TripPanelTitle({
   location,
   subtitle,
   date,
+  duration,
   description,
 }: {
   location: string;
   subtitle?: string;
   date: string;
+  duration?: string;
   description?: string;
 }) {
+  const dateLine = formatTripDateLine(date, duration);
+
   return (
     <div className="mb-5">
       <h1 className="text-3xl font-light tracking-wide">
         <span className="block">{location}</span>
         {subtitle && <span className="mt-2 block text-base text-white/60">{subtitle}</span>}
-        <span className="mt-2 block text-base text-white/45">{date}</span>
+        <span className="mt-2 block text-base text-white/45">{dateLine}</span>
       </h1>
       {description && <p className="mt-4 text-sm leading-6 text-white/55">{description}</p>}
     </div>
@@ -851,36 +864,44 @@ export default function TravelSite() {
     if (guest.startsWith("Jenn")) {
       return [
         {
-          category: "Accommodations",
+          category: "Accommodations (10 nights)",
           detail: [
-            "Peony Cruise Deluxe Balcony Cabin for Jenn's family, 2 adults + 2 kids: $552 USD (approx. $756.24 CAD).",
-            "Hanoi stay Nov 12-13 at Heart of Hoan Kiem Homestay Airbnb (reserved): Total = $258.30 CAD, Half = $129.15 CAD.",
-            "Ninh Binh stay Nov 15-16 at Xuan Son Lakeside Bungalow: Total = $400 CAD, Half = $200 CAD.",
-            "Ho Chi Minh City Airbnb: TBD.",
+            "Nov 12-13 Hanoi stay at Heart of Hoan Kiem Homestay Airbnb (reserved): Total = $258.30 CAD, Half = $129.15 CAD.",
+            "Nov 14 Peony Cruise Deluxe Balcony Cabin for Jenn's family, 2 adults + 2 kids: $552 USD (approx. $756.24 CAD).",
+            "Nov 15-16 Ninh Binh stay at Xuan Son Lakeside Bungalow: Total = $400 CAD, Half = $200 CAD.",
+            "Nov 17-20 Ho Chi Minh City Airbnb: TBD.",
           ],
           amountCad: 1085.39,
         },
         {
-          category: "Flights",
+          category: "Flights (3 flights)",
           detail: [
             "Nov 12 EVA Air Taipei to Hanoi: $285 CAD x 4 people = $1,140 CAD.",
-            "Nov 16 VietJet Hanoi to Ho Chi Minh City: $84 CAD x 4 people + $16 CAD checked bag = $352 CAD.",
+            "Nov 17 VietJet Hanoi to Ho Chi Minh City: $84 CAD x 4 people + $16 CAD checked bag = $352 CAD.",
             "Nov 21 VietJet Ho Chi Minh City to Kaohsiung: $180 CAD x 4 people + $45 CAD checked bag = $765 CAD.",
           ],
           amountCad: 2257.00,
         },
         {
           category: "Tours & Attraction Tickets",
-          detail: "Water Puppet Show, city sights, Ben Tre Mekong Tour, Cu Chi Tunnels, and other admission tickets.",
+          detail: [
+            "Nov 13 Hanoi city sights and Water Puppet Show: TBD.",
+            "Nov 16 Ninh Binh activities: TBD.",
+            "Nov 18 Ho Chi Minh City sights: TBD.",
+            "Nov 19 Ben Tre Mekong Tour: TBD.",
+            "Nov 20 Cu Chi Tunnels half-day tour: TBD.",
+          ],
           amountCad: null,
         },
         {
           category: "Transfers",
           detail: [
             "Nov 12 7-seater van from Hanoi airport to Airbnb: Total = 450,000 VND (approx. $24 CAD), Half = approx. $12 CAD.",
-            "Remaining shared transfers: TBD.",
+            "Nov 14-15 cruise transfers between Hanoi, Tuan Chau Marina, and Ninh Binh: Total = $240 USD (approx. $328.80 CAD), Jenn's share 4/7 = approx. $187.89 CAD.",
+            "Nov 17 Ninh Binh to Hanoi airport transfer: TBD.",
+            "Nov 21 Ho Chi Minh City Airbnb to airport transfer: TBD.",
           ],
-          amountCad: 12.00,
+          amountCad: 199.89,
         },
       ];
     }
@@ -888,36 +909,44 @@ export default function TravelSite() {
     if (guest.startsWith("Xenia")) {
       return [
         {
-          category: "Accommodations",
+          category: "Accommodations (10 nights)",
           detail: [
-            "Hanoi stay Nov 12-13 at Heart of Hoan Kiem Homestay Airbnb (reserved): Total = $258.30 CAD, Half = $129.15 CAD.",
-            "Ninh Binh stay Nov 15-16 at Xuan Son Lakeside Bungalow: Total = $400 CAD, Half = $200 CAD.",
-            "Peony Cruise Deluxe Balcony Cabin for Xenia's family, 2 adults + 1 kid: $385 USD (approx. $527.45 CAD).",
-            "Ho Chi Minh City Airbnb: TBD.",
+            "Nov 12-13 Hanoi stay at Heart of Hoan Kiem Homestay Airbnb (reserved): Total = $258.30 CAD, Half = $129.15 CAD.",
+            "Nov 14 Peony Cruise Deluxe Balcony Cabin for Xenia's family, 2 adults + 1 kid: $385 USD (approx. $527.45 CAD).",
+            "Nov 15-16 Ninh Binh stay at Xuan Son Lakeside Bungalow: Total = $400 CAD, Half = $200 CAD.",
+            "Nov 17-20 Ho Chi Minh City Airbnb: TBD.",
           ],
           amountCad: 856.60,
         },
         {
-          category: "Flights",
+          category: "Flights (3 flights)",
           detail: [
             "Nov 12 EVA Air Taipei to Hanoi: $285 CAD x 3 people = $855 CAD.",
-            "Nov 16 VietJet Hanoi to Ho Chi Minh City: $84 CAD x 3 people + $16 CAD checked bag = $268 CAD.",
+            "Nov 17 VietJet Hanoi to Ho Chi Minh City: $84 CAD x 3 people + $16 CAD checked bag = $268 CAD.",
             "Nov 21 VietJet Ho Chi Minh City to Kaohsiung: $180 CAD x 3 people + $45 CAD checked bag = $585 CAD.",
           ],
           amountCad: 1708.00,
         },
         {
           category: "Tours & Attraction Tickets",
-          detail: "Water Puppet Show, city sights, Ben Tre Mekong Tour, Cu Chi Tunnels, and other admission tickets.",
+          detail: [
+            "Nov 13 Hanoi city sights and Water Puppet Show: TBD.",
+            "Nov 16 Ninh Binh activities: TBD.",
+            "Nov 18 Ho Chi Minh City sights: TBD.",
+            "Nov 19 Ben Tre Mekong Tour: TBD.",
+            "Nov 20 Cu Chi Tunnels half-day tour: TBD.",
+          ],
           amountCad: null,
         },
         {
           category: "Transfers",
           detail: [
             "Nov 12 7-seater van from Hanoi airport to Airbnb: Total = 450,000 VND (approx. $24 CAD), Half = approx. $12 CAD.",
-            "Remaining shared transfers: TBD.",
+            "Nov 14-15 cruise transfers between Hanoi, Tuan Chau Marina, and Ninh Binh: Total = $240 USD (approx. $328.80 CAD), Xenia's share 3/7 = approx. $140.91 CAD.",
+            "Nov 17 Ninh Binh to Hanoi airport transfer: TBD.",
+            "Nov 21 Ho Chi Minh City Airbnb to airport transfer: TBD.",
           ],
-          amountCad: 12.00,
+          amountCad: 152.91,
         },
       ];
     }
@@ -2241,6 +2270,9 @@ export default function TravelSite() {
                 <button type="button" onClick={() => setShowMoroccoBudget(false)} aria-label="Close Vietnam party budget" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">×</button>
               </div>
               <div className="min-h-0 flex-1 space-y-3 overflow-y-scroll overscroll-contain p-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-6">
+                <div className="rounded-xl border border-[#F6C65B]/30 bg-[#F6C65B]/10 p-4 text-sm text-[#F6C65B]">
+                  Known party total = ${vietnamBudgetTotalForGuest.toLocaleString("en-CA", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} CAD
+                </div>
                 {vietnamBudgetCostsForGuest.map((cost) => (
                   <article key={cost.category} className="rounded-xl border border-white/10 bg-white/[0.04] p-3 sm:p-4">
                     <div className="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-start sm:gap-4">
@@ -2263,9 +2295,6 @@ export default function TravelSite() {
                     </div>
                   </article>
                 ))}
-                <div className="rounded-xl border border-[#F6C65B]/30 bg-[#F6C65B]/10 p-4 text-sm text-[#F6C65B]">
-                  Known party total = ${vietnamBudgetTotalForGuest.toLocaleString("en-CA", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} CAD
-                </div>
               </div>
             </section>
           </div>
@@ -2381,13 +2410,13 @@ export default function TravelSite() {
               )}
               {mainPageView === "future" && (
                 <div className="space-y-3">
-                  <TripButton location="Panama" date="March 2027" status="Dreaming" onClick={() => openTripPage("panama")} />
+                  <TripButton location="Panama" date="March 2027" duration="7 days" status="Dreaming" onClick={() => openTripPage("panama")} />
                   <TripButton location="Houston & Galveston TX USA" subtitle="FRC & Disney Cruise" date="April 28 - May 7 2027" status="Dreaming" onClick={() => openTripPage("houston")} />
-                  <TripButton location="Azores Portugal" date="Sept 2027" status="Dreaming" onClick={() => openTripPage("azoresPortugal")} />
-                  <TripButton location="Similan & Phuket Thailand" subtitle="Scuba Diving Liveaboard" date="Mar 2028" status="Dreaming" onClick={() => openTripPage("similanThailand")} />
-                  <TripButton location="Central Vietnam" date="Mar 2028" status="Dreaming" onClick={() => openTripPage("centralVietnam")} />
-                  <TripButton location="Orlando FL USA" subtitle="Disney World" date="Nov 2028" status="Dreaming" onClick={() => openTripPage("disneyWorld")} />
-                  <TripButton location="The 5 Stans & Silk Road" date="TBD" status="Dreaming" onClick={() => openTripPage("fiveStans")} />
+                  <TripButton location="Azores Portugal" date="Sept 2027" duration="9 days" status="Dreaming" onClick={() => openTripPage("azoresPortugal")} />
+                  <TripButton location="Similan & Phuket Thailand" subtitle="Scuba Diving Liveaboard" date="Mar 2028" duration="9 days" status="Dreaming" onClick={() => openTripPage("similanThailand")} />
+                  <TripButton location="Central Vietnam" date="Mar 2028" duration="6 days" status="Dreaming" onClick={() => openTripPage("centralVietnam")} />
+                  <TripButton location="Orlando FL USA" subtitle="Disney World" date="Nov 2028" duration="7 days" status="Dreaming" onClick={() => openTripPage("disneyWorld")} />
+                  <TripButton location="The 5 Stans & Silk Road" date="TBD" duration="16 days" status="Dreaming" onClick={() => openTripPage("fiveStans")} />
                 </div>
               )}
               {mainPageView === "archive" && (
@@ -2669,31 +2698,29 @@ export default function TravelSite() {
                       <button type="button" onClick={() => setShowMoroccoBudget(false)} aria-label="Close Vietnam budget" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">×</button>
                     </div>
                     <div className="min-h-0 flex-1 space-y-3 overflow-y-scroll overscroll-contain p-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-6">
-                      {vietnamDashboardBudgetCosts.map((cost) => (
-                        <article key={cost.category} className="rounded-xl border border-white/10 bg-white/[0.04] p-3 sm:p-4">
-                          <div className="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-start sm:gap-4">
-                            <div>
-                              <h3 className="text-base font-light text-white">{cost.category}</h3>
-                              {Array.isArray(cost.detail) ? (
-                                <ul className="mt-2 space-y-1.5 text-sm leading-6 text-white/60">
-                                  {cost.detail.map((detail) => (
-                                    <li key={detail} className="flex gap-2">
-                                      <span className="shrink-0 text-[#F6C65B]">•</span>
-                                      <span>{detail}</span>
-                                    </li>
-                                  ))}
-                                </ul>
-                              ) : (
-                                <p className="mt-2 text-sm leading-6 text-white/60">{cost.detail}</p>
-                              )}
-                            </div>
-                            <p className="text-sm text-[#F6C65B] sm:text-right">{cost.amountCad === null ? "TBD" : `$${cost.amountCad.toLocaleString("en-CA")} CAD`}</p>
-                          </div>
-                        </article>
-                      ))}
                       <div className="rounded-xl border border-[#F6C65B]/30 bg-[#F6C65B]/10 p-4 text-sm text-[#F6C65B]">
                         Known party total = ${vietnamDashboardBudgetTotal.toLocaleString("en-CA", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} CAD
                       </div>
+                      {vietnamDashboardBudgetCosts.map((cost) => (
+                        <article key={cost.category} className="rounded-xl border border-white/10 bg-white/[0.04] p-3 sm:p-4">
+                          <h3 className="text-base font-light text-white">{cost.category}</h3>
+                          {Array.isArray(cost.detail) ? (
+                            <ul className="mt-2 space-y-1.5 text-sm leading-6 text-white/60">
+                              {cost.detail.map((detail) => (
+                                <li key={detail} className="flex gap-2">
+                                  <span className="shrink-0 text-[#F6C65B]">•</span>
+                                  <span>{detail}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <p className="mt-2 text-sm leading-6 text-white/60">{cost.detail}</p>
+                          )}
+                          <div className="mt-4 border-t border-white/10 pt-3 text-right text-sm text-[#F6C65B]">
+                            Category total: {cost.amountCad === null ? "TBD" : `$${cost.amountCad.toLocaleString("en-CA", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} CAD`}
+                          </div>
+                        </article>
+                      ))}
                     </div>
                   </section>
                 </div>
@@ -2972,7 +2999,7 @@ export default function TravelSite() {
                 <button type="button" onClick={goToFutureTrips} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
                 <button type="button" onClick={goToMainPage} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
               </div>
-              <TripPanelTitle location="Azores Portugal" date="Sept 2027" description="An island nature trip with volcanic landscapes, ocean views, hot springs, and unhurried Atlantic days." />
+              <TripPanelTitle location="Azores Portugal" date="Sept 2027" duration="9 days" description="An island nature trip with volcanic landscapes, ocean views, hot springs, and unhurried Atlantic days." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
                 <button type="button" onClick={() => setShowAzoresNameInput(true)} className="w-full rounded-2xl border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#FF8FC7] transition hover:border-[#FF8FC7]/60 hover:bg-[#FF8FC7]/15">I am interested</button>
@@ -3008,7 +3035,7 @@ export default function TravelSite() {
                 <button type="button" onClick={goToFutureTrips} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
                 <button type="button" onClick={goToMainPage} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
               </div>
-              <TripPanelTitle location="Similan & Phuket Thailand" subtitle="Scuba Diving Liveaboard" date="Mar 2028" description="A warm-water dive adventure centered on liveaboard days, reefs, beaches, and Phuket time before or after the boat." />
+              <TripPanelTitle location="Similan & Phuket Thailand" subtitle="Scuba Diving Liveaboard" date="Mar 2028" duration="9 days" description="A warm-water dive adventure centered on liveaboard days, reefs, beaches, and Phuket time before or after the boat." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
                 <button type="button" onClick={() => setShowSimilanNameInput(true)} className="w-full rounded-2xl border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#FF8FC7] transition hover:border-[#FF8FC7]/60 hover:bg-[#FF8FC7]/15">I am interested</button>
@@ -3044,7 +3071,7 @@ export default function TravelSite() {
                 <button type="button" onClick={goToFutureTrips} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
                 <button type="button" onClick={goToMainPage} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
               </div>
-              <TripPanelTitle location="Central Vietnam" date="Mar 2028" description="A 6-day family-oriented Central Vietnam trip centered on Da Nang, Ba Na Hills, Marble Mountains, My Khe Beach, Hoi An Ancient City, Coconut Forest basket boats, and VinWonders Hoi An, with a stay idea around Vinpearl Resort & Golf Nam Hoi An." />
+              <TripPanelTitle location="Central Vietnam" date="Mar 2028" duration="6 days" description="A 6-day family-oriented Central Vietnam trip centered on Da Nang, Ba Na Hills, Marble Mountains, My Khe Beach, Hoi An Ancient City, Coconut Forest basket boats, and VinWonders Hoi An, with a stay idea around Vinpearl Resort & Golf Nam Hoi An." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
                 <button type="button" onClick={() => setShowCentralVietnamNameInput(true)} className="w-full rounded-2xl border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#FF8FC7] transition hover:border-[#FF8FC7]/60 hover:bg-[#FF8FC7]/15">I am interested</button>
@@ -3080,7 +3107,7 @@ export default function TravelSite() {
                 <button type="button" onClick={goToFutureTrips} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
                 <button type="button" onClick={goToMainPage} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
               </div>
-              <TripPanelTitle location="Orlando FL USA" subtitle="Disney World" date="Nov 2028" description="A Disney World holiday with park days, character moments, resort downtime, and room for family pacing." />
+              <TripPanelTitle location="Orlando FL USA" subtitle="Disney World" date="Nov 2028" duration="7 days" description="A Disney World holiday with park days, character moments, resort downtime, and room for family pacing." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
                 <button type="button" onClick={() => setShowDisneyWorldNameInput(true)} className="w-full rounded-2xl border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#FF8FC7] transition hover:border-[#FF8FC7]/60 hover:bg-[#FF8FC7]/15">I am interested</button>
@@ -3116,7 +3143,7 @@ export default function TravelSite() {
                 <button type="button" onClick={goToFutureTrips} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
                 <button type="button" onClick={goToMainPage} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
               </div>
-              <TripPanelTitle location="Panama" date="March 2027" description="Hiking, diving, beach, canal." />
+              <TripPanelTitle location="Panama" date="March 2027" duration="7 days" description="Hiking, diving, beach, canal." />
               <section className="mb-5 rounded-3xl border border-white/10 bg-white/[0.03] p-5 text-left">
                 <h2 className="mb-4 text-sm uppercase tracking-[0.24em] text-white/55">Trip Ideas</h2>
                 <ul className="ml-5 list-disc space-y-3 text-sm leading-6 text-white/65">
@@ -3163,7 +3190,7 @@ export default function TravelSite() {
                 <button type="button" onClick={goToFutureTrips} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
                 <button type="button" onClick={goToMainPage} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
               </div>
-              <TripPanelTitle location="The 5 Stans & Silk Road" date="TBD" description="Trace the legendary Silk Road across five nations: Kyrgyzstan, Kazakhstan, Tajikistan, Turkmenistan, Uzbekistan. This is Central Asia in full, gloriously unfiltered widescreen. Gonna be gorgeous and totally unforgettable." />
+              <TripPanelTitle location="The 5 Stans & Silk Road" date="TBD" duration="16 days" description="Trace the legendary Silk Road across five nations: Kyrgyzstan, Kazakhstan, Tajikistan, Turkmenistan, Uzbekistan. This is Central Asia in full, gloriously unfiltered widescreen. Gonna be gorgeous and totally unforgettable." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
                 <button type="button" onClick={() => setShowFiveStansNameInput(true)} className="w-full rounded-2xl border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#FF8FC7] transition hover:border-[#FF8FC7]/60 hover:bg-[#FF8FC7]/15">I am interested</button>
