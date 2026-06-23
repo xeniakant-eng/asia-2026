@@ -673,6 +673,8 @@ export default function TravelSite() {
   const [usdToJpy, setUsdToJpy] = useState("150");
   const [usdToTwd, setUsdToTwd] = useState("32");
   const [usdToMad, setUsdToMad] = useState("10");
+  const [cadToMad, setCadToMad] = useState("7.35");
+  const [cadToVnd, setCadToVnd] = useState("19000");
   const [selectedTimelineSectionId, setSelectedTimelineSectionId] = useState(1);
 
   const septOctGuestOptions = [
@@ -1315,15 +1317,23 @@ export default function TravelSite() {
   useEffect(() => {
     async function fetchRates() {
       try {
-        const response = await fetch("https://open.er-api.com/v6/latest/USD");
-        const data = await response.json();
-        if (data?.rates?.JPY) setUsdToJpy(Math.round(data.rates.JPY).toString());
-        if (data?.rates?.TWD) setUsdToTwd(Math.round(data.rates.TWD).toString());
-        if (data?.rates?.MAD) setUsdToMad(Number(data.rates.MAD).toFixed(2));
+        const [usdResponse, cadResponse] = await Promise.all([
+          fetch("https://open.er-api.com/v6/latest/USD"),
+          fetch("https://open.er-api.com/v6/latest/CAD"),
+        ]);
+        const usdData = await usdResponse.json();
+        const cadData = await cadResponse.json();
+        if (usdData?.rates?.JPY) setUsdToJpy(Math.round(usdData.rates.JPY).toString());
+        if (usdData?.rates?.TWD) setUsdToTwd(Math.round(usdData.rates.TWD).toString());
+        if (usdData?.rates?.MAD) setUsdToMad(Number(usdData.rates.MAD).toFixed(2));
+        if (cadData?.rates?.MAD) setCadToMad(Number(cadData.rates.MAD).toFixed(2));
+        if (cadData?.rates?.VND) setCadToVnd(Math.round(cadData.rates.VND).toLocaleString("en-CA"));
       } catch {
         setUsdToJpy("150");
         setUsdToTwd("32");
         setUsdToMad("10");
+        setCadToMad("7.35");
+        setCadToVnd("19000");
       }
     }
     fetchRates();
@@ -2088,7 +2098,7 @@ export default function TravelSite() {
           <p className="mb-3 text-sm uppercase tracking-[0.35em]" style={{ color: MOROCCO_BROWN }}>Morocco · G-Adventures</p>
           <h1 className="mb-6 text-4xl font-light tracking-wide md:text-6xl">Trip Itinerary</h1>
           <section className="mb-10 grid grid-cols-2 gap-3 md:grid-cols-4">
-            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:text-2xl">💵</p><p className="text-[10px] text-gray-400 md:text-xs">Currency</p><p className="mt-1 text-xs font-medium md:text-sm">MAD د.م.</p><p className="mt-1 text-xs text-gray-400">1 USD ≈ {usdToMad} MAD</p></div>
+            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:text-2xl">💵</p><p className="text-[10px] text-gray-400 md:text-xs">Currency</p><p className="mt-1 text-xs font-medium md:text-sm">1 CAD ≈ {cadToMad} MAD</p><p className="mt-1 text-xs text-gray-400">Live exchange rate</p></div>
             <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:text-2xl">🌤️</p><p className="text-[10px] text-gray-400 md:text-xs">September Temp</p><p className="mt-1 text-xs font-medium md:text-sm">18–32°C</p><p className="mt-1 text-[9px] text-gray-500">Live forecast once trip begins</p></div>
             <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:text-2xl">🕘</p><p className="text-[10px] text-gray-400 md:text-xs">Local Time</p><p className="mt-1 text-xs font-medium md:text-sm">{moroccoLocalTime}</p><p className="mt-1 text-[9px] text-gray-500">Morocco · Casablanca</p></div>
             <button type="button" onClick={() => setShowMoroccoMap(true)} className="rounded-2xl border border-[#D6B48C]/30 bg-[#D6B48C]/10 p-3 text-center transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15 md:p-4"><p className="mb-1 text-xl md:text-2xl">🗺️</p><p className="text-[10px] text-[#D6B48C]/75 md:text-xs">Map View</p><p className="mt-1 text-xs font-medium text-[#D6B48C] md:text-sm">Morocco Route</p><p className="mt-1 text-[9px] text-white/40">Casablanca to Marrakech</p></button>
@@ -2193,7 +2203,7 @@ export default function TravelSite() {
           <h1 className="mb-3 text-4xl font-light tracking-wide md:text-6xl">Trip Itinerary</h1>
           <p className="mb-6 text-sm text-white/45">Nov 12 - Nov 21 2026</p>
           <section className="mb-10 grid grid-cols-2 gap-3 md:grid-cols-4">
-            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:text-2xl">💵</p><p className="text-[10px] text-gray-400 md:text-xs">Currency</p><p className="mt-1 text-xs font-medium md:text-sm">VND ₫</p><p className="mt-1 text-xs text-gray-400">BillTab tracks VND</p></div>
+            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:text-2xl">💵</p><p className="text-[10px] text-gray-400 md:text-xs">Currency</p><p className="mt-1 text-xs font-medium md:text-sm">1 CAD ≈ {cadToVnd} VND</p><p className="mt-1 text-xs text-gray-400">Live exchange rate</p></div>
             <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:text-2xl">🌤️</p><p className="text-[10px] text-gray-400 md:text-xs">November Temp</p><p className="mt-1 text-xs font-medium md:text-sm">22-31°C</p><p className="mt-1 text-[9px] text-gray-500">Live forecast once trip begins</p></div>
             <button type="button" onClick={() => setShowMoroccoBudget(true)} className="rounded-2xl border border-[#F6C65B]/30 bg-[#F6C65B]/10 p-3 text-center transition hover:border-[#F6C65B]/60 hover:bg-[#F6C65B]/15 md:p-4"><p className="mb-1 text-xl md:text-2xl">🧾</p><p className="text-[10px] text-[#F6C65B]/75 md:text-xs">Budget</p><p className="mt-1 text-xs font-medium text-[#F6C65B] md:text-sm">${vietnamBudgetTotalForGuest.toLocaleString("en-CA", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} CAD</p><p className="mt-1 text-[9px] text-white/40">Known total</p></button>
             <button type="button" onClick={() => setShowVietnamRouteMap(true)} className="rounded-2xl border border-[#F6C65B]/30 bg-[#F6C65B]/10 p-3 text-center transition hover:border-[#F6C65B]/60 hover:bg-[#F6C65B]/15 md:p-4"><p className="mb-1 text-xl md:text-2xl">🗺️</p><p className="text-[10px] text-[#F6C65B]/75 md:text-xs">Map Route</p><p className="mt-1 text-xs font-medium text-[#F6C65B] md:text-sm">North & South</p><p className="mt-1 text-[9px] text-white/40">Route overview</p></button>
@@ -3357,7 +3367,6 @@ export default function TravelSite() {
       <main className="mx-auto max-w-5xl">
         <p className="mb-3 text-sm uppercase tracking-[0.35em]" style={{ color: accentColor }}>{eyebrow}</p>
         <h1 className="mb-6 text-4xl font-light tracking-wide md:text-6xl">{title}</h1>
-        <MemoryMaker key={chapter === "xiaoliuqiu" ? "taiwanNovember" : chapter === "yilan" ? "taiwanDecember" : "japanNovember"} albumKey={chapter === "xiaoliuqiu" ? "taiwanNovember" : chapter === "yilan" ? "taiwanDecember" : "japanNovember"} albumName={chapter === "xiaoliuqiu" ? "Taiwan November" : chapter === "yilan" ? "Taiwan December" : "Japan November"} accentColor={accentColor} guestName={guestName} returnChapter={chapter} onViewAlbum={openAlbumPopup} />
         {infoWidgets(month, nights, hotel, region)}
         <GuestPartyContext.Provider value={guestName}>
           <section className="space-y-8">{children}</section>
