@@ -2406,7 +2406,7 @@ export default function TravelSite() {
                     <button type="button" onClick={() => setShowMoroccoUsefulInfo(true)} className="rounded-full border border-[#F6C65B]/35 bg-[#F6C65B]/10 px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-[#F6C65B] transition hover:border-[#F6C65B]/60 hover:bg-[#F6C65B]/15">Useful Info</button>
                   </div>
                   <div className="relative min-h-0 flex-1 overflow-hidden bg-black">
-                    <img src="/vietnam-2026-poster.png" alt="Vietnam 2026 travel poster" className="absolute inset-x-0 -top-16 -bottom-4 h-auto w-full object-cover object-center" />
+                    <img src="/vietnam-2026-poster.png" alt="Vietnam 2026 travel poster" className="absolute inset-0 h-full w-full object-cover object-[center_38%]" />
                     <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/75 to-transparent px-4 pb-4 pt-24">
                       <div className="grid grid-cols-2 gap-2">
                         <select
