@@ -256,6 +256,7 @@ function MemoryMaker({
   inlineMode = "both",
   uploadLabel = "Upload Photos",
   viewLabel = "View Album",
+  solidButtons = false,
 }: {
   albumKey: string;
   albumName: string;
@@ -268,6 +269,7 @@ function MemoryMaker({
   inlineMode?: "both" | "upload" | "view";
   uploadLabel?: string;
   viewLabel?: string;
+  solidButtons?: boolean;
 }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -332,14 +334,18 @@ function MemoryMaker({
     }
   };
 
+  const compactButtonStyle = {
+    borderColor: solidButtons ? `${accentColor}8C` : `${accentColor}59`,
+    backgroundColor: solidButtons ? "rgba(4, 8, 10, 0.43)" : `${accentColor}18`,
+  };
   const compactUploadButton = (
-    <button type="button" disabled={isLoading || isReadOnlyGuest} onClick={() => fileInputRef.current?.click()} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border px-4 py-3 text-center transition disabled:cursor-not-allowed disabled:opacity-35" style={{ borderColor: `${accentColor}59`, backgroundColor: `${accentColor}18` }}>
+    <button type="button" disabled={isLoading || isReadOnlyGuest} onClick={() => fileInputRef.current?.click()} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border px-4 py-3 text-center backdrop-blur-md transition disabled:cursor-not-allowed disabled:opacity-35" style={compactButtonStyle}>
       <span className="text-xl">📤</span>
       <span className="text-xs font-light uppercase tracking-[0.16em]" style={{ color: accentColor }}>{uploadLabel}</span>
     </button>
   );
   const compactAlbumButton = (
-    <button type="button" onClick={viewAlbum} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border px-4 py-3 text-center transition" style={{ borderColor: `${accentColor}59`, backgroundColor: `${accentColor}18` }}>
+    <button type="button" onClick={viewAlbum} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border px-4 py-3 text-center backdrop-blur-md transition" style={compactButtonStyle}>
       <span className="text-xl">🖼️</span>
       <span className="text-xs font-light uppercase tracking-[0.16em]" style={{ color: accentColor }}>{viewLabel}</span>
     </button>
@@ -1587,8 +1593,8 @@ export default function TravelSite() {
   const renderTripDashboardActions = () => {
     if (selectedTrip !== "taiwan" && selectedTrip !== "okinawaJapan") return null;
     const accentColor = selectedTrip === "taiwan" ? TAIWAN_GOLD : BABY_BLUE;
-    const actionStyle = { borderColor: `${accentColor}59`, backgroundColor: `${accentColor}18`, color: accentColor };
-    const actionClass = "flex min-h-14 items-center justify-center gap-3 rounded-2xl border px-4 py-3 text-center transition";
+    const actionStyle = { borderColor: `${accentColor}8C`, backgroundColor: "rgba(3, 12, 17, 0.43)", color: accentColor };
+    const actionClass = "flex min-h-14 items-center justify-center gap-3 rounded-2xl border px-4 py-3 text-center backdrop-blur-md transition";
     if (guestName === "Guest") {
       return (
         <div className="mt-5 grid gap-3 sm:grid-cols-2">
@@ -1596,7 +1602,7 @@ export default function TravelSite() {
           {selectedTrip === "taiwan" ? (
             <button type="button" onClick={() => setTaiwanDashboardAlbumMode("view")} className={actionClass} style={actionStyle}><span className="text-xl">🖼️</span><span className="text-xs font-light uppercase tracking-[0.16em]">View Album</span></button>
           ) : (
-            <MemoryMaker albumKey="japanNovember" albumName="Japan November" accentColor={accentColor} guestName={guestName} returnChapter="map" onViewAlbum={openAlbumPopup} inlineButtons inlineMode="view" viewLabel="View Album" />
+            <MemoryMaker albumKey="japanNovember" albumName="Japan November" accentColor={accentColor} guestName={guestName} returnChapter="map" onViewAlbum={openAlbumPopup} inlineButtons inlineMode="view" viewLabel="View Album" solidButtons />
           )}
         </div>
       );
@@ -1613,7 +1619,7 @@ export default function TravelSite() {
             <button type="button" onClick={() => setTaiwanDashboardAlbumMode("view")} className={actionClass} style={actionStyle}><span className="text-xl">🖼️</span><span className="text-xs font-light uppercase tracking-[0.16em]">View Album</span></button>
           </>
         ) : (
-          <MemoryMaker albumKey="japanNovember" albumName="Japan November" accentColor={accentColor} guestName={guestName} returnChapter="map" onViewAlbum={openAlbumPopup} inlineButtons />
+          <MemoryMaker albumKey="japanNovember" albumName="Japan November" accentColor={accentColor} guestName={guestName} returnChapter="map" onViewAlbum={openAlbumPopup} inlineButtons solidButtons />
         )}
       </div>
     );
@@ -2485,11 +2491,11 @@ export default function TravelSite() {
               {guestName ? (
                 <>
                   <section className="relative flex min-h-0 flex-1 flex-col overflow-hidden bg-[#120D09] px-5 pb-5 text-left">
-                    <img src="/morocco-2026-poster.png" alt="" aria-hidden="true" className="absolute inset-0 h-full w-full scale-110 object-cover opacity-35 blur-xl" />
-                    <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-[#120D09]/82 to-black/92" />
+                    <img src="/morocco-dashboard-hero.png" alt="" aria-hidden="true" className="absolute inset-x-0 bottom-0 top-20 h-[calc(100%-5rem)] w-full object-cover object-center" />
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/46 via-black/52 to-black/78" />
                     <div className="relative z-10 mb-5 grid grid-cols-2 gap-2">
-                      <button type="button" onClick={() => { setGuestName(""); setShowMoroccoChecklist(false); setBrowserRoute(buildTripUrl("morocco")); }} className="rounded-full border border-white/20 bg-white/[0.06] px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-white/65 transition hover:border-white/35 hover:bg-white/[0.1]">Back</button>
-                      <button type="button" onClick={goToMainPage} className="rounded-full border border-white/20 bg-white/[0.06] px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-white/65 transition hover:border-white/35 hover:bg-white/[0.1]">Main Page</button>
+                      <button type="button" onClick={() => { setGuestName(""); setShowMoroccoChecklist(false); setBrowserRoute(buildTripUrl("morocco")); }} className="rounded-full border border-white/30 bg-black/70 px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-white/80 backdrop-blur-md transition hover:border-white/45 hover:bg-black/85">Back</button>
+                      <button type="button" onClick={goToMainPage} className="rounded-full border border-white/30 bg-black/70 px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-white/80 backdrop-blur-md transition hover:border-white/45 hover:bg-black/85">Main Page</button>
                     </div>
                     <div className="relative z-10 flex min-h-0 flex-1 flex-col justify-center space-y-5 overflow-y-auto">
                     <div>
@@ -2499,23 +2505,23 @@ export default function TravelSite() {
                     </div>
                     {guestName === "Guest" ? (
                     <div className="grid gap-3 sm:grid-cols-2">
-                      <button type="button" onClick={() => openTripView("itinerary")} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-3 text-center transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15"><span className="text-xl">🗓️</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#D6B48C]">Trip Itinerary</span></button>
-                      <button type="button" onClick={() => openAlbumPopup(`/memory-maker/moroccoSeptember?returnChapter=morocco&guest=${encodeURIComponent("Guest")}`)} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-3 text-center transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15"><span className="text-xl">🖼️</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#D6B48C]">View Album</span></button>
+                      <button type="button" onClick={() => openTripView("itinerary")} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#D6B48C]/55 bg-[#140E0A]/45 px-4 py-3 text-center backdrop-blur-md transition hover:border-[#D6B48C]/75 hover:bg-[#1C140E]/55"><span className="text-xl">🗓️</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#D6B48C]">Trip Itinerary</span></button>
+                      <button type="button" onClick={() => openAlbumPopup(`/memory-maker/moroccoSeptember?returnChapter=morocco&guest=${encodeURIComponent("Guest")}`)} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#D6B48C]/55 bg-[#140E0A]/45 px-4 py-3 text-center backdrop-blur-md transition hover:border-[#D6B48C]/75 hover:bg-[#1C140E]/55"><span className="text-xl">🖼️</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#D6B48C]">View Album</span></button>
                     </div>
                     ) : (
                     <>
                     <div className="grid gap-3 sm:grid-cols-2">
-                      <button type="button" onClick={() => openTripView("itinerary")} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-3 text-center transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15 sm:col-span-2"><span className="text-xl">🗓️</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#D6B48C]">Trip Itinerary</span></button>
-                      <button type="button" onClick={() => setShowMoroccoChecklist(true)} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-3 text-center transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">
+                      <button type="button" onClick={() => openTripView("itinerary")} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#D6B48C]/55 bg-[#140E0A]/45 px-4 py-3 text-center backdrop-blur-md transition hover:border-[#D6B48C]/75 hover:bg-[#1C140E]/55 sm:col-span-2"><span className="text-xl">🗓️</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#D6B48C]">Trip Itinerary</span></button>
+                      <button type="button" onClick={() => setShowMoroccoChecklist(true)} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#D6B48C]/55 bg-[#140E0A]/45 px-4 py-3 text-center backdrop-blur-md transition hover:border-[#D6B48C]/75 hover:bg-[#1C140E]/55">
                         <span className="text-xl">🎒</span>
                         <span className="text-xs font-light uppercase tracking-[0.16em] text-[#D6B48C]">Packing List</span>
                       </button>
-                      <button type="button" onClick={() => openMoroccoCostTracker("morocco")} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-4 py-3 text-center transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">
+                      <button type="button" onClick={() => openMoroccoCostTracker("morocco")} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#D6B48C]/55 bg-[#140E0A]/45 px-4 py-3 text-center backdrop-blur-md transition hover:border-[#D6B48C]/75 hover:bg-[#1C140E]/55">
                         <span className="text-xl">💰</span>
                         <span className="text-xs font-light uppercase tracking-[0.16em] text-[#D6B48C]">BillTab</span>
                       </button>
                     </div>
-                    <MemoryMaker albumKey="moroccoSeptember" albumName="Morocco" accentColor={MOROCCO_BROWN} guestName={guestName} returnChapter="morocco" onViewAlbum={openAlbumPopup} compact />
+                    <MemoryMaker albumKey="moroccoSeptember" albumName="Morocco" accentColor={MOROCCO_BROWN} guestName={guestName} returnChapter="morocco" onViewAlbum={openAlbumPopup} compact solidButtons />
                     </>
                     )}
                     </div>
@@ -2679,11 +2685,11 @@ export default function TravelSite() {
             <>
               {guestName ? (
                 <section className="relative flex min-h-0 flex-1 flex-col overflow-hidden bg-black px-5 pb-5 text-left">
-                  <img src="/vietnam-2026-poster.png" alt="" aria-hidden="true" className="pointer-events-none absolute inset-0 h-full w-full scale-110 object-cover opacity-30 blur-xl" />
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/82 via-black/80 to-black/95" />
+                  <img src="/vietnam-dashboard-hero.png" alt="" aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 top-20 h-[calc(100%-5rem)] w-full object-cover object-[center_38%]" />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/46 via-black/52 to-black/78" />
                   <div className="relative z-10 mb-5 grid grid-cols-2 gap-2">
-                    <button type="button" onClick={() => { setGuestName(""); setShowGuestActions(false); setBrowserRoute(buildTripUrl("vietnam")); }} className="rounded-full border border-white/20 bg-white/[0.06] px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-white/65 transition hover:border-white/35 hover:bg-white/[0.1]">Back</button>
-                    <button type="button" onClick={goToMainPage} className="rounded-full border border-white/20 bg-white/[0.06] px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-white/65 transition hover:border-white/35 hover:bg-white/[0.1]">Main Page</button>
+                    <button type="button" onClick={() => { setGuestName(""); setShowGuestActions(false); setBrowserRoute(buildTripUrl("vietnam")); }} className="rounded-full border border-white/30 bg-black/70 px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-white/80 backdrop-blur-md transition hover:border-white/45 hover:bg-black/85">Back</button>
+                    <button type="button" onClick={goToMainPage} className="rounded-full border border-white/30 bg-black/70 px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-white/80 backdrop-blur-md transition hover:border-white/45 hover:bg-black/85">Main Page</button>
                   </div>
                   <div className="relative z-10 flex min-h-0 flex-1 flex-col justify-center space-y-5 overflow-y-auto">
                     <div>
@@ -2693,19 +2699,19 @@ export default function TravelSite() {
                     </div>
                     {guestName === "Guest" ? (
                       <div className="grid gap-3 sm:grid-cols-2">
-                        <button type="button" onClick={() => openTripView("itinerary")} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#F6C65B]/35 bg-[#F6C65B]/10 px-4 py-3 text-center transition hover:border-[#F6C65B]/60 hover:bg-[#F6C65B]/15"><span className="text-xl">🗓️</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#F6C65B]">Trip Itinerary</span></button>
-                        <button type="button" onClick={() => openAlbumPopup(`/memory-maker/vietnamNovember?returnChapter=vietnam&guest=${encodeURIComponent("Guest")}`)} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#F6C65B]/35 bg-[#F6C65B]/10 px-4 py-3 text-center transition hover:border-[#F6C65B]/60 hover:bg-[#F6C65B]/15"><span className="text-xl">🖼️</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#F6C65B]">View Album</span></button>
+                        <button type="button" onClick={() => openTripView("itinerary")} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#F6C65B]/55 bg-[#100D08]/45 px-4 py-3 text-center backdrop-blur-md transition hover:border-[#F6C65B]/75 hover:bg-[#19140B]/55"><span className="text-xl">🗓️</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#F6C65B]">Trip Itinerary</span></button>
+                        <button type="button" onClick={() => openAlbumPopup(`/memory-maker/vietnamNovember?returnChapter=vietnam&guest=${encodeURIComponent("Guest")}`)} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#F6C65B]/55 bg-[#100D08]/45 px-4 py-3 text-center backdrop-blur-md transition hover:border-[#F6C65B]/75 hover:bg-[#19140B]/55"><span className="text-xl">🖼️</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#F6C65B]">View Album</span></button>
                       </div>
                     ) : (
                       <>
                         <div className="grid gap-3 sm:grid-cols-2">
-                          <button type="button" onClick={() => openTripView("itinerary")} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#F6C65B]/35 bg-[#F6C65B]/10 px-4 py-3 text-center transition hover:border-[#F6C65B]/60 hover:bg-[#F6C65B]/15 sm:col-span-2"><span className="text-xl">🗓️</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#F6C65B]">Trip Itinerary</span></button>
-                          <button type="button" onClick={() => setShowMoroccoChecklist(true)} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#F6C65B]/35 bg-[#F6C65B]/10 px-4 py-3 text-center transition hover:border-[#F6C65B]/60 hover:bg-[#F6C65B]/15"><span className="text-xl">🎒</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#F6C65B]">Packing List</span></button>
-                          <button type="button" onClick={() => setShowMoroccoBudget(true)} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#F6C65B]/35 bg-[#F6C65B]/10 px-4 py-3 text-center transition hover:border-[#F6C65B]/60 hover:bg-[#F6C65B]/15"><span className="text-xl">🧾</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#F6C65B]">Budget</span></button>
-                          <button type="button" disabled className="flex min-h-14 cursor-not-allowed items-center justify-center gap-3 rounded-2xl border border-[#F6C65B]/25 bg-[#F6C65B]/5 px-4 py-3 text-center opacity-45"><span className="text-xl">☀️</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#F6C65B]">What's Today?</span></button>
-                          <button type="button" onClick={() => openMoroccoCostTracker("vietnam")} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#F6C65B]/35 bg-[#F6C65B]/10 px-4 py-3 text-center transition hover:border-[#F6C65B]/60 hover:bg-[#F6C65B]/15"><span className="text-xl">💰</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#F6C65B]">BillTab</span></button>
+                          <button type="button" onClick={() => openTripView("itinerary")} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#F6C65B]/55 bg-[#100D08]/45 px-4 py-3 text-center backdrop-blur-md transition hover:border-[#F6C65B]/75 hover:bg-[#19140B]/55 sm:col-span-2"><span className="text-xl">🗓️</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#F6C65B]">Trip Itinerary</span></button>
+                          <button type="button" onClick={() => setShowMoroccoChecklist(true)} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#F6C65B]/55 bg-[#100D08]/45 px-4 py-3 text-center backdrop-blur-md transition hover:border-[#F6C65B]/75 hover:bg-[#19140B]/55"><span className="text-xl">🎒</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#F6C65B]">Packing List</span></button>
+                          <button type="button" onClick={() => setShowMoroccoBudget(true)} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#F6C65B]/55 bg-[#100D08]/45 px-4 py-3 text-center backdrop-blur-md transition hover:border-[#F6C65B]/75 hover:bg-[#19140B]/55"><span className="text-xl">🧾</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#F6C65B]">Budget</span></button>
+                          <button type="button" disabled className="flex min-h-14 cursor-not-allowed items-center justify-center gap-3 rounded-2xl border border-[#F6C65B]/45 bg-[#100D08]/35 px-4 py-3 text-center backdrop-blur-md opacity-45"><span className="text-xl">☀️</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#F6C65B]">What's Today?</span></button>
+                          <button type="button" onClick={() => openMoroccoCostTracker("vietnam")} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#F6C65B]/55 bg-[#100D08]/45 px-4 py-3 text-center backdrop-blur-md transition hover:border-[#F6C65B]/75 hover:bg-[#19140B]/55"><span className="text-xl">💰</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#F6C65B]">BillTab</span></button>
                         </div>
-                        <MemoryMaker albumKey="vietnamNovember" albumName="Vietnam" accentColor={VIETNAM_GOLD} guestName={guestName} returnChapter="vietnam" onViewAlbum={openAlbumPopup} compact />
+                        <MemoryMaker albumKey="vietnamNovember" albumName="Vietnam" accentColor={VIETNAM_GOLD} guestName={guestName} returnChapter="vietnam" onViewAlbum={openAlbumPopup} compact solidButtons />
                       </>
                     )}
                   </div>
@@ -3338,12 +3344,17 @@ export default function TravelSite() {
           ) : (
             <>
               <section className="relative flex min-h-0 flex-1 flex-col overflow-hidden bg-black px-5 pb-5 pt-8 text-left">
-                <img src={selectedTrip === "taiwan" ? "/taiwan-2026-poster.png" : "/okinawa-2026-poster.png"} alt="" aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 h-full w-full scale-110 object-cover opacity-18 blur-xl" />
-                <div className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-b from-black/75 via-black/80 to-black/90" />
+                <img
+                  src={selectedTrip === "taiwan" ? "/taiwan-dashboard-hero.png" : "/okinawa-dashboard-hero.png"}
+                  alt=""
+                  aria-hidden="true"
+                  className={`pointer-events-none absolute inset-x-0 bottom-0 top-20 z-0 h-[calc(100%-5rem)] w-full object-cover ${selectedTrip === "taiwan" ? "scale-[1.08] -translate-y-6 object-center" : "object-center"}`}
+                />
+                <div className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-b from-black/46 via-black/54 to-black/82" />
                 <p className="relative z-10 mb-3 text-center text-xs uppercase tracking-[0.35em] text-white/75">Private Group Event</p>
                 <div className="relative z-10 mb-5 grid grid-cols-2 gap-2">
-                  <button type="button" onClick={() => { setShowGuestActions(false); setGuestName(""); if (selectedTrip) setBrowserRoute(buildTripUrl(selectedTrip)); }} className="rounded-full border border-white/20 bg-white/[0.06] px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-white/65 transition hover:border-white/35 hover:bg-white/[0.1]">Back</button>
-                  <button type="button" onClick={goToMainPage} className="rounded-full border border-white/20 bg-white/[0.06] px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-white/65 transition hover:border-white/35 hover:bg-white/[0.1]">Main Page</button>
+                  <button type="button" onClick={() => { setShowGuestActions(false); setGuestName(""); if (selectedTrip) setBrowserRoute(buildTripUrl(selectedTrip)); }} className="rounded-full border border-white/30 bg-black/70 px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-white/80 backdrop-blur-md transition hover:border-white/45 hover:bg-black/85">Back</button>
+                  <button type="button" onClick={goToMainPage} className="rounded-full border border-white/30 bg-black/70 px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-white/80 backdrop-blur-md transition hover:border-white/45 hover:bg-black/85">Main Page</button>
                 </div>
                 <div className="relative z-10 flex min-h-0 flex-1 flex-col space-y-5 overflow-y-auto overflow-x-hidden py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 <div>
