@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
 const BABY_BLUE = "#9EDCFF";
@@ -35,6 +36,14 @@ const TRIP_KEYS_BY_PATH = Object.fromEntries(Object.entries(TRIP_PATHS).map(([ke
 const GUEST_NAME_ALIASES: Record<string, string> = {
   "Heather & Jack & Aizen (8) & Kaien (3)": "Heather & Jack & Aizen (8) & Kaien (3) & Norma",
 };
+
+function ViewportPortal({ children }: { children: React.ReactNode }) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
+
+  return mounted ? createPortal(children, document.body) : null;
+}
 
 type TimelineItem = {
   id: PageName | "taipei" | "yilan";
@@ -1107,6 +1116,11 @@ export default function TravelSite() {
     setBrowserRoute("/");
   };
 
+  const switchSiteAccess = async () => {
+    await fetch("/api/site-auth", { method: "DELETE" }).catch(() => null);
+    window.location.href = "/login?from=%2F";
+  };
+
   const goToFutureTrips = () => {
     setIsGuestConfirmed(false);
     setSelectedTrip("");
@@ -1400,6 +1414,7 @@ export default function TravelSite() {
     const fullOrder: PageName[] = ["xiaoliuqiu", "taipei", "nahaearly", "onna", "nago", "nanjo", "naha", "yilan"];
     const guestRoutes: Record<string, PageName[]> = {
       "I am just a random Guest": fullOrder,
+      "Guest": fullOrder,
       "Xenia & David & Naomi (3)": ["xiaoliuqiu", "taipei", "onna", "nago", "nanjo", "naha", "yilan"],
       "Jim": ["xiaoliuqiu"],
       "Anthony & Christine & Mona (1)": ["xiaoliuqiu", "taipei"],
@@ -2346,9 +2361,10 @@ export default function TravelSite() {
           </div>
         )}
         {showMoroccoUsefulInfo && (
-          <div className="fixed inset-0 z-50 flex items-stretch justify-center bg-black/80 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-[max(0.5rem,env(safe-area-inset-top))] backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-label="Vietnam useful information">
-            <section className="flex h-[calc(100dvh-1rem)] max-h-[calc(100dvh-1rem)] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] text-left shadow-2xl sm:h-auto sm:max-h-[82dvh]">
-              <div className="flex shrink-0 items-start justify-between gap-4 border-b border-white/10 px-4 py-3 sm:px-7 sm:py-5">
+          <ViewportPortal>
+          <div className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden bg-black/80 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-[max(0.5rem,env(safe-area-inset-top))] backdrop-blur-sm sm:p-4" role="dialog" aria-modal="true" aria-label="Vietnam useful information">
+            <section className="flex h-[calc(100dvh-1rem)] max-h-[760px] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] text-left shadow-2xl sm:h-[min(760px,calc(100dvh-2rem))]">
+              <div className="sticky top-0 z-10 flex shrink-0 items-start justify-between gap-4 border-b border-white/10 bg-[#111] px-4 py-3 sm:px-7 sm:py-5">
                 <div>
                   <p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: VIETNAM_GOLD }}>Vietnam 2026</p>
                   <h2 className="text-xl font-light text-white sm:text-2xl">Useful Information</h2>
@@ -2372,6 +2388,7 @@ export default function TravelSite() {
               </div>
             </section>
           </div>
+          </ViewportPortal>
         )}
         {albumPopup}
       </div>
@@ -2457,6 +2474,9 @@ export default function TravelSite() {
                   </div>
                 </div>
               )}
+              <button type="button" onClick={switchSiteAccess} className="mt-5 w-full rounded-full border border-white/15 bg-white/[0.03] px-4 py-2.5 text-xs uppercase tracking-[0.18em] text-white/45 transition hover:border-white/30 hover:bg-white/[0.06] hover:text-white/70">
+                {isSiteGuestAccess ? "Member Login" : "Switch Access"}
+              </button>
             </>
           ) : selectedTrip === "morocco" ? (
             <>
@@ -2799,9 +2819,10 @@ export default function TravelSite() {
                 </div>
               )}
               {showMoroccoUsefulInfo && (
-                <div className="fixed inset-0 z-50 flex items-stretch justify-center bg-black/80 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-[max(0.5rem,env(safe-area-inset-top))] backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-label="Vietnam useful information">
-                  <section className="flex h-[calc(100dvh-1rem)] max-h-[calc(100dvh-1rem)] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] text-left shadow-2xl sm:h-auto sm:max-h-[82dvh]">
-                    <div className="flex shrink-0 items-start justify-between gap-4 border-b border-white/10 px-4 py-3 sm:px-7 sm:py-5">
+                <ViewportPortal>
+                <div className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden bg-black/80 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-[max(0.5rem,env(safe-area-inset-top))] backdrop-blur-sm sm:p-4" role="dialog" aria-modal="true" aria-label="Vietnam useful information">
+                  <section className="flex h-[calc(100dvh-1rem)] max-h-[760px] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] text-left shadow-2xl sm:h-[min(760px,calc(100dvh-2rem))]">
+                    <div className="sticky top-0 z-10 flex shrink-0 items-start justify-between gap-4 border-b border-white/10 bg-[#111] px-4 py-3 sm:px-7 sm:py-5">
                       <div>
                         <p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: VIETNAM_GOLD }}>Vietnam 2026</p>
                         <h2 className="text-xl font-light text-white sm:text-2xl">Useful Information</h2>
@@ -2825,6 +2846,7 @@ export default function TravelSite() {
                     </div>
                   </section>
                 </div>
+                </ViewportPortal>
               )}
               {showMoroccoMap && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Vietnam route map">

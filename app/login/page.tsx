@@ -52,8 +52,7 @@ export default function LoginPage() {
     <main className="flex min-h-screen items-center justify-center bg-black px-6 text-white">
       <form onSubmit={handleSubmit} className="w-full max-w-sm rounded-[2rem] border border-white/10 bg-white/[0.04] p-8 text-center shadow-[0_0_40px_rgba(255,255,255,0.06)] backdrop-blur-xl">
         <p className="mb-3 text-xs uppercase tracking-[0.35em] text-white/70">Private Group Event</p>
-        <h1 className="text-3xl font-light tracking-wide">XK Events</h1>
-        <p className="mb-7 mt-3 text-sm leading-6 text-white/45">Choose how you would like to enter.</p>
+        <h1 className="mb-7 text-3xl font-light tracking-wide">XK Events</h1>
         <button
           type="button"
           onClick={continueAsGuest}

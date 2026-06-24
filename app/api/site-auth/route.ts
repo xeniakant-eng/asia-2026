@@ -48,3 +48,15 @@ export async function GET(request: NextRequest) {
   const expectedToken = await createAuthToken(sitePassword);
   return NextResponse.json({ mode: token === expectedToken ? "member" : "unknown" });
 }
+
+export async function DELETE() {
+  const response = NextResponse.json({ ok: true });
+  response.cookies.set(AUTH_COOKIE, "", {
+    httpOnly: true,
+    maxAge: 0,
+    path: "/",
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+  });
+  return response;
+}
