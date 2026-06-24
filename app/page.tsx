@@ -526,6 +526,7 @@ function SvgPin({
 }
 
 export default function TravelSite() {
+  const [siteAccessMode, setSiteAccessMode] = useState<"loading" | "guest" | "member">("loading");
   const [hovered, setHovered] = useState<string | null>(null);
   const [page, setPage] = useState<PageName>("map");
   const [guestName, setGuestName] = useState("");
@@ -687,12 +688,14 @@ export default function TravelSite() {
   const [showVietnamNameInput, setShowVietnamNameInput] = useState(false);
   const [vietnamNameInput, setVietnamNameInput] = useState("");
   const [checkedPackingItems, setCheckedPackingItems] = useState<Record<string, boolean>>({});
+  const isSiteGuestAccess = siteAccessMode === "guest";
   const [now, setNow] = useState(new Date());
   const [usdToJpy, setUsdToJpy] = useState("150");
   const [usdToTwd, setUsdToTwd] = useState("32");
   const [usdToMad, setUsdToMad] = useState("10");
   const [cadToMad, setCadToMad] = useState("7.35");
   const [cadToVnd, setCadToVnd] = useState("19000");
+  const [usdToVnd, setUsdToVnd] = useState("26000");
   const [selectedTimelineSectionId, setSelectedTimelineSectionId] = useState(1);
 
   const septOctGuestOptions = [
@@ -1207,6 +1210,26 @@ export default function TravelSite() {
   }, []);
 
   useEffect(() => {
+    async function loadSiteAccessMode() {
+      try {
+        const response = await fetch("/api/site-auth", { cache: "no-store" });
+        const data = await response.json() as { mode?: string };
+        setSiteAccessMode(data.mode === "guest" ? "guest" : "member");
+      } catch {
+        setSiteAccessMode("member");
+      }
+    }
+    loadSiteAccessMode();
+  }, []);
+
+  useEffect(() => {
+    if (siteAccessMode !== "guest" || !selectedTrip || !guestName || guestName === "Guest") return;
+    if (["morocco", "taiwan", "okinawaJapan", "vietnam"].includes(selectedTrip)) {
+      openTripDashboard("Guest", true);
+    }
+  }, [siteAccessMode, selectedTrip, guestName]);
+
+  useEffect(() => {
     applyRouteFromLocation();
     const handlePopState = () => applyRouteFromLocation();
     window.addEventListener("popstate", handlePopState);
@@ -1327,6 +1350,7 @@ export default function TravelSite() {
         if (usdData?.rates?.JPY) setUsdToJpy(Math.round(usdData.rates.JPY).toString());
         if (usdData?.rates?.TWD) setUsdToTwd(Math.round(usdData.rates.TWD).toString());
         if (usdData?.rates?.MAD) setUsdToMad(Number(usdData.rates.MAD).toFixed(2));
+        if (usdData?.rates?.VND) setUsdToVnd(Math.round(usdData.rates.VND).toLocaleString("en-CA"));
         if (cadData?.rates?.MAD) setCadToMad(Number(cadData.rates.MAD).toFixed(2));
         if (cadData?.rates?.VND) setCadToVnd(Math.round(cadData.rates.VND).toLocaleString("en-CA"));
       } catch {
@@ -2334,9 +2358,10 @@ export default function TravelSite() {
               <div className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain p-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-7">
                 {[
                   ["Power", "Vietnam commonly uses 220V power with Type A, C, and F plugs."],
-                  ["Transportation", "Uber is not available in Vietnam. The equivalent ride-share app is Grab, which is fully operational across major cities such as Hanoi, Ho Chi Minh City, Da Nang, Can Tho, Hue, Nha Trang, and Vung Tau."],
+                  ["Transportation", "Uber is not available in Vietnam. The equivalent ride-share app is Grab, which is fully operational across major cities."],
+                  ["Tourist Visa", "Canadian passport holders require a tourist visa and may apply online for a single- or multiple-entry e-visa valid for up to 90 days. The passport should be valid for at least 6 months beyond the planned departure from Vietnam."],
                   ["Payment", "Cards are useful in larger hotels and restaurants. Cash is still important for markets, smaller shops, taxis, and local food."],
-                  ["Local Currency", "Vietnamese dong (VND). BillTab will track VND, CAD, and USD."],
+                  ["Local Currency", `Vietnamese dong (VND). Approximate live rates: 1 CAD ≈ ${cadToVnd} VND and 1 USD ≈ ${usdToVnd} VND. For the best exchange rates, use a major bank or authorized currency exchange counter in Hanoi or Ho Chi Minh City. Bank ATMs are a convenient alternative. Exchange only a small arrival amount at the airport, where rates are usually less favourable.`],
                   ["SIM / eSIM", "Local SIM and eSIM options are widely available for Hanoi and central Vietnam."],
                 ].map(([title, text]) => (
                   <div key={title} className="rounded-xl border border-white/10 bg-white/[0.04] p-3 sm:p-4">
@@ -2479,25 +2504,26 @@ export default function TravelSite() {
                   <div className="relative z-10 px-5 pb-5">
                     <div className="mb-3 grid grid-cols-2 gap-2">
                       <button type="button" onClick={goToMainPage} className="rounded-full border border-white/20 bg-white/[0.06] px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-white/65 transition hover:border-white/35 hover:bg-white/[0.1]">Main Page</button>
-                      <button type="button" onClick={() => setShowMoroccoMap(true)} className="rounded-full border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-[#D6B48C] transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">Map View</button>
+                      <button type="button" onClick={() => setShowMoroccoUsefulInfo(true)} className="rounded-full border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-[#D6B48C] transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">Useful Info</button>
                     </div>
                     <div className="grid grid-cols-2 gap-2">
                       <button type="button" onClick={() => setShowMoroccoBudget(true)} className="rounded-full border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-[#D6B48C] transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">Budget</button>
-                      <button type="button" onClick={() => setShowMoroccoUsefulInfo(true)} className="rounded-full border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-[#D6B48C] transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">Useful Info</button>
+                      <button type="button" onClick={() => setShowMoroccoMap(true)} className="rounded-full border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-[#D6B48C] transition hover:border-[#D6B48C]/60 hover:bg-[#D6B48C]/15">Route Map</button>
                     </div>
                   </div>
                   <img src="/morocco-2026-poster.png" alt="Morocco 2026 travel poster" className="absolute inset-x-0 bottom-0 top-20 h-[calc(100%-5rem)] w-full object-cover" />
                   <div className="absolute inset-x-0 bottom-0 grid grid-cols-[2fr_1fr] gap-2 bg-gradient-to-t from-black via-black/72 to-transparent px-4 pb-4 pt-20">
                     <select
                       defaultValue=""
+                      disabled={isSiteGuestAccess || siteAccessMode === "loading"}
                       onChange={(event) => {
                         const selectedGuest = event.target.value;
                         if (!selectedGuest) return;
                         openTripDashboard(selectedGuest);
                       }}
-                      className="min-w-0 rounded-2xl border border-white/25 bg-black/75 px-4 py-3 text-sm font-light tracking-wide text-white outline-none backdrop-blur-md transition focus:border-[#D6B48C]/70"
+                      className="min-w-0 rounded-2xl border border-white/25 bg-black/75 px-4 py-3 text-sm font-light tracking-wide text-white outline-none backdrop-blur-md transition focus:border-[#D6B48C]/70 disabled:cursor-not-allowed disabled:border-white/10 disabled:text-white/30"
                     >
-                      <option value="" disabled>Select your party</option>
+                      <option value="" disabled>{isSiteGuestAccess ? "Members only" : "Select your party"}</option>
                       {moroccoInterestedNames.map((name) => <option key={name} value={name}>{name}</option>)}
                     </select>
                     <button type="button" onClick={() => openTripDashboard("Guest")} className="rounded-2xl border border-[#D6B48C]/40 bg-black/75 px-3 py-3 text-sm font-light uppercase tracking-[0.12em] text-[#D6B48C] outline-none backdrop-blur-md transition hover:border-[#D6B48C]/70 hover:bg-[#D6B48C]/10">Guest</button>
@@ -2675,14 +2701,15 @@ export default function TravelSite() {
                     <div className="absolute inset-x-0 bottom-0 grid grid-cols-[2fr_1fr] gap-2 bg-gradient-to-t from-black via-black/75 to-transparent px-4 pb-4 pt-24">
                       <select
                         defaultValue=""
+                        disabled={isSiteGuestAccess || siteAccessMode === "loading"}
                         onChange={(event) => {
                           const selectedGuest = event.target.value;
                           if (!selectedGuest) return;
                           openTripDashboard(selectedGuest);
                         }}
-                        className="min-w-0 rounded-2xl border border-white/25 bg-black/75 px-4 py-3 text-sm font-light tracking-wide text-white outline-none backdrop-blur-md transition focus:border-[#F6C65B]/70"
+                        className="min-w-0 rounded-2xl border border-white/25 bg-black/75 px-4 py-3 text-sm font-light tracking-wide text-white outline-none backdrop-blur-md transition focus:border-[#F6C65B]/70 disabled:cursor-not-allowed disabled:border-white/10 disabled:text-white/30"
                       >
-                        <option value="" disabled>Select your party</option>
+                        <option value="" disabled>{isSiteGuestAccess ? "Members only" : "Select your party"}</option>
                         {vietnamConfirmedParties.map((name) => <option key={name} value={name}>{name}</option>)}
                       </select>
                       <button type="button" onClick={() => openTripDashboard("Guest")} className="rounded-2xl border border-[#F6C65B]/40 bg-black/75 px-3 py-3 text-sm font-light uppercase tracking-[0.12em] text-[#F6C65B] outline-none backdrop-blur-md transition hover:border-[#F6C65B]/70 hover:bg-[#F6C65B]/10">Guest</button>
@@ -2784,9 +2811,10 @@ export default function TravelSite() {
                     <div className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain p-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-7">
                       {[
                         ["Power", "Vietnam commonly uses 220V power with Type A, C, and F plugs."],
-                        ["Transportation", "Uber is not available in Vietnam. The equivalent ride-share app is Grab, which is fully operational across major cities such as Hanoi, Ho Chi Minh City, Da Nang, Can Tho, Hue, Nha Trang, and Vung Tau."],
+                        ["Transportation", "Uber is not available in Vietnam. The equivalent ride-share app is Grab, which is fully operational across major cities."],
+                        ["Tourist Visa", "Canadian passport holders require a tourist visa and may apply online for a single- or multiple-entry e-visa valid for up to 90 days. The passport should be valid for at least 6 months beyond the planned departure from Vietnam."],
                         ["Payment", "Cards are useful in larger hotels and restaurants. Cash is still important for markets, smaller shops, taxis, and local food."],
-                        ["Local Currency", "Vietnamese dong (VND). BillTab will track VND, CAD, and USD."],
+                        ["Local Currency", `Vietnamese dong (VND). Approximate live rates: 1 CAD ≈ ${cadToVnd} VND and 1 USD ≈ ${usdToVnd} VND. For the best exchange rates, use a major bank or authorized currency exchange counter in Hanoi or Ho Chi Minh City. Bank ATMs are a convenient alternative. Exchange only a small arrival amount at the airport, where rates are usually less favourable.`],
                         ["SIM / eSIM", "Local SIM and eSIM options are widely available for Hanoi and central Vietnam."],
                       ].map(([title, text]) => (
                         <div key={title} className="rounded-xl border border-white/10 bg-white/[0.04] p-3 sm:p-4">
@@ -3246,14 +3274,15 @@ export default function TravelSite() {
                   <div className={`absolute inset-x-0 bottom-0 grid grid-cols-[2fr_1fr] gap-2 bg-gradient-to-t from-black px-4 pb-4 ${selectedTrip === "taiwan" ? "via-black/90 pt-28" : "via-black/72 pt-20"} to-transparent`}>
                     <select
                       defaultValue=""
+                      disabled={isSiteGuestAccess || siteAccessMode === "loading"}
                       onChange={(event) => {
                         const selectedGuest = event.target.value;
                         if (!selectedGuest) return;
                         openTripDashboard(selectedGuest);
                       }}
-                      className={`min-w-0 rounded-2xl border border-white/25 bg-black/75 px-4 py-3 text-sm font-light tracking-wide text-white outline-none backdrop-blur-md transition ${selectedTrip === "taiwan" ? "focus:border-[#72E49A]/70" : "focus:border-[#9EDCFF]/70"}`}
+                      className={`min-w-0 rounded-2xl border border-white/25 bg-black/75 px-4 py-3 text-sm font-light tracking-wide text-white outline-none backdrop-blur-md transition disabled:cursor-not-allowed disabled:border-white/10 disabled:text-white/30 ${selectedTrip === "taiwan" ? "focus:border-[#72E49A]/70" : "focus:border-[#9EDCFF]/70"}`}
                     >
-                      <option value="" disabled>Select your party</option>
+                      <option value="" disabled>{isSiteGuestAccess ? "Members only" : "Select your party"}</option>
                       {getVisibleGuestOptions().map((guest) => <option key={guest} value={guest}>{guest}</option>)}
                     </select>
                     <button type="button" onClick={() => openTripDashboard("Guest")} className={`rounded-2xl border bg-black/75 px-3 py-3 text-sm font-light uppercase tracking-[0.12em] outline-none backdrop-blur-md transition ${selectedTrip === "taiwan" ? "border-[#72E49A]/40 text-[#72E49A] hover:border-[#72E49A]/70 hover:bg-[#72E49A]/10" : "border-[#9EDCFF]/40 text-[#9EDCFF] hover:border-[#9EDCFF]/70 hover:bg-[#9EDCFF]/10"}`}>Guest</button>
@@ -3266,14 +3295,15 @@ export default function TravelSite() {
                   <div className="mb-5 grid grid-cols-[2fr_1fr] gap-2 text-left">
                     <select
                       defaultValue=""
+                      disabled={isSiteGuestAccess || siteAccessMode === "loading"}
                       onChange={(event) => {
                         const selectedGuest = event.target.value;
                         if (!selectedGuest) return;
                         openTripDashboard(selectedGuest);
                       }}
-                      className="min-w-0 rounded-2xl border border-white/15 bg-[#111] px-4 py-3 text-sm font-light tracking-wide text-white/75 outline-none transition focus:border-white/35"
+                      className="min-w-0 rounded-2xl border border-white/15 bg-[#111] px-4 py-3 text-sm font-light tracking-wide text-white/75 outline-none transition focus:border-white/35 disabled:cursor-not-allowed disabled:text-white/30"
                     >
-                      <option value="" disabled>Select your party</option>
+                      <option value="" disabled>{isSiteGuestAccess ? "Members only" : "Select your party"}</option>
                       {getVisibleGuestOptions().map((guest) => <option key={guest} value={guest}>{guest}</option>)}
                     </select>
                     <button type="button" onClick={() => openTripDashboard("Guest")} className="rounded-2xl border border-white/15 bg-[#111] px-3 py-3 text-sm font-light uppercase tracking-[0.12em] text-white/65 transition hover:border-white/35 hover:text-white">Guest</button>
