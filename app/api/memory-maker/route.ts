@@ -68,6 +68,9 @@ export async function POST(request: NextRequest) {
     const file = formData.get("file");
 
     if (!VALID_ALBUMS.has(album) || !albumName) return NextResponse.json({ error: "Unknown album." }, { status: 400 });
+    if (!uploader || uploader === "Guest" || uploader === "I am just a random Guest") {
+      return NextResponse.json({ error: "Guest access is view-only." }, { status: 403 });
+    }
     if (!(file instanceof File)) return NextResponse.json({ error: "A photo is required." }, { status: 400 });
     if (!file.type.startsWith("image/")) {
       return NextResponse.json({ error: "Only photos can be uploaded." }, { status: 400 });
@@ -113,11 +116,11 @@ export async function DELETE(request: NextRequest) {
   const album = typeof body.album === "string" ? body.album : "";
   const password = typeof body.password === "string" ? body.password : "";
 
-  if (!process.env.SITE_PASSWORD) {
-    return NextResponse.json({ error: "Administrator password is not configured." }, { status: 503 });
+  if (!process.env.ADMIN_ACTION_PASSWORD) {
+    return NextResponse.json({ error: "Admin action password is not configured." }, { status: 503 });
   }
-  if (password !== process.env.SITE_PASSWORD) {
-    return NextResponse.json({ error: "Incorrect administrator password." }, { status: 401 });
+  if (password !== process.env.ADMIN_ACTION_PASSWORD) {
+    return NextResponse.json({ error: "Incorrect admin action password." }, { status: 401 });
   }
   if (!ids.length || !VALID_ALBUMS.has(album)) {
     return NextResponse.json({ error: "Unknown photo." }, { status: 400 });

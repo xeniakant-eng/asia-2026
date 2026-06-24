@@ -1,6 +1,7 @@
 "use client";
 
 import { use, useCallback, useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 type MemoryMakerFile = {
   id: string;
@@ -21,6 +22,8 @@ const ALBUM_NAMES: Record<string, string> = {
 
 export default function MemoryMakerAlbumPage({ params }: { params: Promise<{ albumKey: string }> }) {
   const { albumKey } = use(params);
+  const searchParams = useSearchParams();
+  const isReadOnlyGuest = searchParams.get("guest") === "Guest";
   const [files, setFiles] = useState<MemoryMakerFile[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -71,6 +74,10 @@ export default function MemoryMakerAlbumPage({ params }: { params: Promise<{ alb
   const albumName = ALBUM_NAMES[albumKey] || "Trip";
   const activePhoto = activePhotoIndex === null ? null : files[activePhotoIndex];
   const deletePhotos = async (ids: string[]) => {
+    if (isReadOnlyGuest) {
+      setMessage("Guest access is view-only.");
+      return;
+    }
     if (!ids.length || !window.confirm(`Delete ${ids.length === 1 ? "this photo" : `these ${ids.length} photos`} permanently from the shared album?`)) return;
     const password = window.prompt(`Enter the administrator password to delete ${ids.length === 1 ? "this photo" : "these photos"}:`);
     if (password === null) return;
@@ -97,6 +104,10 @@ export default function MemoryMakerAlbumPage({ params }: { params: Promise<{ alb
   };
 
   const downloadSelectedPhotos = async () => {
+    if (isReadOnlyGuest) {
+      setMessage("Guest access is view-only.");
+      return;
+    }
     const selectedFiles = files.filter((file) => selectedIds.includes(file.id));
     if (!selectedFiles.length) return;
     setIsBulkWorking(true);
@@ -159,11 +170,11 @@ export default function MemoryMakerAlbumPage({ params }: { params: Promise<{ alb
 
         {!isLoading && files.length > 0 && (
           <div className="mb-5 flex flex-wrap items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-3">
-            <label className="flex cursor-pointer items-center gap-2 px-2 text-xs uppercase tracking-[0.14em] text-white/55"><input type="checkbox" checked={selectedIds.length === files.length} onChange={(event) => setSelectedIds(event.target.checked ? files.map((file) => file.id) : [])} className="h-4 w-4 accent-[#72E49A]" />Select all</label>
-            <span className="text-xs text-white/35">{selectedIds.length} selected</span>
+            <label className={`flex items-center gap-2 px-2 text-xs uppercase tracking-[0.14em] ${isReadOnlyGuest ? "cursor-not-allowed text-white/25" : "cursor-pointer text-white/55"}`}><input type="checkbox" disabled={isReadOnlyGuest} checked={!isReadOnlyGuest && selectedIds.length === files.length} onChange={(event) => setSelectedIds(event.target.checked ? files.map((file) => file.id) : [])} className="h-4 w-4 accent-[#72E49A] disabled:cursor-not-allowed disabled:opacity-30" />Select all</label>
+            <span className="text-xs text-white/35">{isReadOnlyGuest ? "View only" : `${selectedIds.length} selected`}</span>
             <div className="ml-auto flex gap-2">
-              <button type="button" onClick={downloadSelectedPhotos} disabled={!selectedIds.length || isBulkWorking} className="rounded-full border border-white/20 px-4 py-2 text-xs uppercase tracking-[0.14em] text-white/65 transition hover:border-white/40 disabled:cursor-not-allowed disabled:opacity-30">Save / Download</button>
-              <button type="button" onClick={() => deletePhotos(selectedIds)} disabled={!selectedIds.length || isBulkWorking} className="rounded-full border border-red-300/20 px-4 py-2 text-xs uppercase tracking-[0.14em] text-red-200/65 transition hover:border-red-300/45 disabled:cursor-not-allowed disabled:opacity-30">Delete</button>
+              <button type="button" onClick={downloadSelectedPhotos} disabled={isReadOnlyGuest || !selectedIds.length || isBulkWorking} className="rounded-full border border-white/20 px-4 py-2 text-xs uppercase tracking-[0.14em] text-white/65 transition hover:border-white/40 disabled:cursor-not-allowed disabled:opacity-30">Save / Download</button>
+              <button type="button" onClick={() => deletePhotos(selectedIds)} disabled={isReadOnlyGuest || !selectedIds.length || isBulkWorking} className="rounded-full border border-red-300/20 px-4 py-2 text-xs uppercase tracking-[0.14em] text-red-200/65 transition hover:border-red-300/45 disabled:cursor-not-allowed disabled:opacity-30">Delete</button>
             </div>
           </div>
         )}
@@ -175,7 +186,7 @@ export default function MemoryMakerAlbumPage({ params }: { params: Promise<{ alb
               <figcaption className="p-3">
                 <div className="flex items-center justify-between gap-3">
                   <p className="min-w-0 truncate text-[10px] text-white/35">{file.uploader}</p>
-                  <label className="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/20 bg-black/30"><input type="checkbox" checked={selectedIds.includes(file.id)} onChange={(event) => setSelectedIds((current) => event.target.checked ? [...current, file.id] : current.filter((id) => id !== file.id))} className="h-4 w-4 accent-[#72E49A]" aria-label={`Select photo uploaded by ${file.uploader}`} /></label>
+                  <label className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border bg-black/30 ${isReadOnlyGuest ? "cursor-not-allowed border-white/10 opacity-30" : "cursor-pointer border-white/20"}`}><input type="checkbox" disabled={isReadOnlyGuest} checked={!isReadOnlyGuest && selectedIds.includes(file.id)} onChange={(event) => setSelectedIds((current) => event.target.checked ? [...current, file.id] : current.filter((id) => id !== file.id))} className="h-4 w-4 accent-[#72E49A] disabled:cursor-not-allowed" aria-label={`Select photo uploaded by ${file.uploader}`} /></label>
                 </div>
               </figcaption>
             </figure>

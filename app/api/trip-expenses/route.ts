@@ -73,8 +73,8 @@ function getExpenseInput(body: Record<string, unknown>) {
 }
 
 function verifyAdminPassword(password: unknown) {
-  if (!process.env.SITE_PASSWORD) return "Administrator password is not configured.";
-  if (password !== process.env.SITE_PASSWORD) return "Incorrect administrator password.";
+  if (!process.env.ADMIN_ACTION_PASSWORD) return "Admin action password is not configured.";
+  if (password !== process.env.ADMIN_ACTION_PASSWORD) return "Incorrect admin action password.";
   return "";
 }
 
@@ -131,7 +131,7 @@ export async function PATCH(request: NextRequest) {
   try {
     const body = await request.json();
     const passwordError = verifyAdminPassword(body.password);
-    if (passwordError) return NextResponse.json({ error: passwordError }, { status: process.env.SITE_PASSWORD ? 401 : 503 });
+    if (passwordError) return NextResponse.json({ error: passwordError }, { status: process.env.ADMIN_ACTION_PASSWORD ? 401 : 503 });
     const trip = typeof body.trip === "string" ? body.trip : "";
     const id = typeof body.id === "string" ? body.id : "";
     const expense = getExpenseInput(body);
@@ -167,7 +167,7 @@ export async function DELETE(request: NextRequest) {
   try {
     const body = await request.json();
     const passwordError = verifyAdminPassword(body.password);
-    if (passwordError) return NextResponse.json({ error: passwordError }, { status: process.env.SITE_PASSWORD ? 401 : 503 });
+    if (passwordError) return NextResponse.json({ error: passwordError }, { status: process.env.ADMIN_ACTION_PASSWORD ? 401 : 503 });
     const trip = typeof body.trip === "string" ? body.trip : "";
     const id = typeof body.id === "string" ? body.id : "";
     if (!isAllowedTrip(trip) || !id) return NextResponse.json({ error: "Unknown expense." }, { status: 400 });

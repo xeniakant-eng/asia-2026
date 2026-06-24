@@ -66,6 +66,9 @@ export async function POST(request: NextRequest) {
     if (!guest || !itemKey) {
       return NextResponse.json({ error: "Guest and itemKey are required." }, { status: 400 });
     }
+    if (guest === "Guest" || guest === "I am just a random Guest") {
+      return NextResponse.json({ error: "Guest access is read-only." }, { status: 403 });
+    }
 
     const response = await fetch(`${config.url}/rest/v1/checklist_progress`, {
       method: "POST",

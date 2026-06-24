@@ -263,6 +263,7 @@ function MemoryMaker({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const isReadOnlyGuest = guestName === "Guest";
   const albumUrl = `/memory-maker/${albumKey}?returnChapter=${encodeURIComponent(returnChapter)}&guest=${encodeURIComponent(guestName || "Guest")}`;
   const viewAlbum = () => {
     if (onViewAlbum) {
@@ -273,6 +274,10 @@ function MemoryMaker({
   };
 
   const uploadFiles = async (selectedFiles: FileList | null) => {
+    if (isReadOnlyGuest) {
+      setMessage("Guest access is view-only.");
+      return;
+    }
     if (!selectedFiles?.length) return;
     const files = Array.from(selectedFiles);
     setIsLoading(true);
@@ -319,7 +324,7 @@ function MemoryMaker({
   };
 
   const compactUploadButton = (
-    <button type="button" disabled={isLoading} onClick={() => fileInputRef.current?.click()} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border px-4 py-3 text-center transition disabled:cursor-wait disabled:opacity-50" style={{ borderColor: `${accentColor}59`, backgroundColor: `${accentColor}18` }}>
+    <button type="button" disabled={isLoading || isReadOnlyGuest} onClick={() => fileInputRef.current?.click()} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border px-4 py-3 text-center transition disabled:cursor-not-allowed disabled:opacity-35" style={{ borderColor: `${accentColor}59`, backgroundColor: `${accentColor}18` }}>
       <span className="text-xl">📤</span>
       <span className="text-xs font-light uppercase tracking-[0.16em]" style={{ color: accentColor }}>{uploadLabel}</span>
     </button>
@@ -365,7 +370,7 @@ function MemoryMaker({
         </div>
         <div className="grid gap-3 sm:grid-cols-2 md:min-w-[300px]">
           <input ref={fileInputRef} type="file" multiple accept="image/*" className="hidden" onChange={(event) => uploadFiles(event.target.files)} />
-          <button type="button" disabled={isLoading} onClick={() => fileInputRef.current?.click()} className="rounded-full border border-white/20 bg-white/[0.04] px-5 py-3 text-sm uppercase tracking-[0.18em] text-white/70 transition hover:border-white/40 hover:bg-white/[0.08] disabled:cursor-wait disabled:opacity-50">Upload</button>
+          <button type="button" disabled={isLoading || isReadOnlyGuest} onClick={() => fileInputRef.current?.click()} className="rounded-full border border-white/20 bg-white/[0.04] px-5 py-3 text-sm uppercase tracking-[0.18em] text-white/70 transition hover:border-white/40 hover:bg-white/[0.08] disabled:cursor-not-allowed disabled:opacity-35">Upload</button>
           <button type="button" onClick={viewAlbum} className="rounded-full border border-white/20 bg-white/[0.04] px-5 py-3 text-center text-sm uppercase tracking-[0.18em] text-white/70 transition hover:border-white/40 hover:bg-white/[0.08]">View Album</button>
         </div>
       </div>
@@ -417,7 +422,7 @@ async function createTripSignup(tripKey: SignupTripKey, name: string): Promise<s
 }
 
 async function fetchChecklistProgress(guest: string): Promise<Record<string, boolean> | null> {
-  if (!guest || guest === "I am just a random Guest") return null;
+  if (!guest || guest === "Guest" || guest === "I am just a random Guest") return null;
   try {
     const response = await fetch(`/api/checklist-progress?guest=${encodeURIComponent(guest)}`);
     if (!response.ok) return null;
@@ -429,7 +434,7 @@ async function fetchChecklistProgress(guest: string): Promise<Record<string, boo
 }
 
 async function saveChecklistProgress(guest: string, itemKey: string, checked: boolean): Promise<boolean> {
-  if (!guest || guest === "I am just a random Guest") return false;
+  if (!guest || guest === "Guest" || guest === "I am just a random Guest") return false;
   try {
     const response = await fetch("/api/checklist-progress", {
       method: "POST",
@@ -1242,7 +1247,7 @@ export default function TravelSite() {
   }, []);
 
   useEffect(() => {
-    if (!guestName) return;
+    if (!guestName || guestName === "Guest") return;
     const storageKey = `checklistProgress-${guestName}`;
     try {
       const localProgress = JSON.parse(window.localStorage.getItem(storageKey) || "{}");
@@ -1763,6 +1768,7 @@ export default function TravelSite() {
   };
 
   const togglePackingItem = (itemKey: string, checked: boolean) => {
+    if (guestName === "Guest") return;
     const nextChecked = !checked;
     setCheckedPackingItems((current) => ({ ...current, [itemKey]: nextChecked }));
 
@@ -2481,7 +2487,7 @@ export default function TravelSite() {
                     </div>
                   </div>
                   <img src="/morocco-2026-poster.png" alt="Morocco 2026 travel poster" className="absolute inset-x-0 bottom-0 top-20 h-[calc(100%-5rem)] w-full object-cover" />
-                  <div className="absolute inset-x-0 bottom-0 grid grid-cols-2 gap-2 bg-gradient-to-t from-black via-black/72 to-transparent px-4 pb-4 pt-20">
+                  <div className="absolute inset-x-0 bottom-0 grid grid-cols-[2fr_1fr] gap-2 bg-gradient-to-t from-black via-black/72 to-transparent px-4 pb-4 pt-20">
                     <select
                       defaultValue=""
                       onChange={(event) => {
@@ -2489,12 +2495,12 @@ export default function TravelSite() {
                         if (!selectedGuest) return;
                         openTripDashboard(selectedGuest);
                       }}
-                      className="w-full rounded-2xl border border-white/25 bg-black/75 px-4 py-3 text-sm font-light tracking-wide text-white outline-none backdrop-blur-md transition focus:border-[#D6B48C]/70"
+                      className="min-w-0 rounded-2xl border border-white/25 bg-black/75 px-4 py-3 text-sm font-light tracking-wide text-white outline-none backdrop-blur-md transition focus:border-[#D6B48C]/70"
                     >
-                      <option value="" disabled>{moroccoInterestedNames.length ? "Select your party" : "No parties added yet"}</option>
+                      <option value="" disabled>Select your party</option>
                       {moroccoInterestedNames.map((name) => <option key={name} value={name}>{name}</option>)}
                     </select>
-                    <button type="button" onClick={() => openTripDashboard("Guest")} className="rounded-2xl border border-[#D6B48C]/40 bg-black/75 px-4 py-3 text-sm font-light uppercase tracking-[0.16em] text-[#D6B48C] outline-none backdrop-blur-md transition hover:border-[#D6B48C]/70 hover:bg-[#D6B48C]/10">Guest</button>
+                    <button type="button" onClick={() => openTripDashboard("Guest")} className="rounded-2xl border border-[#D6B48C]/40 bg-black/75 px-3 py-3 text-sm font-light uppercase tracking-[0.12em] text-[#D6B48C] outline-none backdrop-blur-md transition hover:border-[#D6B48C]/70 hover:bg-[#D6B48C]/10">Guest</button>
                   </div>
                 </div>
               )}
@@ -2666,22 +2672,20 @@ export default function TravelSite() {
                   </div>
                   <div className="relative min-h-0 flex-1 overflow-hidden bg-black">
                     <img src="/vietnam-2026-poster.png" alt="Vietnam 2026 travel poster" className="absolute inset-0 h-full w-full object-cover object-[center_38%]" />
-                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/75 to-transparent px-4 pb-4 pt-24">
-                      <div className="grid grid-cols-2 gap-2">
-                        <select
-                          defaultValue=""
-                          onChange={(event) => {
-                            const selectedGuest = event.target.value;
-                            if (!selectedGuest) return;
-                            openTripDashboard(selectedGuest);
-                          }}
-                          className="min-w-0 rounded-2xl border border-white/25 bg-black/75 px-4 py-3 text-sm font-light tracking-wide text-white outline-none backdrop-blur-md transition focus:border-[#F6C65B]/70"
-                        >
-                          <option value="" disabled>Select your party</option>
-                          {vietnamConfirmedParties.map((name) => <option key={name} value={name}>{name}</option>)}
-                        </select>
-                        <button type="button" onClick={() => openTripDashboard("Guest")} className="rounded-2xl border border-[#F6C65B]/40 bg-black/75 px-4 py-3 text-sm font-light uppercase tracking-[0.16em] text-[#F6C65B] outline-none backdrop-blur-md transition hover:border-[#F6C65B]/70 hover:bg-[#F6C65B]/10">Guest</button>
-                      </div>
+                    <div className="absolute inset-x-0 bottom-0 grid grid-cols-[2fr_1fr] gap-2 bg-gradient-to-t from-black via-black/75 to-transparent px-4 pb-4 pt-24">
+                      <select
+                        defaultValue=""
+                        onChange={(event) => {
+                          const selectedGuest = event.target.value;
+                          if (!selectedGuest) return;
+                          openTripDashboard(selectedGuest);
+                        }}
+                        className="min-w-0 rounded-2xl border border-white/25 bg-black/75 px-4 py-3 text-sm font-light tracking-wide text-white outline-none backdrop-blur-md transition focus:border-[#F6C65B]/70"
+                      >
+                        <option value="" disabled>Select your party</option>
+                        {vietnamConfirmedParties.map((name) => <option key={name} value={name}>{name}</option>)}
+                      </select>
+                      <button type="button" onClick={() => openTripDashboard("Guest")} className="rounded-2xl border border-[#F6C65B]/40 bg-black/75 px-3 py-3 text-sm font-light uppercase tracking-[0.12em] text-[#F6C65B] outline-none backdrop-blur-md transition hover:border-[#F6C65B]/70 hover:bg-[#F6C65B]/10">Guest</button>
                     </div>
                   </div>
                 </>
@@ -3239,45 +3243,41 @@ export default function TravelSite() {
               {selectedTrip === "okinawaJapan" || selectedTrip === "taiwan" ? (
                 <div className={`relative min-h-0 flex-1 overflow-hidden ${selectedTrip === "taiwan" ? "bg-black" : "bg-[#020B18]"}`}>
                   <img src={selectedTrip === "taiwan" ? "/taiwan-2026-poster.png" : "/okinawa-2026-poster.png"} alt={selectedTrip === "taiwan" ? "Taiwan 2026 travel poster" : "Okinawa Japan 2026 travel poster"} className={`absolute inset-0 h-full w-full object-cover ${selectedTrip === "taiwan" ? "scale-[1.08] -translate-y-6 object-center" : "object-center"}`} />
-                  <div className={`absolute inset-x-0 bottom-0 bg-gradient-to-t from-black px-4 pb-4 ${selectedTrip === "taiwan" ? "via-black/90 pt-28" : "via-black/72 pt-20"} to-transparent`}>
-                    <div className="grid grid-cols-2 gap-2">
-                      <select
-                        defaultValue=""
-                        onChange={(event) => {
-                          const selectedGuest = event.target.value;
-                          if (!selectedGuest) return;
-                          openTripDashboard(selectedGuest);
-                        }}
-                        className={`min-w-0 rounded-2xl border border-white/25 bg-black/75 px-4 py-3 text-sm font-light tracking-wide text-white outline-none backdrop-blur-md transition ${selectedTrip === "taiwan" ? "focus:border-[#72E49A]/70" : "focus:border-[#9EDCFF]/70"}`}
-                      >
-                        <option value="" disabled>Select your party</option>
-                        {getVisibleGuestOptions().map((guest) => <option key={guest} value={guest}>{guest}</option>)}
-                      </select>
-                      <button type="button" onClick={() => openTripDashboard("Guest")} className={`rounded-2xl border bg-black/75 px-4 py-3 text-sm font-light uppercase tracking-[0.16em] outline-none backdrop-blur-md transition ${selectedTrip === "taiwan" ? "border-[#72E49A]/40 text-[#72E49A] hover:border-[#72E49A]/70 hover:bg-[#72E49A]/10" : "border-[#9EDCFF]/40 text-[#9EDCFF] hover:border-[#9EDCFF]/70 hover:bg-[#9EDCFF]/10"}`}>Guest</button>
-                    </div>
+                  <div className={`absolute inset-x-0 bottom-0 grid grid-cols-[2fr_1fr] gap-2 bg-gradient-to-t from-black px-4 pb-4 ${selectedTrip === "taiwan" ? "via-black/90 pt-28" : "via-black/72 pt-20"} to-transparent`}>
+                    <select
+                      defaultValue=""
+                      onChange={(event) => {
+                        const selectedGuest = event.target.value;
+                        if (!selectedGuest) return;
+                        openTripDashboard(selectedGuest);
+                      }}
+                      className={`min-w-0 rounded-2xl border border-white/25 bg-black/75 px-4 py-3 text-sm font-light tracking-wide text-white outline-none backdrop-blur-md transition ${selectedTrip === "taiwan" ? "focus:border-[#72E49A]/70" : "focus:border-[#9EDCFF]/70"}`}
+                    >
+                      <option value="" disabled>Select your party</option>
+                      {getVisibleGuestOptions().map((guest) => <option key={guest} value={guest}>{guest}</option>)}
+                    </select>
+                    <button type="button" onClick={() => openTripDashboard("Guest")} className={`rounded-2xl border bg-black/75 px-3 py-3 text-sm font-light uppercase tracking-[0.12em] outline-none backdrop-blur-md transition ${selectedTrip === "taiwan" ? "border-[#72E49A]/40 text-[#72E49A] hover:border-[#72E49A]/70 hover:bg-[#72E49A]/10" : "border-[#9EDCFF]/40 text-[#9EDCFF] hover:border-[#9EDCFF]/70 hover:bg-[#9EDCFF]/10"}`}>Guest</button>
                   </div>
                 </div>
               ) : (
                 <>
                   <h1 className="mb-4 text-3xl font-light tracking-wide">Taiwan 2026</h1>
                   <p className="mb-8 text-sm leading-6 text-white/55">Please select your party to continue.</p>
-                  <label className="mb-5 block text-left">
-                    <div className="grid grid-cols-2 gap-2">
-                      <select
-                        defaultValue=""
-                        onChange={(event) => {
-                          const selectedGuest = event.target.value;
-                          if (!selectedGuest) return;
-                          openTripDashboard(selectedGuest);
-                        }}
-                        className="min-w-0 rounded-2xl border border-white/15 bg-[#111] px-4 py-3 text-sm font-light tracking-wide text-white/75 outline-none transition focus:border-white/35"
-                      >
-                        <option value="" disabled>Select your party</option>
-                        {getVisibleGuestOptions().map((guest) => <option key={guest} value={guest}>{guest}</option>)}
-                      </select>
-                      <button type="button" onClick={() => openTripDashboard("Guest")} className="rounded-2xl border border-white/15 bg-[#111] px-4 py-3 text-sm font-light uppercase tracking-[0.16em] text-white/65 transition hover:border-white/35 hover:text-white">Guest</button>
-                    </div>
-                  </label>
+                  <div className="mb-5 grid grid-cols-[2fr_1fr] gap-2 text-left">
+                    <select
+                      defaultValue=""
+                      onChange={(event) => {
+                        const selectedGuest = event.target.value;
+                        if (!selectedGuest) return;
+                        openTripDashboard(selectedGuest);
+                      }}
+                      className="min-w-0 rounded-2xl border border-white/15 bg-[#111] px-4 py-3 text-sm font-light tracking-wide text-white/75 outline-none transition focus:border-white/35"
+                    >
+                      <option value="" disabled>Select your party</option>
+                      {getVisibleGuestOptions().map((guest) => <option key={guest} value={guest}>{guest}</option>)}
+                    </select>
+                    <button type="button" onClick={() => openTripDashboard("Guest")} className="rounded-2xl border border-white/15 bg-[#111] px-3 py-3 text-sm font-light uppercase tracking-[0.12em] text-white/65 transition hover:border-white/35 hover:text-white">Guest</button>
+                  </div>
                 </>
               )}
             </>
@@ -3330,18 +3330,19 @@ export default function TravelSite() {
 
   if (page === "checklist") {
     const checklist = getPackingChecklist(guestName);
+    const isReadOnlyGuest = guestName === "Guest";
     const totalItems = checklist.sections.reduce((sum, section) => sum + section.items.length, 0);
-    const completedItems = checklist.sections.reduce((sum, section) => sum + section.items.filter((item) => checkedPackingItems[`${guestName}-${section.title}-${item}`]).length, 0);
+    const completedItems = isReadOnlyGuest ? 0 : checklist.sections.reduce((sum, section) => sum + section.items.filter((item) => checkedPackingItems[`${guestName}-${section.title}-${item}`]).length, 0);
     return (
       <div className="min-h-screen bg-black px-6 py-10 text-white">
         {chapterNav("checklist")}
         <main className="mx-auto max-w-4xl">
           <p className="mb-3 text-sm uppercase tracking-[0.35em] text-[#72E49A]">Personal Travel Prep</p>
           <h1 className="mb-4 text-4xl font-light tracking-wide md:text-6xl">{checklist.title}</h1>
-          <p className="mb-8 text-sm text-white/50">{completedItems} of {totalItems} items packed</p>
+          <p className="mb-8 text-sm text-white/50">{isReadOnlyGuest ? "Read-only guest view" : `${completedItems} of ${totalItems} items packed`}</p>
           <div className="mb-10 h-2 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full bg-[#72E49A] transition-all" style={{ width: `${totalItems ? (completedItems / totalItems) * 100 : 0}%` }} /></div>
           <section className="space-y-6">
-            {checklist.sections.map((section) => <article key={section.title} className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md"><h2 className="mb-5 text-2xl font-light">{section.title}</h2><div className="grid gap-3">{section.items.map((item) => { const key = `${guestName}-${section.title}-${item}`; const checked = Boolean(checkedPackingItems[key]); return <button key={key} type="button" onClick={() => togglePackingItem(key, checked)} className={`flex items-center gap-3 rounded-2xl border px-4 py-3 text-left transition ${checked ? "border-[#72E49A]/50 bg-[#72E49A]/10 text-white" : "border-white/10 bg-black/20 text-white/70 hover:border-white/25"}`}><span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-xs ${checked ? "border-[#72E49A] bg-[#72E49A] text-black" : "border-white/25 text-transparent"}`}>✓</span><span className={checked ? "text-white line-through decoration-[#72E49A]/70" : "text-white/75"}>{item}</span></button>; })}</div></article>)}
+            {checklist.sections.map((section) => <article key={section.title} className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md"><h2 className="mb-5 text-2xl font-light">{section.title}</h2><div className="grid gap-3">{section.items.map((item) => { const key = `${guestName}-${section.title}-${item}`; const checked = !isReadOnlyGuest && Boolean(checkedPackingItems[key]); return <button key={key} type="button" disabled={isReadOnlyGuest} onClick={() => togglePackingItem(key, checked)} className={`flex items-center gap-3 rounded-2xl border px-4 py-3 text-left transition ${isReadOnlyGuest ? "cursor-not-allowed border-white/8 bg-black/20 text-white/30" : checked ? "border-[#72E49A]/50 bg-[#72E49A]/10 text-white" : "border-white/10 bg-black/20 text-white/70 hover:border-white/25"}`}><span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-xs ${checked ? "border-[#72E49A] bg-[#72E49A] text-black" : isReadOnlyGuest ? "border-white/12 text-transparent" : "border-white/25 text-transparent"}`}>✓</span><span className={checked ? "text-white line-through decoration-[#72E49A]/70" : isReadOnlyGuest ? "text-white/30" : "text-white/75"}>{item}</span></button>; })}</div></article>)}
           </section>
         </main>
       </div>
@@ -3379,6 +3380,7 @@ export default function TravelSite() {
 
   if (page === "xiaoliuqiu") return renderChapter("xiaoliuqiu", "Taiwan · Xiaoliuqiu", "Scuba Dive Chapter", "Taiwan November", "November", "3 Nights", <p className="mt-1 text-sm font-medium" style={{ color: TAIWAN_GOLD }}>小琉球民宿 TBD</p>, "taiwan", TAIWAN_GOLD, <XiaoliuqiuContent card={card} />);
   if (page === "taipei") {
+    const isReadOnlyGuest = guestName === "Guest";
     const taipeiFoodieItems = ["饗 A Joy (101)", "施家腰花 (永春)", "鼎泰豐總店 (東門)", "門前隱味牛肉麵 (西門漢口)", "晶華故宮", "大腕燒肉", "胡同燒肉", "欣葉台菜", "金蓬萊台菜", "橘色火鍋", "士林夜市", "公館夜市", "饒河夜市", "雙月", "雞窩餐廳 (麟光站)", "Nomura", "康寧街七里香臭豆腐", "清河鵝肉 (天母)", "香帥芋泥蛋糕", "舊振南傳統糕餅", "大稻埕滷肉飯 (台北車站)", "天下三絕 (忠孝復興)", "一品活蝦", "BarWu"];
     const taipeiDayTrips = [
       { titleZh: "台北市東區", titleEn: "Taipei City East", details: [{ zh: "松山文創園區", en: "Songshan Cultural and Creative Park" }, { zh: "國父紀念館", en: "Sun Yat-sen Memorial Hall" }, { zh: "Taipei 101", en: "Taipei 101" }, { zh: "象山步道", en: "Xiangshan Trail" }] },
@@ -3471,7 +3473,7 @@ export default function TravelSite() {
                     <span className="block text-xl">美食清單</span>
                     <span className="block text-xs text-white/45">Foodie List</span>
                   </h2>
-                  <p className="mt-1 text-xs text-white/45">已品嚐 {checkedTaipeiFoodieItems.length} / {taipeiFoodieItems.length} · {checkedTaipeiFoodieItems.length} of {taipeiFoodieItems.length} visited</p>
+                  <p className="mt-1 text-xs text-white/45">{isReadOnlyGuest ? "Read-only guest view" : `已品嚐 ${checkedTaipeiFoodieItems.length} / ${taipeiFoodieItems.length} · ${checkedTaipeiFoodieItems.length} of ${taipeiFoodieItems.length} visited`}</p>
                 </div>
                 <button
                   type="button"
@@ -3485,11 +3487,12 @@ export default function TravelSite() {
               </div>
               <div className="min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-contain p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-5">
                 {taipeiFoodieItems.map((item) => {
-                  const isChecked = checkedTaipeiFoodieItems.includes(item);
+                  const isChecked = !isReadOnlyGuest && checkedTaipeiFoodieItems.includes(item);
                   return (
-                    <label key={item} className="flex cursor-pointer items-center gap-3 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 transition hover:border-white/25 sm:px-4 sm:py-3">
+                    <label key={item} className={`flex items-center gap-3 rounded-xl border px-3 py-2.5 sm:px-4 sm:py-3 ${isReadOnlyGuest ? "cursor-not-allowed border-white/8 bg-white/[0.02]" : "cursor-pointer border-white/10 bg-white/[0.04] transition hover:border-white/25"}`}>
                       <input
                         type="checkbox"
+                        disabled={isReadOnlyGuest}
                         checked={isChecked}
                         onChange={() => {
                           setCheckedTaipeiFoodieItems((current) => {
@@ -3498,9 +3501,9 @@ export default function TravelSite() {
                             return next;
                           });
                         }}
-                        className="h-5 w-5 shrink-0 accent-[#72E49A]"
+                        className="h-5 w-5 shrink-0 accent-[#72E49A] disabled:cursor-not-allowed disabled:opacity-30"
                       />
-                      <span className={isChecked ? "text-sm text-white/40 line-through" : "text-sm text-white/80"}>{item}</span>
+                      <span className={isReadOnlyGuest ? "text-sm text-white/30" : isChecked ? "text-sm text-white/40 line-through" : "text-sm text-white/80"}>{item}</span>
                     </label>
                   );
                 })}
