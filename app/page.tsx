@@ -168,6 +168,7 @@ function TripButton({
   duration,
   status,
   onClick,
+  heroOverlay = false,
 }: {
   location: string;
   subtitle?: string;
@@ -175,6 +176,7 @@ function TripButton({
   duration?: string;
   status: TripStatus;
   onClick: () => void;
+  heroOverlay?: boolean;
 }) {
   const statusStyles: Record<TripStatus, string> = {
     Planning: "border-[#FFD76A]/35 bg-[#FFD76A]/10 text-[#FFD76A]",
@@ -184,7 +186,7 @@ function TripButton({
   const dateLine = formatTripDateLine(date, duration);
 
   return (
-    <button type="button" onClick={onClick} className="flex w-full items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-left text-sm font-light tracking-wide text-white/75 transition hover:border-white/30 hover:bg-white/[0.05]">
+    <button type="button" onClick={onClick} className={`flex w-full items-center justify-between gap-4 rounded-2xl border px-4 py-4 text-left text-sm font-light tracking-wide text-white/75 backdrop-blur-md transition ${heroOverlay ? "border-white/20 bg-black/40 hover:border-white/40 hover:bg-black/55" : "border-white/10 bg-white/[0.03] hover:border-white/30 hover:bg-white/[0.05]"}`}>
       <span className="min-w-0">
         <span className="block">{location}</span>
         {subtitle && <span className="mt-1 block text-xs text-white/60">{subtitle}</span>}
@@ -2429,6 +2431,7 @@ export default function TravelSite() {
     const isPosterHeroSelection = selectedTrip === "morocco" || selectedTrip === "okinawaJapan" || selectedTrip === "taiwan" || selectedTrip === "vietnam";
     const isConfirmedTripAppCard = selectedTrip === "morocco" || selectedTrip === "taiwan" || selectedTrip === "okinawaJapan" || selectedTrip === "vietnam";
     const isSplitTripDashboard = showGuestActions && (selectedTrip === "taiwan" || selectedTrip === "okinawaJapan");
+    const isMainSubmenu = !selectedTrip && mainPageView !== "active";
     const selectedTripAccent = selectedTrip === "taiwan" ? TAIWAN_GOLD : selectedTrip === "okinawaJapan" ? BABY_BLUE : selectedTrip === "vietnam" ? VIETNAM_GOLD : MOROCCO_BROWN;
     const selectedTripDashboardLabel = selectedTrip === "taiwan" ? "Taiwan 2026" : selectedTrip === "okinawaJapan" ? "Okinawa Japan 2026" : selectedTrip === "vietnam" ? "Vietnam 2026" : "Morocco · G-Adventures";
     const okinawaDashboardDates: Record<string, string> = {
@@ -2445,69 +2448,78 @@ export default function TravelSite() {
     const vietnamDashboardBudgetTotal = vietnamDashboardBudgetCosts.reduce((total, cost) => total + (cost.amountCad ?? 0), 0);
     return (
       <div className="flex min-h-screen items-center justify-center bg-black px-6 text-white">
-        <div className={`w-full max-w-md rounded-[2rem] border border-white/10 text-center backdrop-blur-xl ${isConfirmedTripAppCard ? "flex h-[min(760px,calc(100dvh-2rem))] flex-col overflow-hidden" : ""} ${isPosterHeroSelection ? `overflow-hidden ${selectedTrip === "taiwan" || selectedTrip === "morocco" || selectedTrip === "vietnam" ? "bg-black" : "bg-[#020B18]"} shadow-[0_0_44px_rgba(158,220,255,0.16)]` : "bg-white/[0.04] p-8 shadow-[0_0_40px_rgba(255,255,255,0.06)]"}`}>
-          {!isSplitTripDashboard && <p className={isPosterHeroSelection ? "shrink-0 px-8 pt-8 pb-3 text-xs uppercase tracking-[0.35em] text-white/75" : "mb-3 text-xs uppercase tracking-[0.35em] text-white/70"}>Private Group Event</p>}
+        <div className={`w-full max-w-md rounded-[2rem] border border-white/10 text-center backdrop-blur-xl ${isConfirmedTripAppCard || isMainSubmenu ? "flex h-[min(760px,calc(100dvh-2rem))] flex-col overflow-hidden" : ""} ${isPosterHeroSelection ? `overflow-hidden ${selectedTrip === "taiwan" || selectedTrip === "morocco" || selectedTrip === "vietnam" ? "bg-black" : "bg-[#020B18]"} shadow-[0_0_44px_rgba(158,220,255,0.16)]` : isMainSubmenu ? "bg-black shadow-[0_0_44px_rgba(255,255,255,0.1)]" : "bg-white/[0.04] p-8 shadow-[0_0_40px_rgba(255,255,255,0.06)]"}`}>
+          {!isSplitTripDashboard && <p className={isPosterHeroSelection || isMainSubmenu ? "relative z-20 shrink-0 px-8 pt-8 pb-3 text-xs uppercase tracking-[0.35em] text-white/75" : "mb-3 text-xs uppercase tracking-[0.35em] text-white/70"}>Private Group Event</p>}
           {!selectedTrip ? (
             <>
-              <h1 className={mainPageView === "active" ? "mb-5 text-white" : "mb-4 text-3xl font-light tracking-wide"}>
-                {mainPageView === "active" ? (
+              {mainPageView === "active" ? (
+                <>
+                  <h1 className="mb-5 text-white">
                   <>
                     <span className="block font-serif text-[2.65rem] italic leading-none tracking-normal text-white/95">Welcome,</span>
                     <span className="mt-2 block font-serif text-[2.15rem] leading-tight tracking-normal text-white/90">where are we going?</span>
                   </>
-                ) : mainPageView === "ski" ? (
-                  <span className="block">2026/2027 Ski Season</span>
-                ) : mainPageView === "future" ? (
-                  <span className="block">Sign Up for Future Trips</span>
-                ) : (
-                  <span className="block">Archived Trips</span>
-                )}
-              </h1>
-              {mainPageView !== "active" && (
-                <button type="button" onClick={() => setMainPageView("active")} className="mb-4 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45 transition hover:border-white/30 hover:text-white/70">Back</button>
-              )}
-              {mainPageView === "active" && (
-                <div className="space-y-3">
-                  <TripButton location="Morocco" date="Sept 4 - Sept 16 2026" status="Confirmed" onClick={() => openTripPage("morocco")} />
-                  <TripButton location="Vietnam" date="Nov 12 - Nov 21 2026" status="Confirmed" onClick={() => openTripPage("vietnam")} />
-                  <TripButton location="Taiwan" date="Nov 21 - Dec 21 2026" status="Confirmed" onClick={() => openTripPage("taiwan")} />
-                  <TripButton location="Okinawa Japan" date="Nov 25 - Dec 6 2026" status="Confirmed" onClick={() => openTripPage("okinawaJapan")} />
-                  <div className="pt-3 space-y-3">
-                    <MainHubButton title="2026/2027 Ski Season" subtitle="View Shiga Kogen, Deer Valley, and SkiBig3" onClick={() => setMainPageView("ski")} />
-                    <MainHubButton title="Sign Up for Future Trips" subtitle="Dreaming-stage trips collecting interest" onClick={() => setMainPageView("future")} />
-                    <MainHubButton title="Archived Trips" subtitle="Completed trips will live here" onClick={() => setMainPageView("archive")} />
+                  </h1>
+                  <div className="space-y-3">
+                    <TripButton location="Morocco" date="Sept 4 - Sept 16 2026" status="Confirmed" onClick={() => openTripPage("morocco")} />
+                    <TripButton location="Vietnam" date="Nov 12 - Nov 21 2026" status="Confirmed" onClick={() => openTripPage("vietnam")} />
+                    <TripButton location="Taiwan" date="Nov 21 - Dec 21 2026" status="Confirmed" onClick={() => openTripPage("taiwan")} />
+                    <TripButton location="Okinawa Japan" date="Nov 25 - Dec 6 2026" status="Confirmed" onClick={() => openTripPage("okinawaJapan")} />
+                    <div className="space-y-3 pt-3">
+                      <MainHubButton title="2026/2027 Ski Season" subtitle="View Shiga Kogen, Deer Valley, and SkiBig3" onClick={() => setMainPageView("ski")} />
+                      <MainHubButton title="Sign Up for Future Trips" subtitle="Dreaming-stage trips collecting interest" onClick={() => setMainPageView("future")} />
+                      <MainHubButton title="Archived Trips" subtitle="Completed trips will live here" onClick={() => setMainPageView("archive")} />
+                    </div>
                   </div>
-                </div>
-              )}
-              {mainPageView === "ski" && (
-                <div className="space-y-3">
-                  <TripButton location="Ski Shiga Kogen & Nagano Japan" date="Jan 23 - Jan 31 2027" status="Dreaming" onClick={() => openTripPage("skiMyoko")} />
-                  <TripButton location="Ski Deer Valley UT USA" date="Feb 2027" status="Dreaming" onClick={() => openTripPage("skiDeerValley")} />
-                  <TripButton location="SkiBig3 AB Canada" date="Mar 2027" status="Dreaming" onClick={() => openTripPage("skiBig3")} />
-                </div>
-              )}
-              {mainPageView === "future" && (
-                <div className="space-y-3">
-                  <TripButton location="Panama" date="March 2027" duration="7 days" status="Dreaming" onClick={() => openTripPage("panama")} />
-                  <TripButton location="Houston & Galveston TX USA" subtitle="FRC & Disney Cruise" date="April 28 - May 7 2027" status="Dreaming" onClick={() => openTripPage("houston")} />
-                  <TripButton location="Azores Portugal" date="Sept 2027" duration="9 days" status="Dreaming" onClick={() => openTripPage("azoresPortugal")} />
-                  <TripButton location="Similan & Phuket Thailand" subtitle="Scuba Diving Liveaboard" date="Mar 2028" duration="9 days" status="Dreaming" onClick={() => openTripPage("similanThailand")} />
-                  <TripButton location="Central Vietnam" date="Mar 2028" duration="6 days" status="Dreaming" onClick={() => openTripPage("centralVietnam")} />
-                  <TripButton location="Orlando FL USA" subtitle="Disney World" date="Nov 2028" duration="7 days" status="Dreaming" onClick={() => openTripPage("disneyWorld")} />
-                  <TripButton location="The 5 Stans & Silk Road" date="TBD" duration="16 days" status="Dreaming" onClick={() => openTripPage("fiveStans")} />
-                </div>
-              )}
-              {mainPageView === "archive" && (
-                <div className="space-y-3">
-                  <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-5 text-sm text-white/40">
-                    Completed trips will be added here.
+                  {isSiteGuestAccess && (
+                    <button type="button" onClick={switchSiteAccess} className="mt-5 w-full rounded-full border border-white/15 bg-white/[0.03] px-4 py-2.5 text-xs uppercase tracking-[0.18em] text-white/45 transition hover:border-white/30 hover:bg-white/[0.06] hover:text-white/70">
+                      Member Login
+                    </button>
+                  )}
+                </>
+              ) : (
+                <section className="relative flex min-h-0 flex-1 flex-col overflow-hidden text-left">
+                  {mainPageView !== "archive" && (
+                    <img
+                      src={mainPageView === "ski" ? "/ski-season-menu-hero.webp" : "/future-trips-menu-hero.webp"}
+                      alt=""
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-0 h-full w-full object-cover object-center"
+                    />
+                  )}
+                  <div className={`pointer-events-none absolute inset-0 ${mainPageView === "ski" ? "bg-gradient-to-b from-[#06111f]/65 via-black/48 to-black/88" : mainPageView === "future" ? "bg-gradient-to-b from-black/58 via-[#02101c]/52 to-black/90" : "bg-black"}`} />
+                  <div className="relative z-10 shrink-0 px-5 pb-4 pt-2 text-center">
+                    <h1 className="text-2xl font-light tracking-wide text-white">
+                      {mainPageView === "ski" ? "2026/2027 Ski Season" : mainPageView === "future" ? "Sign Up for Future Trips" : "Archived Trips"}
+                    </h1>
+                    <button type="button" onClick={() => setMainPageView("active")} className="mt-4 w-full rounded-full border border-white/30 bg-black/70 px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/70 backdrop-blur-md transition hover:border-white/45 hover:bg-black/80 hover:text-white">Back</button>
                   </div>
-                </div>
-              )}
-              {isSiteGuestAccess && (
-                <button type="button" onClick={switchSiteAccess} className="mt-5 w-full rounded-full border border-white/15 bg-white/[0.03] px-4 py-2.5 text-xs uppercase tracking-[0.18em] text-white/45 transition hover:border-white/30 hover:bg-white/[0.06] hover:text-white/70">
-                  Member Login
-                </button>
+                  <div className="relative z-10 min-h-0 flex-1 space-y-3 overflow-y-auto px-5 pb-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                    {mainPageView === "ski" && (
+                      <>
+                        <TripButton location="Ski Shiga Kogen & Nagano Japan" date="Jan 23 - Jan 31 2027" status="Dreaming" heroOverlay onClick={() => openTripPage("skiMyoko")} />
+                        <TripButton location="Ski Deer Valley UT USA" date="Feb 2027" status="Dreaming" heroOverlay onClick={() => openTripPage("skiDeerValley")} />
+                        <TripButton location="SkiBig3 AB Canada" date="Mar 2027" status="Dreaming" heroOverlay onClick={() => openTripPage("skiBig3")} />
+                      </>
+                    )}
+                    {mainPageView === "future" && (
+                      <>
+                        <TripButton location="Panama" date="March 2027" duration="7 days" status="Dreaming" heroOverlay onClick={() => openTripPage("panama")} />
+                        <TripButton location="Houston & Galveston TX USA" subtitle="FRC & Disney Cruise" date="April 28 - May 7 2027" status="Dreaming" heroOverlay onClick={() => openTripPage("houston")} />
+                        <TripButton location="Azores Portugal" date="Sept 2027" duration="9 days" status="Dreaming" heroOverlay onClick={() => openTripPage("azoresPortugal")} />
+                        <TripButton location="Similan & Phuket Thailand" subtitle="Scuba Diving Liveaboard" date="Mar 2028" duration="9 days" status="Dreaming" heroOverlay onClick={() => openTripPage("similanThailand")} />
+                        <TripButton location="Central Vietnam" date="Mar 2028" duration="6 days" status="Dreaming" heroOverlay onClick={() => openTripPage("centralVietnam")} />
+                        <TripButton location="Orlando FL USA" subtitle="Disney World" date="Nov 2028" duration="7 days" status="Dreaming" heroOverlay onClick={() => openTripPage("disneyWorld")} />
+                        <TripButton location="The 5 Stans & Silk Road" date="TBD" duration="16 days" status="Dreaming" heroOverlay onClick={() => openTripPage("fiveStans")} />
+                      </>
+                    )}
+                    {mainPageView === "archive" && (
+                      <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-5 text-center text-sm text-white/40">
+                        Completed trips will be added here.
+                      </div>
+                    )}
+                  </div>
+                </section>
               )}
             </>
           ) : selectedTrip === "morocco" ? (
