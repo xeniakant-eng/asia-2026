@@ -1250,6 +1250,30 @@ export default function TravelSite() {
   }, [siteAccessMode, selectedTrip, guestName]);
 
   useEffect(() => {
+    const dashboardHeroByTrip: Partial<Record<TripKey, string>> = {
+      morocco: "/morocco-dashboard-hero.webp",
+      taiwan: "/taiwan-dashboard-hero.webp",
+      okinawaJapan: "/okinawa-dashboard-hero.webp",
+      vietnam: "/vietnam-dashboard-hero.webp",
+    };
+    const heroUrl = selectedTrip ? dashboardHeroByTrip[selectedTrip] : undefined;
+    if (!heroUrl) return;
+
+    const existingPreload = document.head.querySelector<HTMLLinkElement>(`link[data-dashboard-hero="${heroUrl}"]`);
+    if (existingPreload) return;
+
+    const preload = document.createElement("link");
+    preload.rel = "preload";
+    preload.as = "image";
+    preload.href = heroUrl;
+    preload.type = "image/webp";
+    preload.dataset.dashboardHero = heroUrl;
+    document.head.appendChild(preload);
+
+    return () => preload.remove();
+  }, [selectedTrip]);
+
+  useEffect(() => {
     applyRouteFromLocation();
     const handlePopState = () => applyRouteFromLocation();
     window.addEventListener("popstate", handlePopState);
@@ -2491,7 +2515,7 @@ export default function TravelSite() {
               {guestName ? (
                 <>
                   <section className="relative flex min-h-0 flex-1 flex-col overflow-hidden bg-[#120D09] px-5 pb-5 text-left">
-                    <img src="/morocco-dashboard-hero.png" alt="" aria-hidden="true" className="absolute inset-x-0 bottom-0 top-20 h-[calc(100%-5rem)] w-full object-cover object-center" />
+                    <img src="/morocco-dashboard-hero.webp" alt="" aria-hidden="true" className="absolute inset-x-0 bottom-0 top-20 h-[calc(100%-5rem)] w-full object-cover object-center" />
                     <div className="absolute inset-0 bg-gradient-to-b from-black/46 via-black/52 to-black/78" />
                     <div className="relative z-10 mb-5 grid grid-cols-2 gap-2">
                       <button type="button" onClick={() => { setGuestName(""); setShowMoroccoChecklist(false); setBrowserRoute(buildTripUrl("morocco")); }} className="rounded-full border border-white/30 bg-black/70 px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-white/80 backdrop-blur-md transition hover:border-white/45 hover:bg-black/85">Back</button>
@@ -2685,7 +2709,7 @@ export default function TravelSite() {
             <>
               {guestName ? (
                 <section className="relative flex min-h-0 flex-1 flex-col overflow-hidden bg-black px-5 pb-5 text-left">
-                  <img src="/vietnam-dashboard-hero.png" alt="" aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 top-20 h-[calc(100%-5rem)] w-full object-cover object-[center_38%]" />
+                  <img src="/vietnam-dashboard-hero.webp" alt="" aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 top-20 h-[calc(100%-5rem)] w-full object-cover object-[center_38%]" />
                   <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/46 via-black/52 to-black/78" />
                   <div className="relative z-10 mb-5 grid grid-cols-2 gap-2">
                     <button type="button" onClick={() => { setGuestName(""); setShowGuestActions(false); setBrowserRoute(buildTripUrl("vietnam")); }} className="rounded-full border border-white/30 bg-black/70 px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-white/80 backdrop-blur-md transition hover:border-white/45 hover:bg-black/85">Back</button>
@@ -3345,7 +3369,7 @@ export default function TravelSite() {
             <>
               <section className="relative flex min-h-0 flex-1 flex-col overflow-hidden bg-black px-5 pb-5 pt-8 text-left">
                 <img
-                  src={selectedTrip === "taiwan" ? "/taiwan-dashboard-hero.png" : "/okinawa-dashboard-hero.png"}
+                  src={selectedTrip === "taiwan" ? "/taiwan-dashboard-hero.webp" : "/okinawa-dashboard-hero.webp"}
                   alt=""
                   aria-hidden="true"
                   className={`pointer-events-none absolute inset-x-0 bottom-0 top-20 z-0 h-[calc(100%-5rem)] w-full object-cover ${selectedTrip === "taiwan" ? "scale-[1.08] -translate-y-6 object-center" : "object-center"}`}
