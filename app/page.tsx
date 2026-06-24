@@ -2474,9 +2474,11 @@ export default function TravelSite() {
                   </div>
                 </div>
               )}
-              <button type="button" onClick={switchSiteAccess} className="mt-5 w-full rounded-full border border-white/15 bg-white/[0.03] px-4 py-2.5 text-xs uppercase tracking-[0.18em] text-white/45 transition hover:border-white/30 hover:bg-white/[0.06] hover:text-white/70">
-                {isSiteGuestAccess ? "Member Login" : "Switch Access"}
-              </button>
+              {isSiteGuestAccess && (
+                <button type="button" onClick={switchSiteAccess} className="mt-5 w-full rounded-full border border-white/15 bg-white/[0.03] px-4 py-2.5 text-xs uppercase tracking-[0.18em] text-white/45 transition hover:border-white/30 hover:bg-white/[0.06] hover:text-white/70">
+                  Member Login
+                </button>
+              )}
             </>
           ) : selectedTrip === "morocco" ? (
             <>
