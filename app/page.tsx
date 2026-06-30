@@ -11,7 +11,7 @@ const VIETNAM_GOLD = "#F6C65B";
 
 type PageName = "map" | "xiaoliuqiu" | "taipei" | "onna" | "nago" | "nanjo" | "naha" | "nahaearly" | "yilan" | "checklist";
 type Region = "japan" | "taiwan";
-type TripKey = "morocco" | "vietnam" | "taiwan" | "okinawaJapan" | "skiMyoko" | "skiDeerValley" | "skiBig3" | "panama" | "houston" | "azoresPortugal" | "similanThailand" | "centralVietnam" | "disneyWorld" | "fiveStans";
+type TripKey = "morocco" | "vietnam" | "taiwan" | "okinawaJapan" | "skiMyoko" | "skiDeerValley" | "skiBig3" | "panama" | "houston" | "azoresPortugal" | "similanThailand" | "centralVietnam" | "mexicoPlaya" | "taiwanApril" | "hawaii" | "disneyWorld" | "fiveStans";
 type MainPageView = "active" | "ski" | "future" | "archive";
 
 const TRIP_PATHS: Record<TripKey, string> = {
@@ -27,6 +27,9 @@ const TRIP_PATHS: Record<TripKey, string> = {
   azoresPortugal: "azores-portugal",
   similanThailand: "similan-thailand",
   centralVietnam: "central-vietnam",
+  mexicoPlaya: "mexico-playa-del-carmen",
+  taiwanApril: "taiwan-april",
+  hawaii: "hawaii-maui-big-island",
   disneyWorld: "disney-world",
   fiveStans: "five-stans",
 };
@@ -64,7 +67,7 @@ type PackingChecklist = {
 
 type Person = [string, string];
 type DashboardSegment = { label: string; page: PageName; color: string };
-type SignupTripKey = "morocco" | "vietnam" | "skiMyoko" | "skiDeerValley" | "skiBig3" | "panama" | "houston" | "azoresPortugal" | "similanThailand" | "centralVietnam" | "disneyWorld" | "fiveStans";
+type SignupTripKey = "morocco" | "vietnam" | "skiMyoko" | "skiDeerValley" | "skiBig3" | "panama" | "houston" | "azoresPortugal" | "similanThailand" | "centralVietnam" | "mexicoPlaya" | "taiwanApril" | "hawaii" | "disneyWorld" | "fiveStans";
 type TripStatus = "Planning" | "Confirmed" | "Dreaming";
 type RentalCarArrangement = {
   id: string;
@@ -664,6 +667,36 @@ export default function TravelSite() {
   });
   const [showCentralVietnamNameInput, setShowCentralVietnamNameInput] = useState(false);
   const [centralVietnamNameInput, setCentralVietnamNameInput] = useState("");
+  const [mexicoPlayaInterestedNames, setMexicoPlayaInterestedNames] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      return JSON.parse(window.localStorage.getItem("mexicoPlayaInterestedNames") || "[]");
+    } catch {
+      return [];
+    }
+  });
+  const [showMexicoPlayaNameInput, setShowMexicoPlayaNameInput] = useState(false);
+  const [mexicoPlayaNameInput, setMexicoPlayaNameInput] = useState("");
+  const [taiwanAprilInterestedNames, setTaiwanAprilInterestedNames] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      return JSON.parse(window.localStorage.getItem("taiwanAprilInterestedNames") || "[]");
+    } catch {
+      return [];
+    }
+  });
+  const [showTaiwanAprilNameInput, setShowTaiwanAprilNameInput] = useState(false);
+  const [taiwanAprilNameInput, setTaiwanAprilNameInput] = useState("");
+  const [hawaiiInterestedNames, setHawaiiInterestedNames] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      return JSON.parse(window.localStorage.getItem("hawaiiInterestedNames") || "[]");
+    } catch {
+      return [];
+    }
+  });
+  const [showHawaiiNameInput, setShowHawaiiNameInput] = useState(false);
+  const [hawaiiNameInput, setHawaiiNameInput] = useState("");
   const [disneyWorldInterestedNames, setDisneyWorldInterestedNames] = useState<string[]>(() => {
     if (typeof window === "undefined") return [];
     try {
@@ -902,10 +935,10 @@ export default function TravelSite() {
           category: "Flights (3 flights)",
           detail: [
             "Nov 12 EVA Air Taipei to Hanoi: $285 CAD x 4 people = $1,140 CAD.",
-            "Nov 17 VietJet Hanoi to Ho Chi Minh City: $84 CAD x 4 people + $16 CAD checked bag = $352 CAD.",
-            "Nov 21 VietJet Ho Chi Minh City to Kaohsiung: $180 CAD x 4 people + $45 CAD checked bag = $765 CAD.",
+            "Nov 17 VietJet Hanoi to Ho Chi Minh City: $84 CAD x 4 people = $336 CAD.",
+            "Nov 21 VietJet Ho Chi Minh City to Kaohsiung: $180 CAD x 4 people = $720 CAD.",
           ],
-          amountCad: 2257.00,
+          amountCad: 2196.00,
         },
         {
           category: "Tours & Attraction Tickets",
@@ -1285,7 +1318,7 @@ export default function TravelSite() {
 
   useEffect(() => {
     async function loadTripSignups() {
-      const [moroccoNames, vietnamNames, skiMyokoNames, skiDeerValleyNames, skiBig3Names, panamaNames, houstonNames, azoresNames, similanNames, centralVietnamNames, disneyWorldNames, fiveStansNames] = await Promise.all([
+      const [moroccoNames, vietnamNames, skiMyokoNames, skiDeerValleyNames, skiBig3Names, panamaNames, houstonNames, azoresNames, similanNames, centralVietnamNames, mexicoPlayaNames, taiwanAprilNames, hawaiiNames, disneyWorldNames, fiveStansNames] = await Promise.all([
         fetchTripSignupNames("morocco"),
         fetchTripSignupNames("vietnam"),
         fetchTripSignupNames("skiMyoko"),
@@ -1296,6 +1329,9 @@ export default function TravelSite() {
         fetchTripSignupNames("azoresPortugal"),
         fetchTripSignupNames("similanThailand"),
         fetchTripSignupNames("centralVietnam"),
+        fetchTripSignupNames("mexicoPlaya"),
+        fetchTripSignupNames("taiwanApril"),
+        fetchTripSignupNames("hawaii"),
         fetchTripSignupNames("disneyWorld"),
         fetchTripSignupNames("fiveStans"),
       ]);
@@ -1309,6 +1345,9 @@ export default function TravelSite() {
       if (azoresNames) setAzoresInterestedNames(azoresNames);
       if (similanNames) setSimilanInterestedNames(similanNames);
       if (centralVietnamNames) setCentralVietnamInterestedNames(centralVietnamNames);
+      if (mexicoPlayaNames) setMexicoPlayaInterestedNames(mexicoPlayaNames);
+      if (taiwanAprilNames) setTaiwanAprilInterestedNames(taiwanAprilNames);
+      if (hawaiiNames) setHawaiiInterestedNames(hawaiiNames);
       if (disneyWorldNames) setDisneyWorldInterestedNames(disneyWorldNames);
       if (fiveStansNames) setFiveStansInterestedNames(fiveStansNames);
     }
@@ -1367,6 +1406,18 @@ export default function TravelSite() {
   useEffect(() => {
     window.localStorage.setItem("centralVietnamInterestedNames", JSON.stringify(centralVietnamInterestedNames));
   }, [centralVietnamInterestedNames]);
+
+  useEffect(() => {
+    window.localStorage.setItem("mexicoPlayaInterestedNames", JSON.stringify(mexicoPlayaInterestedNames));
+  }, [mexicoPlayaInterestedNames]);
+
+  useEffect(() => {
+    window.localStorage.setItem("taiwanAprilInterestedNames", JSON.stringify(taiwanAprilInterestedNames));
+  }, [taiwanAprilInterestedNames]);
+
+  useEffect(() => {
+    window.localStorage.setItem("hawaiiInterestedNames", JSON.stringify(hawaiiInterestedNames));
+  }, [hawaiiInterestedNames]);
 
   useEffect(() => {
     window.localStorage.setItem("disneyWorldInterestedNames", JSON.stringify(disneyWorldInterestedNames));
@@ -1469,11 +1520,13 @@ export default function TravelSite() {
   };
 
   const getPackingChecklist = (guest: string): PackingChecklist => {
+    const internationalDriversLicense = "International Drivers License";
     const essentials = [
       "Passport / travel documents",
       "Travel insurance documents",
       "Credit cards + cash",
       "International/local eSIM or roaming setup",
+      ...(selectedTrip === "okinawaJapan" ? [internationalDriversLicense] : []),
     ];
     const clothes = [
       "Underwear",
@@ -1484,17 +1537,18 @@ export default function TravelSite() {
       "Walking shoes + sandals",
       "Slippers or flipflops",
       "Swimsuit",
+      "Sunglasses / hat",
     ];
     const personal = [
       "Phone charger + power bank",
       "Headphones",
-      "Sunglasses / hat",
       "Laptop/Tablet + charger",
       "Toiletries (toothbrush, toothpaste, hairbrush, skincare, nailcare, shaving supplies)",
       "Reusable water bottle",
       "Sunscreen",
       "Medications",
       "Contact lenses",
+      ...(selectedTrip === "morocco" ? ["Hairdryer", "Camera gear + charger", "Power outlet converter"] : []),
     ];
     const xiaoliuqiuDive = [
       "Dry bag",
@@ -1504,7 +1558,7 @@ export default function TravelSite() {
       "Dive computer + charger",
       "Action camera + charger",
     ];
-    const okinawaSegment = ["Wedding attire", "Resort casual outfit", "International driving permit / car documents"];
+    const okinawaSegment = ["Wedding attire", "Resort casual outfit"];
     const okinawaFunPassThree = "Purchase Okinawa FunPASS Churaumi 3 in 1 for 2 adults + 1 child (For Churaumi Aquarium + Pinappleland + Okinawa World + Shopping Discount)";
     const okinawaFunPassFour = "Purchase Okinawa FunPASS Churaumi 3 in 1 for 3 adults + 2 child (For Churaumi Aquarium + Pinappleland + Okinawa World + Shopping Discount)";
     const okinawaFunPassTwo = "Purchase Okinawa FunPASS Churaumi 3 in 1 for 1 adult + 1 child (For Churaumi Aquarium + Pinappleland + Okinawa World + Shopping Discount)";
@@ -1804,6 +1858,30 @@ export default function TravelSite() {
     await saveInterestedName("centralVietnam", nextName, setCentralVietnamInterestedNames);
     setCentralVietnamNameInput("");
     setShowCentralVietnamNameInput(false);
+  };
+
+  const addMexicoPlayaInterestedName = async () => {
+    const nextName = mexicoPlayaNameInput.trim();
+    if (!nextName) return;
+    await saveInterestedName("mexicoPlaya", nextName, setMexicoPlayaInterestedNames);
+    setMexicoPlayaNameInput("");
+    setShowMexicoPlayaNameInput(false);
+  };
+
+  const addTaiwanAprilInterestedName = async () => {
+    const nextName = taiwanAprilNameInput.trim();
+    if (!nextName) return;
+    await saveInterestedName("taiwanApril", nextName, setTaiwanAprilInterestedNames);
+    setTaiwanAprilNameInput("");
+    setShowTaiwanAprilNameInput(false);
+  };
+
+  const addHawaiiInterestedName = async () => {
+    const nextName = hawaiiNameInput.trim();
+    if (!nextName) return;
+    await saveInterestedName("hawaii", nextName, setHawaiiInterestedNames);
+    setHawaiiNameInput("");
+    setShowHawaiiNameInput(false);
   };
 
   const addDisneyWorldInterestedName = async () => {
@@ -2457,7 +2535,7 @@ export default function TravelSite() {
                   <h1 className="mb-5 text-white">
                   <>
                     <span className="block font-serif text-[2.65rem] italic leading-none tracking-normal text-white/95">Welcome,</span>
-                    <span className="mt-2 block font-serif text-[2.15rem] leading-tight tracking-normal text-white/90">where are we going?</span>
+                    <span className="mt-2 block font-serif text-[1.8rem] leading-tight tracking-normal text-white/90">where are we going?</span>
                   </>
                   </h1>
                   <div className="space-y-3">
@@ -2504,13 +2582,16 @@ export default function TravelSite() {
                     )}
                     {mainPageView === "future" && (
                       <>
-                        <TripButton location="Panama" date="March 2027" duration="7 days" status="Dreaming" heroOverlay onClick={() => openTripPage("panama")} />
+                        <TripButton location="Panama (18+)" date="March 2027" duration="7 days" status="Dreaming" heroOverlay onClick={() => openTripPage("panama")} />
                         <TripButton location="Houston & Galveston TX USA" subtitle="FRC & Disney Cruise" date="April 28 - May 7 2027" status="Dreaming" heroOverlay onClick={() => openTripPage("houston")} />
                         <TripButton location="Azores Portugal" date="Sept 2027" duration="9 days" status="Dreaming" heroOverlay onClick={() => openTripPage("azoresPortugal")} />
+                        <TripButton location="Mexico" subtitle="Playa del Carmen" date="Nov 2027" duration="9 days" status="Dreaming" heroOverlay onClick={() => openTripPage("mexicoPlaya")} />
                         <TripButton location="Similan & Phuket Thailand" subtitle="Scuba Diving Liveaboard" date="Mar 2028" duration="9 days" status="Dreaming" heroOverlay onClick={() => openTripPage("similanThailand")} />
                         <TripButton location="Central Vietnam" date="Mar 2028" duration="6 days" status="Dreaming" heroOverlay onClick={() => openTripPage("centralVietnam")} />
+                        <TripButton location="Taiwan" date="April 2028" duration="14 days" status="Dreaming" heroOverlay onClick={() => openTripPage("taiwanApril")} />
+                        <TripButton location="Hawaii" subtitle="Maui & Big Island" date="May 2028" duration="9 days" status="Dreaming" heroOverlay onClick={() => openTripPage("hawaii")} />
                         <TripButton location="Orlando FL USA" subtitle="Disney World" date="Nov 2028" duration="7 days" status="Dreaming" heroOverlay onClick={() => openTripPage("disneyWorld")} />
-                        <TripButton location="The 5 Stans & Silk Road" date="TBD" duration="16 days" status="Dreaming" heroOverlay onClick={() => openTripPage("fiveStans")} />
+                        <TripButton location="The 5 Stans & Silk Road (18+)" date="TBD" duration="16 days" status="Dreaming" heroOverlay onClick={() => openTripPage("fiveStans")} />
                       </>
                     )}
                     {mainPageView === "archive" && (
@@ -3199,6 +3280,114 @@ export default function TravelSite() {
                 )}
               </section>
             </>
+          ) : selectedTrip === "mexicoPlaya" ? (
+            <>
+              <div className="mb-5 grid grid-cols-2 gap-2">
+                <button type="button" onClick={goToFutureTrips} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
+                <button type="button" onClick={goToMainPage} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
+              </div>
+              <TripPanelTitle location="Mexico" subtitle="Playa del Carmen" date="Nov 2027" duration="9 days" description="A Caribbean coast trip idea with beach time, cenotes, easy food days, and room for nearby day trips around Playa del Carmen." />
+              <div className="space-y-3">
+                <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
+                <button type="button" onClick={() => setShowMexicoPlayaNameInput(true)} className="w-full rounded-2xl border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#FF8FC7] transition hover:border-[#FF8FC7]/60 hover:bg-[#FF8FC7]/15">I am interested</button>
+              </div>
+
+              {showMexicoPlayaNameInput && (
+                <form onSubmit={(event) => { event.preventDefault(); addMexicoPlayaInterestedName(); }} className="mt-5 rounded-3xl border border-white/10 bg-white/[0.03] p-4 text-left">
+                  <label className="mb-2 block text-xs uppercase tracking-[0.22em] text-white/45" htmlFor="mexico-playa-interest-name">Name</label>
+                  <input id="mexico-playa-interest-name" value={mexicoPlayaNameInput} onChange={(event) => setMexicoPlayaNameInput(event.target.value)} autoFocus className="mb-3 w-full rounded-2xl border border-white/15 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-white/40" placeholder="Enter your name" />
+                  <button type="submit" className="w-full rounded-2xl border border-[#72E49A]/35 bg-[#72E49A]/10 px-4 py-3 text-sm uppercase tracking-[0.18em] text-[#72E49A] transition hover:bg-[#72E49A]/15">Add to list</button>
+                </form>
+              )}
+
+              <section className="mt-6 rounded-3xl border border-white/10 bg-black/20 p-5 text-left">
+                <div className="mb-4 flex items-center justify-between gap-3">
+                  <h2 className="text-sm uppercase tracking-[0.24em] text-white/55">Who signed up</h2>
+                  <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-white/45">{mexicoPlayaInterestedNames.length}</span>
+                </div>
+                {mexicoPlayaInterestedNames.length ? (
+                  <div className="space-y-2">
+                    {mexicoPlayaInterestedNames.map((name) => (
+                      <p key={name} className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/75">{name}</p>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm text-white/35">No names added yet.</p>
+                )}
+              </section>
+            </>
+          ) : selectedTrip === "taiwanApril" ? (
+            <>
+              <div className="mb-5 grid grid-cols-2 gap-2">
+                <button type="button" onClick={goToFutureTrips} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
+                <button type="button" onClick={goToMainPage} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
+              </div>
+              <TripPanelTitle location="Taiwan" date="April 2028" duration="14 days" description="A spring Taiwan trip idea with family time, food, markets, day trips, and gentle island exploring." />
+              <div className="space-y-3">
+                <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
+                <button type="button" onClick={() => setShowTaiwanAprilNameInput(true)} className="w-full rounded-2xl border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#FF8FC7] transition hover:border-[#FF8FC7]/60 hover:bg-[#FF8FC7]/15">I am interested</button>
+              </div>
+
+              {showTaiwanAprilNameInput && (
+                <form onSubmit={(event) => { event.preventDefault(); addTaiwanAprilInterestedName(); }} className="mt-5 rounded-3xl border border-white/10 bg-white/[0.03] p-4 text-left">
+                  <label className="mb-2 block text-xs uppercase tracking-[0.22em] text-white/45" htmlFor="taiwan-april-interest-name">Name</label>
+                  <input id="taiwan-april-interest-name" value={taiwanAprilNameInput} onChange={(event) => setTaiwanAprilNameInput(event.target.value)} autoFocus className="mb-3 w-full rounded-2xl border border-white/15 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-white/40" placeholder="Enter your name" />
+                  <button type="submit" className="w-full rounded-2xl border border-[#72E49A]/35 bg-[#72E49A]/10 px-4 py-3 text-sm uppercase tracking-[0.18em] text-[#72E49A] transition hover:bg-[#72E49A]/15">Add to list</button>
+                </form>
+              )}
+
+              <section className="mt-6 rounded-3xl border border-white/10 bg-black/20 p-5 text-left">
+                <div className="mb-4 flex items-center justify-between gap-3">
+                  <h2 className="text-sm uppercase tracking-[0.24em] text-white/55">Who signed up</h2>
+                  <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-white/45">{taiwanAprilInterestedNames.length}</span>
+                </div>
+                {taiwanAprilInterestedNames.length ? (
+                  <div className="space-y-2">
+                    {taiwanAprilInterestedNames.map((name) => (
+                      <p key={name} className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/75">{name}</p>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm text-white/35">No names added yet.</p>
+                )}
+              </section>
+            </>
+          ) : selectedTrip === "hawaii" ? (
+            <>
+              <div className="mb-5 grid grid-cols-2 gap-2">
+                <button type="button" onClick={goToFutureTrips} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
+                <button type="button" onClick={goToMainPage} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
+              </div>
+              <TripPanelTitle location="Hawaii" subtitle="Maui & Big Island" date="May 2028" duration="9 days" description="A two-island Hawaii idea with beaches, volcano landscapes, scenic drives, and relaxed family-friendly days." />
+              <div className="space-y-3">
+                <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
+                <button type="button" onClick={() => setShowHawaiiNameInput(true)} className="w-full rounded-2xl border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#FF8FC7] transition hover:border-[#FF8FC7]/60 hover:bg-[#FF8FC7]/15">I am interested</button>
+              </div>
+
+              {showHawaiiNameInput && (
+                <form onSubmit={(event) => { event.preventDefault(); addHawaiiInterestedName(); }} className="mt-5 rounded-3xl border border-white/10 bg-white/[0.03] p-4 text-left">
+                  <label className="mb-2 block text-xs uppercase tracking-[0.22em] text-white/45" htmlFor="hawaii-interest-name">Name</label>
+                  <input id="hawaii-interest-name" value={hawaiiNameInput} onChange={(event) => setHawaiiNameInput(event.target.value)} autoFocus className="mb-3 w-full rounded-2xl border border-white/15 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-white/40" placeholder="Enter your name" />
+                  <button type="submit" className="w-full rounded-2xl border border-[#72E49A]/35 bg-[#72E49A]/10 px-4 py-3 text-sm uppercase tracking-[0.18em] text-[#72E49A] transition hover:bg-[#72E49A]/15">Add to list</button>
+                </form>
+              )}
+
+              <section className="mt-6 rounded-3xl border border-white/10 bg-black/20 p-5 text-left">
+                <div className="mb-4 flex items-center justify-between gap-3">
+                  <h2 className="text-sm uppercase tracking-[0.24em] text-white/55">Who signed up</h2>
+                  <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-white/45">{hawaiiInterestedNames.length}</span>
+                </div>
+                {hawaiiInterestedNames.length ? (
+                  <div className="space-y-2">
+                    {hawaiiInterestedNames.map((name) => (
+                      <p key={name} className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/75">{name}</p>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm text-white/35">No names added yet.</p>
+                )}
+              </section>
+            </>
           ) : selectedTrip === "disneyWorld" ? (
             <>
               <div className="mb-5 grid grid-cols-2 gap-2">
@@ -3241,7 +3430,7 @@ export default function TravelSite() {
                 <button type="button" onClick={goToFutureTrips} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
                 <button type="button" onClick={goToMainPage} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
               </div>
-              <TripPanelTitle location="Panama" date="March 2027" duration="7 days" description="Hiking, diving, beach, canal." />
+              <TripPanelTitle location="Panama (18+)" date="March 2027" duration="7 days" description="Hiking, diving, beach, canal." />
               <section className="mb-5 rounded-3xl border border-white/10 bg-white/[0.03] p-5 text-left">
                 <h2 className="mb-4 text-sm uppercase tracking-[0.24em] text-white/55">Trip Ideas</h2>
                 <ul className="ml-5 list-disc space-y-3 text-sm leading-6 text-white/65">
