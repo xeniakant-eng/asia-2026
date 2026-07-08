@@ -11,7 +11,7 @@ const VIETNAM_GOLD = "#F6C65B";
 
 type PageName = "map" | "xiaoliuqiu" | "taipei" | "onna" | "nago" | "nanjo" | "naha" | "nahaearly" | "yilan" | "checklist";
 type Region = "japan" | "taiwan";
-type TripKey = "morocco" | "vietnam" | "taiwan" | "okinawaJapan" | "skiMyoko" | "skiDeerValley" | "skiBig3" | "panama" | "houston" | "azoresPortugal" | "similanThailand" | "centralVietnam" | "mexicoPlaya" | "taiwanApril" | "hawaii" | "disneyWorld" | "fiveStans";
+type TripKey = "morocco" | "vietnam" | "taiwan" | "okinawaJapan" | "skiMyoko" | "skiDeerValley" | "skiBig3" | "panama" | "houston" | "azoresPortugal" | "similanThailand" | "centralVietnam" | "mexicoPlaya" | "taiwanApril" | "hawaii" | "alaskaCruise" | "disneyWorld" | "fiveStans";
 type MainPageView = "active" | "ski" | "future" | "archive";
 
 const TRIP_PATHS: Record<TripKey, string> = {
@@ -30,6 +30,7 @@ const TRIP_PATHS: Record<TripKey, string> = {
   mexicoPlaya: "mexico-playa-del-carmen",
   taiwanApril: "taiwan-april",
   hawaii: "hawaii-maui-big-island",
+  alaskaCruise: "alaska-cruise",
   disneyWorld: "disney-world",
   fiveStans: "five-stans",
 };
@@ -67,7 +68,7 @@ type PackingChecklist = {
 
 type Person = [string, string];
 type DashboardSegment = { label: string; page: PageName; color: string };
-type SignupTripKey = "morocco" | "vietnam" | "skiMyoko" | "skiDeerValley" | "skiBig3" | "panama" | "houston" | "azoresPortugal" | "similanThailand" | "centralVietnam" | "mexicoPlaya" | "taiwanApril" | "hawaii" | "disneyWorld" | "fiveStans";
+type SignupTripKey = "morocco" | "vietnam" | "skiMyoko" | "skiDeerValley" | "skiBig3" | "panama" | "houston" | "azoresPortugal" | "similanThailand" | "centralVietnam" | "mexicoPlaya" | "taiwanApril" | "hawaii" | "alaskaCruise" | "disneyWorld" | "fiveStans";
 type TripStatus = "Planning" | "Confirmed" | "Dreaming";
 type RentalCarArrangement = {
   id: string;
@@ -697,6 +698,16 @@ export default function TravelSite() {
   });
   const [showHawaiiNameInput, setShowHawaiiNameInput] = useState(false);
   const [hawaiiNameInput, setHawaiiNameInput] = useState("");
+  const [alaskaCruiseInterestedNames, setAlaskaCruiseInterestedNames] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      return JSON.parse(window.localStorage.getItem("alaskaCruiseInterestedNames") || "[]");
+    } catch {
+      return [];
+    }
+  });
+  const [showAlaskaCruiseNameInput, setShowAlaskaCruiseNameInput] = useState(false);
+  const [alaskaCruiseNameInput, setAlaskaCruiseNameInput] = useState("");
   const [disneyWorldInterestedNames, setDisneyWorldInterestedNames] = useState<string[]>(() => {
     if (typeof window === "undefined") return [];
     try {
@@ -740,8 +751,8 @@ export default function TravelSite() {
   const [checkedPackingItems, setCheckedPackingItems] = useState<Record<string, boolean>>({});
   const isSiteGuestAccess = siteAccessMode === "guest";
   const [now, setNow] = useState(new Date());
-  const [usdToJpy, setUsdToJpy] = useState("150");
-  const [usdToTwd, setUsdToTwd] = useState("32");
+  const [cadToJpy, setCadToJpy] = useState("110");
+  const [cadToTwd, setCadToTwd] = useState("23");
   const [usdToMad, setUsdToMad] = useState("10");
   const [cadToMad, setCadToMad] = useState("7.35");
   const [cadToVnd, setCadToVnd] = useState("19000");
@@ -1318,7 +1329,7 @@ export default function TravelSite() {
 
   useEffect(() => {
     async function loadTripSignups() {
-      const [moroccoNames, vietnamNames, skiMyokoNames, skiDeerValleyNames, skiBig3Names, panamaNames, houstonNames, azoresNames, similanNames, centralVietnamNames, mexicoPlayaNames, taiwanAprilNames, hawaiiNames, disneyWorldNames, fiveStansNames] = await Promise.all([
+      const [moroccoNames, vietnamNames, skiMyokoNames, skiDeerValleyNames, skiBig3Names, panamaNames, houstonNames, azoresNames, similanNames, centralVietnamNames, mexicoPlayaNames, taiwanAprilNames, hawaiiNames, alaskaCruiseNames, disneyWorldNames, fiveStansNames] = await Promise.all([
         fetchTripSignupNames("morocco"),
         fetchTripSignupNames("vietnam"),
         fetchTripSignupNames("skiMyoko"),
@@ -1332,6 +1343,7 @@ export default function TravelSite() {
         fetchTripSignupNames("mexicoPlaya"),
         fetchTripSignupNames("taiwanApril"),
         fetchTripSignupNames("hawaii"),
+        fetchTripSignupNames("alaskaCruise"),
         fetchTripSignupNames("disneyWorld"),
         fetchTripSignupNames("fiveStans"),
       ]);
@@ -1348,6 +1360,7 @@ export default function TravelSite() {
       if (mexicoPlayaNames) setMexicoPlayaInterestedNames(mexicoPlayaNames);
       if (taiwanAprilNames) setTaiwanAprilInterestedNames(taiwanAprilNames);
       if (hawaiiNames) setHawaiiInterestedNames(hawaiiNames);
+      if (alaskaCruiseNames) setAlaskaCruiseInterestedNames(alaskaCruiseNames);
       if (disneyWorldNames) setDisneyWorldInterestedNames(disneyWorldNames);
       if (fiveStansNames) setFiveStansInterestedNames(fiveStansNames);
     }
@@ -1420,6 +1433,10 @@ export default function TravelSite() {
   }, [hawaiiInterestedNames]);
 
   useEffect(() => {
+    window.localStorage.setItem("alaskaCruiseInterestedNames", JSON.stringify(alaskaCruiseInterestedNames));
+  }, [alaskaCruiseInterestedNames]);
+
+  useEffect(() => {
     window.localStorage.setItem("disneyWorldInterestedNames", JSON.stringify(disneyWorldInterestedNames));
   }, [disneyWorldInterestedNames]);
 
@@ -1444,15 +1461,15 @@ export default function TravelSite() {
         ]);
         const usdData = await usdResponse.json();
         const cadData = await cadResponse.json();
-        if (usdData?.rates?.JPY) setUsdToJpy(Math.round(usdData.rates.JPY).toString());
-        if (usdData?.rates?.TWD) setUsdToTwd(Math.round(usdData.rates.TWD).toString());
         if (usdData?.rates?.MAD) setUsdToMad(Number(usdData.rates.MAD).toFixed(2));
         if (usdData?.rates?.VND) setUsdToVnd(Math.round(usdData.rates.VND).toLocaleString("en-CA"));
+        if (cadData?.rates?.JPY) setCadToJpy(Math.round(cadData.rates.JPY).toString());
+        if (cadData?.rates?.TWD) setCadToTwd(Math.round(cadData.rates.TWD).toString());
         if (cadData?.rates?.MAD) setCadToMad(Number(cadData.rates.MAD).toFixed(2));
         if (cadData?.rates?.VND) setCadToVnd(Math.round(cadData.rates.VND).toLocaleString("en-CA"));
       } catch {
-        setUsdToJpy("150");
-        setUsdToTwd("32");
+        setCadToJpy("110");
+        setCadToTwd("23");
         setUsdToMad("10");
         setCadToMad("7.35");
         setCadToVnd("19000");
@@ -1655,7 +1672,7 @@ export default function TravelSite() {
     const tempLabel = isTaiwan ? "24–28°C" : monthLabel === "November" ? "22–26°C" : "20–24°C";
     return (
       <section className="mb-10 grid grid-cols-2 gap-3 md:grid-cols-4">
-        <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:text-2xl">{isTaiwan ? "💵" : "💴"}</p><p className="text-[10px] text-gray-400 md:text-xs">Currency</p><p className="mt-1 text-xs font-medium md:text-sm">{isTaiwan ? "TWD NT$" : "JPY ¥"}</p><p className="mt-1 text-xs text-gray-400">{isTaiwan ? `1 USD ≈ ${usdToTwd} TWD` : `1 USD ≈ ${usdToJpy} JPY`}</p></div>
+        <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:text-2xl">{isTaiwan ? "💵" : "💴"}</p><p className="text-[10px] text-gray-400 md:text-xs">Currency</p><p className="mt-1 text-xs font-medium md:text-sm">{isTaiwan ? "TWD NT$" : "JPY ¥"}</p><p className="mt-1 text-xs text-gray-400">{isTaiwan ? `1 CAD ≈ ${cadToTwd} TWD` : `1 CAD ≈ ${cadToJpy} JPY`}</p></div>
         <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:text-2xl">🌤️</p><p className="text-[10px] text-gray-400 md:text-xs">{monthLabel} Temp</p><p className="mt-1 text-xs font-medium md:text-sm">{tempLabel}</p></div>
         <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:text-2xl">🕘</p><p className="text-[10px] text-gray-400 md:text-xs">Local Time</p><p className="mt-1 text-xs font-medium md:text-sm">{localTime}</p><p className="mt-1 text-[9px] text-gray-500">{isTaiwan ? "Taiwan · CST" : "Okinawa · JST"}</p></div>
         <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:text-2xl">🌙 🏨</p><p className="text-[10px] text-gray-400 md:text-xs">Stay</p><p className="mt-1 text-xs font-medium md:text-sm">{nights}</p>{hotel}</div>
@@ -1882,6 +1899,14 @@ export default function TravelSite() {
     await saveInterestedName("hawaii", nextName, setHawaiiInterestedNames);
     setHawaiiNameInput("");
     setShowHawaiiNameInput(false);
+  };
+
+  const addAlaskaCruiseInterestedName = async () => {
+    const nextName = alaskaCruiseNameInput.trim();
+    if (!nextName) return;
+    await saveInterestedName("alaskaCruise", nextName, setAlaskaCruiseInterestedNames);
+    setAlaskaCruiseNameInput("");
+    setShowAlaskaCruiseNameInput(false);
   };
 
   const addDisneyWorldInterestedName = async () => {
@@ -2584,6 +2609,7 @@ export default function TravelSite() {
                       <>
                         <TripButton location="Panama (18+)" date="March 2027" duration="7 days" status="Dreaming" heroOverlay onClick={() => openTripPage("panama")} />
                         <TripButton location="Houston & Galveston TX USA" subtitle="FRC & Disney Cruise" date="April 28 - May 7 2027" status="Dreaming" heroOverlay onClick={() => openTripPage("houston")} />
+                        <TripButton location="Alaska Cruise" date="June 2027" duration="8 days" status="Dreaming" heroOverlay onClick={() => openTripPage("alaskaCruise")} />
                         <TripButton location="Azores Portugal" date="Sept 2027" duration="9 days" status="Dreaming" heroOverlay onClick={() => openTripPage("azoresPortugal")} />
                         <TripButton location="Mexico" subtitle="Playa del Carmen" date="Nov 2027" duration="9 days" status="Dreaming" heroOverlay onClick={() => openTripPage("mexicoPlaya")} />
                         <TripButton location="Similan & Phuket Thailand" subtitle="Scuba Diving Liveaboard" date="Mar 2028" duration="9 days" status="Dreaming" heroOverlay onClick={() => openTripPage("similanThailand")} />
@@ -3388,6 +3414,42 @@ export default function TravelSite() {
                 )}
               </section>
             </>
+          ) : selectedTrip === "alaskaCruise" ? (
+            <>
+              <div className="mb-5 grid grid-cols-2 gap-2">
+                <button type="button" onClick={goToFutureTrips} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
+                <button type="button" onClick={goToMainPage} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
+              </div>
+              <TripPanelTitle location="Alaska Cruise" date="June 2027" duration="8 days" description="A northern cruise idea with glacier views, coastal towns, wildlife watching, and slow scenic sea days." />
+              <div className="space-y-3">
+                <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
+                <button type="button" onClick={() => setShowAlaskaCruiseNameInput(true)} className="w-full rounded-2xl border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#FF8FC7] transition hover:border-[#FF8FC7]/60 hover:bg-[#FF8FC7]/15">I am interested</button>
+              </div>
+
+              {showAlaskaCruiseNameInput && (
+                <form onSubmit={(event) => { event.preventDefault(); addAlaskaCruiseInterestedName(); }} className="mt-5 rounded-3xl border border-white/10 bg-white/[0.03] p-4 text-left">
+                  <label className="mb-2 block text-xs uppercase tracking-[0.22em] text-white/45" htmlFor="alaska-cruise-interest-name">Name</label>
+                  <input id="alaska-cruise-interest-name" value={alaskaCruiseNameInput} onChange={(event) => setAlaskaCruiseNameInput(event.target.value)} autoFocus className="mb-3 w-full rounded-2xl border border-white/15 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-white/40" placeholder="Enter your name" />
+                  <button type="submit" className="w-full rounded-2xl border border-[#72E49A]/35 bg-[#72E49A]/10 px-4 py-3 text-sm uppercase tracking-[0.18em] text-[#72E49A] transition hover:bg-[#72E49A]/15">Add to list</button>
+                </form>
+              )}
+
+              <section className="mt-6 rounded-3xl border border-white/10 bg-black/20 p-5 text-left">
+                <div className="mb-4 flex items-center justify-between gap-3">
+                  <h2 className="text-sm uppercase tracking-[0.24em] text-white/55">Who signed up</h2>
+                  <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-white/45">{alaskaCruiseInterestedNames.length}</span>
+                </div>
+                {alaskaCruiseInterestedNames.length ? (
+                  <div className="space-y-2">
+                    {alaskaCruiseInterestedNames.map((name) => (
+                      <p key={name} className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/75">{name}</p>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm text-white/35">No names added yet.</p>
+                )}
+              </section>
+            </>
           ) : selectedTrip === "disneyWorld" ? (
             <>
               <div className="mb-5 grid grid-cols-2 gap-2">
@@ -4164,7 +4226,7 @@ function YilanContent({ card }: { card: (children: React.ReactNode) => React.Rea
 }
 
 function NanjoContent({ card }: { card: (children: React.ReactNode) => React.ReactNode }) {
-  return <><DayArticle date="Wednesday, December 2, 2026" rentalCarDate="2026-12-02" title="Nago → Nanjo">{card(<><p className="text-[var(--chapter-accent)]">Morning & Day</p><p>🎢 Option 1 · Kids age 4+ & adults</p><p><a href="https://junglia.jp/en" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Junglia Park</a></p><div className="mt-4" /><p>🦁 Option 2 · Kids age 1–3</p><p><a href="https://maps.google.com/?q=Nago+Pineapple+Park" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Nago Pineapple Park</a> or <a href="https://maps.google.com/?q=Neo+Park+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Neo Park Zoo</a></p></>)}{card(<><p className="text-[var(--chapter-accent)]">Afternoon · 3:00 PM</p><p>🚗 Leaving Nago and drive approximately 1 hour toward <a href="https://maps.google.com/?q=Miyagi+Coast+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Miyagi Coast</a> & American Village</p><img src="/america.png" alt="American Village Okinawa" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /><p className="mt-4">🍽 Dinner · <a href="https://maps.app.goo.gl/PXMBGjZ1AsTNkSVT9" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Taco Rice Cafe Kijimuna</a></p><p>🚗 Evening drive to hotel · <a href="https://maps.google.com/?q=Yuinchi+Hotel+Nanjo" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Yuinchi Hotel Nanjo</a></p></>)} </DayArticle><DayArticle date="Thursday, December 3, 2026" rentalCarDate="2026-12-03" title="Nanjo · Okinawa World + Gangala Valley">{card(<><p>🍳 Breakfast · Hotel buffet</p><p>🚕 Steven takes taxi to Naha Airport on his own</p><p>🌏 <a href="https://maps.google.com/?q=Okinawa+World" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Okinawa World（玉泉洞）</a> · FunPass</p><img src="/cave.png" alt="Okinawa World Cave" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}{card(<><p>🌿 Gangala Valley</p><img src="/gangala.png" alt="Gangala Valley" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /><a href="https://book.gangala.com/?lng=zh-TW" target="_blank" rel="noopener noreferrer" className="mt-4 inline-block text-[var(--chapter-accent)] hover:underline">Gangala Valley reservation</a></>)}</DayArticle></>;
+  return <><DayArticle date="Wednesday, December 2, 2026" rentalCarDate="2026-12-02" title="Nago → Nanjo">{card(<><p className="text-[var(--chapter-accent)]">Morning & Day</p><p>🎢 Option 1 · Kids age 4+ & adults</p><p><a href="https://junglia.jp/en" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Junglia Park</a></p><div className="mt-4" /><p>🦁 Option 2 · Kids age 1–3</p><p><a href="https://maps.google.com/?q=Nago+Pineapple+Park" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Nago Pineapple Park</a> or <a href="https://maps.google.com/?q=Neo+Park+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Neo Park Zoo</a></p></>)}{card(<><p className="text-[var(--chapter-accent)]">Afternoon · 3:00 PM</p><p>🚗 Leaving Nago and drive approximately 1 hour toward <a href="https://maps.google.com/?q=Miyagi+Coast+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Miyagi Coast</a> & American Village</p><img src="/america.png" alt="American Village Okinawa" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /><p className="mt-4">🍽 Dinner · <a href="https://maps.app.goo.gl/PXMBGjZ1AsTNkSVT9" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Taco Rice Cafe Kijimuna</a></p><p>🚗 Evening drive to hotel · <a href="https://maps.google.com/?q=Yuinchi+Hotel+Nanjo" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Yuinchi Hotel Nanjo</a></p></>)} </DayArticle><DayArticle date="Thursday, December 3, 2026" rentalCarDate="2026-12-03" title="Nanjo · Okinawa World + Gangala Valley">{card(<><p>🍳 Breakfast · Hotel buffet</p><p>🚕 Steven takes taxi to Naha Airport on his own</p><p>🌏 <a href="https://maps.google.com/?q=Okinawa+World" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Okinawa World（玉泉洞）</a> · FunPass</p><img src="/cave.png" alt="Okinawa World Cave" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}{card(<><p>🌿 Gangala Valley</p><img src="/gangala.png" alt="Gangala Valley" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /><a href="https://book.gangala.com/?lng=zh-TW" target="_blank" rel="noopener noreferrer" className="mt-4 inline-block text-[var(--chapter-accent)] hover:underline">Gangala Valley reservation</a></>)}{card(<p>🛒 Optional evening stop · <a href="https://maps.google.com/?q=Costco+Nanjo+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Costco Nanjo</a></p>)}</DayArticle></>;
 }
 
 function NahaEarlyContent({ card, linkedImage }: { card: (children: React.ReactNode) => React.ReactNode; linkedImage: (src: string, alt: string) => React.ReactNode }) {
