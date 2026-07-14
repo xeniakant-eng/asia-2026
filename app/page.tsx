@@ -2355,9 +2355,9 @@ export default function TravelSite() {
   const okinawaXeniaReservationCompleted = okinawaXeniaReservationItems.filter((item) => checkedReservationItems[`okinawaJapan-${guestName}-${item}`]).length;
 
   const okinawaBudgetPopup = showOkinawaBudget ? (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Okinawa budget">
-      <section className="w-full max-w-md rounded-2xl border border-white/15 bg-[#111] p-5 text-left shadow-2xl sm:p-6">
-        <div className="mb-5 flex items-start justify-between gap-4 border-b border-white/10 pb-4">
+    <div className="fixed inset-0 z-[60] flex items-stretch justify-center bg-black/80 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-[max(0.5rem,env(safe-area-inset-top))] backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-label="Okinawa budget">
+      <section className="flex h-[calc(100dvh-1rem)] max-h-[calc(100dvh-1rem)] w-full max-w-md flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] text-left shadow-2xl sm:h-[88dvh] sm:max-h-[760px]">
+        <div className="flex shrink-0 items-start justify-between gap-4 border-b border-white/10 p-5 sm:p-6">
           <div>
             <p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: BABY_BLUE }}>Okinawa Japan 2026</p>
             <h2 className="text-2xl font-light text-white">Budget</h2>
@@ -2365,7 +2365,7 @@ export default function TravelSite() {
           </div>
           <button type="button" onClick={() => setShowOkinawaBudget(false)} aria-label="Close Okinawa budget" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">x</button>
         </div>
-        <div className="space-y-3 text-sm leading-6 text-white/65">
+        <div className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain p-4 text-sm leading-6 text-white/65 sm:p-6">
           <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
             <div className="mb-3 flex items-center justify-between gap-3">
               <p className="text-xs uppercase tracking-[0.18em]" style={{ color: BABY_BLUE }}>Accommodation</p>
@@ -2399,9 +2399,9 @@ export default function TravelSite() {
   ) : null;
 
   const okinawaReservationChecklistPopup = showOkinawaReservationChecklist ? (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Okinawa reservation checklist">
-      <section className="w-full max-w-md rounded-2xl border border-white/15 bg-[#111] p-5 text-left shadow-2xl sm:p-6">
-        <div className="mb-5 flex items-start justify-between gap-4 border-b border-white/10 pb-4">
+    <div className="fixed inset-0 z-[60] flex items-stretch justify-center bg-black/80 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-[max(0.5rem,env(safe-area-inset-top))] backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-label="Okinawa reservation checklist">
+      <section className="flex h-[calc(100dvh-1rem)] max-h-[calc(100dvh-1rem)] w-full max-w-md flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] text-left shadow-2xl sm:h-[88dvh] sm:max-h-[760px]">
+        <div className="flex shrink-0 items-start justify-between gap-4 border-b border-white/10 p-5 sm:p-6">
           <div>
             <p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: BABY_BLUE }}>Okinawa Japan 2026</p>
             <h2 className="text-2xl font-light text-white">Reservation Checklist</h2>
@@ -2409,7 +2409,7 @@ export default function TravelSite() {
           </div>
           <button type="button" onClick={() => setShowOkinawaReservationChecklist(false)} aria-label="Close Okinawa reservation checklist" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">x</button>
         </div>
-        <div className="space-y-3 text-sm leading-6 text-white/65">
+        <div className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain p-4 text-sm leading-6 text-white/65 sm:p-6">
           <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
             <p className="mb-3 text-xs uppercase tracking-[0.18em]" style={{ color: BABY_BLUE }}>Reservations</p>
             <div className="grid gap-2">
