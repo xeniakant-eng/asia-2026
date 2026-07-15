@@ -2393,6 +2393,27 @@ export default function TravelSite() {
               <p className="text-sm font-medium text-white">¥166,636</p>
             </div>
           </div>
+          <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <p className="text-xs uppercase tracking-[0.18em]" style={{ color: BABY_BLUE }}>Transportation</p>
+              <p className="text-xs text-white/45">11/27-12/6</p>
+            </div>
+            <div className="rounded-xl border border-white/10 bg-black/20 p-3">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.14em] text-white/40">Car Rental</p>
+                  <p className="mt-1 text-sm text-white/75">Okinawa group rental car</p>
+                </div>
+                <p className="shrink-0 text-sm font-medium text-white">¥108,200</p>
+              </div>
+            </div>
+          </div>
+          <div className="rounded-2xl border border-[#9EDCFF]/20 bg-[#9EDCFF]/10 p-4">
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-xs uppercase tracking-[0.18em]" style={{ color: BABY_BLUE }}>Known Total</p>
+              <p className="text-sm font-medium text-white">¥274,836</p>
+            </div>
+          </div>
         </div>
       </section>
     </div>
