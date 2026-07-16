@@ -2375,7 +2375,7 @@ export default function TravelSite() {
               {[
                 ["11/27-11/30", "3 nights at Hotel Monterey Okinawa", "¥96,186"],
                 ["11/30-12/2", "2 nights at Yugaf Inn Okinawa", "¥31,050"],
-                ["12/2-12/4", "2 nights at Yuinchi Hotel Nanjo", "¥39,400"],
+                ["12/2-12/4", "2 nights at Yuinchi Hotel Nanjo", "¥34,000"],
               ].map(([dates, label, amount]) => (
                 <div key={dates} className="rounded-xl border border-white/10 bg-black/20 p-3">
                   <div className="flex items-start justify-between gap-3">
@@ -2390,7 +2390,7 @@ export default function TravelSite() {
             </div>
             <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-3">
               <p className="text-xs uppercase tracking-[0.18em] text-white/45">Accommodation Total</p>
-              <p className="text-sm font-medium text-white">¥166,636</p>
+              <p className="text-sm font-medium text-white">¥161,236</p>
             </div>
           </div>
           <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
@@ -2411,7 +2411,7 @@ export default function TravelSite() {
           <div className="rounded-2xl border border-[#9EDCFF]/20 bg-[#9EDCFF]/10 p-4">
             <div className="flex items-center justify-between gap-3">
               <p className="text-xs uppercase tracking-[0.18em]" style={{ color: BABY_BLUE }}>Known Total</p>
-              <p className="text-sm font-medium text-white">¥274,836</p>
+              <p className="text-sm font-medium text-white">¥269,436</p>
             </div>
           </div>
         </div>
@@ -4064,7 +4064,7 @@ export default function TravelSite() {
   if (page === "onna") return renderChapter("onna", "Okinawa · Onna", "Wedding Resort Chapter", "Okinawa Japan", "November", "3 Nights", <a href="https://www.hotelmonterey.co.jp/en/okinawa/" target="_blank" rel="noopener noreferrer" className="mt-1 block text-sm font-medium hover:underline" style={{ color: BABY_BLUE }}>Hotel Monterey Okinawa</a>, "japan", BABY_BLUE, <OnnaContent card={card} linkedImage={linkedImage} />);
   if (page === "nago") return renderChapter("nago", "Okinawa · Nago", "Northern Okinawa Chapter", "Okinawa Japan", "December", "2 Nights", <a href="https://maps.google.com/?q=Hotel+Yugaf+Inn+Okinawa" target="_blank" rel="noopener noreferrer" className="mt-1 block text-sm font-medium hover:underline" style={{ color: BABY_BLUE }}>Hotel Yugaf Inn Okinawa</a>, "japan", BABY_BLUE, <NagoContent card={card} linkedImage={linkedImage} />);
   if (page === "nanjo") return renderChapter("nanjo", "Okinawa · Nanjo", "Southern Okinawa Chapter", "Okinawa Japan", "December", "2 Nights", <><a href="https://www.yuinchi.jp/heal/hot-spring/" target="_blank" rel="noopener noreferrer" className="mt-1 block text-sm font-medium hover:underline" style={{ color: BABY_BLUE }}>Yuinchi Hotel Nanjo</a><p className="mt-1 text-[9px] text-gray-500">Apeman Spa Natural Hot Spring</p></>, "japan", BABY_BLUE, <NanjoContent card={card} />);
-  if (page === "naha") return renderChapter("naha", "Okinawa · Naha", "Final Naha Chapter", "Okinawa Japan", "December", "2 Nights", <><p className="mt-1 text-sm font-medium" style={{ color: BABY_BLUE }}>Hotel Strata Naha</p><p className="mt-1 text-[9px] text-gray-500">or Hotel JAL City Naha</p></>, "japan", BABY_BLUE, <NahaContent card={card} />);
+  if (page === "naha") return renderChapter("naha", "Okinawa · Naha", "Final Naha Chapter", "Okinawa Japan", "December", "2 Nights", <a href="https://maps.google.com/?q=JR+Kyushu+Hotel+Blossom+Naha" target="_blank" rel="noopener noreferrer" className="mt-1 block text-sm font-medium hover:underline" style={{ color: BABY_BLUE }}>JR Kyushu Hotel Blossom Naha</a>, "japan", BABY_BLUE, <NahaContent card={card} />);
   if (page === "nahaearly") return renderChapter("nahaearly", "Okinawa · Naha", "Naha + Okinawa World Chapter", "Okinawa Japan", "November", "2 Nights", <p className="mt-1 text-sm font-medium" style={{ color: BABY_BLUE }}>Hotel Strata Naha</p>, "japan", BABY_BLUE, <NahaEarlyContent card={card} linkedImage={linkedImage} />);
   if (page === "yilan") return renderChapter("yilan", "Taiwan · Yilan", "Yilan Family Chapter", "Taiwan December", "December", "3 Nights", <><p className="mt-1 text-sm font-medium" style={{ color: TAIWAN_GOLD }}>瓏山林蘇澳冷熱泉度假飯店 (1)</p><p className="mt-1 text-sm font-medium" style={{ color: TAIWAN_GOLD }}>礁溪寒沐酒店 (2)</p></>, "taiwan", TAIWAN_GOLD, <YilanContent card={card} />);
 
