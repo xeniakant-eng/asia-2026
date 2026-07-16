@@ -2374,7 +2374,7 @@ export default function TravelSite() {
             <div className="space-y-3">
               {[
                 ["11/27-11/30", "3 nights at Hotel Monterey Okinawa", "¥96,186"],
-                ["11/30-12/2", "2 nights at Yugaf Inn Okinawa", "¥31,050"],
+                ["11/30-12/2", "2 nights at Yugaf Inn Okinawa", "¥29,860"],
                 ["12/2-12/4", "2 nights at Yuinchi Hotel Nanjo", "¥34,000"],
               ].map(([dates, label, amount]) => (
                 <div key={dates} className="rounded-xl border border-white/10 bg-black/20 p-3">
@@ -2390,7 +2390,7 @@ export default function TravelSite() {
             </div>
             <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-3">
               <p className="text-xs uppercase tracking-[0.18em] text-white/45">Accommodation Total</p>
-              <p className="text-sm font-medium text-white">¥161,236</p>
+              <p className="text-sm font-medium text-white">¥160,046</p>
             </div>
           </div>
           <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
@@ -2411,7 +2411,7 @@ export default function TravelSite() {
           <div className="rounded-2xl border border-[#9EDCFF]/20 bg-[#9EDCFF]/10 p-4">
             <div className="flex items-center justify-between gap-3">
               <p className="text-xs uppercase tracking-[0.18em]" style={{ color: BABY_BLUE }}>Known Total</p>
-              <p className="text-sm font-medium text-white">¥269,436</p>
+              <p className="text-sm font-medium text-white">¥268,246</p>
             </div>
           </div>
         </div>
