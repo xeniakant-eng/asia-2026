@@ -2376,6 +2376,7 @@ export default function TravelSite() {
                 ["11/27-11/30", "3 nights at Hotel Monterey Okinawa", "¥96,186"],
                 ["11/30-12/2", "2 nights at Yugaf Inn Okinawa", "¥29,860"],
                 ["12/2-12/4", "2 nights at Yuinchi Hotel Nanjo", "¥34,000"],
+                ["12/4-12/6", "2 nights at Hotel Grand Consort Naha", "¥42,116"],
               ].map(([dates, label, amount]) => (
                 <div key={dates} className="rounded-xl border border-white/10 bg-black/20 p-3">
                   <div className="flex items-start justify-between gap-3">
@@ -2390,7 +2391,7 @@ export default function TravelSite() {
             </div>
             <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-3">
               <p className="text-xs uppercase tracking-[0.18em] text-white/45">Accommodation Total</p>
-              <p className="text-sm font-medium text-white">¥160,046</p>
+              <p className="text-sm font-medium text-white">¥202,162</p>
             </div>
           </div>
           <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
@@ -2411,7 +2412,7 @@ export default function TravelSite() {
           <div className="rounded-2xl border border-[#9EDCFF]/20 bg-[#9EDCFF]/10 p-4">
             <div className="flex items-center justify-between gap-3">
               <p className="text-xs uppercase tracking-[0.18em]" style={{ color: BABY_BLUE }}>Known Total</p>
-              <p className="text-sm font-medium text-white">¥268,246</p>
+              <p className="text-sm font-medium text-white">¥310,362</p>
             </div>
           </div>
         </div>
@@ -4064,7 +4065,7 @@ export default function TravelSite() {
   if (page === "onna") return renderChapter("onna", "Okinawa · Onna", "Wedding Resort Chapter", "Okinawa Japan", "November", "3 Nights", <a href="https://www.hotelmonterey.co.jp/en/okinawa/" target="_blank" rel="noopener noreferrer" className="mt-1 block text-sm font-medium hover:underline" style={{ color: BABY_BLUE }}>Hotel Monterey Okinawa</a>, "japan", BABY_BLUE, <OnnaContent card={card} linkedImage={linkedImage} />);
   if (page === "nago") return renderChapter("nago", "Okinawa · Nago", "Northern Okinawa Chapter", "Okinawa Japan", "December", "2 Nights", <a href="https://maps.google.com/?q=Hotel+Yugaf+Inn+Okinawa" target="_blank" rel="noopener noreferrer" className="mt-1 block text-sm font-medium hover:underline" style={{ color: BABY_BLUE }}>Hotel Yugaf Inn Okinawa</a>, "japan", BABY_BLUE, <NagoContent card={card} linkedImage={linkedImage} />);
   if (page === "nanjo") return renderChapter("nanjo", "Okinawa · Nanjo", "Southern Okinawa Chapter", "Okinawa Japan", "December", "2 Nights", <><a href="https://www.yuinchi.jp/heal/hot-spring/" target="_blank" rel="noopener noreferrer" className="mt-1 block text-sm font-medium hover:underline" style={{ color: BABY_BLUE }}>Yuinchi Hotel Nanjo</a><p className="mt-1 text-[9px] text-gray-500">Apeman Spa Natural Hot Spring</p></>, "japan", BABY_BLUE, <NanjoContent card={card} />);
-  if (page === "naha") return renderChapter("naha", "Okinawa · Naha", "Final Naha Chapter", "Okinawa Japan", "December", "2 Nights", <a href="https://maps.google.com/?q=JR+Kyushu+Hotel+Blossom+Naha" target="_blank" rel="noopener noreferrer" className="mt-1 block text-sm font-medium hover:underline" style={{ color: BABY_BLUE }}>JR Kyushu Hotel Blossom Naha</a>, "japan", BABY_BLUE, <NahaContent card={card} />);
+  if (page === "naha") return renderChapter("naha", "Okinawa · Naha", "Final Naha Chapter", "Okinawa Japan", "December", "2 Nights", <a href="https://maps.google.com/?q=Hotel+Grand+Consort+Naha" target="_blank" rel="noopener noreferrer" className="mt-1 block text-sm font-medium hover:underline" style={{ color: BABY_BLUE }}>Hotel Grand Consort Naha</a>, "japan", BABY_BLUE, <NahaContent card={card} />);
   if (page === "nahaearly") return renderChapter("nahaearly", "Okinawa · Naha", "Naha + Okinawa World Chapter", "Okinawa Japan", "November", "2 Nights", <p className="mt-1 text-sm font-medium" style={{ color: BABY_BLUE }}>Hotel Strata Naha</p>, "japan", BABY_BLUE, <NahaEarlyContent card={card} linkedImage={linkedImage} />);
   if (page === "yilan") return renderChapter("yilan", "Taiwan · Yilan", "Yilan Family Chapter", "Taiwan December", "December", "3 Nights", <><p className="mt-1 text-sm font-medium" style={{ color: TAIWAN_GOLD }}>瓏山林蘇澳冷熱泉度假飯店 (1)</p><p className="mt-1 text-sm font-medium" style={{ color: TAIWAN_GOLD }}>礁溪寒沐酒店 (2)</p></>, "taiwan", TAIWAN_GOLD, <YilanContent card={card} />);
 
@@ -4606,5 +4607,5 @@ function NahaEarlyContent({ card, linkedImage }: { card: (children: React.ReactN
 }
 
 function NahaContent({ card }: { card: (children: React.ReactNode) => React.ReactNode }) {
-  return <><DayArticle date="Friday, December 4, 2026" rentalCarDate="2026-12-04" title="Nanjo → Naha">{card(<><p>🧳 9:00 AM · Checkout hotel</p><p>🚗 Drive from Nanjo → Naha · approximately 30 min</p></>)}{card(<><p>🐟 11:00 AM · Tomari Iyumachi Fish Market Brunch</p></>)}{card(<><p>🏯 Shuri Castle if reopened</p><p>🛍 Kokusai dori 國際通 · Calbee Okinawa · 御果子御殿 · Tsuboya Pottery Street</p><img src="/shop.png" alt="Kokusai Dori Shopping" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)} </DayArticle><DayArticle date="Saturday, December 5, 2026" rentalCarDate="2026-12-05" title="Shopping + Aquarium Day">{card(<><p>🍳 Hotel breakfast buffet</p><p>🐟 Itoman Fish Market · Ashibinaa Outlet · DMM Kariyushi Aquarium</p></>)}</DayArticle><DayArticle date="Sunday, December 6, 2026" rentalCarDate="2026-12-06" title="Departure Day">{card(<><p>🧳 Hotel checkout at 7:15 AM</p><p>✈️ EVA Air BR113 · OKA 10:15 → TPE 10:55</p></>)}</DayArticle></>;
+  return <><DayArticle date="Friday, December 4, 2026" rentalCarDate="2026-12-04" title="Nanjo → Naha">{card(<><p>🧳 9:00 AM · Checkout hotel</p><p>🚗 Drive from Nanjo → Naha · approximately 30 min</p></>)}{card(<><p>🐟 11:00 AM · Tomari Iyumachi Fish Market Brunch</p></>)}{card(<><p>🏯 Shuri Castle if reopened</p><p>🛍 Kokusai dori 國際通 · Calbee Okinawa · 御果子御殿 · Tsuboya Pottery Street</p><img src="/shop.png" alt="Kokusai Dori Shopping" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)} </DayArticle><DayArticle date="Saturday, December 5, 2026" rentalCarDate="2026-12-05" title="Shopping + Aquarium Day">{card(<><p>🍳 Hotel breakfast buffet</p><p>🐟 Itoman Fish Market · Ashibinaa Outlet · DMM Kariyushi Aquarium</p></>)}</DayArticle><DayArticle date="Sunday, December 6, 2026" rentalCarDate="2026-12-06" title="Departure Day">{card(<><p>🍳 Hotel breakfast buffet · 6:30 AM - 7:15 AM</p><p>🧳 Hotel checkout · 7:30 AM</p><p>🧳 Drop off at Naha Airport for checking in baggage &amp; boarding passes. (~12 min drive)</p><p>🚗 Drivers return rental car, and shuttle back to airport to meet up at gate. (~30 min round trip)</p><p>✈️ EVA Air BR113 · OKA 10:15 → TPE 10:55</p></>)}</DayArticle></>;
 }
