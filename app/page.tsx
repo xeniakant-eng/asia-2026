@@ -23,7 +23,7 @@ const TRIP_PATHS: Record<TripKey, string> = {
   skiDeerValley: "ski-deer-valley",
   skiBig3: "skibig3",
   panama: "panama",
-  houston: "houston-galveston",
+  houston: "houston",
   azoresPortugal: "azores-portugal",
   similanThailand: "similan-thailand",
   centralVietnam: "central-vietnam",
@@ -2802,8 +2802,8 @@ export default function TravelSite() {
                     {mainPageView === "future" && (
                       <>
                         <TripButton location="Panama (18+)" date="March 2027" duration="7 days" status="Dreaming" heroOverlay onClick={() => openTripPage("panama")} />
-                        <TripButton location="Houston & Galveston TX USA" subtitle="FRC & Disney Cruise" date="April 28 - May 7 2027" status="Dreaming" heroOverlay onClick={() => openTripPage("houston")} />
-                        <TripButton location="Alaska Cruise" date="June 2027" duration="8 days" status="Dreaming" heroOverlay onClick={() => openTripPage("alaskaCruise")} />
+                        <TripButton location="Houston TX USA" subtitle="FRC" date="April 28 - May 1 2027" status="Dreaming" heroOverlay onClick={() => openTripPage("houston")} />
+                        <TripButton location="Alaska Cruise" date="May 21 - 28 2027" status="Planning" heroOverlay onClick={() => openTripPage("alaskaCruise")} />
                         <TripButton location="Azores Portugal" date="Sept 2027" duration="9 days" status="Dreaming" heroOverlay onClick={() => openTripPage("azoresPortugal")} />
                         <TripButton location="Mexico" subtitle="Playa del Carmen" date="Nov 2027" duration="9 days" status="Dreaming" heroOverlay onClick={() => openTripPage("mexicoPlaya")} />
                         <TripButton location="Similan & Phuket Thailand" subtitle="Scuba Diving Liveaboard" date="Mar 2028" duration="9 days" status="Dreaming" heroOverlay onClick={() => openTripPage("similanThailand")} />
@@ -3362,7 +3362,7 @@ export default function TravelSite() {
                 <button type="button" onClick={goToFutureTrips} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
                 <button type="button" onClick={goToMainPage} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
               </div>
-              <TripPanelTitle location="Houston & Galveston TX USA" subtitle="FRC & Disney Cruise" date="April 28 - May 7 2027" description="Arriving Houston to witness the exciting First Robotics Competition at the George R. Brown Convention Center from April 28 - May 1; followed by Mark's birthday celebration on May 1. On May 2, we board Disney Magic from Galveston for a 5-night Western Caribbean Disney cruise." />
+              <TripPanelTitle location="Houston TX USA" subtitle="FRC" date="April 28 - May 1 2027" description="Arriving Houston to witness the exciting First Robotics Competition at the George R. Brown Convention Center from April 28 - May 1, followed by Mark's birthday celebration on May 1." />
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
                 <button type="button" onClick={() => setShowHoustonNameInput(true)} className="w-full rounded-2xl border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#FF8FC7] transition hover:border-[#FF8FC7]/60 hover:bg-[#FF8FC7]/15">I am interested</button>
@@ -3614,7 +3614,19 @@ export default function TravelSite() {
                 <button type="button" onClick={goToFutureTrips} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
                 <button type="button" onClick={goToMainPage} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
               </div>
-              <TripPanelTitle location="Alaska Cruise" date="June 2027" duration="8 days" description="A northern cruise idea with glacier views, coastal towns, wildlife watching, and slow scenic sea days." />
+              <TripPanelTitle location="Alaska Cruise" date="May 21 - 28 2027" />
+              <div className="mb-5 overflow-hidden rounded-3xl border border-white/10 bg-black/25 p-2">
+                <img src="/alaskacruise.pgn" alt="Princess Cruise Voyage of the Glaciers" className="max-h-72 w-full rounded-2xl object-contain object-center" />
+              </div>
+              <section className="mb-5 rounded-3xl border border-white/10 bg-white/[0.03] p-5 text-left">
+                <h2 className="mb-4 text-sm uppercase tracking-[0.24em] text-white/55">Trip Details</h2>
+                <ul className="ml-5 list-disc space-y-3 text-sm leading-6 text-white/65">
+                  <li><span className="text-white/85">Cruise:</span> Princess Cruise 7-Day Voyage of the Glaciers (Northbound)</li>
+                  <li><span className="text-white/85">Route:</span> Start from Vancouver; end with Anchorage (Whittier)</li>
+                  <li><span className="text-white/85">Ship:</span> Crown Princess</li>
+                  <li><span className="text-white/85">Room estimate:</span> Balcony room $1700 CAD/person</li>
+                </ul>
+              </section>
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
                 <button type="button" onClick={() => setShowAlaskaCruiseNameInput(true)} className="w-full rounded-2xl border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#FF8FC7] transition hover:border-[#FF8FC7]/60 hover:bg-[#FF8FC7]/15">I am interested</button>
