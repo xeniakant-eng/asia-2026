@@ -2824,7 +2824,7 @@ export default function TravelSite() {
                       <>
                         <TripButton location="Panama (18+)" date="March 2027" duration="7 days" status="Dreaming" heroOverlay onClick={() => openTripPage("panama")} />
                         <TripButton location="Houston TX USA" subtitle="FRC" date="April 28 - May 1 2027" status="Dreaming" heroOverlay onClick={() => openTripPage("houston")} />
-                        <TripButton location="Alaska Cruise" date="May 21 - 28 2027" status="Planning" heroOverlay onClick={() => openTripPage("alaskaCruise")} />
+                        <TripButton location="Alaska Cruise" date="May 22 - 29 2027" status="Planning" heroOverlay onClick={() => openTripPage("alaskaCruise")} />
                         <TripButton location="Azores Portugal" date="Sept 2027" duration="9 days" status="Dreaming" heroOverlay onClick={() => openTripPage("azoresPortugal")} />
                         <TripButton location="Mexico" subtitle="Playa del Carmen" date="Nov 2027" duration="9 days" status="Dreaming" heroOverlay onClick={() => openTripPage("mexicoPlaya")} />
                         <TripButton location="Similan & Phuket Thailand" subtitle="Scuba Diving Liveaboard" date="Mar 2028" duration="9 days" status="Dreaming" heroOverlay onClick={() => openTripPage("similanThailand")} />
@@ -3635,7 +3635,7 @@ export default function TravelSite() {
                 <button type="button" onClick={goToFutureTrips} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
                 <button type="button" onClick={goToMainPage} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
               </div>
-              <TripPanelTitle location="Alaska Cruise" date="May 21 - 28 2027" />
+              <TripPanelTitle location="Alaska Cruise" date="May 22 - 29 2027" />
               <div className="mb-5 overflow-hidden rounded-3xl border border-white/10 bg-black/25 p-2">
                 <img src="/alaskacruise.pgn" alt="Princess Cruise Voyage of the Glaciers" className="max-h-72 w-full rounded-2xl object-contain object-center" />
               </div>
@@ -3646,6 +3646,7 @@ export default function TravelSite() {
                   <li><span className="text-white/85">Route:</span> Start from Vancouver; end with Anchorage (Whittier)</li>
                   <li><span className="text-white/85">Ship:</span> Crown Princess</li>
                   <li><span className="text-white/85">Room estimate:</span> Balcony room $1700 CAD/person</li>
+                  <li><span className="text-white/85">Princess itinerary:</span> <a href="https://www.princess.com/itinerary-details/?voyageCode=3721" target="_blank" rel="noreferrer" className="text-[#8FD8FF] underline decoration-white/25 underline-offset-4 transition hover:text-white">View voyage details</a></li>
                 </ul>
               </section>
               <div className="space-y-3">
