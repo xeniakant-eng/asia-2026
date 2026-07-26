@@ -70,7 +70,7 @@ type PackingChecklist = {
 type Person = [string, string];
 type DashboardSegment = { label: string; page: PageName; color: string; disabled?: boolean };
 type SignupTripKey = "morocco" | "vietnam" | "skiMyoko" | "skiDeerValley" | "skiBig3" | "panama" | "houston" | "azoresPortugal" | "similanThailand" | "centralVietnam" | "mexicoPlaya" | "taiwanApril" | "hawaii" | "alaskaCruise" | "disneyWorld" | "fiveStans";
-type TripStatus = "Planning" | "Confirmed" | "Dreaming";
+type TripStatus = "Planning" | "Booking" | "Confirmed" | "Dreaming";
 type RentalCarArrangement = {
   id: string;
   carName: string;
@@ -185,6 +185,7 @@ function TripButton({
 }) {
   const statusStyles: Record<TripStatus, string> = {
     Planning: "border-[#FFD76A]/35 bg-[#FFD76A]/10 text-[#FFD76A]",
+    Booking: "border-[#FFD76A]/35 bg-[#FFD76A]/10 text-[#FFD76A]",
     Confirmed: "border-[#72E49A]/35 bg-[#72E49A]/10 text-[#72E49A]",
     Dreaming: "border-[#FF8FC7]/35 bg-[#FF8FC7]/10 text-[#FF8FC7]",
   };
@@ -2783,6 +2784,7 @@ export default function TravelSite() {
                     <TripButton location="Vietnam" date="Nov 12 - Nov 21 2026" status="Confirmed" onClick={() => openTripPage("vietnam")} />
                     <TripButton location="Taiwan" date="Nov 21 - Dec 21 2026" status="Confirmed" onClick={() => openTripPage("taiwan")} />
                     <TripButton location="Okinawa Japan" date="Nov 25 - Dec 6 2026" status="Confirmed" onClick={() => openTripPage("okinawaJapan")} />
+                    <TripButton location="Alaska Cruise" date="May 22 - 29 2027" status="Booking" onClick={() => openTripPage("alaskaCruise")} />
                     <div className="space-y-3 pt-3">
                       <MainHubButton title="2026/2027 Ski Season" subtitle="View Shiga Kogen, Deer Valley, and SkiBig3" onClick={() => setMainPageView("ski")} />
                       <MainHubButton title="Sign Up for Future Trips" subtitle="Dreaming-stage trips collecting interest" onClick={() => setMainPageView("future")} />
@@ -2824,7 +2826,6 @@ export default function TravelSite() {
                       <>
                         <TripButton location="Panama (18+)" date="March 2027" duration="7 days" status="Dreaming" heroOverlay onClick={() => openTripPage("panama")} />
                         <TripButton location="Houston TX USA" subtitle="FRC" date="April 28 - May 1 2027" status="Dreaming" heroOverlay onClick={() => openTripPage("houston")} />
-                        <TripButton location="Alaska Cruise" date="May 22 - 29 2027" status="Planning" heroOverlay onClick={() => openTripPage("alaskaCruise")} />
                         <TripButton location="Azores Portugal" date="Sept 2027" duration="9 days" status="Dreaming" heroOverlay onClick={() => openTripPage("azoresPortugal")} />
                         <TripButton location="Mexico" subtitle="Playa del Carmen" date="Nov 2027" duration="9 days" status="Dreaming" heroOverlay onClick={() => openTripPage("mexicoPlaya")} />
                         <TripButton location="Similan & Phuket Thailand" subtitle="Scuba Diving Liveaboard" date="Mar 2028" duration="9 days" status="Dreaming" heroOverlay onClick={() => openTripPage("similanThailand")} />
@@ -3632,7 +3633,7 @@ export default function TravelSite() {
           ) : selectedTrip === "alaskaCruise" ? (
             <>
               <div className="mb-5 grid grid-cols-2 gap-2">
-                <button type="button" onClick={goToFutureTrips} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
+                <button type="button" onClick={goToMainPage} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
                 <button type="button" onClick={goToMainPage} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
               </div>
               <TripPanelTitle location="Alaska Cruise" date="May 22 - 29 2027" />
@@ -3651,32 +3652,7 @@ export default function TravelSite() {
               </section>
               <div className="space-y-3">
                 <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
-                <button type="button" onClick={() => setShowAlaskaCruiseNameInput(true)} className="w-full rounded-2xl border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#FF8FC7] transition hover:border-[#FF8FC7]/60 hover:bg-[#FF8FC7]/15">I am interested</button>
               </div>
-
-              {showAlaskaCruiseNameInput && (
-                <form onSubmit={(event) => { event.preventDefault(); addAlaskaCruiseInterestedName(); }} className="mt-5 rounded-3xl border border-white/10 bg-white/[0.03] p-4 text-left">
-                  <label className="mb-2 block text-xs uppercase tracking-[0.22em] text-white/45" htmlFor="alaska-cruise-interest-name">Name</label>
-                  <input id="alaska-cruise-interest-name" value={alaskaCruiseNameInput} onChange={(event) => setAlaskaCruiseNameInput(event.target.value)} autoFocus className="mb-3 w-full rounded-2xl border border-white/15 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-white/40" placeholder="Enter your name" />
-                  <button type="submit" className="w-full rounded-2xl border border-[#72E49A]/35 bg-[#72E49A]/10 px-4 py-3 text-sm uppercase tracking-[0.18em] text-[#72E49A] transition hover:bg-[#72E49A]/15">Add to list</button>
-                </form>
-              )}
-
-              <section className="mt-6 rounded-3xl border border-white/10 bg-black/20 p-5 text-left">
-                <div className="mb-4 flex items-center justify-between gap-3">
-                  <h2 className="text-sm uppercase tracking-[0.24em] text-white/55">Who signed up</h2>
-                  <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-white/45">{alaskaCruiseInterestedNames.length}</span>
-                </div>
-                {alaskaCruiseInterestedNames.length ? (
-                  <div className="space-y-2">
-                    {alaskaCruiseInterestedNames.map((name) => (
-                      <p key={name} className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/75">{name}</p>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm text-white/35">No names added yet.</p>
-                )}
-              </section>
             </>
           ) : selectedTrip === "disneyWorld" ? (
             <>
