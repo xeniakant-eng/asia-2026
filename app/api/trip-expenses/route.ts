@@ -15,7 +15,7 @@ type ExpenseRow = {
 
 type ExpenseCurrency = "CAD" | "MAD" | "JPY" | "TWD" | "VND" | "USD";
 
-const ALLOWED_TRIPS = ["morocco", "taiwan", "okinawaJapan", "vietnam"] as const;
+const ALLOWED_TRIPS = ["morocco", "taiwan", "okinawaJapan", "vietnam", "alaskaCruise"] as const;
 
 function isAllowedTrip(trip: string) {
   return (ALLOWED_TRIPS as readonly string[]).includes(trip);

@@ -8,6 +8,7 @@ const BABY_BLUE = "#9EDCFF";
 const TAIWAN_GOLD = "#72E49A";
 const MOROCCO_BROWN = "#D6B48C";
 const VIETNAM_GOLD = "#F6C65B";
+const ALASKA_BLUE = "#8FD8FF";
 
 type PageName = "map" | "xiaoliuqiu" | "northeasttaipei" | "taipei" | "onna" | "nago" | "nanjo" | "naha" | "nahaearly" | "yilan" | "checklist";
 type Region = "japan" | "taiwan";
@@ -598,6 +599,11 @@ export default function TravelSite() {
   const [showMoroccoBudget, setShowMoroccoBudget] = useState(false);
   const [showMoroccoUsefulInfo, setShowMoroccoUsefulInfo] = useState(false);
   const [showMoroccoMap, setShowMoroccoMap] = useState(false);
+  const [showAlaskaBudget, setShowAlaskaBudget] = useState(false);
+  const [showAlaskaUsefulInfo, setShowAlaskaUsefulInfo] = useState(false);
+  const [showAlaskaRouteMap, setShowAlaskaRouteMap] = useState(false);
+  const [showAlaskaItinerary, setShowAlaskaItinerary] = useState(false);
+  const [showAlaskaTodoList, setShowAlaskaTodoList] = useState(false);
   const [showVietnamItinerary, setShowVietnamItinerary] = useState(false);
   const [showVietnamRouteMap, setShowVietnamRouteMap] = useState(false);
   const [showVietnamFlightSummary, setShowVietnamFlightSummary] = useState(false);
@@ -617,7 +623,7 @@ export default function TravelSite() {
   const [showMoroccoChecklist, setShowMoroccoChecklist] = useState(false);
   const [showMoroccoItinerary, setShowMoroccoItinerary] = useState(false);
   const [showMoroccoCostTracker, setShowMoroccoCostTracker] = useState(false);
-  const [activeBillTabTrip, setActiveBillTabTrip] = useState<"morocco" | "taiwan" | "okinawaJapan" | "vietnam">("morocco");
+  const [activeBillTabTrip, setActiveBillTabTrip] = useState<"morocco" | "taiwan" | "okinawaJapan" | "vietnam" | "alaskaCruise">("morocco");
   const [showMoroccoAccountingSummary, setShowMoroccoAccountingSummary] = useState(false);
   const [moroccoExpenses, setMoroccoExpenses] = useState<MoroccoExpense[]>([]);
   const [moroccoExpenseDescription, setMoroccoExpenseDescription] = useState("");
@@ -787,6 +793,7 @@ export default function TravelSite() {
   const [usdToMad, setUsdToMad] = useState("10");
   const [cadToMad, setCadToMad] = useState("7.35");
   const [cadToVnd, setCadToVnd] = useState("19000");
+  const [cadToUsd, setCadToUsd] = useState("0.73");
   const [usdToVnd, setUsdToVnd] = useState("26000");
   const [selectedTimelineSectionId, setSelectedTimelineSectionId] = useState(1);
 
@@ -815,6 +822,32 @@ export default function TravelSite() {
   const vietnamConfirmedParties = [
     "Xenia & David & Naomi (3)",
     "Jenn & Hiroshi & Masashi (6) & Miyari (3)",
+  ];
+  const alaskaConfirmedParties = [
+    "Xenia & David & Naomi",
+    "Dylan & Sharon",
+  ];
+  const alaskaTodoItems = [
+    "Book Arrival Flight -> Vancouver YVR",
+    "Book Departure Flight -> Anchorage ANC",
+    "Pay cruise remaining balance by Feb 21 2027",
+    "Confirm all passenger information: name, birthday, citizenship, residency, and title",
+    "Confirm Early Dining Seating",
+    "Confirm bedding arrangement",
+    "Purchase 4-Device Wifi Package",
+    "Book Cruise Excursions",
+    "Ensure US/CA cellphone reception coverage",
+    "Extra accommodation booking for early arrival days in Vancouver",
+  ];
+  const alaskaItineraryDays = [
+    { day: "Day 1", date: "May 22, 2027", title: "Vancouver - Boarding Day", time: "Departs at 4:00 PM", highlights: ["Board Crown Princess in Vancouver", "Settle into cabins", "Sail-away from Vancouver"] },
+    { day: "Day 2", date: "May 23, 2027", title: "At Sea", time: "Inside Passage", highlights: ["Scenic cruising", "Ship activities", "Relax and enjoy the ocean views"] },
+    { day: "Day 3", date: "May 24, 2027", title: "Ketchikan, Alaska", time: "06:00 AM - 02:00 PM", highlights: ["Explore Ketchikan", "Creek Street / waterfront stroll", "Optional local excursion"] },
+    { day: "Day 4", date: "May 25, 2027", title: "Juneau, Alaska", time: "08:00 AM - 09:15 PM", highlights: ["Mendenhall Glacier", "Whale Watching", "Macaulay Salmon Hatchery"] },
+    { day: "Day 5", date: "May 26, 2027", title: "Skagway, Alaska", time: "06:00 AM - 08:30 PM", highlights: ["White Pass & Yukon Route Railroad", "Historic Skagway town walk", "Long port day with time to explore"] },
+    { day: "Day 6", date: "May 27, 2027", title: "Glacier Bay National Park, Alaska", time: "06:15 AM - 03:15 PM", highlights: ["Scenic Cruising", "Glacier viewing from the ship", "Bring warm layers for outdoor decks"] },
+    { day: "Day 7", date: "May 28, 2027", title: "College Fjord, Alaska", time: "06:00 PM - 08:30 PM", highlights: ["Scenic Cruising", "Evening glacier and fjord views", "Final night onboard"] },
+    { day: "Day 8", date: "May 29, 2027", title: "Anchorage (Whittier), Alaska", time: "Arrival at 12:30 AM", highlights: ["Portage Glacier", "Alaska Wildlife Conservation Center", "Flight departure from Anchorage Airport (ANC)"] },
   ];
   const vietnamItineraryDays = [
     {
@@ -1083,9 +1116,10 @@ export default function TravelSite() {
     return taiwanPartyOrder.indexOf(firstGuest) - taiwanPartyOrder.indexOf(secondGuest);
   });
 
-  const getBillTabPartyOptions = (trip: "morocco" | "taiwan" | "okinawaJapan" | "vietnam") => {
+  const getBillTabPartyOptions = (trip: "morocco" | "taiwan" | "okinawaJapan" | "vietnam" | "alaskaCruise") => {
     if (trip === "morocco") return moroccoInterestedNames;
     if (trip === "vietnam") return vietnamConfirmedParties;
+    if (trip === "alaskaCruise") return alaskaConfirmedParties;
     const previousSelectedTrip = selectedTrip;
     if (previousSelectedTrip === trip) return getVisibleGuestOptions();
     return guestOptions.filter((guest) => {
@@ -1095,10 +1129,11 @@ export default function TravelSite() {
     });
   };
 
-  const getBillTabConfig = (trip: "morocco" | "taiwan" | "okinawaJapan" | "vietnam") => {
+  const getBillTabConfig = (trip: "morocco" | "taiwan" | "okinawaJapan" | "vietnam" | "alaskaCruise") => {
     if (trip === "taiwan") return { trip, label: "Taiwan 2026", accent: TAIWAN_GOLD, localCurrency: "TWD" as const, localLabel: "TWD", localSymbol: "NT$", parties: getBillTabPartyOptions(trip) };
     if (trip === "okinawaJapan") return { trip, label: "Okinawa Japan 2026", accent: BABY_BLUE, localCurrency: "JPY" as const, localLabel: "JPY", localSymbol: "¥", parties: getBillTabPartyOptions(trip) };
     if (trip === "vietnam") return { trip, label: "Vietnam 2026", accent: VIETNAM_GOLD, localCurrency: "VND" as const, localLabel: "VND", localSymbol: "₫", parties: getBillTabPartyOptions(trip) };
+    if (trip === "alaskaCruise") return { trip, label: "Alaska Cruise 2027", accent: ALASKA_BLUE, localCurrency: "USD" as const, localLabel: "USD", localSymbol: "$", parties: getBillTabPartyOptions(trip) };
     return { trip, label: "Morocco 2026", accent: MOROCCO_BROWN, localCurrency: "MAD" as const, localLabel: "MAD", localSymbol: "", parties: getBillTabPartyOptions(trip) };
   };
 
@@ -1127,6 +1162,8 @@ export default function TravelSite() {
     setMainPageView("active");
     setShowMoroccoItinerary(false);
     setShowMoroccoChecklist(false);
+    setShowAlaskaItinerary(false);
+    setShowAlaskaTodoList(false);
     setShowVietnamItinerary(false);
     setShowVietnamRouteMap(false);
     setShowVietnamFlightSummary(false);
@@ -1141,6 +1178,8 @@ export default function TravelSite() {
     setIsGuestConfirmed(false);
     setShowMoroccoItinerary(false);
     setShowMoroccoChecklist(false);
+    setShowAlaskaItinerary(false);
+    setShowAlaskaTodoList(false);
     setShowVietnamItinerary(false);
     setShowVietnamRouteMap(false);
     setShowVietnamFlightSummary(false);
@@ -1164,6 +1203,11 @@ export default function TravelSite() {
       setBrowserRoute(buildTripUrl(selectedTrip, { guest: guestName || "Guest", view: "itinerary" }), replace);
       return;
     }
+    if (nextView === "itinerary" && selectedTrip === "alaskaCruise") {
+      setShowAlaskaItinerary(true);
+      setBrowserRoute(buildTripUrl(selectedTrip, { guest: guestName || "Guest", view: "itinerary" }), replace);
+      return;
+    }
     if (nextView === "map" && selectedTrip === "taiwan") {
       openFirstTaiwanItinerary(replace);
       return;
@@ -1172,6 +1216,8 @@ export default function TravelSite() {
     setIsGuestConfirmed(true);
     setShowGuestActions(true);
     setShowMoroccoItinerary(false);
+    setShowAlaskaItinerary(false);
+    setShowAlaskaTodoList(false);
     setShowVietnamItinerary(false);
     setShowVietnamRouteMap(false);
     setShowVietnamFlightSummary(false);
@@ -1199,7 +1245,12 @@ export default function TravelSite() {
     setShowMoroccoBudget(false);
     setShowMoroccoUsefulInfo(false);
     setShowMoroccoMap(false);
+    setShowAlaskaBudget(false);
+    setShowAlaskaUsefulInfo(false);
+    setShowAlaskaRouteMap(false);
     setShowMoroccoChecklist(false);
+    setShowAlaskaItinerary(false);
+    setShowAlaskaTodoList(false);
     setShowVietnamItinerary(false);
     setShowVietnamRouteMap(false);
     setShowVietnamFlightSummary(false);
@@ -1248,7 +1299,12 @@ export default function TravelSite() {
     setShowMoroccoBudget(false);
     setShowMoroccoUsefulInfo(false);
     setShowMoroccoMap(false);
+    setShowAlaskaBudget(false);
+    setShowAlaskaUsefulInfo(false);
+    setShowAlaskaRouteMap(false);
     setShowMoroccoChecklist(false);
+    setShowAlaskaItinerary(false);
+    setShowAlaskaTodoList(false);
     setShowVietnamItinerary(false);
     setShowVietnamRouteMap(false);
     setShowVietnamFlightSummary(false);
@@ -1258,6 +1314,7 @@ export default function TravelSite() {
       setGuestName(returningGuest);
       setPage("map");
       setShowMoroccoItinerary(false);
+      setShowAlaskaItinerary(false);
       if (tripFromUrl === "morocco") {
         setShowGuestActions(false);
         setIsGuestConfirmed(false);
@@ -1268,6 +1325,12 @@ export default function TravelSite() {
         setShowGuestActions(false);
         setIsGuestConfirmed(false);
         setShowVietnamItinerary(true);
+        return;
+      }
+      if (tripFromUrl === "alaskaCruise" && view === "itinerary") {
+        setShowGuestActions(false);
+        setIsGuestConfirmed(false);
+        setShowAlaskaItinerary(true);
         return;
       }
       if (chapter && chapterPages.includes(chapter)) {
@@ -1349,6 +1412,7 @@ export default function TravelSite() {
       taiwan: "/taiwan-dashboard-hero.webp",
       okinawaJapan: "/okinawa-dashboard-hero.webp",
       vietnam: "/vietnam-dashboard-hero.webp",
+      alaskaCruise: "/alaska-dashboard-hero.webp",
     };
     const heroUrl = selectedTrip ? dashboardHeroByTrip[selectedTrip] : undefined;
     if (!heroUrl) return;
@@ -1540,12 +1604,14 @@ export default function TravelSite() {
         if (cadData?.rates?.TWD) setCadToTwd(Math.round(cadData.rates.TWD).toString());
         if (cadData?.rates?.MAD) setCadToMad(Number(cadData.rates.MAD).toFixed(2));
         if (cadData?.rates?.VND) setCadToVnd(Math.round(cadData.rates.VND).toLocaleString("en-CA"));
+        if (cadData?.rates?.USD) setCadToUsd(Number(cadData.rates.USD).toFixed(2));
       } catch {
         setCadToJpy("110");
         setCadToTwd("23");
         setUsdToMad("10");
         setCadToMad("7.35");
         setCadToVnd("19000");
+        setCadToUsd("0.73");
       }
     }
     fetchRates();
@@ -1671,6 +1737,18 @@ export default function TravelSite() {
       "Baby shower gel & shampoo",
       "Small bottle of baby laundry detergent",
     ];
+    if (selectedTrip === "alaskaCruise") {
+      return {
+        title: `${guest || "Guest"} Alaska Cruise Packing List`,
+        sections: [
+          { title: "Essentials", items: ["Passport / travel documents", "Princess cruise boarding documents", "Travel insurance", "Credit cards and some USD cash", "Medication", "Phone + charger", "Portable power bank"] },
+          { title: "Clothes", items: ["Warm layers", "Rain jacket", "Comfortable walking shoes", "Formal / smart casual dinner outfit",
+              "Semi-formal outfit for Captain's Night", "Hat and gloves", "Swimsuit for onboard pool / hot tub"] },
+          { title: "Personal", items: ["Sunscreen", "Sunglasses", "Binoculars", "Camera gear + charger", "Toiletries", "Motion sickness medicine"] },
+        ],
+      };
+    }
+
     const standardSections: PackingSection[] = [
       { title: "Essentials", items: essentials },
       { title: "Clothes", items: clothes },
@@ -2065,6 +2143,7 @@ export default function TravelSite() {
 
   const activeBillTabConfig = getBillTabConfig(activeBillTabTrip);
   const activeBillTabParties = activeBillTabConfig.parties;
+  const billTabCurrencyOptions = Array.from(new Set(["CAD", activeBillTabConfig.localCurrency, "USD"])) as Array<"CAD" | "MAD" | "JPY" | "TWD" | "VND" | "USD">;
   const moroccoSelectedPaidForParties = moroccoExpensePaidFor.includes("Everyone")
     ? activeBillTabParties
     : moroccoExpensePaidFor.filter((name) => activeBillTabParties.includes(name));
@@ -2084,7 +2163,7 @@ export default function TravelSite() {
     setMoroccoExpensePaidFor(uniqueNext.length === activeBillTabParties.length ? ["Everyone"] : uniqueNext);
   };
 
-  const openMoroccoCostTracker = async (trip: "morocco" | "taiwan" | "okinawaJapan" | "vietnam" = "morocco") => {
+  const openMoroccoCostTracker = async (trip: "morocco" | "taiwan" | "okinawaJapan" | "vietnam" | "alaskaCruise" = "morocco") => {
     const config = getBillTabConfig(trip);
     setActiveBillTabTrip(trip);
     setShowMoroccoCostTracker(true);
@@ -2254,7 +2333,7 @@ export default function TravelSite() {
             <fieldset className="grid gap-1.5 text-xs text-white/45">
               <legend className="mb-1.5">Currency</legend>
               <div className="grid grid-cols-3 rounded-xl border border-white/15 bg-black/30 p-1">
-                {(["CAD", activeBillTabConfig.localCurrency, "USD"] as const).map((currency) => <button key={currency} type="button" onClick={() => setMoroccoExpenseCurrency(currency)} className={`rounded-lg px-3 py-2 text-sm transition ${moroccoExpenseCurrency === currency ? "text-black" : "text-white/55 hover:text-white"}`} style={moroccoExpenseCurrency === currency ? { backgroundColor: activeBillTabConfig.accent } : undefined}>{currency}</button>)}
+                {billTabCurrencyOptions.map((currency) => <button key={currency} type="button" onClick={() => setMoroccoExpenseCurrency(currency)} className={`rounded-lg px-3 py-2 text-sm transition ${moroccoExpenseCurrency === currency ? "text-black" : "text-white/55 hover:text-white"}`} style={moroccoExpenseCurrency === currency ? { backgroundColor: activeBillTabConfig.accent } : undefined}>{currency}</button>)}
               </div>
             </fieldset>
             {renderMoroccoPaidForSelector()}
@@ -2578,6 +2657,64 @@ export default function TravelSite() {
     );
   }
 
+
+  if (showAlaskaItinerary && guestName) {
+    const alaskaLocalTime = new Intl.DateTimeFormat("en-US", { timeZone: "America/Anchorage", hour: "numeric", minute: "2-digit", second: "2-digit", hour12: true }).format(now);
+    return (
+      <div className="min-h-screen bg-black px-6 py-10 text-white" style={{ "--chapter-accent": ALASKA_BLUE } as React.CSSProperties}>
+        <header className="mx-auto mb-10 flex max-w-5xl flex-wrap items-center justify-between gap-3">
+          <button type="button" onClick={() => openTripDashboard(guestName || "Guest")} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white">Back to Dashboard</button>
+          <button type="button" onClick={goToMainPage} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white">Main Page</button>
+        </header>
+        <main className="mx-auto max-w-5xl">
+          <p className="mb-3 text-sm uppercase tracking-[0.35em]" style={{ color: ALASKA_BLUE }}>Alaska Cruise 2027</p>
+          <h1 className="mb-3 text-4xl font-light tracking-wide md:text-6xl">Trip Itinerary</h1>
+          <a href="https://www.princess.com/itinerary-details/?voyageCode=3719" target="_blank" rel="noreferrer" className="mb-6 inline-block text-sm text-white/45 underline decoration-white/20 underline-offset-4 transition hover:text-white/75 hover:decoration-white/45">Crown Princess - May 22 - 29 2027</a>
+          <section className="mb-10 grid grid-cols-2 gap-3 md:grid-cols-4">
+            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-sm font-medium md:text-base">USD</p><p className="text-[10px] text-gray-400 md:text-xs">Currency</p><p className="mt-1 text-xs font-medium md:text-sm">1 CAD ~ {cadToUsd} USD</p><p className="mt-1 text-xs text-gray-400">Live exchange rate</p></div>
+            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-sm font-medium md:text-base">TEMP</p><p className="text-[10px] text-gray-400 md:text-xs">May Temp</p><p className="mt-1 text-xs font-medium md:text-sm">5-15C</p><p className="mt-1 text-[9px] text-gray-500">Layer up + rain gear</p></div>
+            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-sm font-medium md:text-base">TIME</p><p className="text-[10px] text-gray-400 md:text-xs">Local Time</p><p className="mt-1 text-xs font-medium md:text-sm">{alaskaLocalTime}</p><p className="mt-1 text-[9px] text-gray-500">Alaska Time</p></div>
+            <button type="button" onClick={() => setShowAlaskaRouteMap(true)} className="rounded-2xl border border-[#8FD8FF]/30 bg-[#8FD8FF]/10 p-3 text-center transition hover:border-[#8FD8FF]/60 hover:bg-[#8FD8FF]/15 md:p-4"><p className="mb-1 text-sm font-medium md:text-base">MAP</p><p className="text-[10px] text-[#8FD8FF]/75 md:text-xs">Route Map</p><p className="mt-1 text-xs font-medium text-[#8FD8FF] md:text-sm">Voyage Route</p><p className="mt-1 text-[9px] text-white/40">Vancouver to Whittier</p></button>
+          </section>
+          <section className="space-y-5">
+            {alaskaItineraryDays.map((day) => (
+              <article key={day.day} className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                <div className="mb-4">
+                  <p className="text-xs uppercase tracking-[0.2em]" style={{ color: ALASKA_BLUE }}>{day.day} - {day.date}</p>
+                  <h2 className="mt-1 text-2xl font-light text-white">{day.title}</h2>
+                  <p className="mt-1 text-sm text-white/45">{day.time}</p>
+                </div>
+                <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
+                  <p className="mb-3 text-xs uppercase tracking-[0.18em] text-white/40">Plan</p>
+                  <ul className="list-disc space-y-2 pl-5 text-sm leading-6 text-white/75">
+                    {day.highlights.map((item) => <li key={item}>{item}</li>)}
+                  </ul>
+                </div>
+              </article>
+            ))}
+          </section>
+        </main>
+        {showAlaskaRouteMap && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-3 backdrop-blur-sm sm:p-4" role="dialog" aria-modal="true" aria-label="Alaska Cruise route map">
+            <section className="flex max-h-[92dvh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] shadow-2xl">
+              <div className="flex shrink-0 items-start justify-between gap-4 border-b border-white/10 px-4 py-3 sm:px-6 sm:py-4">
+                <div>
+                  <p className="mb-1 text-xs uppercase tracking-[0.24em]" style={{ color: ALASKA_BLUE }}>Alaska Cruise 2027</p>
+                  <h2 className="text-xl font-light text-white sm:text-2xl">Route Map</h2>
+                </div>
+                <button type="button" onClick={() => setShowAlaskaRouteMap(false)} aria-label="Close Alaska Cruise route map" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">x</button>
+              </div>
+              <div className="min-h-0 flex-1 overflow-auto bg-white p-2 sm:p-4">
+                <img src="/alaska-cruise-route.webp" alt="Alaska Cruise northbound route map from Vancouver to Anchorage via Whittier" className="mx-auto h-auto max-h-[78dvh] w-auto max-w-full object-contain" />
+              </div>
+            </section>
+          </div>
+        )}
+        {albumPopup}
+      </div>
+    );
+  }
+
   if (showVietnamItinerary && guestName) {
     const vietnamBudgetCostsForGuest = getVietnamBookingCostsForGuest(guestName);
     const vietnamBudgetTotalForGuest = vietnamBudgetCostsForGuest.reduce((total, cost) => total + (cost.amountCad ?? 0), 0);
@@ -2747,8 +2884,8 @@ export default function TravelSite() {
   }
 
   if (!isGuestConfirmed) {
-    const isPosterHeroSelection = selectedTrip === "morocco" || selectedTrip === "okinawaJapan" || selectedTrip === "taiwan" || selectedTrip === "vietnam";
-    const isConfirmedTripAppCard = selectedTrip === "morocco" || selectedTrip === "taiwan" || selectedTrip === "okinawaJapan" || selectedTrip === "vietnam";
+    const isPosterHeroSelection = selectedTrip === "morocco" || selectedTrip === "okinawaJapan" || selectedTrip === "taiwan" || selectedTrip === "vietnam" || selectedTrip === "alaskaCruise";
+    const isConfirmedTripAppCard = selectedTrip === "morocco" || selectedTrip === "taiwan" || selectedTrip === "okinawaJapan" || selectedTrip === "vietnam" || selectedTrip === "alaskaCruise";
     const isSplitTripDashboard = showGuestActions && (selectedTrip === "taiwan" || selectedTrip === "okinawaJapan");
     const isMainSubmenu = !selectedTrip && mainPageView !== "active";
     const selectedTripAccent = selectedTrip === "taiwan" ? TAIWAN_GOLD : selectedTrip === "okinawaJapan" ? BABY_BLUE : selectedTrip === "vietnam" ? VIETNAM_GOLD : MOROCCO_BROWN;
@@ -2784,7 +2921,7 @@ export default function TravelSite() {
                     <TripButton location="Vietnam" date="Nov 12 - Nov 21 2026" status="Confirmed" onClick={() => openTripPage("vietnam")} />
                     <TripButton location="Taiwan" date="Nov 21 - Dec 21 2026" status="Confirmed" onClick={() => openTripPage("taiwan")} />
                     <TripButton location="Okinawa Japan" date="Nov 25 - Dec 6 2026" status="Confirmed" onClick={() => openTripPage("okinawaJapan")} />
-                    <TripButton location="Alaska Cruise" date="May 22 - 29 2027" status="Booking" onClick={() => openTripPage("alaskaCruise")} />
+                    <TripButton location="Alaska Cruise" date="May 22 - 29 2027" status="Confirmed" onClick={() => openTripPage("alaskaCruise")} />
                     <div className="space-y-3 pt-3">
                       <MainHubButton title="2026/2027 Ski Season" subtitle="View Shiga Kogen, Deer Valley, and SkiBig3" onClick={() => setMainPageView("ski")} />
                       <MainHubButton title="Sign Up for Future Trips" subtitle="Dreaming-stage trips collecting interest" onClick={() => setMainPageView("future")} />
@@ -3632,27 +3769,227 @@ export default function TravelSite() {
             </>
           ) : selectedTrip === "alaskaCruise" ? (
             <>
-              <div className="mb-5 grid grid-cols-2 gap-2">
-                <button type="button" onClick={goToMainPage} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Back</button>
-                <button type="button" onClick={goToMainPage} className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/45">Main Page</button>
-              </div>
-              <TripPanelTitle location="Alaska Cruise" date="May 22 - 29 2027" />
-              <div className="mb-5 overflow-hidden rounded-3xl border border-white/10 bg-black/25 p-2">
-                <img src="/alaskacruise.pgn" alt="Princess Cruise Voyage of the Glaciers" className="max-h-72 w-full rounded-2xl object-contain object-center" />
-              </div>
-              <section className="mb-5 rounded-3xl border border-white/10 bg-white/[0.03] p-5 text-left">
-                <h2 className="mb-4 text-sm uppercase tracking-[0.24em] text-white/55">Trip Details</h2>
-                <ul className="ml-5 list-disc space-y-3 text-sm leading-6 text-white/65">
-                  <li><span className="text-white/85">Cruise:</span> Princess Cruise 7-Day Voyage of the Glaciers (Northbound)</li>
-                  <li><span className="text-white/85">Route:</span> Start from Vancouver; end with Anchorage (Whittier)</li>
-                  <li><span className="text-white/85">Ship:</span> Crown Princess</li>
-                  <li><span className="text-white/85">Room estimate:</span> Balcony room $1700 CAD/person</li>
-                  <li><span className="text-white/85">Princess itinerary:</span> <a href="https://www.princess.com/itinerary-details/?voyageCode=3721" target="_blank" rel="noreferrer" className="text-[#8FD8FF] underline decoration-white/25 underline-offset-4 transition hover:text-white">View voyage details</a></li>
-                </ul>
-              </section>
-              <div className="space-y-3">
-                <button type="button" disabled className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-white/25 opacity-60">Itinerary</button>
-              </div>
+              {guestName ? (
+                <section className="relative flex min-h-0 flex-1 flex-col overflow-hidden bg-[#020B18] px-5 pb-5 text-left">
+                  <img src="/alaska-dashboard-hero.webp" alt="" aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 top-20 h-[calc(100%-5rem)] w-full object-cover" style={{ objectPosition: "center 30%" }} />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/50 via-black/56 to-black/82" />
+                  <div className="relative z-10 mb-5 grid grid-cols-2 gap-2">
+                    <button type="button" onClick={() => { setGuestName(""); setShowGuestActions(false); setShowMoroccoChecklist(false); setShowMoroccoCostTracker(false); setShowAlaskaTodoList(false); setBrowserRoute(buildTripUrl("alaskaCruise")); }} className="rounded-full border border-white/30 bg-black/70 px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-white/80 backdrop-blur-md transition hover:border-white/45 hover:bg-black/85">Back</button>
+                    <button type="button" onClick={goToMainPage} className="rounded-full border border-white/30 bg-black/70 px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-white/80 backdrop-blur-md transition hover:border-white/45 hover:bg-black/85">Main Page</button>
+                  </div>
+                  <div className="relative z-10 flex min-h-0 flex-1 flex-col justify-center space-y-5 overflow-y-auto">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.28em]" style={{ color: ALASKA_BLUE }}>Alaska Cruise 2027</p>
+                      <p className="mt-1 text-[11px] uppercase tracking-[0.22em] text-white/60">Crown Princess</p>
+                      <h2 className="mt-2 text-3xl font-light tracking-wide text-white">Hello {guestName}</h2>
+                      <p className="mt-2 text-sm text-white/45">May 22 - 29 2027</p>
+                    </div>
+                    {guestName === "Guest" ? (
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        <button type="button" onClick={() => openTripView("itinerary")} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border px-4 py-3 text-center backdrop-blur-md transition hover:bg-[#07151F]/60" style={{ borderColor: ALASKA_BLUE + "8C", backgroundColor: "rgba(3, 12, 17, 0.43)", color: ALASKA_BLUE }}><span className="text-xs font-light uppercase tracking-[0.16em]">Trip Itinerary</span></button>
+                        <button type="button" onClick={() => openAlbumPopup(`/memory-maker/alaskaCruise?returnChapter=alaskaCruise&guest=${encodeURIComponent("Guest")}`)} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border px-4 py-3 text-center backdrop-blur-md transition hover:bg-[#07151F]/60" style={{ borderColor: ALASKA_BLUE + "8C", backgroundColor: "rgba(3, 12, 17, 0.43)", color: ALASKA_BLUE }}><span className="text-xl">🖼️</span><span className="text-xs font-light uppercase tracking-[0.16em]">View Album</span></button>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          <button type="button" onClick={() => openTripView("itinerary")} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border px-4 py-3 text-center backdrop-blur-md transition hover:bg-[#07151F]/60 sm:col-span-2" style={{ borderColor: ALASKA_BLUE + "8C", backgroundColor: "rgba(3, 12, 17, 0.43)", color: ALASKA_BLUE }}><span className="text-xs font-light uppercase tracking-[0.16em]">Trip Itinerary</span></button>
+                          <button type="button" onClick={() => setShowMoroccoChecklist(true)} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border px-4 py-3 text-center backdrop-blur-md transition hover:bg-[#07151F]/60" style={{ borderColor: ALASKA_BLUE + "8C", backgroundColor: "rgba(3, 12, 17, 0.43)", color: ALASKA_BLUE }}><span className="text-xl">🎒</span><span className="text-xs font-light uppercase tracking-[0.16em]">Packing List</span></button>
+                          <button type="button" onClick={() => setShowAlaskaTodoList(true)} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border px-4 py-3 text-center backdrop-blur-md transition hover:bg-[#07151F]/60" style={{ borderColor: ALASKA_BLUE + "8C", backgroundColor: "rgba(3, 12, 17, 0.43)", color: ALASKA_BLUE }}><span className="text-sm font-medium uppercase tracking-[0.14em]">TO</span><span className="text-xs font-light uppercase tracking-[0.16em]">To Do List</span></button>
+                          <button type="button" onClick={() => openMoroccoCostTracker("alaskaCruise")} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border px-4 py-3 text-center backdrop-blur-md transition hover:bg-[#07151F]/60 sm:col-span-2" style={{ borderColor: ALASKA_BLUE + "8C", backgroundColor: "rgba(3, 12, 17, 0.43)", color: ALASKA_BLUE }}><span className="text-xl">💰</span><span className="text-xs font-light uppercase tracking-[0.16em]">BillTab</span></button>
+                        </div>
+                        <MemoryMaker albumKey="alaskaCruise" albumName="Alaska Cruise" accentColor={ALASKA_BLUE} guestName={guestName} returnChapter="alaskaCruise" onViewAlbum={openAlbumPopup} compact solidButtons />
+                      </>
+                    )}
+                  </div>
+                </section>
+              ) : (
+                <>
+                  <div className="relative z-10 space-y-2 px-5 pb-3">
+                    <div className="grid grid-cols-2 gap-2">
+                      <button type="button" onClick={goToMainPage} className="rounded-full border border-white/20 bg-white/[0.06] px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-white/65 transition hover:border-white/35 hover:bg-white/[0.1]">Main Page</button>
+                      <button type="button" onClick={() => setShowAlaskaRouteMap(true)} className="rounded-full border border-[#8FD8FF]/35 bg-[#8FD8FF]/10 px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-[#8FD8FF] transition hover:border-[#8FD8FF]/60 hover:bg-[#8FD8FF]/15">Route Map</button>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button type="button" onClick={() => setShowAlaskaBudget(true)} className="rounded-full border border-[#8FD8FF]/35 bg-[#8FD8FF]/10 px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-[#8FD8FF] transition hover:border-[#8FD8FF]/60 hover:bg-[#8FD8FF]/15">Reservation #</button>
+                      <button type="button" disabled className="cursor-not-allowed rounded-full border border-white/10 bg-white/[0.03] px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-white/25 opacity-60">Flight Info</button>
+                    </div>
+                  </div>
+                  <div className="relative min-h-0 flex-1 overflow-hidden bg-[#020B18]">
+                    <img src="/alaska-cruise-2027-poster.webp" alt="Alaska Cruise 2027 travel poster" className="absolute inset-0 h-full w-full object-cover" style={{ objectPosition: "center 38%" }} />
+                    <div className="absolute inset-x-0 bottom-0 grid grid-cols-[2fr_1fr] gap-2 bg-gradient-to-t from-black via-black/72 to-transparent px-4 pb-4 pt-24">
+                      <select
+                        defaultValue=""
+                        disabled={isSiteGuestAccess || siteAccessMode === "loading"}
+                        onChange={(event) => {
+                          const selectedGuest = event.target.value;
+                          if (!selectedGuest) return;
+                          openTripDashboard(selectedGuest);
+                        }}
+                        className="min-w-0 rounded-2xl border border-white/25 bg-black/75 px-4 py-3 text-sm font-light tracking-wide text-white outline-none backdrop-blur-md transition focus:border-[#8FD8FF]/70 disabled:cursor-not-allowed disabled:border-white/10 disabled:text-white/30"
+                      >
+                        <option value="" disabled>{isSiteGuestAccess ? "Members only" : "Select your party"}</option>
+                        {alaskaConfirmedParties.map((name) => <option key={name} value={name}>{name}</option>)}
+                      </select>
+                      <button type="button" onClick={() => openTripDashboard("Guest")} className="rounded-2xl border border-[#8FD8FF]/40 bg-black/75 px-3 py-3 text-sm font-light uppercase tracking-[0.12em] text-[#8FD8FF] outline-none backdrop-blur-md transition hover:border-[#8FD8FF]/70 hover:bg-[#8FD8FF]/10">Guest</button>
+                    </div>
+                  </div>
+                </>
+              )}
+              {showMoroccoChecklist && guestName && guestName !== "Guest" && (
+                <div className="fixed inset-0 z-50 flex items-stretch justify-center bg-black/80 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-[max(0.5rem,env(safe-area-inset-top))] backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-label={`${guestName} Alaska Cruise packing checklist`}>
+                  <section className="flex h-[calc(100dvh-1rem)] max-h-[calc(100dvh-1rem)] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] text-left shadow-2xl sm:h-[88dvh] sm:max-h-[760px]">
+                    <div className="flex shrink-0 items-start justify-between gap-4 border-b border-white/10 px-4 py-3 sm:px-7 sm:py-4">
+                      <div>
+                        <p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: ALASKA_BLUE }}>Alaska Cruise 2027</p>
+                        <h2 className="text-xl font-light text-white sm:text-2xl">Packing List</h2>
+                        <p className="mt-1 text-xs text-white/45 sm:mt-2 sm:text-sm">{guestName}</p>
+                      </div>
+                      <button type="button" onClick={() => setShowMoroccoChecklist(false)} aria-label="Close Alaska Cruise checklist" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">×</button>
+                    </div>
+                    <div className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain p-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:space-y-4 sm:p-7">
+                      {getPackingChecklist(guestName).sections.map((section) => (
+                        <article key={section.title} className="rounded-xl border border-white/10 bg-white/[0.04] p-3 sm:p-4">
+                          <h3 className="mb-3 text-base font-light text-white sm:mb-4 sm:text-lg">{section.title}</h3>
+                          <div className="grid gap-2">
+                            {section.items.map((item) => {
+                              const key = `${guestName}-${section.title}-${item}`;
+                              const checked = Boolean(checkedPackingItems[key]);
+                              return <button key={key} type="button" onClick={() => togglePackingItem(key, checked)} className={`flex items-center gap-3 rounded-xl border px-3 py-2 text-left text-sm transition ${checked ? "border-[#8FD8FF]/50 bg-[#8FD8FF]/10 text-white" : "border-white/10 bg-black/20 text-white/70 hover:border-white/25"}`}><span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-xs ${checked ? "border-[#8FD8FF] bg-[#8FD8FF] text-black" : "border-white/25 text-transparent"}`}>✓</span><span className={checked ? "text-white line-through decoration-[#8FD8FF]/70" : "text-white/75"}>{item}</span></button>;
+                            })}
+                          </div>
+                        </article>
+                      ))}
+                    </div>
+                  </section>
+                </div>
+              )}
+              {showAlaskaTodoList && guestName && guestName !== "Guest" && (
+                <div className="fixed inset-0 z-50 flex items-stretch justify-center bg-black/80 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-[max(0.5rem,env(safe-area-inset-top))] backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-label={`${guestName} Alaska Cruise do to list`}>
+                  <section className="flex h-[calc(100dvh-1rem)] max-h-[calc(100dvh-1rem)] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] text-left shadow-2xl sm:h-[88dvh] sm:max-h-[760px]">
+                    <div className="flex shrink-0 items-start justify-between gap-4 border-b border-white/10 px-4 py-3 sm:px-7 sm:py-4">
+                      <div>
+                        <p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: ALASKA_BLUE }}>Alaska Cruise 2027</p>
+                        <h2 className="text-xl font-light text-white sm:text-2xl">To Do List</h2>
+                        <p className="mt-1 text-xs text-white/45 sm:mt-2 sm:text-sm">Cruise planning tasks</p>
+                      </div>
+                      <button type="button" onClick={() => setShowAlaskaTodoList(false)} aria-label="Close Alaska Cruise do to list" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">x</button>
+                    </div>
+                    <div className="min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-contain p-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-7">
+                      {alaskaTodoItems.map((item) => {
+                        const key = `AlaskaCruise-${guestName}-To Do List-${item}`;
+                        const checked = Boolean(checkedPackingItems[key]);
+                        return <button key={key} type="button" onClick={() => togglePackingItem(key, checked)} className={`flex items-center gap-3 rounded-xl border px-3 py-2 text-left text-sm transition sm:py-2.5 ${checked ? "border-[#8FD8FF]/55 bg-[#8FD8FF]/10 text-white" : "border-white/10 bg-black/20 text-white/70 hover:border-white/25"}`}><span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-xs ${checked ? "border-[#8FD8FF] bg-[#8FD8FF] text-black" : "border-white/25 text-transparent"}`}>?</span><span className={checked ? "text-white line-through decoration-[#8FD8FF]/70" : "text-white/75"}>{item}</span></button>;
+                      })}
+                    </div>
+                  </section>
+                </div>
+              )}
+              {showAlaskaBudget && (
+                <div className="fixed inset-0 z-50 flex items-stretch justify-center bg-black/80 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-[max(0.5rem,env(safe-area-inset-top))] backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-label="Alaska Cruise reservation numbers">
+                  <section className="flex h-[calc(100dvh-1rem)] max-h-[calc(100dvh-1rem)] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] text-left shadow-2xl sm:h-[88dvh] sm:max-h-[760px]">
+                    <div className="flex shrink-0 items-start justify-between gap-4 border-b border-white/10 px-4 py-3 sm:px-7 sm:py-5">
+                      <div>
+                        <p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: ALASKA_BLUE }}>Alaska Cruise 2027</p>
+                        <h2 className="text-xl font-light text-white sm:text-2xl">Reservation #</h2>
+                        <p className="mt-1 text-xs text-white/45 sm:text-sm">Crown Princess - Voyage of the Glaciers</p>
+                      </div>
+                      <button type="button" onClick={() => setShowAlaskaBudget(false)} aria-label="Close Alaska Cruise reservation numbers" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">x</button>
+                    </div>
+                    <div className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain p-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-6">
+                      {[
+                        { price: "$3,309.29 CAD", booking: "MW2W4R", room: "B702", guests: [{ title: "Mr", first: "Yu-Ting David", last: "Wu" }, { title: "Mrs", first: "I-Ling Xenia", last: "Kant" }, { title: "Miss", first: "Naomi Ya-Rong", last: "Wu" }] },
+                        { price: "$2,898.28 CAD", booking: "MW2WGL", room: "B723", guests: [{ title: "Mrs", first: "Yu-Ting Judy", last: "Yen" }, { title: "Mr", first: "Tein-Kong", last: "Kant" }] },
+                        { price: "$2,898.28 CAD", booking: "MW2L2W", room: "C723", guests: [{ title: "Mr", first: "Kuo-Hsiung", last: "Yen" }, { title: "Mrs", first: "Shu-Li", last: "Chin" }] },
+                        { price: "$2,898.28 CAD", booking: "MW2L8K", room: "C727", guests: [{ title: "Mr", first: "Ko-Chun", last: "Yen" }, { title: "Miss", first: "Chun-Cheng", last: "Hsieh" }] },
+                        { price: "$2,898.28 CAD", booking: "MW2LGR", room: "C731", guests: [{ title: "Mrs", first: "Shu-Li", last: "Lin" }, { title: "Mr", first: "Ming-Che", last: "Hsieh" }] },
+                        { price: "$2,898.28 CAD", booking: "MKWRWV", room: "C739", guests: [{ title: "Mrs", first: "Shu-Chen", last: "Lin" }, { title: "Mr", first: "Hui-Ming", last: "Fan" }] },
+                        { price: "$2,898.28 CAD", booking: "MKWKXN", room: "C743", guests: [{ title: "Mrs", first: "Shu-Ching", last: "Lin" }, { title: "Miss", first: "Hui-Chu", last: "Sung" }] },
+                      ].map((cabin) => (
+                        <article key={cabin.booking} className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
+                          <div className="grid gap-3 border-b border-white/10 pb-3 text-sm sm:grid-cols-3">
+                            <div>
+                              <p className="text-[10px] uppercase tracking-[0.18em] text-white/35">Cabin CAD</p>
+                              <p className="mt-1 font-medium text-white">{cabin.price}</p>
+                            </div>
+                            <div>
+                              <p className="text-[10px] uppercase tracking-[0.18em] text-white/35">Booking #</p>
+                              <p className="mt-1 font-medium text-white">{cabin.booking}</p>
+                            </div>
+                            <div>
+                              <p className="text-[10px] uppercase tracking-[0.18em] text-white/35">Room</p>
+                              <p className="mt-1 font-medium text-white">{cabin.room}</p>
+                            </div>
+                          </div>
+                          <div className="mt-3 space-y-2">
+                            {cabin.guests.map((guest) => (
+                              <div key={cabin.booking + "-" + guest.first + "-" + guest.last} className="grid grid-cols-[3.5rem_1fr_1fr] gap-2 rounded-lg bg-black/20 px-3 py-2 text-sm text-white/75">
+                                <span className="text-white/45">{guest.title}</span>
+                                <span>{guest.first}</span>
+                                <span>{guest.last}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </article>
+                      ))}
+                    </div>
+                  </section>
+                </div>
+              )}
+              {showAlaskaUsefulInfo && (
+                <div className="fixed inset-0 z-50 flex items-stretch justify-center bg-black/80 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-[max(0.5rem,env(safe-area-inset-top))] backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-label="Alaska Cruise useful information">
+                  <section className="flex h-[calc(100dvh-1rem)] max-h-[calc(100dvh-1rem)] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] text-left shadow-2xl sm:h-[82dvh] sm:max-h-[760px]">
+                    <div className="flex shrink-0 items-start justify-between gap-4 border-b border-white/10 px-4 py-3 sm:px-7 sm:py-5">
+                      <div>
+                        <p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: ALASKA_BLUE }}>Alaska Cruise 2027</p>
+                        <h2 className="text-xl font-light text-white sm:text-2xl">Useful Information</h2>
+                      </div>
+                      <button type="button" onClick={() => setShowAlaskaUsefulInfo(false)} aria-label="Close Alaska Cruise useful information" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">×</button>
+                    </div>
+                    <div className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain p-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-7">
+                      <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
+                        <p className="text-xs uppercase tracking-[0.18em] text-white/40">Travel Documents</p>
+                        <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-white/75">
+                          <li>Valid passport for Canada departure and U.S. Alaska entry</li>
+                          <li>Princess cruise documents</li>
+                          <li>Travel insurance</li>
+                        </ul>
+                      </div>
+                      <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
+                        <p className="text-xs uppercase tracking-[0.18em] text-white/40">Weather</p>
+                        <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-white/75">
+                          <li>Typical late May range: about 5-15�C</li>
+                          <li>Pack warm layers, rain jacket, and compact umbrella</li>
+                          <li>Comfortable walking shoes</li>
+                        </ul>
+                      </div>
+                      <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
+                        <p className="text-xs uppercase tracking-[0.18em] text-white/40">Currency</p>
+                        <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-white/75">
+                          <li>Onboard and Alaska ports: USD</li>
+                          <li>Vancouver pre-cruise: CAD</li>
+                          <li>Credit cards widely accepted</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </section>
+                </div>
+              )}
+              {showAlaskaRouteMap && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-3 backdrop-blur-sm sm:p-4" role="dialog" aria-modal="true" aria-label="Alaska Cruise route map">
+                  <section className="flex max-h-[92dvh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] shadow-2xl">
+                    <div className="flex shrink-0 items-start justify-between gap-4 border-b border-white/10 px-4 py-3 sm:px-6 sm:py-4">
+                      <div>
+                        <p className="mb-1 text-xs uppercase tracking-[0.24em]" style={{ color: ALASKA_BLUE }}>Alaska Cruise 2027</p>
+                        <h2 className="text-xl font-light text-white sm:text-2xl">Route Map</h2>
+                      </div>
+                      <button type="button" onClick={() => setShowAlaskaRouteMap(false)} aria-label="Close Alaska Cruise route map" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">×</button>
+                    </div>
+                    <div className="min-h-0 flex-1 overflow-auto bg-white p-2 sm:p-4">
+                      <img src="/alaska-cruise-route.webp" alt="Alaska Cruise northbound route map from Vancouver to Anchorage via Whittier" className="mx-auto h-auto max-h-[78dvh] w-auto max-w-full object-contain" />
+                    </div>
+                  </section>
+                </div>
+              )}
             </>
           ) : selectedTrip === "disneyWorld" ? (
             <>
