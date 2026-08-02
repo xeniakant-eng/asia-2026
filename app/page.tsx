@@ -830,6 +830,7 @@ export default function TravelSite() {
   const alaskaTodoItems = [
     "Book Arrival Flight -> Vancouver YVR",
     "Book Departure Flight -> Anchorage ANC",
+    "Arrange airport transportation on Departure Day from Anchorage Whittier Port",
     "Pay cruise remaining balance by Feb 21 2027",
     "Confirm all passenger information: name, birthday, citizenship, residency, and title",
     "Confirm Early Dining Seating",
