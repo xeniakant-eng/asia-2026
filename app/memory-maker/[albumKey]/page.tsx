@@ -18,6 +18,7 @@ const ALBUM_NAMES: Record<string, string> = {
   taiwanDecember: "Taiwan December",
   moroccoSeptember: "Morocco",
   vietnamNovember: "Vietnam",
+  alaskaCruise: "Alaska Cruise",
 };
 
 export default function MemoryMakerAlbumPage({ params }: { params: Promise<{ albumKey: string }> }) {
