@@ -175,6 +175,7 @@ function TripButton({
   status,
   onClick,
   heroOverlay = false,
+  disabled = false,
 }: {
   location: string;
   subtitle?: string;
@@ -183,6 +184,7 @@ function TripButton({
   status: TripStatus;
   onClick: () => void;
   heroOverlay?: boolean;
+  disabled?: boolean;
 }) {
   const statusStyles: Record<TripStatus, string> = {
     Planning: "border-[#FFD76A]/35 bg-[#FFD76A]/10 text-[#FFD76A]",
@@ -193,28 +195,29 @@ function TripButton({
   const dateLine = formatTripDateLine(date, duration);
 
   return (
-    <button type="button" onClick={onClick} className={`flex w-full items-center justify-between gap-4 rounded-2xl border px-4 py-4 text-left text-sm font-light tracking-wide text-white/75 backdrop-blur-md transition ${heroOverlay ? "border-white/20 bg-black/40 hover:border-white/40 hover:bg-black/55" : "border-white/10 bg-white/[0.03] hover:border-white/30 hover:bg-white/[0.05]"}`}>
+    <button type="button" disabled={disabled} onClick={disabled ? undefined : onClick} className={`flex w-full items-center justify-between gap-4 rounded-2xl border px-4 py-4 text-left text-sm font-light tracking-wide backdrop-blur-md transition ${disabled ? "cursor-not-allowed border-white/5 bg-white/[0.015] text-white/25 opacity-45 grayscale" : heroOverlay ? "border-white/20 bg-black/40 text-white/75 hover:border-white/40 hover:bg-black/55" : "border-white/10 bg-white/[0.03] text-white/75 hover:border-white/30 hover:bg-white/[0.05]"}`}>
       <span className="min-w-0">
         <span className="block">{location}</span>
         {subtitle && <span className="mt-1 block text-xs text-white/60">{subtitle}</span>}
         <span className="mt-1 block text-xs text-white/45">{dateLine}</span>
       </span>
-      <span className={`shrink-0 rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.18em] ${statusStyles[status]}`}>{status}</span>
+      <span className={`shrink-0 rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.18em] ${disabled ? "border-white/10 bg-white/[0.02] text-white/25" : statusStyles[status]}`}>{status}</span>
     </button>
   );
 }
-
 function MainHubButton({
   title,
   subtitle,
   onClick,
+  disabled = false,
 }: {
   title: string;
   subtitle: string;
   onClick: () => void;
+  disabled?: boolean;
 }) {
   return (
-    <button type="button" onClick={onClick} className="w-full rounded-2xl border border-white/15 bg-white/[0.04] px-4 py-4 text-left transition hover:border-white/35 hover:bg-white/[0.08]">
+    <button type="button" disabled={disabled} onClick={disabled ? undefined : onClick} className={`w-full rounded-2xl border px-4 py-4 text-left transition ${disabled ? "cursor-not-allowed border-white/5 bg-white/[0.015] opacity-45 grayscale" : "border-white/15 bg-white/[0.04] hover:border-white/35 hover:bg-white/[0.08]"}`}>
       <div className="flex items-center justify-between gap-4">
         <div>
           <p className="text-sm font-light uppercase tracking-[0.18em] text-white/85">{title}</p>
@@ -225,7 +228,6 @@ function MainHubButton({
     </button>
   );
 }
-
 function TripPanelTitle({
   location,
   subtitle,
@@ -576,7 +578,7 @@ function SvgPin({
 }
 
 export default function TravelSite() {
-  const [siteAccessMode, setSiteAccessMode] = useState<"loading" | "guest" | "member">("loading");
+  const [siteAccessMode, setSiteAccessMode] = useState<"loading" | "guest" | "member" | "alaska">("loading");
   const [hovered, setHovered] = useState<string | null>(null);
   const [page, setPage] = useState<PageName>("map");
   const [guestName, setGuestName] = useState("");
@@ -787,6 +789,10 @@ export default function TravelSite() {
   const [checkedPackingItems, setCheckedPackingItems] = useState<Record<string, boolean>>({});
   const [checkedReservationItems, setCheckedReservationItems] = useState<Record<string, boolean>>({});
   const isSiteGuestAccess = siteAccessMode === "guest";
+  const isAlaskaLimitedAccess = siteAccessMode === "alaska";
+  const alaskaGuestOnlyTrips: TripKey[] = ["morocco", "vietnam", "taiwan", "okinawaJapan"];
+  const isLimitedGuestTrip = isAlaskaLimitedAccess && Boolean(selectedTrip) && alaskaGuestOnlyTrips.includes(selectedTrip as TripKey);
+  const isCurrentTripGuestAccess = isSiteGuestAccess || isLimitedGuestTrip;
   const [now, setNow] = useState(new Date());
   const [cadToJpy, setCadToJpy] = useState("110");
   const [cadToTwd, setCadToTwd] = useState("23");
@@ -1392,7 +1398,7 @@ export default function TravelSite() {
       try {
         const response = await fetch("/api/site-auth", { cache: "no-store" });
         const data = await response.json() as { mode?: string };
-        setSiteAccessMode(data.mode === "guest" ? "guest" : "member");
+        setSiteAccessMode(data.mode === "guest" ? "guest" : data.mode === "alaska" ? "alaska" : "member");
       } catch {
         setSiteAccessMode("member");
       }
@@ -1401,11 +1407,12 @@ export default function TravelSite() {
   }, []);
 
   useEffect(() => {
-    if (siteAccessMode !== "guest" || !selectedTrip || !guestName || guestName === "Guest") return;
+    if (!isCurrentTripGuestAccess || !selectedTrip || !guestName || guestName === "Guest") return;
     if (["morocco", "taiwan", "okinawaJapan", "vietnam"].includes(selectedTrip)) {
       openTripDashboard("Guest", true);
     }
-  }, [siteAccessMode, selectedTrip, guestName]);
+  }, [isCurrentTripGuestAccess, selectedTrip, guestName]);
+
 
   useEffect(() => {
     const dashboardHeroByTrip: Partial<Record<TripKey, string>> = {
@@ -2926,7 +2933,7 @@ export default function TravelSite() {
                     <div className="space-y-3 pt-3">
                       <MainHubButton title="2026/2027 Ski Season" subtitle="View Shiga Kogen, Deer Valley, and SkiBig3" onClick={() => setMainPageView("ski")} />
                       <MainHubButton title="Sign Up for Future Trips" subtitle="Dreaming-stage trips collecting interest" onClick={() => setMainPageView("future")} />
-                      <MainHubButton title="Archived Trips" subtitle="Completed trips will live here" onClick={() => setMainPageView("archive")} />
+                      <MainHubButton title="Archived Trips" subtitle="Completed trips will live here" disabled={isSiteGuestAccess || isAlaskaLimitedAccess} onClick={() => setMainPageView("archive")} />
                     </div>
                   </div>
                   {isSiteGuestAccess && (
@@ -3040,7 +3047,7 @@ export default function TravelSite() {
                   <div className="absolute inset-x-0 bottom-0 grid grid-cols-[2fr_1fr] gap-2 bg-gradient-to-t from-black via-black/72 to-transparent px-4 pb-4 pt-20">
                     <select
                       defaultValue=""
-                      disabled={isSiteGuestAccess || siteAccessMode === "loading"}
+                      disabled={isCurrentTripGuestAccess || siteAccessMode === "loading"}
                       onChange={(event) => {
                         const selectedGuest = event.target.value;
                         if (!selectedGuest) return;
@@ -3048,7 +3055,7 @@ export default function TravelSite() {
                       }}
                       className="min-w-0 rounded-2xl border border-white/25 bg-black/75 px-4 py-3 text-sm font-light tracking-wide text-white outline-none backdrop-blur-md transition focus:border-[#D6B48C]/70 disabled:cursor-not-allowed disabled:border-white/10 disabled:text-white/30"
                     >
-                      <option value="" disabled>{isSiteGuestAccess ? "Members only" : "Select your party"}</option>
+                      <option value="" disabled>{isCurrentTripGuestAccess ? "Guest access only" : "Select your party"}</option>
                       {moroccoInterestedNames.map((name) => <option key={name} value={name}>{name}</option>)}
                     </select>
                     <button type="button" onClick={() => openTripDashboard("Guest")} className="rounded-2xl border border-[#D6B48C]/40 bg-black/75 px-3 py-3 text-sm font-light uppercase tracking-[0.12em] text-[#D6B48C] outline-none backdrop-blur-md transition hover:border-[#D6B48C]/70 hover:bg-[#D6B48C]/10">Guest</button>
@@ -3226,7 +3233,7 @@ export default function TravelSite() {
                     <div className="absolute inset-x-0 bottom-0 grid grid-cols-[2fr_1fr] gap-2 bg-gradient-to-t from-black via-black/75 to-transparent px-4 pb-4 pt-24">
                       <select
                         defaultValue=""
-                        disabled={isSiteGuestAccess || siteAccessMode === "loading"}
+                        disabled={isCurrentTripGuestAccess || siteAccessMode === "loading"}
                         onChange={(event) => {
                           const selectedGuest = event.target.value;
                           if (!selectedGuest) return;
@@ -3234,7 +3241,7 @@ export default function TravelSite() {
                         }}
                         className="min-w-0 rounded-2xl border border-white/25 bg-black/75 px-4 py-3 text-sm font-light tracking-wide text-white outline-none backdrop-blur-md transition focus:border-[#F6C65B]/70 disabled:cursor-not-allowed disabled:border-white/10 disabled:text-white/30"
                       >
-                        <option value="" disabled>{isSiteGuestAccess ? "Members only" : "Select your party"}</option>
+                        <option value="" disabled>{isCurrentTripGuestAccess ? "Guest access only" : "Select your party"}</option>
                         {vietnamConfirmedParties.map((name) => <option key={name} value={name}>{name}</option>)}
                       </select>
                       <button type="button" onClick={() => openTripDashboard("Guest")} className="rounded-2xl border border-[#F6C65B]/40 bg-black/75 px-3 py-3 text-sm font-light uppercase tracking-[0.12em] text-[#F6C65B] outline-none backdrop-blur-md transition hover:border-[#F6C65B]/70 hover:bg-[#F6C65B]/10">Guest</button>
@@ -3820,7 +3827,7 @@ export default function TravelSite() {
                     <div className="absolute inset-x-0 bottom-0 grid grid-cols-[2fr_1fr] gap-2 bg-gradient-to-t from-black via-black/72 to-transparent px-4 pb-4 pt-24">
                       <select
                         defaultValue=""
-                        disabled={isSiteGuestAccess || siteAccessMode === "loading"}
+                        disabled={isCurrentTripGuestAccess || siteAccessMode === "loading"}
                         onChange={(event) => {
                           const selectedGuest = event.target.value;
                           if (!selectedGuest) return;
@@ -3828,7 +3835,7 @@ export default function TravelSite() {
                         }}
                         className="min-w-0 rounded-2xl border border-white/25 bg-black/75 px-4 py-3 text-sm font-light tracking-wide text-white outline-none backdrop-blur-md transition focus:border-[#8FD8FF]/70 disabled:cursor-not-allowed disabled:border-white/10 disabled:text-white/30"
                       >
-                        <option value="" disabled>{isSiteGuestAccess ? "Members only" : "Select your party"}</option>
+                        <option value="" disabled>{isCurrentTripGuestAccess ? "Guest access only" : "Select your party"}</option>
                         {alaskaConfirmedParties.map((name) => <option key={name} value={name}>{name}</option>)}
                       </select>
                       <button type="button" onClick={() => openTripDashboard("Guest")} className="rounded-2xl border border-[#8FD8FF]/40 bg-black/75 px-3 py-3 text-sm font-light uppercase tracking-[0.12em] text-[#8FD8FF] outline-none backdrop-blur-md transition hover:border-[#8FD8FF]/70 hover:bg-[#8FD8FF]/10">Guest</button>
@@ -4133,7 +4140,7 @@ export default function TravelSite() {
                   <div className={`absolute inset-x-0 bottom-0 grid grid-cols-[2fr_1fr] gap-2 bg-gradient-to-t from-black px-4 pb-4 ${selectedTrip === "taiwan" ? "via-black/90 pt-28" : "via-black/72 pt-20"} to-transparent`}>
                     <select
                       defaultValue=""
-                      disabled={isSiteGuestAccess || siteAccessMode === "loading"}
+                      disabled={isCurrentTripGuestAccess || siteAccessMode === "loading"}
                       onChange={(event) => {
                         const selectedGuest = event.target.value;
                         if (!selectedGuest) return;
@@ -4141,7 +4148,7 @@ export default function TravelSite() {
                       }}
                       className={`min-w-0 rounded-2xl border border-white/25 bg-black/75 px-4 py-3 text-sm font-light tracking-wide text-white outline-none backdrop-blur-md transition disabled:cursor-not-allowed disabled:border-white/10 disabled:text-white/30 ${selectedTrip === "taiwan" ? "focus:border-[#72E49A]/70" : "focus:border-[#9EDCFF]/70"}`}
                     >
-                      <option value="" disabled>{isSiteGuestAccess ? "Members only" : "Select your party"}</option>
+                      <option value="" disabled>{isCurrentTripGuestAccess ? "Guest access only" : "Select your party"}</option>
                       {getVisibleGuestOptions().map((guest) => <option key={guest} value={guest}>{guest}</option>)}
                     </select>
                     <button type="button" onClick={() => openTripDashboard("Guest")} className={`rounded-2xl border bg-black/75 px-3 py-3 text-sm font-light uppercase tracking-[0.12em] outline-none backdrop-blur-md transition ${selectedTrip === "taiwan" ? "border-[#72E49A]/40 text-[#72E49A] hover:border-[#72E49A]/70 hover:bg-[#72E49A]/10" : "border-[#9EDCFF]/40 text-[#9EDCFF] hover:border-[#9EDCFF]/70 hover:bg-[#9EDCFF]/10"}`}>Guest</button>
@@ -4154,7 +4161,7 @@ export default function TravelSite() {
                   <div className="mb-5 grid grid-cols-[2fr_1fr] gap-2 text-left">
                     <select
                       defaultValue=""
-                      disabled={isSiteGuestAccess || siteAccessMode === "loading"}
+                      disabled={isCurrentTripGuestAccess || siteAccessMode === "loading"}
                       onChange={(event) => {
                         const selectedGuest = event.target.value;
                         if (!selectedGuest) return;
@@ -4162,7 +4169,7 @@ export default function TravelSite() {
                       }}
                       className="min-w-0 rounded-2xl border border-white/15 bg-[#111] px-4 py-3 text-sm font-light tracking-wide text-white/75 outline-none transition focus:border-white/35 disabled:cursor-not-allowed disabled:text-white/30"
                     >
-                      <option value="" disabled>{isSiteGuestAccess ? "Members only" : "Select your party"}</option>
+                      <option value="" disabled>{isCurrentTripGuestAccess ? "Guest access only" : "Select your party"}</option>
                       {getVisibleGuestOptions().map((guest) => <option key={guest} value={guest}>{guest}</option>)}
                     </select>
                     <button type="button" onClick={() => openTripDashboard("Guest")} className="rounded-2xl border border-white/15 bg-[#111] px-3 py-3 text-sm font-light uppercase tracking-[0.12em] text-white/65 transition hover:border-white/35 hover:text-white">Guest</button>

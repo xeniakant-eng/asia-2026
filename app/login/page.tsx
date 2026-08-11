@@ -63,11 +63,11 @@ export default function LoginPage() {
         </button>
         <div className="my-6 flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] text-white/25">
           <span className="h-px flex-1 bg-white/10" />
-          Member Access
+          Password Access
           <span className="h-px flex-1 bg-white/10" />
         </div>
         <label className="mb-2 block text-left text-xs uppercase tracking-[0.22em] text-white/45" htmlFor="site-password">
-          Member Password
+          Access Password
         </label>
         <input
           id="site-password"
@@ -84,7 +84,7 @@ export default function LoginPage() {
           disabled={isSubmitting || isGuestSubmitting || !password}
           className="w-full rounded-2xl border border-[#FF8FC7]/35 bg-[#FF8FC7]/10 px-4 py-4 text-sm font-light uppercase tracking-[0.18em] text-[#FF8FC7] transition hover:border-[#FF8FC7]/60 hover:bg-[#FF8FC7]/15 disabled:cursor-not-allowed disabled:opacity-45"
         >
-          {isSubmitting ? "Checking" : "Enter as Member"}
+          {isSubmitting ? "Checking" : "Enter Site"}
         </button>
       </form>
     </main>

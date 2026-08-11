@@ -27,15 +27,19 @@ function rewriteTripPath(request: NextRequest) {
   return NextResponse.rewrite(rewriteUrl);
 }
 
+async function getValidAuthTokens() {
+  const passwords = [process.env.SITE_PASSWORD, process.env.ALASKA_ACCESS_PASSWORD].filter(Boolean) as string[];
+  return Promise.all(passwords.map((password) => createAuthToken(password)));
+}
+
 export async function proxy(request: NextRequest) {
-  const password = process.env.SITE_PASSWORD;
-  if (!password || isPublicPath(request.nextUrl.pathname)) {
+  const validTokens = await getValidAuthTokens();
+  if (!validTokens.length || isPublicPath(request.nextUrl.pathname)) {
     return rewriteTripPath(request) || NextResponse.next();
   }
 
-  const expectedToken = await createAuthToken(password);
   const authToken = request.cookies.get(AUTH_COOKIE)?.value;
-  if (authToken === expectedToken || authToken === GUEST_TOKEN) {
+  if (authToken === GUEST_TOKEN || (authToken && validTokens.includes(authToken))) {
     return rewriteTripPath(request) || NextResponse.next();
   }
 
