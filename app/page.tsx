@@ -1742,10 +1742,10 @@ export default function TravelSite() {
       return {
         title: `${guest || "Guest"} Alaska Cruise Packing List`,
         sections: [
-          { title: "Essentials", items: ["Passport / travel documents", "Princess cruise boarding documents", "Travel insurance", "Credit cards and some USD cash", "Medication", "Phone + charger", "Portable power bank"] },
-          { title: "Clothes", items: ["Warm layers", "Rain jacket", "Comfortable walking shoes", "Formal / smart casual dinner outfit",
-              "Semi-formal outfit for Captain's Night", "Hat and gloves", "Swimsuit for onboard pool / hot tub"] },
-          { title: "Personal", items: ["Sunscreen", "Sunglasses", "Binoculars", "Camera gear + charger", "Toiletries", "Motion sickness medicine"] },
+          { title: "Essentials", items: ["Passport / travel documents", "Princess cruise boarding documents", "Travel insurance", "Credit cards and some USD cash", "Personal Medication", "Phone + charger"] },
+          { title: "Clothes", items: ["Rain jacket / Rain Gear / Umbrella", "Walking Shoes (Waterproof preferred)", "Warm layers (inner layer, vest, sweater)", "Formal / smart casual dinner outfit",
+              "Semi-formal outfit for Captain's Night", "Winter Coat or Jacket", "Flip Flops / Slippers", "Socks", "Hat and gloves", "Swimsuit for onboard pool / hot tub"] },
+          { title: "Personal", items: ["Sunscreen", "Sunglasses", "Binoculars", "Camera gear + charger", "Toiletries", "Motion sickness medicine", "Clear shower cap / zip lock bags", "Magnetic hooks", "Water Bottle", "Contact Lenses / Glasses", "Portable power bank"] },
         ],
       };
     }
@@ -3795,7 +3795,7 @@ export default function TravelSite() {
                         <div className="grid gap-3 sm:grid-cols-2">
                           <button type="button" onClick={() => openTripView("itinerary")} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border px-4 py-3 text-center backdrop-blur-md transition hover:bg-[#07151F]/60 sm:col-span-2" style={{ borderColor: ALASKA_BLUE + "8C", backgroundColor: "rgba(3, 12, 17, 0.43)", color: ALASKA_BLUE }}><span className="text-xs font-light uppercase tracking-[0.16em]">Trip Itinerary</span></button>
                           <button type="button" onClick={() => setShowMoroccoChecklist(true)} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border px-4 py-3 text-center backdrop-blur-md transition hover:bg-[#07151F]/60" style={{ borderColor: ALASKA_BLUE + "8C", backgroundColor: "rgba(3, 12, 17, 0.43)", color: ALASKA_BLUE }}><span className="text-xl">🎒</span><span className="text-xs font-light uppercase tracking-[0.16em]">Packing List</span></button>
-                          <button type="button" onClick={() => setShowAlaskaTodoList(true)} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border px-4 py-3 text-center backdrop-blur-md transition hover:bg-[#07151F]/60" style={{ borderColor: ALASKA_BLUE + "8C", backgroundColor: "rgba(3, 12, 17, 0.43)", color: ALASKA_BLUE }}><span className="text-sm font-medium uppercase tracking-[0.14em]">TO</span><span className="text-xs font-light uppercase tracking-[0.16em]">To Do List</span></button>
+                          <button type="button" onClick={() => setShowAlaskaTodoList(true)} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border px-4 py-3 text-center backdrop-blur-md transition hover:bg-[#07151F]/60" style={{ borderColor: ALASKA_BLUE + "8C", backgroundColor: "rgba(3, 12, 17, 0.43)", color: ALASKA_BLUE }}><span className="text-xs font-light uppercase tracking-[0.16em]">To Do List</span></button>
                           <button type="button" onClick={() => openMoroccoCostTracker("alaskaCruise")} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border px-4 py-3 text-center backdrop-blur-md transition hover:bg-[#07151F]/60 sm:col-span-2" style={{ borderColor: ALASKA_BLUE + "8C", backgroundColor: "rgba(3, 12, 17, 0.43)", color: ALASKA_BLUE }}><span className="text-xl">💰</span><span className="text-xs font-light uppercase tracking-[0.16em]">BillTab</span></button>
                         </div>
                         <MemoryMaker albumKey="alaskaCruise" albumName="Alaska Cruise" accentColor={ALASKA_BLUE} guestName={guestName} returnChapter="alaskaCruise" onViewAlbum={openAlbumPopup} compact solidButtons />
