@@ -865,6 +865,9 @@ export default function TravelSite() {
         "Vietnam Airlines flight from Taipei (TPE) to Hanoi (HAN), 1:25 PM-3:40 PM.",
         "Transfer from airport to Airbnb (40 min drive), check in, easy dinner, and rest.",
       ],
+      itemImages: {
+        "Transfer from airport to Airbnb (40 min drive), check in, easy dinner, and rest.": { src: "/hanoiairbnb.png", alt: "Heart of Hoan Kiem Homestay Airbnb in Hanoi" },
+      },
       stay: "Heart of Hoan Kiem Homestay Airbnb, 23C Phố Tông Đản, Hoàn Kiếm, Hà Nội",
     },
     {
@@ -877,6 +880,9 @@ export default function TravelSite() {
         "Try egg coffee.",
         "Evening Water Puppet Show.",
       ],
+      itemImages: {
+        "Train Street cafe stop.": { src: "/hanoitrain.png", alt: "Hanoi Train Street cafe" },
+      },
       stay: "Heart of Hoan Kiem Homestay Airbnb, 23C Phố Tông Đản, Hoàn Kiếm, Hà Nội",
     },
     {
@@ -895,6 +901,7 @@ export default function TravelSite() {
         },
       ],
       stay: "Peony Cruise",
+      stayImage: { src: "/halongbaycruise.png", alt: "Peony Cruise on Ha Long Bay and Lan Ha Bay" },
     },
     {
       date: "Sun Nov 15",
@@ -907,6 +914,9 @@ export default function TravelSite() {
         "Noon: Pre-arranged van transfer from Tuan Chau Marina to Ninh Binh Xuan Son Lakeside Bungalow (3 hr ride).",
         "Evening: Check in, relax, dinner on site.",
       ],
+      itemImages: {
+        "Noon: Pre-arranged van transfer from Tuan Chau Marina to Ninh Binh Xuan Son Lakeside Bungalow (3 hr ride).": { src: "/ninbinh.png", alt: "Ninh Binh countryside near Xuan Son Lakeside Bungalow" },
+      },
       stay: "Xuan Son Lakeside Bungalow",
     },
     {
@@ -918,6 +928,9 @@ export default function TravelSite() {
         "Afternoon: Bich Dong Pagoda or countryside rest.",
         "Optional: Hang Mua viewpoint if adults want the climb and the kids still have energy.",
       ],
+      itemImages: {
+        "Trang An boat ride in the morning.": { src: "/trangan.png", alt: "Trang An boat ride in Ninh Binh" },
+      },
       stay: "Xuan Son Lakeside Bungalow",
     },
     {
@@ -1006,12 +1019,12 @@ export default function TravelSite() {
         {
           category: "Accommodations (10 nights)",
           detail: [
-            "Nov 12-13 Hanoi stay at Heart of Hoan Kiem Homestay Airbnb (reserved): Total = $258.30 CAD, Half = $129.15 CAD.",
-            "Nov 14 Peony Cruise Deluxe Balcony Cabin for Jenn's family, 2 adults + 2 kids: $552 USD (approx. $756.24 CAD).",
-            "Nov 15-16 Ninh Binh stay at Xuan Son Lakeside Bungalow: Total = $400 CAD, Half = $200 CAD.",
-            "Nov 17-20 Ho Chi Minh City Airbnb: TBD.",
+            "Nov 12-14 Hanoi stay at Heart of Hoan Kiem Homestay Airbnb (reserved): Total = $258.30 CAD, Half = $129.15 CAD.",
+            "Nov 14-15 Peony Cruise Deluxe Balcony Cabin for Jenn's family, 2 adults + 2 kids: $552 USD (approx. $756.24 CAD).",
+            "Nov 15-17 Ninh Binh stay at Xuan Son Lakeside Bungalow: Total = $171 CAD.",
+            "Nov 17-21 Ho Chi Minh City Airbnb: TBD.",
           ],
-          amountCad: 1085.39,
+          amountCad: 1056.39,
         },
         {
           category: "Flights (3 flights)",
@@ -1051,12 +1064,12 @@ export default function TravelSite() {
         {
           category: "Accommodations (10 nights)",
           detail: [
-            "Nov 12-13 Hanoi stay at Heart of Hoan Kiem Homestay Airbnb (reserved): Total = $258.30 CAD, Half = $129.15 CAD.",
-            "Nov 14 Peony Cruise Deluxe Balcony Cabin for Xenia's family, 2 adults + 1 kid: $385 USD (approx. $527.45 CAD).",
-            "Nov 15-16 Ninh Binh stay at Xuan Son Lakeside Bungalow: Total = $400 CAD, Half = $200 CAD.",
-            "Nov 17-20 Ho Chi Minh City Airbnb: TBD.",
+            "Nov 12-14 Hanoi stay at Heart of Hoan Kiem Homestay Airbnb (reserved): Total = $258.30 CAD, Half = $129.15 CAD.",
+            "Nov 14-15 Peony Cruise Deluxe Balcony Cabin for Xenia's family, 2 adults + 1 kid: $385 USD (approx. $527.45 CAD).",
+            "Nov 15-17 Ninh Binh stay at Xuan Son Lakeside Bungalow: Total = $140 CAD.",
+            "Nov 17-21 Ho Chi Minh City Airbnb: TBD.",
           ],
-          amountCad: 856.60,
+          amountCad: 796.60,
         },
         {
           category: "Flights (3 flights)",
@@ -2730,6 +2743,11 @@ export default function TravelSite() {
     const hanoiAccommodationName = "Heart of Hoan Kiem Homestay Airbnb";
     const hanoiAccommodationAddress = "23C Phố Tông Đản, Hoàn Kiếm, Hà Nội";
     const hanoiAccommodationMapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(hanoiAccommodationAddress)}`;
+    const vietnamItineraryImage = (image: { src: string; alt: string }) => <img src={image.src} alt={image.alt} className="mt-3 h-52 w-full rounded-2xl object-cover object-center sm:h-64" loading="lazy" />;
+    const getVietnamItemImage = (day: (typeof vietnamItineraryDays)[number], item: string) => "itemImages" in day ? day.itemImages?.[item as keyof typeof day.itemImages] : undefined;
+    const xuanSonAccommodationName = "Xuan Son Lakeside Bungalow";
+    const xuanSonAccommodationAddress = "479 B, Ninh Binh, Vietnam, Hoa Lu, VN";
+    const xuanSonAccommodationMapUrl = "https://www.google.com/maps/search/?api=1&query=20.2564344083601,105.929744980567";
     return (
       <div className="min-h-screen bg-black px-6 py-10 text-white" style={{ "--chapter-accent": VIETNAM_GOLD } as React.CSSProperties}>
         <header className="mx-auto mb-10 flex max-w-5xl flex-wrap items-center justify-between gap-3">
@@ -2754,13 +2772,19 @@ export default function TravelSite() {
                   <h2 className="mt-1 text-2xl font-light text-white">{day.title}</h2>
                   <p className="mt-1 text-sm uppercase tracking-[0.16em] text-white/40">{day.location}</p>
                 </div>
-                <ul className="space-y-2 text-sm leading-6 text-white/70">
-                  {day.items.map((item) => (
-                    <li key={item} className="flex gap-2">
-                      <span className="shrink-0" style={{ color: VIETNAM_GOLD }}>•</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
+                <ul className="space-y-3 text-sm leading-6 text-white/70">
+                  {day.items.map((item) => {
+                    const itemImage = getVietnamItemImage(day, item);
+                    return (
+                      <li key={item}>
+                        <div className="flex gap-2">
+                          <span className="shrink-0" style={{ color: VIETNAM_GOLD }}>â€¢</span>
+                          <span>{item}</span>
+                        </div>
+                        {itemImage && vietnamItineraryImage(itemImage)}
+                      </li>
+                    );
+                  })}
                 </ul>
                 {"links" in day && day.links && day.stay !== "Peony Cruise" && (
                   <div className="mt-4 flex flex-wrap gap-2">
@@ -2781,6 +2805,13 @@ export default function TravelSite() {
                           {hanoiAccommodationAddress}
                         </a>
                       </div>
+                    ) : day.stay === xuanSonAccommodationName ? (
+                      <div className="mt-1 space-y-1">
+                        <p className="text-sm text-white/75">{xuanSonAccommodationName}</p>
+                        <a href={xuanSonAccommodationMapUrl} target="_blank" rel="noreferrer" className="block text-sm text-[#F6C65B] underline decoration-[#F6C65B]/35 underline-offset-4 transition hover:text-[#FFE19A]">
+                          {xuanSonAccommodationAddress}
+                        </a>
+                      </div>
                     ) : (
                       <p className="mt-1 text-sm text-white/75">{day.stay}</p>
                     )}
@@ -2793,6 +2824,7 @@ export default function TravelSite() {
                         ))}
                       </div>
                     )}
+                    {"stayImage" in day && day.stayImage && vietnamItineraryImage(day.stayImage)}
                   </div>
                 )}
               </article>
@@ -3905,9 +3937,9 @@ export default function TravelSite() {
                     </div>
                     <div className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain p-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-6">
                       {[
+                        { price: "$5,075.49 CAD", booking: "MW2WGL", room: "Mini-Suite", guests: [{ title: "Mr", first: "Kuo-Hsiung", last: "Yen" }, { title: "Mrs", first: "Shu-Li", last: "Chin" }, { title: "Mr", first: "Ko-Ming", last: "Yen" }] },
                         { price: "$3,309.29 CAD", booking: "MW2W4R", room: "B702", guests: [{ title: "Mr", first: "Yu-Ting David", last: "Wu" }, { title: "Mrs", first: "I-Ling Xenia", last: "Kant" }, { title: "Miss", first: "Naomi Ya-Rong", last: "Wu" }] },
-                        { price: "$2,898.28 CAD", booking: "MW2WGL", room: "B723", guests: [{ title: "Mrs", first: "Yu-Ting Judy", last: "Yen" }, { title: "Mr", first: "Tein-Kong", last: "Kant" }] },
-                        { price: "$2,898.28 CAD", booking: "MW2L2W", room: "C723", guests: [{ title: "Mr", first: "Kuo-Hsiung", last: "Yen" }, { title: "Mrs", first: "Shu-Li", last: "Chin" }] },
+                        { price: "$2,898.28 CAD", booking: "MW2L2W", room: "C723", guests: [{ title: "Mrs", first: "Yu-Ting Judy", last: "Yen" }, { title: "Mr", first: "Tein-Kong", last: "Kant" }] },
                         { price: "$2,898.28 CAD", booking: "MW2L8K", room: "C727", guests: [{ title: "Mr", first: "Ko-Chun", last: "Yen" }, { title: "Miss", first: "Chun-Cheng", last: "Hsieh" }] },
                         { price: "$2,898.28 CAD", booking: "MW2LGR", room: "C731", guests: [{ title: "Mrs", first: "Shu-Li", last: "Lin" }, { title: "Mr", first: "Ming-Che", last: "Hsieh" }] },
                         { price: "$2,898.28 CAD", booking: "MKWRWV", room: "C739", guests: [{ title: "Mrs", first: "Shu-Chen", last: "Lin" }, { title: "Mr", first: "Hui-Ming", last: "Fan" }] },
