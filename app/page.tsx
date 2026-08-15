@@ -865,10 +865,8 @@ export default function TravelSite() {
         "Vietnam Airlines flight from Taipei (TPE) to Hanoi (HAN), 1:25 PM-3:40 PM.",
         "Transfer from airport to Airbnb (40 min drive), check in, easy dinner, and rest.",
       ],
-      itemImages: {
-        "Transfer from airport to Airbnb (40 min drive), check in, easy dinner, and rest.": { src: "/hanoiairbnb.png", alt: "Heart of Hoan Kiem Homestay Airbnb in Hanoi" },
-      },
       stay: "Heart of Hoan Kiem Homestay Airbnb, 23C Phố Tông Đản, Hoàn Kiếm, Hà Nội",
+      stayImage: { src: "/hanoiairbnb.png", alt: "Heart of Hoan Kiem Homestay Airbnb in Hanoi" },
     },
     {
       date: "Fri Nov 13",
@@ -915,9 +913,10 @@ export default function TravelSite() {
         "Evening: Check in, relax, dinner on site.",
       ],
       itemImages: {
-        "Noon: Pre-arranged van transfer from Tuan Chau Marina to Ninh Binh Xuan Son Lakeside Bungalow (3 hr ride).": { src: "/ninbinh.png", alt: "Ninh Binh countryside near Xuan Son Lakeside Bungalow" },
+        "7:30 AM: Tour of Cat Ba World Biosphere (Cat Ba Island Caves).": { src: "/kayak.png", alt: "Cat Ba Island caves and kayaking" },
       },
       stay: "Xuan Son Lakeside Bungalow",
+      stayImage: { src: "/ninbinh.png", alt: "Ninh Binh countryside near Xuan Son Lakeside Bungalow" },
     },
     {
       date: "Mon Nov 16",
@@ -942,7 +941,8 @@ export default function TravelSite() {
         "Vietjet nonstop flight Hanoi (HAN) to Ho Chi Minh City (SGN), 11:30 AM-1:40 PM, 2 hr 10 min. Fare shown: CA$84.",
         "Afternoon / evening: Ben Thanh Market and Nguyen Hue Walking Street.",
       ],
-      stay: "Airbnb TBD",
+      stay: "Zenity District 1 Airbnb",
+      stayImage: { src: "/hcmairbnb.png", alt: "Zenity District 1 Airbnb in Ho Chi Minh City" },
     },
     {
       date: "Wed Nov 18",
@@ -955,7 +955,10 @@ export default function TravelSite() {
         "Lunch.",
         "War Remnants Museum.",
       ],
-      stay: "Airbnb TBD",
+      itemImages: {
+        "Notre Dame area.": { src: "/saigon.png", alt: "Notre Dame area in Ho Chi Minh City" },
+      },
+      stay: "Zenity District 1 Airbnb",
     },
     {
       date: "Thu Nov 19",
@@ -966,7 +969,10 @@ export default function TravelSite() {
         "Target return by 5:00-6:00 PM.",
         "Relaxed evening after returning to the city.",
       ],
-      stay: "Airbnb TBD",
+      itemImages: {
+        "Shorter private Ben Tre Mekong Tour with early pickup.": { src: "/mekong.png", alt: "Ben Tre Mekong Delta tour" },
+      },
+      stay: "Zenity District 1 Airbnb",
     },
     {
       date: "Fri Nov 20",
@@ -975,9 +981,13 @@ export default function TravelSite() {
       items: [
         "Cu Chi Tunnels half-day tour.",
         "Relaxed afternoon / early dinner after returning to the city.",
+        "Dinner TBD.",
         "Pack and sleep early.",
       ],
-      stay: "Airbnb TBD",
+      itemImages: {
+        "Cu Chi Tunnels half-day tour.": { src: "/cuchi.png", alt: "Cu Chi Tunnels half-day tour" },
+      },
+      stay: "Zenity District 1 Airbnb",
     },
     {
       date: "Sat Nov 21",
@@ -1022,9 +1032,9 @@ export default function TravelSite() {
             "Nov 12-14 Hanoi stay at Heart of Hoan Kiem Homestay Airbnb (reserved): Total = $258.30 CAD, Half = $129.15 CAD.",
             "Nov 14-15 Peony Cruise Deluxe Balcony Cabin for Jenn's family, 2 adults + 2 kids: $552 USD (approx. $756.24 CAD).",
             "Nov 15-17 Ninh Binh stay at Xuan Son Lakeside Bungalow: Total = $171 CAD.",
-            "Nov 17-21 Ho Chi Minh City Airbnb: TBD.",
+            "Nov 17-21 Ho Chi Minh City stay at Zenity District 1 Airbnb: Total = $543.32 CAD, Half = $271.66 CAD.",
           ],
-          amountCad: 1056.39,
+          amountCad: 1328.05,
         },
         {
           category: "Flights (3 flights)",
@@ -1067,9 +1077,9 @@ export default function TravelSite() {
             "Nov 12-14 Hanoi stay at Heart of Hoan Kiem Homestay Airbnb (reserved): Total = $258.30 CAD, Half = $129.15 CAD.",
             "Nov 14-15 Peony Cruise Deluxe Balcony Cabin for Xenia's family, 2 adults + 1 kid: $385 USD (approx. $527.45 CAD).",
             "Nov 15-17 Ninh Binh stay at Xuan Son Lakeside Bungalow: Total = $140 CAD.",
-            "Nov 17-21 Ho Chi Minh City Airbnb: TBD.",
+            "Nov 17-21 Ho Chi Minh City stay at Zenity District 1 Airbnb: Total = $543.32 CAD, Half = $271.66 CAD.",
           ],
-          amountCad: 796.60,
+          amountCad: 1068.26,
         },
         {
           category: "Flights (3 flights)",
@@ -2748,6 +2758,9 @@ export default function TravelSite() {
     const xuanSonAccommodationName = "Xuan Son Lakeside Bungalow";
     const xuanSonAccommodationAddress = "479 B, Ninh Binh, Vietnam, Hoa Lu, VN";
     const xuanSonAccommodationMapUrl = "https://www.google.com/maps/search/?api=1&query=20.2564344083601,105.929744980567";
+    const zenityAccommodationName = "Zenity District 1 Airbnb";
+    const zenityAccommodationAddress = "608 Vo Van Kiet, Quan 1, Ho Chi Minh 700000";
+    const zenityAccommodationMapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(zenityAccommodationAddress)}`;
     return (
       <div className="min-h-screen bg-black px-6 py-10 text-white" style={{ "--chapter-accent": VIETNAM_GOLD } as React.CSSProperties}>
         <header className="mx-auto mb-10 flex max-w-5xl flex-wrap items-center justify-between gap-3">
@@ -2778,7 +2791,7 @@ export default function TravelSite() {
                     return (
                       <li key={item}>
                         <div className="flex gap-2">
-                          <span className="shrink-0" style={{ color: VIETNAM_GOLD }}>â€¢</span>
+                          <span className="shrink-0" style={{ color: VIETNAM_GOLD }}>{"\u2022"}</span>
                           <span>{item}</span>
                         </div>
                         {itemImage && vietnamItineraryImage(itemImage)}
@@ -2810,6 +2823,13 @@ export default function TravelSite() {
                         <p className="text-sm text-white/75">{xuanSonAccommodationName}</p>
                         <a href={xuanSonAccommodationMapUrl} target="_blank" rel="noreferrer" className="block text-sm text-[#F6C65B] underline decoration-[#F6C65B]/35 underline-offset-4 transition hover:text-[#FFE19A]">
                           {xuanSonAccommodationAddress}
+                        </a>
+                      </div>
+                    ) : day.stay === zenityAccommodationName ? (
+                      <div className="mt-1 space-y-1">
+                        <p className="text-sm text-white/75">{zenityAccommodationName}</p>
+                        <a href={zenityAccommodationMapUrl} target="_blank" rel="noreferrer" className="block text-sm text-[#F6C65B] underline decoration-[#F6C65B]/35 underline-offset-4 transition hover:text-[#FFE19A]">
+                          {zenityAccommodationAddress}
                         </a>
                       </div>
                     ) : (
