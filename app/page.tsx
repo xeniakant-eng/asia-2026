@@ -831,6 +831,7 @@ export default function TravelSite() {
   ];
   const alaskaConfirmedParties = [
     "Xenia & David & Naomi",
+    "Jeff & Irene",
     "Dylan & Sharon",
   ];
   const alaskaTodoItems = [
@@ -1428,6 +1429,36 @@ export default function TravelSite() {
     }
     loadSiteAccessMode();
   }, []);
+
+  useEffect(() => {
+    const loginShortcutId = "site-login-shortcut";
+    const existingShortcut = document.getElementById(loginShortcutId);
+    const shouldShowShortcut = siteAccessMode === "guest" || siteAccessMode === "alaska";
+
+    if (!shouldShowShortcut) {
+      existingShortcut?.remove();
+      return;
+    }
+
+    const shortcut = existingShortcut instanceof HTMLButtonElement ? existingShortcut : document.createElement("button");
+    shortcut.id = loginShortcutId;
+    shortcut.type = "button";
+    shortcut.textContent = "Log In";
+    shortcut.className = "fixed right-4 top-4 z-[90] rounded-full border border-white/25 bg-black/55 px-4 py-2 text-xs uppercase tracking-[0.18em] text-white/80 shadow-[0_8px_24px_rgba(0,0,0,0.35)] backdrop-blur-md transition hover:border-white/45 hover:bg-white/12 hover:text-white";
+    shortcut.onclick = () => {
+      const from = `${window.location.pathname}${window.location.search}` || "/";
+      window.location.href = `/login?from=${encodeURIComponent(from)}`;
+    };
+
+    if (!existingShortcut) {
+      document.body.appendChild(shortcut);
+    }
+
+    return () => {
+      shortcut.onclick = null;
+      shortcut.remove();
+    };
+  }, [siteAccessMode]);
 
   useEffect(() => {
     if (!isCurrentTripGuestAccess || !selectedTrip || !guestName || guestName === "Guest") return;
@@ -2983,7 +3014,7 @@ export default function TravelSite() {
                     <TripButton location="Okinawa Japan" date="Nov 25 - Dec 6 2026" status="Confirmed" onClick={() => openTripPage("okinawaJapan")} />
                     <TripButton location="Alaska Cruise" date="May 22 - 29 2027" status="Confirmed" onClick={() => openTripPage("alaskaCruise")} />
                     <div className="space-y-3 pt-3">
-                      <MainHubButton title="2026/2027 Ski Season" subtitle="View Shiga Kogen, Deer Valley, and SkiBig3" onClick={() => setMainPageView("ski")} />
+                      <MainHubButton title="2026/2027 Ski Season" subtitle="View Deer Valley and SkiBig3" onClick={() => setMainPageView("ski")} />
                       <MainHubButton title="Sign Up for Future Trips" subtitle="Dreaming-stage trips collecting interest" onClick={() => setMainPageView("future")} />
                       <MainHubButton title="Archived Trips" subtitle="Completed trips will live here" disabled={isSiteGuestAccess || isAlaskaLimitedAccess} onClick={() => setMainPageView("archive")} />
                     </div>
@@ -3014,7 +3045,6 @@ export default function TravelSite() {
                   <div className="relative z-10 min-h-0 flex-1 space-y-3 overflow-y-auto px-5 pb-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                     {mainPageView === "ski" && (
                       <>
-                        <TripButton location="Ski Shiga Kogen & Nagano Japan" date="Jan 23 - Jan 31 2027" status="Dreaming" heroOverlay onClick={() => openTripPage("skiMyoko")} />
                         <TripButton location="Ski Deer Valley UT USA" date="Feb 2027" status="Dreaming" heroOverlay onClick={() => openTripPage("skiDeerValley")} />
                         <TripButton location="SkiBig3 AB Canada" date="Mar 2027" status="Dreaming" heroOverlay onClick={() => openTripPage("skiBig3")} />
                       </>
@@ -3957,8 +3987,9 @@ export default function TravelSite() {
                     </div>
                     <div className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain p-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-6">
                       {[
-                        { price: "$5,075.49 CAD", booking: "MW2WGL", room: "Mini-Suite", guests: [{ title: "Mr", first: "Kuo-Hsiung", last: "Yen" }, { title: "Mrs", first: "Shu-Li", last: "Chin" }, { title: "Mr", first: "Ko-Ming", last: "Yen" }] },
+                        { price: "$6,111.48 CAD", booking: "ML8X7Q", room: "D225", guests: [{ title: "Mr", first: "Kuo-Hsiung", last: "Yen" }, { title: "Mrs", first: "Shu-Li", last: "Chin" }, { title: "Mr", first: "Ko-Ming", last: "Yen" }] },
                         { price: "$3,309.29 CAD", booking: "MW2W4R", room: "B702", guests: [{ title: "Mr", first: "Yu-Ting David", last: "Wu" }, { title: "Mrs", first: "I-Ling Xenia", last: "Kant" }, { title: "Miss", first: "Naomi Ya-Rong", last: "Wu" }] },
+                        { price: "$2,898.28 CAD", booking: "MW2WGL", room: "B723", guests: [{ title: "Mr", first: "Tzu-Fu", last: "Yuan" }, { title: "Mrs", first: "Ting-Jeng", last: "Kuo" }] },
                         { price: "$2,898.28 CAD", booking: "MW2L2W", room: "C723", guests: [{ title: "Mrs", first: "Yu-Ting Judy", last: "Yen" }, { title: "Mr", first: "Tein-Kong", last: "Kant" }] },
                         { price: "$2,898.28 CAD", booking: "MW2L8K", room: "C727", guests: [{ title: "Mr", first: "Ko-Chun", last: "Yen" }, { title: "Miss", first: "Chun-Cheng", last: "Hsieh" }] },
                         { price: "$2,898.28 CAD", booking: "MW2LGR", room: "C731", guests: [{ title: "Mrs", first: "Shu-Li", last: "Lin" }, { title: "Mr", first: "Ming-Che", last: "Hsieh" }] },
