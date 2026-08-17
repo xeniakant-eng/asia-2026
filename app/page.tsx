@@ -939,7 +939,7 @@ export default function TravelSite() {
       title: "North to South",
       items: [
         "Early private van from Ninh Binh to Hanoi airport.",
-        "Vietjet nonstop flight Hanoi (HAN) to Ho Chi Minh City (SGN), 11:30 AM-1:40 PM, 2 hr 10 min. Fare shown: CA$84.",
+        "VietJet VJ157 nonstop flight Hanoi (HAN) to Ho Chi Minh City (SGN), 12:55 PM-3:05 PM, 2 hr 10 min. Fare shown: CA$84.",
         "Afternoon / evening: Ben Thanh Market and Nguyen Hue Walking Street.",
       ],
       stay: "Zenity District 1 Airbnb",
@@ -1005,21 +1005,21 @@ export default function TravelSite() {
     {
       date: "Thu Nov 12, 2026",
       route: "Taipei to Hanoi",
-      airline: "Vietnam Airlines",
+      airline: "Vietnam Airlines VN577",
       time: "1:25 PM - 3:40 PM",
       notes: "Arrive in Hanoi, then transfer to Airbnb.",
     },
     {
       date: "Tue Nov 17, 2026",
       route: "Hanoi to Ho Chi Minh City",
-      airline: "VietJet",
-      time: "11:30 AM - 1:40 PM",
+      airline: "VietJet VJ157",
+      time: "12:55 PM - 3:05 PM",
       notes: "Nonstop HAN to SGN, 2 hr 10 min.",
     },
     {
       date: "Sat Nov 21, 2026",
       route: "Ho Chi Minh City to Kaohsiung",
-      airline: "VietJet",
+      airline: "VietJet VJ886",
       time: "7:35 AM - 11:45 AM",
       notes: "Nonstop flight. Leave hotel around 4:30-5:00 AM.",
     },
@@ -1085,11 +1085,11 @@ export default function TravelSite() {
         {
           category: "Flights (3 flights)",
           detail: [
-            "Nov 12 Vietnam Airlines Taipei to Hanoi: $177 CAD x 3 people = $531 CAD.",
-            "Nov 17 VietJet Hanoi to Ho Chi Minh City: $84 CAD x 3 people + $16 CAD checked bag = $268 CAD.",
-            "Nov 21 VietJet Ho Chi Minh City to Kaohsiung: $180 CAD x 3 people + $45 CAD checked bag = $585 CAD.",
+            "Nov 12 Vietnam Airlines Taipei to Hanoi: Total = $451.20 CAD.",
+            "Nov 17 VietJet Hanoi to Ho Chi Minh City: $85 CAD x 3 people = $255 CAD.",
+            "Nov 21 VietJet Ho Chi Minh City to Kaohsiung: $191 CAD x 3 people + $111 CAD for 2 checked bags = $684 CAD.",
           ],
-          amountCad: 1384.00,
+          amountCad: 1390.20,
         },
         {
           category: "Tours & Attraction Tickets",
