@@ -864,7 +864,8 @@ export default function TravelSite() {
       title: "Arrival in Hanoi",
       items: [
         "Vietnam Airlines flight from Taipei (TPE) to Hanoi (HAN), 1:25 PM-3:40 PM.",
-        "Transfer from airport to Airbnb (40 min drive), check in, easy dinner, and rest.",
+        "Transfer from airport to Airbnb (40 min ride) via Grab.",
+        "Dinner TBD.",
       ],
       stay: "Heart of Hoan Kiem Homestay Airbnb, 23C Phố Tông Đản, Hoàn Kiếm, Hà Nội",
       stayImage: { src: "/hanoiairbnb.png", alt: "Heart of Hoan Kiem Homestay Airbnb in Hanoi" },
@@ -877,7 +878,6 @@ export default function TravelSite() {
         "Train Street cafe stop.",
         "Visit Temple of Literature, Old Quarter, Hoan Kiem Lake, and Ngoc Son Temple.",
         "Try egg coffee.",
-        "Evening Water Puppet Show.",
       ],
       itemImages: {
         "Train Street cafe stop.": { src: "/hanoitrain.png", alt: "Hanoi Train Street cafe" },
@@ -886,21 +886,21 @@ export default function TravelSite() {
     },
     {
       date: "Sat Nov 14",
-      location: "Peony Cruises",
-      title: "Ha Long Bay & Lan Ha Bay Peony Cruise",
+      location: "Mila Grand Cruise",
+      title: "Ha Long Bay & Lan Ha Bay Mila Grand Cruise",
       items: [
         "8:30 AM: Pre-arranged van transfer pickup from Hanoi Airbnb to Tuan Chau Marina (2.5 hrs ride).",
-        "Noon: Board 2 day 1 night Peony Cruise.",
-        "Afternoon: Tuan Chau - Ha Long Bay - Lan Ha Bay.",
+        "Noon: Board 2 day 1 night Mila Grand Cruise.",
+        "Afternoon: Tuan Chau Marina - Ha Long Bay - Lan Ha Bay - Bright & Dark Caves.",
       ],
       links: [
         {
-          label: "2D1N Cruise Itinerary",
-          href: "https://drive.google.com/file/d/1v5NbCUyXsXEukv5fq-0mk74ojoMTv6DV/view",
+          label: "Mila Grand Cruise Website",
+          href: "https://milacruises.com/mila-grand-cruises-2-days-1-night/",
         },
       ],
-      stay: "Peony Cruise",
-      stayImage: { src: "/halongbaycruise.png", alt: "Peony Cruise on Ha Long Bay and Lan Ha Bay" },
+      stay: "Mila Grand Cruise",
+      stayImage: { src: "/halongbaycruise.png", alt: "Mila Grand Cruise on Ha Long Bay and Lan Ha Bay" },
     },
     {
       date: "Sun Nov 15",
@@ -908,13 +908,14 @@ export default function TravelSite() {
       title: "Check-in Ninh Binh",
       items: [
         "6:45 AM: Breakfast.",
-        "7:30 AM: Tour of Cat Ba World Biosphere (Cat Ba Island Caves).",
-        "11:00 AM: Disembark the Peony Cruise.",
+        "7:30 AM: Tour of Cat Ba World Biosphere: Trung Trang Cave.",
+        "11:00 AM: Disembark the Mila Grand Cruise.",
         "Noon: Pre-arranged van transfer from Tuan Chau Marina to Ninh Binh Xuan Son Lakeside Bungalow (3 hr ride).",
         "Evening: Check in, relax, dinner on site.",
+        "Optional: Mua Cave / Hang Mua viewpoint, about 5 km from the hotel, if adults want the climb and the kids still have energy.",
       ],
       itemImages: {
-        "7:30 AM: Tour of Cat Ba World Biosphere (Cat Ba Island Caves).": { src: "/kayak.png", alt: "Cat Ba Island caves and kayaking" },
+        "7:30 AM: Tour of Cat Ba World Biosphere: Trung Trang Cave.": { src: "/kayak.png", alt: "Cat Ba Island caves and kayaking" },
       },
       stay: "Xuan Son Lakeside Bungalow",
       stayImage: { src: "/ninbinh.png", alt: "Ninh Binh countryside near Xuan Son Lakeside Bungalow" },
@@ -924,12 +925,13 @@ export default function TravelSite() {
       location: "Ninh Binh",
       title: "Grottoes & Mountains & Architectures",
       items: [
-        "Trang An boat ride in the morning.",
-        "Afternoon: Bich Dong Pagoda or countryside rest.",
-        "Optional: Hang Mua viewpoint if adults want the climb and the kids still have energy.",
+        "8:30 AM: Pickup to Trang An boat ride.",
+        "Afternoon 1: Hoa Lu Ancient Citadel.",
+        "Afternoon 2: Bich Dong Pagoda.",
+        "Optional: Thung Nham Ecotourism Zone.",
       ],
       itemImages: {
-        "Trang An boat ride in the morning.": { src: "/trangan.png", alt: "Trang An boat ride in Ninh Binh" },
+        "8:30 AM: Pickup to Trang An boat ride.": { src: "/trangan.png", alt: "Trang An boat ride in Ninh Binh" },
       },
       stay: "Xuan Son Lakeside Bungalow",
     },
@@ -938,7 +940,7 @@ export default function TravelSite() {
       location: "Ho Chi Minh City",
       title: "North to South",
       items: [
-        "Early private van from Ninh Binh to Hanoi airport.",
+        "8:00 AM: Depart from Ninh Binh to Hanoi Airport (2.5 hr ride).",
         "VietJet VJ157 nonstop flight Hanoi (HAN) to Ho Chi Minh City (SGN), 12:55 PM-3:05 PM, 2 hr 10 min. Fare shown: CA$84.",
         "Afternoon / evening: Ben Thanh Market and Nguyen Hue Walking Street.",
       ],
@@ -1031,7 +1033,7 @@ export default function TravelSite() {
           category: "Accommodations (10 nights)",
           detail: [
             "Nov 12-14 Hanoi stay at Heart of Hoan Kiem Homestay Airbnb (reserved): Total = $258.30 CAD, Half = $129.15 CAD.",
-            "Nov 14-15 Peony Cruise Deluxe Balcony Cabin for Jenn's family, 2 adults + 2 kids: $552 USD (approx. $756.24 CAD).",
+            "Nov 14-15 Mila Grand Cruise Deluxe Balcony Cabin for Jenn's family, 2 adults + 2 kids: $552 USD (approx. $756.24 CAD).",
             "Nov 15-17 Ninh Binh stay at Xuan Son Lakeside Bungalow: Total = $171 CAD.",
             "Nov 17-21 Ho Chi Minh City stay at Zenity District 1 Airbnb: Total = $543.32 CAD, Half = $271.66 CAD.",
           ],
@@ -1049,7 +1051,7 @@ export default function TravelSite() {
         {
           category: "Tours & Attraction Tickets",
           detail: [
-            "Nov 13 Hanoi city sights and Water Puppet Show: TBD.",
+            "Nov 13 Hanoi city sights: TBD.",
             "Nov 16 Ninh Binh activities: TBD.",
             "Nov 18 Ho Chi Minh City sights: TBD.",
             "Nov 19 Ben Tre Mekong Tour: TBD.",
@@ -1061,11 +1063,11 @@ export default function TravelSite() {
           category: "Transfers",
           detail: [
             "Nov 12 7-seater van from Hanoi airport to Airbnb: Total = 450,000 VND (approx. $24 CAD), Half = approx. $12 CAD.",
-            "Nov 14-15 cruise transfers between Hanoi, Tuan Chau Marina, and Ninh Binh: Total = $240 USD (approx. $328.80 CAD), Jenn's share 4/7 = approx. $187.89 CAD.",
+            "Nov 14-15 cruise transfers between Hanoi, Tuan Chau Marina, and Ninh Binh: $15-18 USD per person each way, about $35 USD round trip per person. Jenn's party (4 people) = approx. $191.80 CAD.",
             "Nov 17 Ninh Binh to Hanoi airport transfer: TBD.",
             "Nov 21 Ho Chi Minh City Airbnb to airport transfer: TBD.",
           ],
-          amountCad: 199.89,
+          amountCad: 203.80,
         },
       ];
     }
@@ -1076,7 +1078,7 @@ export default function TravelSite() {
           category: "Accommodations (10 nights)",
           detail: [
             "Nov 12-14 Hanoi stay at Heart of Hoan Kiem Homestay Airbnb (reserved): Total = $258.30 CAD, Half = $129.15 CAD.",
-            "Nov 14-15 Peony Cruise Deluxe Balcony Cabin for Xenia's family, 2 adults + 1 kid: $385 USD (approx. $527.45 CAD).",
+            "Nov 14-15 Mila Grand Cruise Deluxe Balcony Cabin for Xenia's family, 2 adults + 1 kid: $385 USD (approx. $527.45 CAD).",
             "Nov 15-17 Ninh Binh stay at Xuan Son Lakeside Bungalow: Total = $140 CAD.",
             "Nov 17-21 Ho Chi Minh City stay at Zenity District 1 Airbnb: Total = $543.32 CAD, Half = $271.66 CAD.",
           ],
@@ -1094,7 +1096,7 @@ export default function TravelSite() {
         {
           category: "Tours & Attraction Tickets",
           detail: [
-            "Nov 13 Hanoi city sights and Water Puppet Show: TBD.",
+            "Nov 13 Hanoi city sights: TBD.",
             "Nov 16 Ninh Binh activities: TBD.",
             "Nov 18 Ho Chi Minh City sights: TBD.",
             "Nov 19 Ben Tre Mekong Tour: TBD.",
@@ -1106,11 +1108,11 @@ export default function TravelSite() {
           category: "Transfers",
           detail: [
             "Nov 12 7-seater van from Hanoi airport to Airbnb: Total = 450,000 VND (approx. $24 CAD), Half = approx. $12 CAD.",
-            "Nov 14-15 cruise transfers between Hanoi, Tuan Chau Marina, and Ninh Binh: Total = $240 USD (approx. $328.80 CAD), Xenia's share 3/7 = approx. $140.91 CAD.",
+            "Nov 14-15 cruise transfers between Hanoi, Tuan Chau Marina, and Ninh Binh: $15-18 USD per person each way, about $35 USD round trip per person. Xenia's party (3 people) = approx. $143.85 CAD.",
             "Nov 17 Ninh Binh to Hanoi airport transfer: TBD.",
             "Nov 21 Ho Chi Minh City Airbnb to airport transfer: TBD.",
           ],
-          amountCad: 152.91,
+          amountCad: 155.85,
         },
       ];
     }
@@ -2830,7 +2832,7 @@ export default function TravelSite() {
                     );
                   })}
                 </ul>
-                {"links" in day && day.links && day.stay !== "Peony Cruise" && (
+                {"links" in day && day.links && day.stay !== "Mila Grand Cruise" && (
                   <div className="mt-4 flex flex-wrap gap-2">
                     {day.links.map((link) => (
                       <a key={link.href} href={link.href} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center rounded-full border border-[#F6C65B]/35 bg-[#F6C65B]/10 px-4 py-2 text-xs uppercase tracking-[0.14em] text-[#F6C65B] transition hover:border-[#F6C65B]/60 hover:bg-[#F6C65B]/15">
@@ -2866,7 +2868,7 @@ export default function TravelSite() {
                     ) : (
                       <p className="mt-1 text-sm text-white/75">{day.stay}</p>
                     )}
-                    {"links" in day && day.links && day.stay === "Peony Cruise" && (
+                    {"links" in day && day.links && day.stay === "Mila Grand Cruise" && (
                       <div className="mt-3 flex flex-wrap gap-2">
                         {day.links.map((link) => (
                           <a key={link.href} href={link.href} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center rounded-full border border-[#F6C65B]/35 bg-[#F6C65B]/10 px-4 py-2 text-xs uppercase tracking-[0.14em] text-[#F6C65B] transition hover:border-[#F6C65B]/60 hover:bg-[#F6C65B]/15">
@@ -2954,14 +2956,15 @@ export default function TravelSite() {
                 {[
                   ["Power", "Vietnam commonly uses 220V power with Type A, C, and F plugs."],
                   ["Transportation", "Uber is not available in Vietnam. The equivalent ride-share app is Grab, which is fully operational across major cities."],
-                  ["Tourist Visa", "Canadian passport holders require a tourist visa and may apply online for a single- or multiple-entry e-visa valid for up to 90 days. The passport should be valid for at least 6 months beyond the planned departure from Vietnam."],
+                  ["Tourist Visa", "Canadian passport holders need a Vietnam tourist e-visa. Apply online for single or multiple entry, valid up to 90 days. A passport-style photo is required. Apply at least 2 weeks before the trip. Print the approved e-visa and bring it for Vietnam immigration. Passport should be valid for at least 6 months beyond departure from Vietnam."],
                   ["Payment", "Cards are useful in larger hotels and restaurants. Cash is still important for markets, smaller shops, taxis, and local food."],
+                  ["Tipping Culture", "Tipping is appreciated but not mandatory. Small tips are common for tour guides, drivers, hotel porters, spa services, and good restaurant service."],
                   ["Local Currency", `Vietnamese dong (VND). Approximate live rates: 1 CAD ≈ ${cadToVnd} VND and 1 USD ≈ ${usdToVnd} VND. For the best exchange rates, use a major bank or authorized currency exchange counter in Hanoi or Ho Chi Minh City. Bank ATMs are a convenient alternative. Exchange only a small arrival amount at the airport, where rates are usually less favourable.`],
                   ["SIM / eSIM", "Local SIM and eSIM options are widely available for Hanoi and central Vietnam."],
                 ].map(([title, text]) => (
                   <div key={title} className="rounded-xl border border-white/10 bg-white/[0.04] p-3 sm:p-4">
                     <p className="text-xs uppercase tracking-[0.18em] text-white/40">{title}</p>
-                    <p className="mt-2 text-sm leading-6 text-white/75">{text}</p>
+                    <p className="mt-2 text-sm leading-6 text-white/75">{text}{title === "Tourist Visa" && <> <a href="https://evisa.gov.vn" target="_blank" rel="noopener noreferrer" className="text-[#F6C65B] underline decoration-[#F6C65B]/35 underline-offset-4 transition hover:text-[#FFE19A]">Apply online: evisa.gov.vn</a></>}</p>
                   </div>
                 ))}
               </div>
@@ -3427,14 +3430,15 @@ export default function TravelSite() {
                       {[
                         ["Power", "Vietnam commonly uses 220V power with Type A, C, and F plugs."],
                         ["Transportation", "Uber is not available in Vietnam. The equivalent ride-share app is Grab, which is fully operational across major cities."],
-                        ["Tourist Visa", "Canadian passport holders require a tourist visa and may apply online for a single- or multiple-entry e-visa valid for up to 90 days. The passport should be valid for at least 6 months beyond the planned departure from Vietnam."],
+                        ["Tourist Visa", "Canadian passport holders need a Vietnam tourist e-visa. Apply online for single or multiple entry, valid up to 90 days. A passport-style photo is required. Apply at least 2 weeks before the trip. Print the approved e-visa and bring it for Vietnam immigration. Passport should be valid for at least 6 months beyond departure from Vietnam."],
                         ["Payment", "Cards are useful in larger hotels and restaurants. Cash is still important for markets, smaller shops, taxis, and local food."],
+                  ["Tipping Culture", "Tipping is appreciated but not mandatory. Small tips are common for tour guides, drivers, hotel porters, spa services, and good restaurant service."],
                         ["Local Currency", `Vietnamese dong (VND). Approximate live rates: 1 CAD ≈ ${cadToVnd} VND and 1 USD ≈ ${usdToVnd} VND. For the best exchange rates, use a major bank or authorized currency exchange counter in Hanoi or Ho Chi Minh City. Bank ATMs are a convenient alternative. Exchange only a small arrival amount at the airport, where rates are usually less favourable.`],
                         ["SIM / eSIM", "Local SIM and eSIM options are widely available for Hanoi and central Vietnam."],
                       ].map(([title, text]) => (
                         <div key={title} className="rounded-xl border border-white/10 bg-white/[0.04] p-3 sm:p-4">
                           <p className="text-xs uppercase tracking-[0.18em] text-white/40">{title}</p>
-                          <p className="mt-2 text-sm leading-6 text-white/75">{text}</p>
+                          <p className="mt-2 text-sm leading-6 text-white/75">{text}{title === "Tourist Visa" && <> <a href="https://evisa.gov.vn" target="_blank" rel="noopener noreferrer" className="text-[#F6C65B] underline decoration-[#F6C65B]/35 underline-offset-4 transition hover:text-[#FFE19A]">Apply online: evisa.gov.vn</a></>}</p>
                         </div>
                       ))}
                     </div>
