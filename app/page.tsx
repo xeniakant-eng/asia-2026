@@ -955,9 +955,9 @@ export default function TravelSite() {
         "Optional: Saigon Skydeck.",
         "Grab or walk back to Airbnb, about 2 km.",
       ],
-      links: [
-        { label: "Pho Viet Nam Map", href: "https://www.google.com/maps/search/?api=1&query=Pho%20Viet%20Nam%20Ho%20Chi%20Minh%20City" },
-      ],
+      itemLinks: {
+        "Eat at Pho Viet Nam.": { text: "Pho Viet Nam", href: "https://www.google.com/maps/search/?api=1&query=Pho%20Viet%20Nam%20Ho%20Chi%20Minh%20City" },
+      },
       stay: "Entire Home by Bui Vien",
       stayImage: { src: "/hcmairbnb2.png", alt: "Entire Home by Bui Vien in Ho Chi Minh City" },
     },
@@ -974,15 +974,16 @@ export default function TravelSite() {
         "Central Post Office & Saigon Book Street.",
         "Vincom Center Dong Khoi.",
         "Dinner TBD.",
+        "Bui Vien Walking Street.",
         "Viet head washing / massage (Hiroshi & David).",
       ],
       itemImages: {
         "Central Post Office & Saigon Book Street.": { src: "/saigon.png", alt: "Central Post Office and Saigon Book Street in Ho Chi Minh City" },
       },
-      links: [
-        { label: "Banh Mi Huynh Hoa Map", href: "https://maps.app.goo.gl/xFd5yRKbsEXZ2vmD7" },
-        { label: "Quan Ngon Sai Gon Map", href: "https://maps.app.goo.gl/XBaxREFcys8FrWJy8" },
-      ],
+      itemLinks: {
+        "Breakfast: Banh Mi Huynh Hoa.": { text: "Banh Mi Huynh Hoa", href: "https://maps.app.goo.gl/xFd5yRKbsEXZ2vmD7" },
+        "Lunch: Quan Ngon Sai Gon.": { text: "Quan Ngon Sai Gon", href: "https://maps.app.goo.gl/XBaxREFcys8FrWJy8" },
+      },
       stay: "Entire Home by Bui Vien",
     },
     {
@@ -990,17 +991,18 @@ export default function TravelSite() {
       location: "Ho Chi Minh City",
       title: "Ben Tre Mekong Tour",
       items: [
-        "Shorter private Ben Tre Mekong Tour with early pickup.",
+        "Mekong Delta small group tour with early pickup. Booking reference #1441367233.",
         "Target return by 5:00-6:00 PM.",
         "Relaxed evening after returning to the city.",
         "Dinner TBD.",
         "Viet head washing / massage (Jenn & Xenia).",
       ],
       itemImages: {
-        "Shorter private Ben Tre Mekong Tour with early pickup.": { src: "/mekong.png", alt: "Ben Tre Mekong Delta tour" },
+        "Mekong Delta small group tour with early pickup. Booking reference #1441367233.": { src: "/mekong.png", alt: "Mekong Delta small group tour" },
       },
       links: [
         { label: "Mekong Delta Tour", href: "https://www.viator.com/tours/Ho-Chi-Minh-City/Full-Day-Premier-Group-Tour-to-Discover-Mekong-Delta/d352-7329P16" },
+        { label: "Booking Reference #1441367233", href: "https://www.viator.com/account/booking/detail/1441367233/summary" },
       ],
       linksPosition: "top",
       stay: "Entire Home by Bui Vien",
@@ -2822,6 +2824,21 @@ export default function TravelSite() {
     const hanoiAccommodationMapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(hanoiAccommodationAddress)}`;
     const vietnamItineraryImage = (image: { src: string; alt: string }) => <img src={image.src} alt={image.alt} className="mt-3 h-52 w-full rounded-2xl object-cover object-center sm:h-64" loading="lazy" />;
     const getVietnamItemImage = (day: (typeof vietnamItineraryDays)[number], item: string) => "itemImages" in day ? day.itemImages?.[item as keyof typeof day.itemImages] : undefined;
+    const getVietnamItemLink = (day: (typeof vietnamItineraryDays)[number], item: string) => "itemLinks" in day ? day.itemLinks?.[item as keyof typeof day.itemLinks] : undefined;
+    const renderVietnamItemText = (day: (typeof vietnamItineraryDays)[number], item: string) => {
+      const itemLink = getVietnamItemLink(day, item);
+      if (!itemLink || !item.includes(itemLink.text)) return <span>{item}</span>;
+      const [before, ...afterParts] = item.split(itemLink.text);
+      return (
+        <span>
+          {before}
+          <a href={itemLink.href} target="_blank" rel="noreferrer" className="text-[#F6C65B] underline decoration-[#F6C65B]/35 underline-offset-4 transition hover:text-[#FFE19A]">
+            {itemLink.text}
+          </a>
+          {afterParts.join(itemLink.text)}
+        </span>
+      );
+    };
     const xuanSonAccommodationName = "Xuan Son Lakeside Bungalow";
     const xuanSonAccommodationAddress = "479 B, Ninh Binh, Vietnam, Hoa Lu, VN";
     const xuanSonAccommodationMapUrl = "https://www.google.com/maps/search/?api=1&query=20.2564344083601,105.929744980567";
@@ -2868,7 +2885,7 @@ export default function TravelSite() {
                       <li key={item}>
                         <div className="flex gap-2">
                           <span className="shrink-0" style={{ color: VIETNAM_GOLD }}>{"\u2022"}</span>
-                          <span>{item}</span>
+                          {renderVietnamItemText(day, item)}
                         </div>
                         {itemImage && vietnamItineraryImage(itemImage)}
                       </li>
