@@ -991,7 +991,7 @@ export default function TravelSite() {
       location: "Ho Chi Minh City",
       title: "Ben Tre Mekong Tour",
       items: [
-        "Mekong Delta small group tour with early pickup. Booking reference #1441367233.",
+        "7:45 AM pickup for Mekong Delta small group tour. Booking reference #1441367233.",
         "Target return by 5:00-6:00 PM.",
         "Relaxed evening after returning to the city.",
         "Dinner TBD.",
