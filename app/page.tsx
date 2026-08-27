@@ -863,9 +863,10 @@ export default function TravelSite() {
       location: "Hanoi",
       title: "Arrival in Hanoi",
       items: [
-        "Vietnam Airlines flight from Taipei (TPE) to Hanoi (HAN), 1:25 PM-3:40 PM.",
-        "Transfer from airport to Airbnb (40 min ride) via Grab.",
+        "Vietnam Airlines VN577 flight from Taipei (TPE) to Hanoi (HAN), 1:25 PM-3:40 PM.",
+        "Transfer from airport to Airbnb (40 min ride) booked with KKday. Booking #26KK265514944. Local company: Thang Long Transport, +84 917681818. 16-seater shuttle bus. Total pre-paid amount: $30 CAD.",
         "Dinner TBD.",
+        "Viet headwashing / massage (Jenn & Xenia).",
       ],
       stay: "Heart of Hoan Kiem Homestay Airbnb, 23C Phố Tông Đản, Hoàn Kiếm, Hà Nội",
       stayImage: { src: "/hanoiairbnb.png", alt: "Heart of Hoan Kiem Homestay Airbnb in Hanoi" },
@@ -878,6 +879,8 @@ export default function TravelSite() {
         "Train Street cafe stop.",
         "Visit Temple of Literature, Old Quarter, Hoan Kiem Lake, and Ngoc Son Temple.",
         "Try egg coffee.",
+        "Dinner TBD.",
+        "Viet head washing / massage (Hiroshi & David).",
       ],
       itemImages: {
         "Train Street cafe stop.": { src: "/hanoitrain.png", alt: "Hanoi Train Street cafe" },
@@ -942,26 +945,45 @@ export default function TravelSite() {
       items: [
         "8:00 AM: Depart from Ninh Binh to Hanoi Airport (2.5 hr ride).",
         "VietJet VJ157 nonstop flight Hanoi (HAN) to Ho Chi Minh City (SGN), 12:55 PM-3:05 PM, 2 hr 10 min. Fare shown: CA$84.",
-        "Afternoon / evening: Ben Thanh Market and Nguyen Hue Walking Street.",
+        "Stroll along Saigon Central Park.",
+        "Eat at Pho Viet Nam.",
+        "Visit Cho Ben Thanh Market.",
+        "Shopping at KKV / Saigon Centre.",
+        "Viet head washing / massage (Jenn & Xenia).",
+        "Finish the night with Nguyen Hue Walking Street.",
+        "Optional: Cafe Apartment / Coffee Building.",
+        "Optional: Saigon Skydeck.",
+        "Grab or walk back to Airbnb, about 2 km.",
       ],
-      stay: "Zenity District 1 Airbnb",
-      stayImage: { src: "/hcmairbnb.png", alt: "Zenity District 1 Airbnb in Ho Chi Minh City" },
+      links: [
+        { label: "Pho Viet Nam Map", href: "https://www.google.com/maps/search/?api=1&query=Pho%20Viet%20Nam%20Ho%20Chi%20Minh%20City" },
+      ],
+      stay: "Entire Home by Bui Vien",
+      stayImage: { src: "/hcmairbnb2.png", alt: "Entire Home by Bui Vien in Ho Chi Minh City" },
     },
     {
       date: "Wed Nov 18",
       location: "Ho Chi Minh City",
       title: "Saigon City Tour",
       items: [
-        "Independence Palace.",
-        "Central Post Office.",
-        "Notre Dame area.",
-        "Lunch.",
+        "Breakfast: Banh Mi Huynh Hoa.",
         "War Remnants Museum.",
+        "Independence Palace.",
+        "Lunch: Quan Ngon Sai Gon.",
+        "Notre Dame Cathedral of Saigon, may still be under construction.",
+        "Central Post Office & Saigon Book Street.",
+        "Vincom Center Dong Khoi.",
+        "Dinner TBD.",
+        "Viet head washing / massage (Hiroshi & David).",
       ],
       itemImages: {
-        "Notre Dame area.": { src: "/saigon.png", alt: "Notre Dame area in Ho Chi Minh City" },
+        "Central Post Office & Saigon Book Street.": { src: "/saigon.png", alt: "Central Post Office and Saigon Book Street in Ho Chi Minh City" },
       },
-      stay: "Zenity District 1 Airbnb",
+      links: [
+        { label: "Banh Mi Huynh Hoa Map", href: "https://maps.app.goo.gl/xFd5yRKbsEXZ2vmD7" },
+        { label: "Quan Ngon Sai Gon Map", href: "https://maps.app.goo.gl/XBaxREFcys8FrWJy8" },
+      ],
+      stay: "Entire Home by Bui Vien",
     },
     {
       date: "Thu Nov 19",
@@ -971,34 +993,46 @@ export default function TravelSite() {
         "Shorter private Ben Tre Mekong Tour with early pickup.",
         "Target return by 5:00-6:00 PM.",
         "Relaxed evening after returning to the city.",
+        "Dinner TBD.",
+        "Viet head washing / massage (Jenn & Xenia).",
       ],
       itemImages: {
         "Shorter private Ben Tre Mekong Tour with early pickup.": { src: "/mekong.png", alt: "Ben Tre Mekong Delta tour" },
       },
-      stay: "Zenity District 1 Airbnb",
+      links: [
+        { label: "Mekong Delta Tour", href: "https://www.viator.com/tours/Ho-Chi-Minh-City/Full-Day-Premier-Group-Tour-to-Discover-Mekong-Delta/d352-7329P16" },
+      ],
+      linksPosition: "top",
+      stay: "Entire Home by Bui Vien",
     },
     {
       date: "Fri Nov 20",
       location: "Ho Chi Minh City",
       title: "Cu Chi Tunnels",
       items: [
-        "Cu Chi Tunnels half-day tour.",
-        "Relaxed afternoon / early dinner after returning to the city.",
+        "7:30 AM pickup for Cu Chi Tunnels half-day shared tour by minibus, 15 people max, with English guide.",
+        "Lunch TBD after the tour.",
+        "Flexible afternoon for any last-minute shopping or visiting.",
         "Dinner TBD.",
+        "Viet head washing / massage (Hiroshi & David).",
         "Pack and sleep early.",
       ],
       itemImages: {
         "Cu Chi Tunnels half-day tour.": { src: "/cuchi.png", alt: "Cu Chi Tunnels half-day tour" },
       },
-      stay: "Zenity District 1 Airbnb",
+      links: [
+        { label: "Cu Chi Tunnels Tour", href: "https://www.kkday.com/en-us/product/129674" },
+      ],
+      linksPosition: "top",
+      stay: "Entire Home by Bui Vien",
     },
     {
       date: "Sat Nov 21",
       location: "Depart",
       title: "Ho Chi Minh City to Kaohsiung",
       items: [
-        "VietJet Ho Chi Minh City to Kaohsiung, 7:35 AM-11:45 AM, nonstop.",
         "Leave hotel around 4:30-5:00 AM.",
+        "VietJet VJ886 Ho Chi Minh City (SGN) to Kaohsiung (KHH), 7:35 AM-11:45 AM, nonstop.",
       ],
     },
   ];
@@ -1035,16 +1069,16 @@ export default function TravelSite() {
             "Nov 12-14 Hanoi stay at Heart of Hoan Kiem Homestay Airbnb (reserved): Total = $258.30 CAD, Half = $129.15 CAD.",
             "Nov 14-15 Mila Grand Cruise Deluxe Balcony Cabin for Jenn's family, 2 adults + 2 kids: $552 USD (approx. $756.24 CAD).",
             "Nov 15-17 Ninh Binh stay at Xuan Son Lakeside Bungalow: Total = $171 CAD.",
-            "Nov 17-21 Ho Chi Minh City stay at Zenity District 1 Airbnb: Total = $543.32 CAD, Half = $271.66 CAD.",
+            "Nov 17-21 Ho Chi Minh City stay at Entire Home by Bui Vien: Total = $410.48 CAD, Half = $205.24 CAD.",
           ],
-          amountCad: 1328.05,
+          amountCad: 1261.63,
         },
         {
           category: "Flights (3 flights)",
           detail: [
             "Nov 12 Vietnam Airlines Taipei to Hanoi: $177 CAD x 4 people = $708 CAD.",
-            "Nov 17 VietJet Hanoi to Ho Chi Minh City: $84 CAD x 4 people = $336 CAD.",
-            "Nov 21 VietJet Ho Chi Minh City to Kaohsiung: $180 CAD x 4 people = $720 CAD.",
+            "Nov 17 VietJet VJ157 Hanoi to Ho Chi Minh City: $84 CAD x 4 people = $336 CAD.",
+            "Nov 21 VietJet VJ886 Ho Chi Minh City to Kaohsiung: $180 CAD x 4 people = $720 CAD.",
           ],
           amountCad: 1764.00,
         },
@@ -1054,20 +1088,20 @@ export default function TravelSite() {
             "Nov 13 Hanoi city sights: TBD.",
             "Nov 16 Ninh Binh activities: TBD.",
             "Nov 18 Ho Chi Minh City sights: TBD.",
-            "Nov 19 Ben Tre Mekong Tour: TBD.",
-            "Nov 20 Cu Chi Tunnels half-day tour: TBD.",
+            "Nov 19 Ben Tre Mekong Tour: $42.10 x 2 adults + $31.58 x 1 child + $0 x 1 child = $115.78 CAD.",
+            "Nov 20 Cu Chi Tunnels half-day tour: $28 x 2 adults + $22 x 2 kids = $100 CAD.",
           ],
-          amountCad: null,
+          amountCad: 215.78,
         },
         {
           category: "Transfers",
           detail: [
-            "Nov 12 7-seater van from Hanoi airport to Airbnb: Total = 450,000 VND (approx. $24 CAD), Half = approx. $12 CAD.",
+            "Nov 12 pre-booked 16-seater shuttle from HAN to Airbnb: Total = $30 CAD, Half = $15 CAD.",
             "Nov 14-15 cruise transfers between Hanoi, Tuan Chau Marina, and Ninh Binh: $15-18 USD per person each way, about $35 USD round trip per person. Jenn's party (4 people) = approx. $191.80 CAD.",
             "Nov 17 Ninh Binh to Hanoi airport transfer: TBD.",
             "Nov 21 Ho Chi Minh City Airbnb to airport transfer: TBD.",
           ],
-          amountCad: 203.80,
+          amountCad: 206.80,
         },
       ];
     }
@@ -1080,16 +1114,16 @@ export default function TravelSite() {
             "Nov 12-14 Hanoi stay at Heart of Hoan Kiem Homestay Airbnb (reserved): Total = $258.30 CAD, Half = $129.15 CAD.",
             "Nov 14-15 Mila Grand Cruise Deluxe Balcony Cabin for Xenia's family, 2 adults + 1 kid: $385 USD (approx. $527.45 CAD).",
             "Nov 15-17 Ninh Binh stay at Xuan Son Lakeside Bungalow: Total = $140 CAD.",
-            "Nov 17-21 Ho Chi Minh City stay at Zenity District 1 Airbnb: Total = $543.32 CAD, Half = $271.66 CAD.",
+            "Nov 17-21 Ho Chi Minh City stay at Entire Home by Bui Vien: Total = $410.48 CAD, Half = $205.24 CAD.",
           ],
-          amountCad: 1068.26,
+          amountCad: 1001.84,
         },
         {
           category: "Flights (3 flights)",
           detail: [
             "Nov 12 Vietnam Airlines Taipei to Hanoi: Total = $451.20 CAD.",
-            "Nov 17 VietJet Hanoi to Ho Chi Minh City: $85 CAD x 3 people = $255 CAD.",
-            "Nov 21 VietJet Ho Chi Minh City to Kaohsiung: $191 CAD x 3 people + $111 CAD for 2 checked bags = $684 CAD.",
+            "Nov 17 VietJet VJ157 Hanoi to Ho Chi Minh City: $85 CAD x 3 people = $255 CAD.",
+            "Nov 21 VietJet VJ886 Ho Chi Minh City to Kaohsiung: $191 CAD x 3 people + $111 CAD for 2 checked bags = $684 CAD.",
           ],
           amountCad: 1390.20,
         },
@@ -1099,20 +1133,20 @@ export default function TravelSite() {
             "Nov 13 Hanoi city sights: TBD.",
             "Nov 16 Ninh Binh activities: TBD.",
             "Nov 18 Ho Chi Minh City sights: TBD.",
-            "Nov 19 Ben Tre Mekong Tour: TBD.",
-            "Nov 20 Cu Chi Tunnels half-day tour: TBD.",
+            "Nov 19 Ben Tre Mekong Tour: $42.10 x 2 adults + $0 x 1 child = $84.20 CAD.",
+            "Nov 20 Cu Chi Tunnels half-day tour: $28 x 2 adults + $22 x 1 kid = $78 CAD.",
           ],
-          amountCad: null,
+          amountCad: 162.20,
         },
         {
           category: "Transfers",
           detail: [
-            "Nov 12 7-seater van from Hanoi airport to Airbnb: Total = 450,000 VND (approx. $24 CAD), Half = approx. $12 CAD.",
+            "Nov 12 pre-booked 16-seater shuttle from HAN to Airbnb: Total = $30 CAD, Half = $15 CAD.",
             "Nov 14-15 cruise transfers between Hanoi, Tuan Chau Marina, and Ninh Binh: $15-18 USD per person each way, about $35 USD round trip per person. Xenia's party (3 people) = approx. $143.85 CAD.",
             "Nov 17 Ninh Binh to Hanoi airport transfer: TBD.",
             "Nov 21 Ho Chi Minh City Airbnb to airport transfer: TBD.",
           ],
-          amountCad: 155.85,
+          amountCad: 158.85,
         },
       ];
     }
@@ -2791,8 +2825,8 @@ export default function TravelSite() {
     const xuanSonAccommodationName = "Xuan Son Lakeside Bungalow";
     const xuanSonAccommodationAddress = "479 B, Ninh Binh, Vietnam, Hoa Lu, VN";
     const xuanSonAccommodationMapUrl = "https://www.google.com/maps/search/?api=1&query=20.2564344083601,105.929744980567";
-    const zenityAccommodationName = "Zenity District 1 Airbnb";
-    const zenityAccommodationAddress = "608 Vo Van Kiet, Quan 1, Ho Chi Minh 700000";
+    const zenityAccommodationName = "Entire Home by Bui Vien";
+    const zenityAccommodationAddress = "353/12/2 Duong Pham Ngu Lao, Ho Chi Minh City, Ho Chi Minh 700000, Vietnam";
     const zenityAccommodationMapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(zenityAccommodationAddress)}`;
     return (
       <div className="min-h-screen bg-black px-6 py-10 text-white" style={{ "--chapter-accent": VIETNAM_GOLD } as React.CSSProperties}>
@@ -2818,6 +2852,15 @@ export default function TravelSite() {
                   <h2 className="mt-1 text-2xl font-light text-white">{day.title}</h2>
                   <p className="mt-1 text-sm uppercase tracking-[0.16em] text-white/40">{day.location}</p>
                 </div>
+                {"links" in day && day.links && "linksPosition" in day && day.linksPosition === "top" && (
+                  <div className="mb-4 flex flex-wrap gap-2">
+                    {day.links.map((link) => (
+                      <a key={link.href} href={link.href} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center rounded-full border border-[#F6C65B]/35 bg-[#F6C65B]/10 px-4 py-2 text-xs uppercase tracking-[0.14em] text-[#F6C65B] transition hover:border-[#F6C65B]/60 hover:bg-[#F6C65B]/15">
+                        {link.label}
+                      </a>
+                    ))}
+                  </div>
+                )}
                 <ul className="space-y-3 text-sm leading-6 text-white/70">
                   {day.items.map((item) => {
                     const itemImage = getVietnamItemImage(day, item);
@@ -2832,7 +2875,7 @@ export default function TravelSite() {
                     );
                   })}
                 </ul>
-                {"links" in day && day.links && day.stay !== "Mila Grand Cruise" && (
+                {"links" in day && day.links && (!("linksPosition" in day) || day.linksPosition !== "top") && day.stay !== "Mila Grand Cruise" && (
                   <div className="mt-4 flex flex-wrap gap-2">
                     {day.links.map((link) => (
                       <a key={link.href} href={link.href} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center rounded-full border border-[#F6C65B]/35 bg-[#F6C65B]/10 px-4 py-2 text-xs uppercase tracking-[0.14em] text-[#F6C65B] transition hover:border-[#F6C65B]/60 hover:bg-[#F6C65B]/15">
@@ -2901,23 +2944,23 @@ export default function TravelSite() {
                 </div>
                 {vietnamBudgetCostsForGuest.map((cost) => (
                   <article key={cost.category} className="rounded-xl border border-white/10 bg-white/[0.04] p-3 sm:p-4">
-                    <div className="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-start sm:gap-4">
-                      <div>
-                        <h3 className="text-base font-light text-white">{cost.category}</h3>
-                        {Array.isArray(cost.detail) ? (
-                          <ul className="mt-2 space-y-1.5 text-sm leading-6 text-white/60">
-                            {cost.detail.map((detail) => (
-                              <li key={detail} className="flex gap-2">
-                                <span className="shrink-0 text-[#F6C65B]">•</span>
-                                <span>{detail}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        ) : (
-                          <p className="mt-2 text-sm leading-6 text-white/60">{cost.detail}</p>
-                        )}
+                    <div>
+                      <h3 className="text-base font-light text-white">{cost.category}</h3>
+                      {Array.isArray(cost.detail) ? (
+                        <ul className="mt-2 space-y-1.5 text-sm leading-6 text-white/60">
+                          {cost.detail.map((detail) => (
+                            <li key={detail} className="flex gap-2">
+                              <span className="shrink-0 text-[#F6C65B]">•</span>
+                              <span>{detail}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="mt-2 text-sm leading-6 text-white/60">{cost.detail}</p>
+                      )}
+                      <div className="mt-4 border-t border-white/10 pt-3 text-right text-sm text-[#F6C65B]">
+                        Category total: {cost.amountCad === null ? "TBD" : `$${cost.amountCad.toLocaleString("en-CA", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} CAD`}
                       </div>
-                      <p className="text-sm text-[#F6C65B] sm:text-right">{cost.amountCad === null ? "TBD" : `$${cost.amountCad.toLocaleString("en-CA", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} CAD`}</p>
                     </div>
                   </article>
                 ))}
