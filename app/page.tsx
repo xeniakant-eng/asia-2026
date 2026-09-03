@@ -4604,7 +4604,7 @@ export default function TravelSite() {
   if (page === "nanjo") return renderChapter("nanjo", "Okinawa · Nanjo", "Southern Okinawa Chapter", "Okinawa Japan", "December", "2 Nights", <><a href="https://www.yuinchi.jp/heal/hot-spring/" target="_blank" rel="noopener noreferrer" className="mt-1 block text-sm font-medium hover:underline" style={{ color: BABY_BLUE }}>Yuinchi Hotel Nanjo</a><p className="mt-1 text-[9px] text-gray-500">Apeman Spa Natural Hot Spring</p></>, "japan", BABY_BLUE, <NanjoContent card={card} />);
   if (page === "naha") return renderChapter("naha", "Okinawa · Naha", "Final Naha Chapter", "Okinawa Japan", "December", "2 Nights", <a href="https://maps.google.com/?q=Hotel+Grand+Consort+Naha" target="_blank" rel="noopener noreferrer" className="mt-1 block text-sm font-medium hover:underline" style={{ color: BABY_BLUE }}>Hotel Grand Consort Naha</a>, "japan", BABY_BLUE, <NahaContent card={card} />);
   if (page === "nahaearly") return renderChapter("nahaearly", "Okinawa · Naha", "Naha + Okinawa World Chapter", "Okinawa Japan", "November", "2 Nights", <p className="mt-1 text-sm font-medium" style={{ color: BABY_BLUE }}>Hotel Strata Naha</p>, "japan", BABY_BLUE, <NahaEarlyContent card={card} linkedImage={linkedImage} />);
-  if (page === "yilan") return renderChapter("yilan", "Taiwan · Yilan", "Yilan Family Chapter", "Taiwan December", "December", "3 Nights", <><p className="mt-1 text-sm font-medium" style={{ color: TAIWAN_GOLD }}>瓏山林蘇澳冷熱泉度假飯店 (1)</p><p className="mt-1 text-sm font-medium" style={{ color: TAIWAN_GOLD }}>礁溪寒沐酒店 (2)</p></>, "taiwan", TAIWAN_GOLD, <YilanContent card={card} />);
+  if (page === "yilan") return renderChapter("yilan", "Taiwan · Yilan", "Yilan Family Chapter", "Taiwan December", "December", "3 Nights", <><p className="mt-1 text-sm font-medium" style={{ color: TAIWAN_GOLD }}>礁溪麒麟酒店 (1)</p><p className="mt-1 text-sm font-medium" style={{ color: TAIWAN_GOLD }}>煙波花時間 宜蘭傳藝 (2)</p></>, "taiwan", TAIWAN_GOLD, <YilanContent card={card} />);
 
   const isTaiwanMap = selectedTrip === "taiwan";
   const allMapLocations: TimelineItem[] = isTaiwanMap
@@ -4916,7 +4916,7 @@ function OnnaContent({ card, linkedImage }: { card: (children: React.ReactNode) 
   return (
     <>
       <DayArticle date="Friday, November 27, 2026" rentalCarDate="2026-11-27" title="Morning Arrival · Naha">
-        {card(<><p>✈ EVA Air BR112 · Arrive 9:15 AM at Naha Airport</p><p>🚗 Pick up rental car · Rental Company TBD</p></>)}
+        {card(<><p>✈ EVA Air BR112 · Arrive 9:15 AM at Naha Airport</p><p>🚗 Pick up OTS Rent-a-Car · Reservation #OTS1482429 · WB Class · 1 baby seat + 1 flat-rate ETC card · ¥108,200 total, on-site payment</p></>)}
         {card(
           <>
             <p className="text-[var(--chapter-accent)]">🕛 Lunch · <a href="https://okinawa.letsgojp.com/archives/405500/" target="_blank" rel="noopener noreferrer" className="hover:underline">Senaga Island</a></p>
@@ -5053,27 +5053,26 @@ function NagoContent({ card, linkedImage }: { card: (children: React.ReactNode) 
 function YilanContent({ card }: { card: (children: React.ReactNode) => React.ReactNode }) {
   return (
     <>
-      <DayArticle date="Wednesday, December 9, 2026" title="Taipei → Yilan South 蘇澳">
-        {card(<><p>🚗 10:00 AM 台北出發前往宜蘭 · 約 1.5 小時車程</p><p>🦆 Lunch · <a href="https://maps.google.com/?q=鴨寮故事館" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">鴨寮故事館 Duck Shack Museum</a></p><p className="text-white/50">桌菜須先電話預約 03-9504646</p><img src="/yaya.png" alt="Duck Shack Museum" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}
-        {card(<><p>🖍️ Afternoon · <a href="https://luckyart.com.tw/art/guide" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">蠟藝蠟筆城堡</a></p><p>Optional · 南方澳觀景臺 & 宜蘭赫蒂法莊</p><img src="/crayon.png" alt="Crayon Castle" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}
-        {card(<><p>🏨 Hotel · <a href="https://suao.rslhotel.com/fac/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">瓏山林蘇澳冷熱泉度假飯店</a></p></>)}
+      <DayArticle date="Wednesday, December 9, 2026" title="Taipei → Yilan 礁溪">
+        {card(<><ul className="ml-5 list-disc space-y-2 text-white/70"><li>9:00 AM 台北出發前往宜蘭</li><li>Lunch at <a href="https://www.dawen.com.tw/dawen/index.php" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">大塭休閒農場</a></li><li>Rain option · <a href="https://maps.google.com/?q=樂色山積木王國" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">樂色山積木王國</a></li></ul><img src="/fish.png" alt="大塭休閒農場" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}
+        {card(<><p><a href="https://maps.google.com/?q=%E4%BA%8C%E9%BE%8D%E4%B9%8B%E5%BF%83%E8%A6%AA%E5%AD%90%E5%85%AC%E5%9C%92" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">二龍之心親子公園</a> or <a href="https://maps.google.com/?q=%E7%A4%81%E6%BA%AA%E6%BA%AB%E6%B3%89%E5%85%AC%E5%9C%92" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">礁溪溫泉公園</a></p><img src="/yilannorth.png" alt="Yilan family afternoon options" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}
+        {card(<><p>4:00 PM check in · <a href="https://maps.google.com/?q=礁溪麒麟酒店" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">礁溪麒麟酒店</a></p></>)}
       </DayArticle>
 
-      <DayArticle date="Thursday, December 10, 2026" title="Yilan Central 羅東">
-        {card(<><p>🍳 Breakfast · Hotel buffet</p><p>🧳 Checkout</p></>)}
-        {card(<><p>Morning & Lunch · <a href="https://www.anyomuseum.com/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">安永心食館</a></p></>)}
-        {card(<><p>🐐 Afternoon · <a href="https://zhangmeiama.weebly.com/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">張美阿嬤農場</a></p><p>Rain option · <a href="https://maps.google.com/?q=宜蘭木育森林" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">宜蘭木育森林</a></p><img src="/ama.png" alt="Zhang Mei Ama Farm" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}
-        {card(<><p>🍽 Dinner · <a href="https://maps.google.com/?q=羅東夜市" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">羅東夜市</a></p><p>🏨 Hotel · 礁溪寒沐酒店</p></>)}
+      <DayArticle date="Thursday, December 10, 2026" title="Yilan 羅東 & 傳藝">
+        {card(<><p>Lunch · <a href="https://maps.google.com/?q=%E9%B4%A8%E5%AF%AE%E6%95%85%E4%BA%8B%E9%A4%A8" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">鴨寮故事館 Duck Shack Museum</a></p><p className="text-white/50">桌菜須先電話預約 03-9504646</p><img src="/yaya.png" alt="Duck Shack Museum" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}
+        {card(<><p>Afternoon · <a href="https://maps.google.com/?q=宜蘭傳統藝術園區" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">宜蘭傳統藝術園區</a></p><p>Stay · <a href="https://yilan-arts.lakeshore.com.tw/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">煙波花時間 宜蘭傳藝</a></p><p>Optional · <a href="https://maps.google.com/?q=羅東夜市" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">羅東夜市</a></p></>)}
       </DayArticle>
 
-      <DayArticle date="Friday, December 11, 2026" title="Yilan North 礁溪">
-        {card(<><p>🍳 Breakfast · Hotel buffet</p><ul className="ml-5 list-disc text-white/65"><li><a href="https://maps.google.com/?q=龍潭湖風景區" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">龍潭湖風景區</a></li><li>大碗公溜滑梯</li><li>Herbelle Tea 湖畔茶屋</li><li>環湖步道</li><li>觀眺望平台步道</li><li>龍潭湖畔悠活園區</li><li>Optional · 潭酵天地</li></ul><img src="/long.png" alt="Longtan Lake" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}
-        {card(<><p>Rain option · <a href="https://maps.google.com/?q=九號溫泉魚釣蝦池" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">九號溫泉魚釣蝦池</a> / <a href="https://maps.google.com/?q=金車生物科技水產養殖研發中心" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">金車生物科技水產養殖研發中心</a></p><p>Late Afternoon · Enjoy hotel facilities</p><p>🍽 Dinner · Hotel restaurant</p><p>🏨 Hotel · 礁溪寒沐酒店</p></>)}
+      <DayArticle date="Friday, December 11, 2026" title="Yilan 南方澳 & 蠟筆城堡">
+        {card(<><ul className="ml-5 list-disc space-y-2 text-white/70"><li>天氣好的話 · 南方澳觀景台</li><li>Lunch · <a href="https://www.anyomuseum.com/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">安永心食館</a></li><li>Afternoon · <a href="https://luckyart.com.tw/art/guide" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">蠟藝蠟筆城堡</a></li><li>Optional · 赫蒂法莊園 / 虎牌米粉觀光工廠</li><li>晚間宜蘭傳統藝術園區節目</li></ul><img src="/crayon.png" alt="Crayon Castle" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}
+        {card(<><p>Stay · <a href="https://yilan-arts.lakeshore.com.tw/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">煙波花時間 宜蘭傳藝</a></p></>)}
       </DayArticle>
 
-      <DayArticle date="Saturday, December 12, 2026" title="Yilan 頭城 → Taipei 內湖">
-        {card(<><p>🍳 Breakfast · Hotel buffet</p><p>🧳 Checkout</p><p>Morning · <a href="https://maps.google.com/?q=二龍之心親子公園" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">二龍之心親子公園</a> or ♨️ <a href="https://maps.google.com/?q=礁溪溫泉公園" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">礁溪溫泉公園</a></p><img src="/yilannorth.png" alt="Yilan North Morning" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}
-        {card(<><p>Lunch & Afternoon · <a href="https://maps.google.com/?q=頭城老街" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">頭城老街</a></p><img src="/tou.png" alt="Toucheng Old Street" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /><p>🚗 頭城 → 內湖 · 約 50 分鐘車程</p><p>🏨 Hotel · 內湖區</p></>)}
+      <DayArticle date="Saturday, December 12, 2026" title="Yilan Farm & Longtan Lake">
+        {card(<><p>Morning · <a href="https://zhangmeiama.weebly.com/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">張美阿嬤農場</a></p><p>Optional · 蔥寶寶體驗農場</p><img src="/ama.png" alt="Zhang Mei Ama Farm" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}
+        {card(<><p>Afternoon · <a href="https://maps.google.com/?q=%E9%BE%8D%E6%BD%AD%E6%B9%96%E9%A2%A8%E6%99%AF%E5%8D%80" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">龍潭湖風景區</a></p><ul className="ml-5 list-disc text-white/65"><li>大碗公溜滑梯</li><li>Herbelle Tea 湖畔茶屋</li><li>環湖步道</li><li>觀眺望平台步道</li><li>龍潭湖畔悠活園區</li><li>Optional · 潭酵天地</li></ul><img src="/long.png" alt="Longtan Lake" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}
+        {card(<><p>Evening · Back to Taipei</p></>)}
       </DayArticle>
     </>
   );
