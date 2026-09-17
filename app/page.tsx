@@ -71,7 +71,7 @@ type PackingChecklist = {
 type Person = [string, string];
 type DashboardSegment = { label: string; page: PageName; color: string; disabled?: boolean };
 type SignupTripKey = "morocco" | "vietnam" | "skiMyoko" | "skiDeerValley" | "skiBig3" | "panama" | "houston" | "azoresPortugal" | "similanThailand" | "centralVietnam" | "mexicoPlaya" | "taiwanApril" | "hawaii" | "alaskaCruise" | "disneyWorld" | "fiveStans";
-type TripStatus = "Planning" | "Booking" | "Confirmed" | "Dreaming";
+type TripStatus = "Planning" | "Booking" | "Confirmed" | "Dreaming" | "Archived";
 type RentalCarArrangement = {
   id: string;
   carName: string;
@@ -191,6 +191,7 @@ function TripButton({
     Booking: "border-[#FFD76A]/35 bg-[#FFD76A]/10 text-[#FFD76A]",
     Confirmed: "border-[#72E49A]/35 bg-[#72E49A]/10 text-[#72E49A]",
     Dreaming: "border-[#FF8FC7]/35 bg-[#FF8FC7]/10 text-[#FF8FC7]",
+    Archived: "border-white/35 bg-white/10 text-white",
   };
   const dateLine = formatTripDateLine(date, duration);
 
@@ -3071,7 +3072,6 @@ export default function TravelSite() {
                   </>
                   </h1>
                   <div className="space-y-3">
-                    <TripButton location="Morocco" date="Sept 4 - Sept 16 2026" status="Confirmed" onClick={() => openTripPage("morocco")} />
                     <TripButton location="Vietnam" date="Nov 12 - Nov 21 2026" status="Confirmed" onClick={() => openTripPage("vietnam")} />
                     <TripButton location="Taiwan" date="Nov 21 - Dec 21 2026" status="Confirmed" onClick={() => openTripPage("taiwan")} />
                     <TripButton location="Okinawa Japan" date="Nov 25 - Dec 6 2026" status="Confirmed" onClick={() => openTripPage("okinawaJapan")} />
@@ -3127,9 +3127,7 @@ export default function TravelSite() {
                       </>
                     )}
                     {mainPageView === "archive" && (
-                      <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-5 text-center text-sm text-white/40">
-                        Completed trips will be added here.
-                      </div>
+                      <TripButton location="Morocco" date="Sept 4 - Sept 16 2026" status="Archived" onClick={() => openTripPage("morocco")} />
                     )}
                   </div>
                 </section>

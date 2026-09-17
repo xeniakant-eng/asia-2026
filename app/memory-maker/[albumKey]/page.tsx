@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useCallback, useEffect, useRef, useState } from "react";
+import { use, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 type MemoryMakerFile = {
@@ -30,6 +30,7 @@ export default function MemoryMakerAlbumPage({ params }: { params: Promise<{ alb
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [isBulkWorking, setIsBulkWorking] = useState(false);
   const [activePhotoIndex, setActivePhotoIndex] = useState<number | null>(null);
+  const [uploaderFilter, setUploaderFilter] = useState("all");
   const [message, setMessage] = useState("");
   const touchStartX = useRef<number | null>(null);
 
@@ -53,13 +54,24 @@ export default function MemoryMakerAlbumPage({ params }: { params: Promise<{ alb
     loadFiles();
   }, [loadFiles]);
 
+  const uploaderOptions = useMemo(
+    () => Array.from(new Set(files.map((file) => file.uploader.trim()).filter(Boolean))).sort((a, b) => a.localeCompare(b)),
+    [files]
+  );
+  const visibleFiles = useMemo(
+    () => albumKey === "moroccoSeptember" && uploaderFilter !== "all"
+      ? files.filter((file) => file.uploader === uploaderFilter)
+      : files,
+    [albumKey, files, uploaderFilter]
+  );
+
   const showPreviousPhoto = useCallback(() => {
-    setActivePhotoIndex((current) => current === null ? null : (current - 1 + files.length) % files.length);
-  }, [files.length]);
+    setActivePhotoIndex((current) => current === null ? null : (current - 1 + visibleFiles.length) % visibleFiles.length);
+  }, [visibleFiles.length]);
 
   const showNextPhoto = useCallback(() => {
-    setActivePhotoIndex((current) => current === null ? null : (current + 1) % files.length);
-  }, [files.length]);
+    setActivePhotoIndex((current) => current === null ? null : (current + 1) % visibleFiles.length);
+  }, [visibleFiles.length]);
 
   useEffect(() => {
     if (activePhotoIndex === null) return;
@@ -73,7 +85,7 @@ export default function MemoryMakerAlbumPage({ params }: { params: Promise<{ alb
   }, [activePhotoIndex, showNextPhoto, showPreviousPhoto]);
 
   const albumName = ALBUM_NAMES[albumKey] || "Trip";
-  const activePhoto = activePhotoIndex === null ? null : files[activePhotoIndex];
+  const activePhoto = activePhotoIndex === null ? null : visibleFiles[activePhotoIndex];
   const deletePhotos = async (ids: string[]) => {
     if (isReadOnlyGuest) {
       setMessage("Guest access is view-only.");
@@ -171,7 +183,24 @@ export default function MemoryMakerAlbumPage({ params }: { params: Promise<{ alb
 
         {!isLoading && files.length > 0 && (
           <div className="mb-5 flex flex-wrap items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-3">
-            <label className={`flex items-center gap-2 px-2 text-xs uppercase tracking-[0.14em] ${isReadOnlyGuest ? "cursor-not-allowed text-white/25" : "cursor-pointer text-white/55"}`}><input type="checkbox" disabled={isReadOnlyGuest} checked={!isReadOnlyGuest && selectedIds.length === files.length} onChange={(event) => setSelectedIds(event.target.checked ? files.map((file) => file.id) : [])} className="h-4 w-4 accent-[#72E49A] disabled:cursor-not-allowed disabled:opacity-30" />Select all</label>
+            {albumKey === "moroccoSeptember" && (
+              <label className="flex items-center gap-2 px-2 text-xs uppercase tracking-[0.14em] text-white/55">
+                <span>Uploaded by</span>
+                <select
+                  value={uploaderFilter}
+                  onChange={(event) => {
+                    setUploaderFilter(event.target.value);
+                    setSelectedIds([]);
+                    setActivePhotoIndex(null);
+                  }}
+                  className="max-w-[14rem] rounded-full border border-white/20 bg-black px-3 py-2 text-xs normal-case tracking-normal text-white/75 outline-none transition focus:border-[#72E49A]/70"
+                >
+                  <option value="all">Everyone</option>
+                  {uploaderOptions.map((uploader) => <option key={uploader} value={uploader}>{uploader}</option>)}
+                </select>
+              </label>
+            )}
+            <label className={`flex items-center gap-2 px-2 text-xs uppercase tracking-[0.14em] ${isReadOnlyGuest ? "cursor-not-allowed text-white/25" : "cursor-pointer text-white/55"}`}><input type="checkbox" disabled={isReadOnlyGuest} checked={!isReadOnlyGuest && visibleFiles.length > 0 && visibleFiles.every((file) => selectedIds.includes(file.id))} onChange={(event) => setSelectedIds(event.target.checked ? visibleFiles.map((file) => file.id) : [])} className="h-4 w-4 accent-[#72E49A] disabled:cursor-not-allowed disabled:opacity-30" />Select all</label>
             <span className="text-xs text-white/35">{isReadOnlyGuest ? "View only" : `${selectedIds.length} selected`}</span>
             <div className="ml-auto flex gap-2">
               <button type="button" onClick={downloadSelectedPhotos} disabled={isReadOnlyGuest || !selectedIds.length || isBulkWorking} className="rounded-full border border-white/20 px-4 py-2 text-xs uppercase tracking-[0.14em] text-white/65 transition hover:border-white/40 disabled:cursor-not-allowed disabled:opacity-30">Save / Download</button>
@@ -180,10 +209,12 @@ export default function MemoryMakerAlbumPage({ params }: { params: Promise<{ alb
           </div>
         )}
 
+        {!isLoading && files.length > 0 && !visibleFiles.length && <p className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-8 text-center text-sm text-white/40">No memories found for this uploader.</p>}
+
         <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
-          {files.map((file) => (
+          {visibleFiles.map((file) => (
             <figure key={file.id} className={`relative overflow-hidden rounded-2xl border bg-white/[0.03] ${selectedIds.includes(file.id) ? "border-[#72E49A]/70" : "border-white/10"}`}>
-              <button type="button" onClick={() => setActivePhotoIndex(files.findIndex((candidate) => candidate.id === file.id))} className="block w-full"><img src={file.mediaUrl} alt={file.fileName} loading="lazy" className="aspect-square w-full object-cover transition hover:opacity-85" /></button>
+              <button type="button" onClick={() => setActivePhotoIndex(visibleFiles.findIndex((candidate) => candidate.id === file.id))} className="block w-full"><img src={file.mediaUrl} alt={file.fileName} loading="lazy" className="aspect-square w-full object-cover transition hover:opacity-85" /></button>
               <figcaption className="p-3">
                 <div className="flex items-center justify-between gap-3">
                   <p className="min-w-0 truncate text-[10px] text-white/35">{file.uploader}</p>
@@ -195,14 +226,14 @@ export default function MemoryMakerAlbumPage({ params }: { params: Promise<{ alb
         </div>
       </div>
       {activePhoto && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-3 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label={`Photo ${activePhotoIndex! + 1} of ${files.length}`}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-3 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label={`Photo ${activePhotoIndex! + 1} of ${visibleFiles.length}`}>
           <button type="button" onClick={() => setActivePhotoIndex(null)} aria-label="Close photo viewer" title="Close" className="absolute right-4 top-4 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black/50 text-2xl text-white/75 transition hover:border-white/45 hover:text-white">×</button>
-          {files.length > 1 && <button type="button" onClick={showPreviousPhoto} aria-label="Previous photo" title="Previous photo" className="absolute left-3 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/50 text-3xl text-white/75 transition hover:border-white/45 hover:text-white md:left-6">‹</button>}
+          {visibleFiles.length > 1 && <button type="button" onClick={showPreviousPhoto} aria-label="Previous photo" title="Previous photo" className="absolute left-3 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/50 text-3xl text-white/75 transition hover:border-white/45 hover:text-white md:left-6">‹</button>}
           <div className="flex h-full w-full flex-col items-center justify-center gap-4" onTouchStart={(event) => { touchStartX.current = event.touches[0]?.clientX ?? null; }} onTouchEnd={(event) => { if (touchStartX.current === null) return; const distance = event.changedTouches[0].clientX - touchStartX.current; if (Math.abs(distance) > 50) { if (distance > 0) showPreviousPhoto(); else showNextPhoto(); } touchStartX.current = null; }}>
             <img src={activePhoto.mediaUrl} alt={activePhoto.fileName} className="max-h-[84vh] max-w-full object-contain" />
-            <p className="text-xs uppercase tracking-[0.2em] text-white/45">{activePhotoIndex! + 1} / {files.length} · {activePhoto.uploader}</p>
+            <p className="text-xs uppercase tracking-[0.2em] text-white/45">{activePhotoIndex! + 1} / {visibleFiles.length} · {activePhoto.uploader}</p>
           </div>
-          {files.length > 1 && <button type="button" onClick={showNextPhoto} aria-label="Next photo" title="Next photo" className="absolute right-3 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/50 text-3xl text-white/75 transition hover:border-white/45 hover:text-white md:right-6">›</button>}
+          {visibleFiles.length > 1 && <button type="button" onClick={showNextPhoto} aria-label="Next photo" title="Next photo" className="absolute right-3 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/50 text-3xl text-white/75 transition hover:border-white/45 hover:text-white md:right-6">›</button>}
         </div>
       )}
     </main>
