@@ -1092,10 +1092,10 @@ export default function TravelSite() {
             "Nov 13 Hanoi city sights: TBD.",
             "Nov 16 Ninh Binh activities: TBD.",
             "Nov 18 Ho Chi Minh City sights: TBD.",
-            "Nov 19 Ben Tre Mekong Tour: $42.10 x 2 adults + $31.58 x 1 child + $0 x 1 child = $115.78 CAD.",
-            "Nov 20 Cu Chi Tunnels tour: $28 x 2 adults + $22 x 2 kids = $100 CAD.",
+            "Nov 19 Mekong Delta Small Group Tour: $118.06 CAD.",
+            "Nov 20 Cu Chi Tunnels tour: $130.10 CAD.",
           ],
-          amountCad: 215.78,
+          amountCad: 248.16,
         },
         {
           category: "Transfers",
@@ -1137,10 +1137,10 @@ export default function TravelSite() {
             "Nov 13 Hanoi city sights: TBD.",
             "Nov 16 Ninh Binh activities: TBD.",
             "Nov 18 Ho Chi Minh City sights: TBD.",
-            "Nov 19 Ben Tre Mekong Tour: $42.10 x 2 adults + $0 x 1 child = $84.20 CAD.",
-            "Nov 20 Cu Chi Tunnels tour: $28 x 2 adults + $22 x 1 kid = $78 CAD.",
+            "Nov 19 Mekong Delta Small Group Tour: $85 CAD.",
+            "Nov 20 Cu Chi Tunnels tour: $100 CAD.",
           ],
-          amountCad: 162.20,
+          amountCad: 185.00,
         },
         {
           category: "Transfers",
@@ -1769,7 +1769,7 @@ export default function TravelSite() {
       "Steven Wang": ["nahaearly", "onna", "nago", "nanjo"],
       "Mark Wang": ["xiaoliuqiu", "nahaearly", "onna"],
       "Mei & Emilia (8)": ["nago", "nanjo", "naha"],
-      "Mei & Emilia (8) & ChaoMa": ["northeasttaipei", "yilan"],
+      "Mei & Emilia (8) & ChaoMa": ["northeasttaipei", "yilan", "taiwanlate"],
       "Dave & Christina & Xixi (2)": ["northeasttaipei", "yilan", "taipei", "taiwanlate", "onna", "nago", "nanjo", "naha"],
       "Julie & Adrian & Ethan (4) & Tyrell (1)": ["taipei"],
     };
@@ -4414,7 +4414,7 @@ export default function TravelSite() {
                 {guestName === "Anthony & Christine & Mona (1)" && <CountrySegmentButtons segments={[{ label: "Nov 20–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Jenn & Hiroshi & Masashi (6) & Miyari (3)" && <CountrySegmentButtons segments={[{ label: "Nov 21–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Mei & Emilia (8)" && <CountrySegmentButtons segments={[{ label: "Nov 29–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
-                {guestName === "Mei & Emilia (8) & ChaoMa" && <CountrySegmentButtons segments={[{ label: "Dec 7–8 · NorthEast Taipei", page: "northeasttaipei", color: TAIWAN_GOLD }, { label: "Dec 9–12 · Yilan", page: "yilan", color: "#72E49A" }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
+                {guestName === "Mei & Emilia (8) & ChaoMa" && <CountrySegmentButtons segments={[{ label: "Dec 7–8 · NorthEast Taipei", page: "northeasttaipei", color: TAIWAN_GOLD }, { label: "Dec 9–12 · Yilan", page: "yilan", color: "#72E49A" }, { label: "Dec 19–25 · Somewhere in Taiwan", page: "taiwanlate", color: TAIWAN_GOLD }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Steven Wang" && <CountrySegmentButtons segments={[{ label: "Nov 25–27 · Naha + Okinawa World", page: "nahaearly", color: BABY_BLUE }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–3 · Nanjo", page: "nanjo", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Dave & Christina & Xixi (2)" && <CountrySegmentButtons segments={[{ label: "Dec 7–8 · NorthEast Taipei", page: "northeasttaipei", color: TAIWAN_GOLD }, { label: "Dec 9–12 · Yilan", page: "yilan", color: "#72E49A" }, { label: "Dec 13–17 · Central Taipei", page: "taipei", color: TAIWAN_GOLD }, { label: "Dec 19–25 · Somewhere in Taiwan", page: "taiwanlate", color: TAIWAN_GOLD }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Heather & Jack & Aizen (8) & Kaien (3) & Norma" && <CountrySegmentButtons segments={[{ label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
@@ -4486,7 +4486,7 @@ export default function TravelSite() {
     checklist: [],
     northeasttaipei: [["Xenia & David & Naomi (3)", "Dec 7 – Dec 8 · NorthEast Taipei"], ["Dave & Christina & Xixi (2)", "Dec 7 – Dec 8 · NorthEast Taipei"], ["Mei & Emilia (8) & ChaoMa", "Dec 7 – Dec 8 · NorthEast Taipei"]],
     taipei: [["Xenia & David & Naomi (3)", "Dec 13 – Dec 17 · Central Taipei"], ["Dave & Christina & Xixi (2)", "Dec 13 – Dec 17 · Central Taipei"], ["Julie & Adrian & Ethan (4) & Tyrell (1)", "Dec 14 – Dec 17 · Central Taipei"]],
-    taiwanlate: [["Xenia & David & Naomi (3)", "Dec 19 – Dec 25 · Somewhere in Taiwan"], ["Dave & Christina & Xixi (2)", "Dec 19 – Dec 25 · Somewhere in Taiwan"]],
+    taiwanlate: [["Xenia & David & Naomi (3)", "Dec 19 – Dec 25 · Somewhere in Taiwan"], ["Dave & Christina & Xixi (2)", "Dec 19 – Dec 25 · Somewhere in Taiwan"], ["Mei & Emilia (8) & ChaoMa", "Dec 19 – Dec 25 · Somewhere in Taiwan"]],
     yilan: [["Xenia & David & Naomi (3)", "Dec 9 – Dec 12 · Yilan"], ["Mei & Emilia (8) & ChaoMa", "Dec 9 – Dec 12 · Yilan"], ["Dave & Christina & Xixi (2)", "Dec 9 – Dec 12 · Yilan"]],
     xiaoliuqiu: [["Anthony & Christine & Mona (1)", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Mark Wang", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Jim", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Xenia & David & Naomi (3)", "Nov 21 – Nov 23 · Xiaoliuqiu"], ["Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Nov 21 – Nov 23 · Xiaoliuqiu"]],
     onna: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 27 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 3 · Okinawa"], ["Mark Wang", "Nov 25 – Nov 30 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Jack & Aizen (8) & Kaien (3) & Norma", "Nov 26 – Dec 4 · Okinawa"]],
@@ -4707,7 +4707,7 @@ export default function TravelSite() {
   if (page === "nanjo") return renderChapter("nanjo", "Okinawa · Nanjo", "Southern Okinawa Chapter", "Okinawa Japan", "December", "2 Nights", <><a href="https://www.yuinchi.jp/heal/hot-spring/" target="_blank" rel="noopener noreferrer" className="mt-1 block text-sm font-medium hover:underline" style={{ color: BABY_BLUE }}>Yuinchi Hotel Nanjo</a><p className="mt-1 text-[9px] text-gray-500">Apeman Spa Natural Hot Spring</p></>, "japan", BABY_BLUE, <NanjoContent card={card} />);
   if (page === "naha") return renderChapter("naha", "Okinawa · Naha", "Final Naha Chapter", "Okinawa Japan", "December", "2 Nights", <a href="https://maps.google.com/?q=Hotel+Grand+Consort+Naha" target="_blank" rel="noopener noreferrer" className="mt-1 block text-sm font-medium hover:underline" style={{ color: BABY_BLUE }}>Hotel Grand Consort Naha</a>, "japan", BABY_BLUE, <NahaContent card={card} />);
   if (page === "nahaearly") return renderChapter("nahaearly", "Okinawa · Naha", "Naha + Okinawa World Chapter", "Okinawa Japan", "November", "2 Nights", <p className="mt-1 text-sm font-medium" style={{ color: BABY_BLUE }}>Hotel Strata Naha</p>, "japan", BABY_BLUE, <NahaEarlyContent card={card} linkedImage={linkedImage} />);
-  if (page === "yilan") return renderChapter("yilan", "Dec 9 - Dec 12", "Yilan Family Chapter", "Taiwan December", "December", "3 Nights", <><p className="mt-1 text-sm font-medium" style={{ color: TAIWAN_GOLD }}>礁溪麒麟酒店 (1)</p><p className="mt-1 text-sm font-medium" style={{ color: TAIWAN_GOLD }}>煙波花時間 宜蘭傳藝 (2)</p></>, "taiwan", TAIWAN_GOLD, <YilanContent card={card} />);
+  if (page === "yilan") return renderChapter("yilan", "Dec 9 - Dec 12", "Yilan Family Chapter", "Taiwan December", "December", "3 Nights", <><p className="mt-1 text-sm font-medium" style={{ color: TAIWAN_GOLD }}>冠翔泉旅 (1)</p><p className="mt-1 text-sm font-medium" style={{ color: TAIWAN_GOLD }}>煙波花時間 宜蘭傳藝 (2)</p></>, "taiwan", TAIWAN_GOLD, <YilanContent card={card} />);
 
   const isTaiwanMap = selectedTrip === "taiwan";
   const allMapLocations: TimelineItem[] = isTaiwanMap
@@ -4842,7 +4842,7 @@ function RentalCarPlanner({ date, dateLabel }: { date: string; dateLabel: string
   );
 }
 
-function DayArticle({ date, title, rentalCarDate, children }: { date: string; title: string; rentalCarDate?: string; children: React.ReactNode }) {
+function DayArticle({ date, title, rentalCarDate, children }: { date: string; title: React.ReactNode; rentalCarDate?: string; children: React.ReactNode }) {
   return <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md"><div className="mb-5 flex items-start justify-between gap-4"><div><p className="mb-2 text-sm text-[var(--chapter-accent)]">{date}</p><h2 className="text-2xl font-light">{title}</h2></div>{rentalCarDate && <RentalCarPlanner date={rentalCarDate} dateLabel={date} />}</div><div className="space-y-4 text-sm leading-7 text-white/75">{children}</div></article>;
 }
 
@@ -5156,26 +5156,34 @@ function NagoContent({ card, linkedImage }: { card: (children: React.ReactNode) 
 function YilanContent({ card }: { card: (children: React.ReactNode) => React.ReactNode }) {
   return (
     <>
-      <DayArticle date="Wednesday, December 9, 2026" title="Taipei → Yilan 礁溪">
-        {card(<><ul className="ml-5 list-disc space-y-2 text-white/70"><li>9:00 AM 台北出發前往宜蘭</li><li>Lunch at <a href="https://www.dawen.com.tw/dawen/index.php" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">大塭休閒農場</a></li><li>Rain option · <a href="https://maps.google.com/?q=樂色山積木王國" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">樂色山積木王國</a></li></ul><img src="/fish.png" alt="大塭休閒農場" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}
-        {card(<><p><a href="https://maps.google.com/?q=%E4%BA%8C%E9%BE%8D%E4%B9%8B%E5%BF%83%E8%A6%AA%E5%AD%90%E5%85%AC%E5%9C%92" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">二龍之心親子公園</a> or <a href="https://maps.google.com/?q=%E7%A4%81%E6%BA%AA%E6%BA%AB%E6%B3%89%E5%85%AC%E5%9C%92" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">礁溪溫泉公園</a></p><img src="/yilannorth.png" alt="Yilan family afternoon options" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}
-        {card(<><p>4:00 PM check in · <a href="https://maps.google.com/?q=礁溪麒麟酒店" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">礁溪麒麟酒店</a></p></>)}
+      <DayArticle date="Wednesday, December 9, 2026" title="台北 → 礁溪">
+        {card(<><ul className="ml-5 list-disc space-y-2 text-white/70"><li>8:00 AM · 南港轉運站集合</li><li>8:20 AM · 搭乘國光客運 1881A，從南港轉運站西站直達礁溪轉運站，車程約 60 分鐘</li><li>9:30 AM · 從礁溪轉運站步行約 5 分鐘至 <a href="https://www.crownshine.com.tw/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">冠翔泉旅</a> 寄放行李</li><li>10:00 AM · 搭乘計程車約 6 分鐘，開始 <a href="https://www.dawen.com.tw/dawen/index.php" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">大塭休閒農場</a> 一日遊活動</li></ul><img src="/fish.png" alt="大塭休閒農場" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}
+        {card(<><p>4:00 PM · 活動結束後回飯店整頓，再步行前往 <a href="https://maps.google.com/?q=%E7%A4%81%E6%BA%AA%E6%BA%AB%E6%B3%89%E5%85%AC%E5%9C%92" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">礁溪溫泉公園</a>，或搭乘計程車約 5 分鐘至 <a href="https://maps.google.com/?q=%E4%BA%8C%E9%BE%8D%E4%B9%8B%E5%BF%83%E8%A6%AA%E5%AD%90%E5%85%AC%E5%9C%92" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">二龍之心親子公園</a>。</p><p className="mt-2 text-white/70">Rain option · <a href="https://maps.google.com/?q=樂色山積木王國" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">樂色山積木王國</a></p><img src="/yilannorth.png" alt="Yilan family afternoon options" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}
+        {card(<><p>Dinner · TBD</p></>)}
+        {card(<><p>Stay · <a href="https://www.crownshine.com.tw/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">冠翔泉旅</a></p></>)}
       </DayArticle>
 
-      <DayArticle date="Thursday, December 10, 2026" title="Yilan 羅東 & 傳藝">
-        {card(<><p>Lunch · <a href="https://maps.google.com/?q=%E9%B4%A8%E5%AF%AE%E6%95%85%E4%BA%8B%E9%A4%A8" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">鴨寮故事館 Duck Shack Museum</a></p><p className="text-white/50">桌菜須先電話預約 03-9504646</p><img src="/yaya.png" alt="Duck Shack Museum" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}
-        {card(<><p>Afternoon · <a href="https://maps.google.com/?q=宜蘭傳統藝術園區" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">宜蘭傳統藝術園區</a></p><p>Stay · <a href="https://yilan-arts.lakeshore.com.tw/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">煙波花時間 宜蘭傳藝</a></p><p>Optional · <a href="https://maps.google.com/?q=羅東夜市" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">羅東夜市</a></p></>)}
+      <DayArticle date="Thursday, December 10, 2026" title="宜蘭 & 羅東（包車）">
+        {card(<><p>Breakfast · <strong>冠翔泉旅</strong> Hotel Buffet</p><p className="mt-2 text-white/70">7:30 AM–1:30 PM · 退房以後還可以繼續使用酒店設施喔！</p></>)}
+        {card(<><p>11:00 AM–1:00 PM · <a href="https://maps.google.com/?q=宜蘭幾米廣場" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">宜蘭幾米廣場</a></p></>)}
+        {card(<><p>1:00–2:00 PM · 天氣好的話 · 南方澳觀景台</p></>)}
+        {card(<><p>2:00–5:00 PM · <a href="https://luckyart.com.tw/art/guide" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">蠟藝蠟筆城堡</a></p><img src="/crayon.png" alt="Crayon Castle" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}
+        {card(<><p>5:00 PM · <a href="https://maps.google.com/?q=宜蘭傳統藝術園區" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">宜蘭傳統藝術園區</a> · Check in <a href="https://yilan-arts.lakeshore.com.tw/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">煙波花時間 宜蘭傳藝</a></p><p className="mt-2">Optional · <a href="https://maps.google.com/?q=羅東夜市" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">羅東夜市</a></p></>)}
       </DayArticle>
 
-      <DayArticle date="Friday, December 11, 2026" title="Yilan 南方澳 & 蠟筆城堡">
-        {card(<><ul className="ml-5 list-disc space-y-2 text-white/70"><li>天氣好的話 · 南方澳觀景台</li><li>Lunch · <a href="https://www.anyomuseum.com/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">安永心食館</a></li><li>Afternoon · <a href="https://luckyart.com.tw/art/guide" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">蠟藝蠟筆城堡</a></li><li>Optional · 赫蒂法莊園 / 虎牌米粉觀光工廠</li><li>晚間宜蘭傳統藝術園區節目</li></ul><img src="/crayon.png" alt="Crayon Castle" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}
+      <DayArticle date="Friday, December 11, 2026" title={<a href="https://maps.google.com/?q=%E5%AE%9C%E8%98%AD%E5%82%B3%E7%B5%B1%E8%97%9D%E8%A1%93%E5%9C%92%E5%8D%80" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--chapter-accent)] hover:underline">宜蘭傳統藝術園區</a>}>
+        {card(<><p>Breakfast · <a href="https://yilan-arts.lakeshore.com.tw/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Hotel Buffet</a></p></>)}
+        {card(<><p>10:00 AM–Lunch · <a href="https://maps.google.com/?q=%E9%B4%A8%E5%AF%AE%E6%95%85%E4%BA%8B%E9%A4%A8" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">鴨寮故事館 Duck Shack Museum</a></p><img src="/yaya.png" alt="Duck Shack Museum" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}
+        {card(<><p>Afternoon · 赫蒂法莊園 / 虎牌米粉觀光工廠（Optional），或返回 <a href="https://maps.google.com/?q=%E5%AE%9C%E8%98%AD%E5%82%B3%E7%B5%B1%E8%97%9D%E8%A1%93%E5%9C%92%E5%8D%80" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">宜蘭傳統藝術園區</a></p></>)}
+        {card(<><p>Evening · 晚間宜蘭傳統藝術園區節目</p><p className="mt-2">Dinner · TBD</p></>)}
         {card(<><p>Stay · <a href="https://yilan-arts.lakeshore.com.tw/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">煙波花時間 宜蘭傳藝</a></p></>)}
       </DayArticle>
 
-      <DayArticle date="Saturday, December 12, 2026" title="Yilan Farm & Longtan Lake">
+      <DayArticle date="Saturday, December 12, 2026" title="農場 & 龍潭湖，回台北">
+        {card(<><p>Daytime transportation · 包車</p></>)}
         {card(<><p>Morning · <a href="https://zhangmeiama.weebly.com/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">張美阿嬤農場</a></p><p>Optional · 蔥寶寶體驗農場</p><img src="/ama.png" alt="Zhang Mei Ama Farm" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}
         {card(<><p>Afternoon · <a href="https://maps.google.com/?q=%E9%BE%8D%E6%BD%AD%E6%B9%96%E9%A2%A8%E6%99%AF%E5%8D%80" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">龍潭湖風景區</a></p><ul className="ml-5 list-disc text-white/65"><li>大碗公溜滑梯</li><li>Herbelle Tea 湖畔茶屋</li><li>環湖步道</li><li>觀眺望平台步道</li><li>龍潭湖畔悠活園區</li><li>Optional · 潭酵天地</li></ul><img src="/long.png" alt="Longtan Lake" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}
-        {card(<><p>Evening · Back to Taipei</p></>)}
+        {card(<><p>Evening · 從宜蘭站搭乘普悠瑪號、太魯閣號或自強號，直達 <a href="https://hk.trip.com/guide/transport/%E5%8F%B0%E5%8C%97%E5%8E%BB%E5%AE%9C%E8%98%AD.html" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">南港車站</a></p></>)}
       </DayArticle>
     </>
   );
