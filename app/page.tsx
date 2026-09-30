@@ -4512,7 +4512,7 @@ export default function TravelSite() {
     </div>
   );
 
-  if (page === "xiaoliuqiu") return renderChapter("xiaoliuqiu", "Nov 20 - Nov 23", "Scuba Dive XLQ", "Taiwan November", "November", "3 Nights", <p className="mt-1 text-sm font-medium" style={{ color: TAIWAN_GOLD }}>小琉球民宿 TBD</p>, "taiwan", TAIWAN_GOLD, <XiaoliuqiuContent card={card} />);
+  if (page === "xiaoliuqiu") return renderChapter("xiaoliuqiu", "Nov 20 - Nov 23", "Scuba Dive XLQ", "Taiwan November", "November", "3 Nights", <p className="mt-1 text-sm font-medium" style={{ color: TAIWAN_GOLD }}><a href="https://0971508028.mystrikingly.com/" target="_blank" rel="noopener noreferrer" className="hover:underline">蔡老師民宿</a></p>, "taiwan", TAIWAN_GOLD, <XiaoliuqiuContent card={card} />);
   const renderTaipeiToursPage = (
     chapter: PageName,
     eyebrow: string,
@@ -4520,7 +4520,7 @@ export default function TravelSite() {
     nights: string,
     stayLabel: string,
     intro: React.ReactNode,
-    days: { date: string; title: string; subtitle: string; details: { zh: string; en: string }[] }[],
+    days: { date: string; title: string; subtitle: string; details: { zh: string; en: string }[]; stay?: { name?: string; occupants?: React.ReactNode[]; address?: string; directions?: string; href?: string } }[],
     people: Person[],
     showQuickTools = true
   ) => {
@@ -4568,6 +4568,15 @@ export default function TravelSite() {
                         </li>
                       ))}
                     </ul>
+                  </>
+                )}
+                {day.stay && card(
+                  <>
+                    <p className="text-[var(--chapter-accent)]">Stay</p>
+                    {day.stay.name && <p className="mt-1 font-medium text-white/80">{day.stay.name}</p>}
+                    {day.stay.occupants && <ul className="mt-2 ml-5 list-disc space-y-2 text-white/70">{day.stay.occupants.map((occupant, index) => <li key={index}>{occupant}</li>)}</ul>}
+                    {day.stay.address && <p className="mt-2 text-white/60">{day.stay.href ? <a href={day.stay.href} target="_blank" rel="noopener noreferrer" className="hover:text-[var(--chapter-accent)] hover:underline">{day.stay.address}</a> : day.stay.address}</p>}
+                    {day.stay.directions && <p className="mt-1 text-xs text-white/45">{day.stay.directions}</p>}
                   </>
                 )}
               </DayArticle>
@@ -4650,16 +4659,29 @@ export default function TravelSite() {
     );
   };
 
+  const northEastTaipeiStay = {
+    occupants: [
+      "Dave & Christina & Xixi · Shangri-La（大安站）",
+      "Mei & Emilia & ChaoMa · 萬豪 Marriott（劍南站）",
+      "Xenia & David & Naomi · 內湖家",
+    ],
+  };
   const northEastTaipeiItineraryDays = [
-    { date: "Monday, December 7, 2026", title: "台北東區", subtitle: "Taipei City East", details: [{ zh: "松山文創園區", en: "Songshan Cultural and Creative Park" }, { zh: "國父紀念館", en: "Sun Yat-sen Memorial Hall" }, { zh: "Taipei 101", en: "Taipei 101" }, { zh: "象山步道", en: "Xiangshan Trail" }] },
-    { date: "Tuesday, December 8, 2026", title: "野柳 & 九份", subtitle: "Yehliu & Jiufen", details: [{ zh: "野柳地質公園", en: "Yehliu Geopark" }, { zh: "金瓜石：黃金瀑布、陰陽海、黃金博物園區", en: "Jinguashi: Gold Falls, Yin Yang Sea, and Gold Museum" }, { zh: "九份老街", en: "Jiufen Old Street" }] },
+    { date: "Monday, December 7, 2026", title: "台北東區", subtitle: "Taipei City East", details: [{ zh: "松山文創園區", en: "Songshan Cultural and Creative Park" }, { zh: "國父紀念館", en: "Sun Yat-sen Memorial Hall" }, { zh: "Taipei 101", en: "Taipei 101" }, { zh: "象山步道", en: "Xiangshan Trail" }], stay: northEastTaipeiStay },
+    { date: "Tuesday, December 8, 2026", title: "野柳 & 九份", subtitle: "Yehliu & Jiufen", details: [{ zh: "野柳地質公園", en: "Yehliu Geopark" }, { zh: "金瓜石：黃金瀑布、陰陽海、黃金博物園區", en: "Jinguashi: Gold Falls, Yin Yang Sea, and Gold Museum" }, { zh: "九份老街", en: "Jiufen Old Street" }], stay: northEastTaipeiStay },
   ];
+  const centralTaipeiStay = {
+    occupants: [
+      <>Dave & Christina & Xixi · 台北 Airbnb</>,
+      <><span>Xenia & David & Naomi & Julie & Adrian & Ethan & Tyrell · <strong className="font-medium text-white/85">雙連 Airbnb</strong></span><a href="https://maps.google.com/?q=%E5%8F%B0%E5%8C%97%E5%B8%82%E5%A4%A7%E5%90%8C%E5%8D%80%E8%B5%A4%E5%B3%B0%E8%A1%9755%E5%B7%B75%E8%99%9F" target="_blank" rel="noopener noreferrer" className="mt-1 block text-white/60 hover:text-[var(--chapter-accent)] hover:underline">台北市大同區赤峰街55巷5號</a><span className="mt-1 block text-xs text-white/45">搭乘捷運至雙連站，從 1 號出口步行前往。</span></>,
+    ],
+  };
   const centralTaipeiItineraryDays = [
-    { date: "Sunday, December 13, 2026", title: "貓空 & 台北市立動物園", subtitle: "Maokong & Taipei Zoo", details: [{ zh: "台北市立動物園", en: "Taipei Zoo" }, { zh: "貓空纜車", en: "Maokong Gondola" }, { zh: "茶館與城市景觀", en: "Tea houses with city views" }] },
-    { date: "Monday, December 14, 2026", title: "台北市西區", subtitle: "Taipei City West", details: [{ zh: "中正紀念堂", en: "Chiang Kai-shek Memorial Hall" }, { zh: "龍山寺", en: "Longshan Temple" }, { zh: "西門町", en: "Ximending" }, { zh: "台北車站", en: "Taipei Main Station" }, { zh: "總統府", en: "Presidential Office Building" }, { zh: "華山文創園區", en: "Huashan 1914 Creative Park" }] },
-    { date: "Tuesday, December 15, 2026", title: "兒童新樂園 & 士林夜市", subtitle: "Children's Amusement Park & Shilin Night Market", details: [{ zh: "台北市兒童新樂園", en: "Taipei Children's Amusement Park" }, { zh: "士林夜市", en: "Shilin Night Market" }] },
-    { date: "Wednesday, December 16, 2026", title: "北投 & 淡水", subtitle: "Beitou & Tamsui", details: [{ zh: "北投溫泉", en: "Beitou Hot Springs" }, { zh: "地熱谷", en: "Thermal Valley" }, { zh: "硫磺谷", en: "Sulfur Valley" }, { zh: "淡水老街", en: "Tamsui Old Street" }, { zh: "漁人碼頭", en: "Fisherman's Wharf" }, { zh: "紅毛城", en: "Fort San Domingo" }] },
-    { date: "Thursday, December 17, 2026", title: "Julie's Party Departure", subtitle: "Taipei Departure", details: [{ zh: "Julie 一行離開台北", en: "Julie's party departs Taipei." }] },
+    { date: "Sunday, December 13, 2026", title: "貓空 & 台北市立動物園", subtitle: "Maokong & Taipei Zoo", details: [{ zh: "台北市立動物園", en: "Taipei Zoo" }, { zh: "貓空纜車", en: "Maokong Gondola" }, { zh: "茶館與城市景觀", en: "Tea houses with city views" }], stay: { occupants: ["Dave & Christina & Xixi · 台北 Airbnb", "Xenia & David & Naomi · 內湖家"] } },
+    { date: "Monday, December 14, 2026", title: "台北市西區", subtitle: "Taipei City West", details: [{ zh: "中正紀念堂", en: "Chiang Kai-shek Memorial Hall" }, { zh: "龍山寺", en: "Longshan Temple" }, { zh: "西門町", en: "Ximending" }, { zh: "台北車站", en: "Taipei Main Station" }, { zh: "總統府", en: "Presidential Office Building" }, { zh: "華山文創園區", en: "Huashan 1914 Creative Park" }], stay: centralTaipeiStay },
+    { date: "Tuesday, December 15, 2026", title: "兒童新樂園 & 士林夜市", subtitle: "Children's Amusement Park & Shilin Night Market", details: [{ zh: "台北市兒童新樂園", en: "Taipei Children's Amusement Park" }, { zh: "士林夜市", en: "Shilin Night Market" }], stay: centralTaipeiStay },
+    { date: "Wednesday, December 16, 2026", title: "北投 & 淡水", subtitle: "Beitou & Tamsui", details: [{ zh: "北投溫泉", en: "Beitou Hot Springs" }, { zh: "地熱谷", en: "Thermal Valley" }, { zh: "硫磺谷", en: "Sulfur Valley" }, { zh: "淡水老街", en: "Tamsui Old Street" }, { zh: "漁人碼頭", en: "Fisherman's Wharf" }, { zh: "紅毛城", en: "Fort San Domingo" }], stay: centralTaipeiStay },
+    { date: "Thursday, December 17, 2026", title: "Julie's Party Departure", subtitle: "Taipei Departure", details: [{ zh: "Julie 一行離開台北", en: "Julie's party departs Taipei." }], stay: { occupants: ["Dave & Christina & Xixi · 台北 Airbnb", "Xenia & David & Naomi · 內湖家"] } },
   ];
   const lateTaiwanItineraryDays = [
     { date: "Saturday, December 19, 2026", title: "Sanrio Train Trip", subtitle: "Day 1", details: [{ zh: "Sanrio 火車之旅", en: "Sanrio Train Trip itinerary details to come." }] },
@@ -4676,7 +4698,7 @@ export default function TravelSite() {
     "Dec 7 & Dec 8",
     "NorthEast Taipei",
     "2 Days",
-    "Taipei day trips",
+    "Shangri-La / Marriott / 內湖家",
     <><span className="block text-white/65">Dec 7–8 NorthEast Taipei plans.</span><span className="mt-1 block">Xenia, Dave, Mei, and ChaoMa are joining this section.</span></>,
     northEastTaipeiItineraryDays,
     chapterPeople.northeasttaipei,
@@ -4687,7 +4709,7 @@ export default function TravelSite() {
     "Dec 13 - Dec 17",
     "Central Taipei",
     guestName === "Julie & Adrian & Ethan (4) & Tyrell (1)" ? "3 Days + Departure" : "4 Days + Departure",
-    "Taipei city base",
+    "台北 Airbnb / 雙連 Airbnb · Dec 14–16",
     null,
     guestName === "Julie & Adrian & Ethan (4) & Tyrell (1)" ? centralTaipeiItineraryDays.slice(1) : centralTaipeiItineraryDays,
     chapterPeople.taipei
@@ -4926,6 +4948,7 @@ function XiaoliuqiuContent({ card }: { card: (children: React.ReactNode) => Reac
             <p className="mt-2 text-white/50">
               高雄左營高鐵站 → 10:30 AM 客運 → 屏客東港總站 → 步行10分鐘東港碼頭 → 吃完中餐 → 13:30 PM <a href="https://www.leucosapphire.com/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">藍白船班</a> → 與Jim碼頭集合
             </p>
+            <p className="mt-2 text-white/70">🛵 Mark & Anthony 租機車各一台</p>
           </>
         )}
         {card(
@@ -4954,6 +4977,7 @@ function XiaoliuqiuContent({ card }: { card: (children: React.ReactNode) => Reac
         {card(
           <>
             <p>⛴ Xenia, David, Naomi, Jenn, Hiroshi, Masashi & Miyari arriving Xiaoliuqiu</p>
+            <p className="mt-2 text-white/70">🛵 Jennifer 租機車一台</p>
             <p className="mt-2 text-sm font-medium text-white/80">Southern Xiaoliuqiu Exploration</p>
             <div className="mt-4 flex flex-col gap-4 md:flex-row">
               <ul className="ml-5 flex-1 list-disc space-y-1 text-white/65">
@@ -5183,7 +5207,7 @@ function YilanContent({ card }: { card: (children: React.ReactNode) => React.Rea
         {card(<><p>Daytime transportation · 包車</p></>)}
         {card(<><p>Morning · <a href="https://zhangmeiama.weebly.com/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">張美阿嬤農場</a></p><p>Optional · 蔥寶寶體驗農場</p><img src="/ama.png" alt="Zhang Mei Ama Farm" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}
         {card(<><p>Afternoon · <a href="https://maps.google.com/?q=%E9%BE%8D%E6%BD%AD%E6%B9%96%E9%A2%A8%E6%99%AF%E5%8D%80" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">龍潭湖風景區</a></p><ul className="ml-5 list-disc text-white/65"><li>大碗公溜滑梯</li><li>Herbelle Tea 湖畔茶屋</li><li>環湖步道</li><li>觀眺望平台步道</li><li>龍潭湖畔悠活園區</li><li>Optional · 潭酵天地</li></ul><img src="/long.png" alt="Longtan Lake" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}
-        {card(<><p>Evening · 從宜蘭站搭乘普悠瑪號、太魯閣號或自強號，直達 <a href="https://hk.trip.com/guide/transport/%E5%8F%B0%E5%8C%97%E5%8E%BB%E5%AE%9C%E8%98%AD.html" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">南港車站</a></p></>)}
+        {card(<><p>Evening · 從宜蘭站搭乘普悠瑪號、太魯閣號或自強號，直達 <a href="https://hk.trip.com/guide/transport/%E5%8F%B0%E5%8C%97%E5%8E%BB%E5%AE%9C%E8%98%AD.html" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">南港車站</a></p><ul className="mt-3 ml-5 list-disc space-y-2 text-white/65"><li>Mei & Emilia & ChaoMa · 南港高鐵回台中</li><li>Dave & Christina & Xixi · 南港捷運回台北 Airbnb</li><li>Xenia & David & Naomi · 南港捷運回內湖家</li></ul></>)}
       </DayArticle>
     </>
   );
