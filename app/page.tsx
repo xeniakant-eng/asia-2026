@@ -917,6 +917,7 @@ export default function TravelSite() {
         "11:00 AM: Disembark the Mila Grand Cruise.",
         "Noon: Pre-arranged van transfer from Tuan Chau Marina to Ninh Binh Xuan Son Lakeside Bungalow (3 hr ride).",
         "Evening: Check in, relax, dinner on site.",
+        "Evening reminder: Ask the hotel to arrange transport to Hanoi Airport for the morning of Nov 17.",
         "Optional: Mua Cave / Hang Mua viewpoint, about 5 km from the hotel, if adults want the climb and the kids still have energy.",
       ],
       itemImages: {
@@ -930,13 +931,13 @@ export default function TravelSite() {
       location: "Ninh Binh",
       title: "Grottoes & Mountains & Architectures",
       items: [
-        "8:30 AM: Pickup to Trang An boat ride.",
+        "8:30 AM: Make our way to the Trang An boat ride terminal.",
         "Afternoon 1: Hoa Lu Ancient Citadel.",
         "Afternoon 2: Bich Dong Pagoda.",
         "Optional: Thung Nham Ecotourism Zone.",
       ],
       itemImages: {
-        "8:30 AM: Pickup to Trang An boat ride.": { src: "/trangan.png", alt: "Trang An boat ride in Ninh Binh" },
+        "8:30 AM: Make our way to the Trang An boat ride terminal.": { src: "/trangan.png", alt: "Trang An boat ride in Ninh Binh" },
       },
       stay: "Xuan Son Lakeside Bungalow",
     },
@@ -945,8 +946,9 @@ export default function TravelSite() {
       location: "Ho Chi Minh City",
       title: "North to South",
       items: [
-        "8:00 AM: Depart from Ninh Binh to Hanoi Airport (2.5 hr ride).",
+        "8:00 AM: Depart from Ninh Binh to Hanoi Airport by hotel-prearranged transport (2.5 hr ride). Ask the hotel to arrange this transfer in advance.",
         "VietJet VJ157 nonstop flight Hanoi (HAN) to Ho Chi Minh City (SGN), 12:55 PM-3:05 PM, 2 hr 10 min. Fare shown: CA$84.",
+        "After arrival: Take Grab from Ho Chi Minh City Airport to the Airbnb (about 25-30 min, approximately US$10 per car).",
         "Stroll along Saigon Central Park.",
         "Eat at Pho Viet Nam.",
         "Visit Cho Ben Thanh Market.",
@@ -1950,7 +1952,7 @@ export default function TravelSite() {
     };
 
     return (
-      <div className="mb-10 flex items-start justify-between gap-4">
+      <div className="sticky top-2 z-40 -mx-3 mb-10 flex items-start justify-between gap-4 rounded-2xl border border-white/10 bg-black/80 p-3 shadow-xl backdrop-blur-xl">
         <div className="flex flex-col items-start gap-3">
           {current !== "checklist" && selectedTrip !== "taiwan" && selectedTrip !== "xiaoliuqiuTaiwan" && <button type="button" onClick={() => openTripView("map")} className="rounded-full border border-white/30 px-4 py-2 text-sm text-white/80 transition hover:border-white hover:text-white">← Back to Map Itinerary</button>}
           {guestName && guestName !== "I am just a random Guest" && (
@@ -2714,7 +2716,7 @@ export default function TravelSite() {
     const moroccoLocalTime = new Intl.DateTimeFormat("en-US", { timeZone: "Africa/Casablanca", hour: "numeric", minute: "2-digit", second: "2-digit", hour12: true }).format(now);
     return (
       <div className="min-h-screen bg-black px-6 py-10 text-white" style={{ "--chapter-accent": MOROCCO_BROWN } as React.CSSProperties}>
-        <header className="mx-auto mb-10 flex max-w-5xl flex-wrap items-center justify-between gap-3">
+        <header className="sticky top-2 z-40 mx-auto mb-10 flex max-w-5xl flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-black/80 px-3 py-3 shadow-xl backdrop-blur-xl">
           <button type="button" onClick={() => openTripDashboard(guestName || "Guest")} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white">← Back to Dashboard</button>
           <button type="button" onClick={goToMainPage} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white">Main Page</button>
         </header>
@@ -2815,7 +2817,7 @@ export default function TravelSite() {
     const alaskaLocalTime = new Intl.DateTimeFormat("en-US", { timeZone: "America/Anchorage", hour: "numeric", minute: "2-digit", second: "2-digit", hour12: true }).format(now);
     return (
       <div className="min-h-screen bg-black px-6 py-10 text-white" style={{ "--chapter-accent": ALASKA_BLUE } as React.CSSProperties}>
-        <header className="mx-auto mb-10 flex max-w-5xl flex-wrap items-center justify-between gap-3">
+        <header className="sticky top-2 z-40 mx-auto mb-10 flex max-w-5xl flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-black/80 px-3 py-3 shadow-xl backdrop-blur-xl">
           <button type="button" onClick={() => openTripDashboard(guestName || "Guest")} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white">Back to Dashboard</button>
           <button type="button" onClick={goToMainPage} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white">Main Page</button>
         </header>
@@ -2900,7 +2902,7 @@ export default function TravelSite() {
     const zenityAccommodationMapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(zenityAccommodationAddress)}`;
     return (
       <div className="min-h-screen bg-black px-6 py-10 text-white" style={{ "--chapter-accent": VIETNAM_GOLD } as React.CSSProperties}>
-        <header className="mx-auto mb-10 flex max-w-5xl flex-wrap items-center justify-between gap-3">
+        <header className="sticky top-2 z-40 mx-auto mb-10 flex max-w-5xl flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-black/80 px-3 py-3 shadow-xl backdrop-blur-xl">
           <button type="button" onClick={() => openTripDashboard(guestName || "Guest")} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white">← Back to Dashboard</button>
           <button type="button" onClick={goToMainPage} className="rounded-full border border-white/20 bg-white/[0.04] px-4 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white">Main Page</button>
         </header>
