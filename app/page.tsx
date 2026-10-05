@@ -40,7 +40,7 @@ const TRIP_PATHS: Record<TripKey, string> = {
 const TRIP_KEYS_BY_PATH = Object.fromEntries(Object.entries(TRIP_PATHS).map(([key, path]) => [path, key])) as Record<string, TripKey>;
 
 const GUEST_NAME_ALIASES: Record<string, string> = {
-  "Heather & Jack & Aizen (8) & Kaien (3)": "Heather & Jack & Aizen (8) & Kaien (3) & Norma",
+  "Heather & Jack & Aizen (8) & Kaien (3) & Norma": "Heather & Jack & Aizen (8) & Kaien (3)",
 };
 
 function ViewportPortal({ children }: { children: React.ReactNode }) {
@@ -819,7 +819,7 @@ export default function TravelSite() {
     "Jim",
     "Anthony & Christine & Mona (1)",
     "Jenn & Hiroshi & Masashi (6) & Miyari (3)",
-    "Heather & Jack & Aizen (8) & Kaien (3) & Norma",
+    "Heather & Jack & Aizen (8) & Kaien (3)",
     "Steven Wang",
     "Mark Wang",
     "Mei & Emilia (8)",
@@ -891,38 +891,48 @@ export default function TravelSite() {
     },
     {
       date: "Sat Nov 14",
-      location: "Mila Grand Cruise",
-      title: "Ha Long Bay & Lan Ha Bay Mila Grand Cruise",
+      location: "Aime’e Cruise",
+      title: "Ha Long Bay Aime’e Cruise",
       items: [
-        "8:30 AM: Pre-arranged van transfer pickup from Hanoi Airbnb to Tuan Chau Marina (2.5 hrs ride).",
-        "Noon: Board 2 day 1 night Mila Grand Cruise.",
-        "Afternoon: Tuan Chau Marina - Ha Long Bay - Lan Ha Bay - Bright & Dark Caves.",
+        "8:00-8:30 AM: Pre-arranged shuttle pickup from the Hanoi Airbnb, with a 20-minute refreshment stop en route.",
+        "11:30-11:45 AM: Arrive at Ha Long International Harbor.",
+        "12:15 PM: Embark by tender, check in, enjoy welcome drinks, and attend the cruise briefing.",
+        "1:00 PM: Lunch while cruising through Ha Long Bay.",
+        "2:45 PM: Luon Cave excursion by kayak or local bamboo boat.",
+        "4:00 PM: Titop Island for the viewpoint climb, beach, and swimming.",
+        "5:00-6:30 PM: Sunset on the sundeck, drinks, and a cooking demonstration.",
+        "7:15 PM: Dinner.",
+        "9:00 PM: Nighttime squid fishing.",
+        "10:30 PM: Retire for the night.",
       ],
+      itemImages: {
+        "2:45 PM: Luon Cave excursion by kayak or local bamboo boat.": { src: "/kayak.png", alt: "Kayaking at Luon Cave in Ha Long Bay" },
+      },
       links: [
         {
-          label: "Mila Grand Cruise Website",
-          href: "https://milacruises.com/mila-grand-cruises-2-days-1-night/",
+          label: "Aime’e Cruise Website",
+          href: "https://aimeecruise.com/",
         },
       ],
-      stay: "Mila Grand Cruise",
-      stayImage: { src: "/halongbaycruise.png", alt: "Mila Grand Cruise on Ha Long Bay and Lan Ha Bay" },
+      stay: "Aime’e Cruise",
+      stayImage: { src: "/halongbaycruise.png?v=aimee-20261002", alt: "Aime’e Cruise on Ha Long Bay" },
     },
     {
       date: "Sun Nov 15",
       location: "Ninh Binh",
       title: "Check-in Ninh Binh",
       items: [
-        "6:45 AM: Breakfast.",
-        "7:30 AM: Tour of Cat Ba World Biosphere: Trung Trang Cave.",
-        "11:00 AM: Disembark the Mila Grand Cruise.",
-        "Noon: Pre-arranged van transfer from Tuan Chau Marina to Ninh Binh Xuan Son Lakeside Bungalow (3 hr ride).",
+        "6:15 AM: Tai Chi session on the sundeck.",
+        "6:30 AM: Breakfast while enjoying the morning on Ha Long Bay.",
+        "7:20 AM: Explore Sung Sot Cave, the largest cave in Ha Long Bay.",
+        "9:15 AM: Check out of the cabin, settle the bill, and cruise back toward the port.",
+        "9:30 AM: Buffet brunch in the restaurant.",
+        "10:45-11:00 AM: Return to port and disembark the Aime’e Cruise.",
+        "Noon: Pre-arranged van transfer from Ha Long International Harbor to Ninh Binh Xuan Son Lakeside Bungalow (3 hr ride).",
         "Evening: Check in, relax, dinner on site.",
         "Evening reminder: Ask the hotel to arrange transport to Hanoi Airport for the morning of Nov 17.",
         "Optional: Mua Cave / Hang Mua viewpoint, about 5 km from the hotel, if adults want the climb and the kids still have energy.",
       ],
-      itemImages: {
-        "7:30 AM: Tour of Cat Ba World Biosphere: Trung Trang Cave.": { src: "/kayak.png", alt: "Cat Ba Island caves and kayaking" },
-      },
       stay: "Xuan Son Lakeside Bungalow",
       stayImage: { src: "/ninbinh.png", alt: "Ninh Binh countryside near Xuan Son Lakeside Bungalow" },
     },
@@ -1073,11 +1083,11 @@ export default function TravelSite() {
           category: "Accommodations (10 nights)",
           detail: [
             "Nov 12-14 Hanoi stay at Heart of Hoan Kiem Homestay Airbnb (reserved): Total = $258.30 CAD, Half = $129.15 CAD.",
-            "Nov 14-15 Mila Grand Cruise Deluxe Balcony Cabin for Jenn's family, 2 adults + 2 kids: $552 USD (approx. $756.24 CAD).",
+            "Nov 14-15 Aime’e Cruise 2-day, 1-night fare for Jenn's family, 2 adults + 2 kids: $446 USD x 1.02 = $455 USD (approx. $623.35 CAD).",
             "Nov 15-17 Ninh Binh stay at Xuan Son Lakeside Bungalow: Total = $171 CAD.",
             "Nov 17-21 Ho Chi Minh City stay at Entire Home by Bui Vien: Total = $410.48 CAD, Half = $205.24 CAD.",
           ],
-          amountCad: 1261.63,
+          amountCad: 1128.74,
         },
         {
           category: "Flights (3 flights)",
@@ -1103,11 +1113,11 @@ export default function TravelSite() {
           category: "Transfers",
           detail: [
             "Nov 12 pre-booked 16-seater shuttle from HAN to Airbnb: Total = $30 CAD, Half = $15 CAD.",
-            "Nov 14-15 cruise transfers between Hanoi, Tuan Chau Marina, and Ninh Binh: $15-18 USD per person each way, about $35 USD round trip per person. Jenn's party (4 people) = approx. $191.80 CAD.",
+            "Nov 14 Hanoi to Ha Long pickup and Nov 15 Ha Long to Ninh Binh drop-off: $235 USD total, split equally, plus 2% fee. Jenn's share = $235 / 2 x 1.02 = $119.85 USD, rounded to $120 USD (approx. $164.40 CAD).",
             "Nov 17 Ninh Binh to Hanoi airport transfer: TBD.",
             "Nov 21 Ho Chi Minh City Airbnb to airport transfer: TBD.",
           ],
-          amountCad: 206.80,
+          amountCad: 179.40,
         },
       ];
     }
@@ -1118,11 +1128,11 @@ export default function TravelSite() {
           category: "Accommodations (10 nights)",
           detail: [
             "Nov 12-14 Hanoi stay at Heart of Hoan Kiem Homestay Airbnb (reserved): Total = $258.30 CAD, Half = $129.15 CAD.",
-            "Nov 14-15 Mila Grand Cruise Deluxe Balcony Cabin for Xenia's family, 2 adults + 1 kid: $385 USD (approx. $527.45 CAD).",
+            "Nov 14-15 Aime’e Cruise 2-day, 1-night fare for Xenia's family, 2 adults + 1 kid: $380 USD x 1.02 = $387.60 USD (approx. $531.01 CAD).",
             "Nov 15-17 Ninh Binh stay at Xuan Son Lakeside Bungalow: Total = $140 CAD.",
             "Nov 17-21 Ho Chi Minh City stay at Entire Home by Bui Vien: Total = $410.48 CAD, Half = $205.24 CAD.",
           ],
-          amountCad: 1001.84,
+          amountCad: 1005.40,
         },
         {
           category: "Flights (3 flights)",
@@ -1148,11 +1158,11 @@ export default function TravelSite() {
           category: "Transfers",
           detail: [
             "Nov 12 pre-booked 16-seater shuttle from HAN to Airbnb: Total = $30 CAD, Half = $15 CAD.",
-            "Nov 14-15 cruise transfers between Hanoi, Tuan Chau Marina, and Ninh Binh: $15-18 USD per person each way, about $35 USD round trip per person. Xenia's party (3 people) = approx. $143.85 CAD.",
+            "Nov 14 Hanoi to Ha Long pickup and Nov 15 Ha Long to Ninh Binh drop-off: $235 USD total, split equally, plus 2% fee. Xenia's share = $235 / 2 x 1.02 = $119.85 USD, rounded to $120 USD (approx. $164.40 CAD).",
             "Nov 17 Ninh Binh to Hanoi airport transfer: TBD.",
             "Nov 21 Ho Chi Minh City Airbnb to airport transfer: TBD.",
           ],
-          amountCad: 158.85,
+          amountCad: 179.40,
         },
       ];
     }
@@ -1185,7 +1195,7 @@ export default function TravelSite() {
     return true;
   }).sort((firstGuest, secondGuest) => {
     if (selectedTrip === "okinawaJapan") {
-      const okinawaPartyOrder = ["Xenia & David & Naomi (3)", "Dave & Christina & Xixi (2)", "Heather & Jack & Aizen (8) & Kaien (3) & Norma", "Steven Wang", "Mark Wang", "Mei & Emilia (8)"];
+      const okinawaPartyOrder = ["Xenia & David & Naomi (3)", "Dave & Christina & Xixi (2)", "Heather & Jack & Aizen (8) & Kaien (3)", "Steven Wang", "Mark Wang", "Mei & Emilia (8)"];
       return okinawaPartyOrder.indexOf(firstGuest) - okinawaPartyOrder.indexOf(secondGuest);
     }
     if (selectedTrip !== "taiwan" && selectedTrip !== "xiaoliuqiuTaiwan") return 0;
@@ -1202,7 +1212,7 @@ export default function TravelSite() {
     if (previousSelectedTrip === trip) return getVisibleGuestOptions();
     return guestOptions.filter((guest) => {
       if (guest === "I am just a random Guest") return false;
-      if (trip === "taiwan") return !["Steven Wang", "Heather & Jack & Aizen (8) & Kaien (3) & Norma", "Mei & Emilia (8)"].includes(guest);
+      if (trip === "taiwan") return !["Steven Wang", "Heather & Jack & Aizen (8) & Kaien (3)", "Mei & Emilia (8)"].includes(guest);
       return !["Jim", "Anthony & Christine & Mona (1)", "Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Julie & Adrian & Ethan (4) & Tyrell (1)", "Mei & Emilia (8) & ChaoMa"].includes(guest);
     });
   };
@@ -1767,7 +1777,7 @@ export default function TravelSite() {
       "Jim": ["xiaoliuqiu"],
       "Anthony & Christine & Mona (1)": ["xiaoliuqiu"],
       "Jenn & Hiroshi & Masashi (6) & Miyari (3)": ["xiaoliuqiu"],
-      "Heather & Jack & Aizen (8) & Kaien (3) & Norma": ["onna", "nago", "nanjo"],
+      "Heather & Jack & Aizen (8) & Kaien (3)": ["onna", "nago", "nanjo"],
       "Steven Wang": ["nahaearly", "onna", "nago", "nanjo"],
       "Mark Wang": ["xiaoliuqiu", "nahaearly", "onna"],
       "Mei & Emilia (8)": ["nago", "nanjo", "naha"],
@@ -1829,7 +1839,7 @@ export default function TravelSite() {
     ];
     const okinawaSegment = ["Wedding attire", "Resort casual outfit"];
     const okinawaFunPassThree = "Purchase Okinawa FunPASS Churaumi 3 in 1 for 2 adults + 1 child (For Churaumi Aquarium + Pinappleland + Okinawa World + Shopping Discount)";
-    const okinawaFunPassFour = "Purchase Okinawa FunPASS Churaumi 3 in 1 for 3 adults + 2 child (For Churaumi Aquarium + Pinappleland + Okinawa World + Shopping Discount)";
+    const okinawaFunPassFour = "Purchase Okinawa FunPASS Churaumi 3 in 1 for 2 adults + 2 children (For Churaumi Aquarium + Pineapple Park + Okinawa World + Shopping Discount)";
     const okinawaFunPassTwo = "Purchase Okinawa FunPASS Churaumi 3 in 1 for 1 adult + 1 child (For Churaumi Aquarium + Pinappleland + Okinawa World + Shopping Discount)";
     const babyToddlerItems = [
       "Formula / milk / snacks",
@@ -1914,7 +1924,7 @@ export default function TravelSite() {
     if (guest === "Xenia & David & Naomi (3)") {
       return { title: `${guest} Packing Checklist`, sections: [...sectionsWithEssentials([okinawaFunPassThree]), { title: "Okinawa Segment", items: okinawaSegment }, { title: "Baby / Toddler Items", items: babyToddlerItems }] };
     }
-    if (guest === "Heather & Jack & Aizen (8) & Kaien (3) & Norma") {
+    if (guest === "Heather & Jack & Aizen (8) & Kaien (3)") {
       return { title: `${guest} Packing Checklist`, sections: [...sectionsWithEssentials([okinawaFunPassFour]), { title: "Okinawa Segment", items: okinawaSegment }, { title: "Baby / Toddler Items", items: babyToddlerItems }] };
     }
     if (guest === "Mei & Emilia (8)") {
@@ -2947,7 +2957,7 @@ export default function TravelSite() {
                     );
                   })}
                 </ul>
-                {"links" in day && day.links && (!("linksPosition" in day) || day.linksPosition !== "top") && day.stay !== "Mila Grand Cruise" && (
+                {"links" in day && day.links && (!("linksPosition" in day) || day.linksPosition !== "top") && day.stay !== "Aime’e Cruise" && (
                   <div className="mt-4 flex flex-wrap gap-2">
                     {day.links.map((link) => (
                       <a key={link.href} href={link.href} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center rounded-full border border-[#F6C65B]/35 bg-[#F6C65B]/10 px-4 py-2 text-xs uppercase tracking-[0.14em] text-[#F6C65B] transition hover:border-[#F6C65B]/60 hover:bg-[#F6C65B]/15">
@@ -2983,7 +2993,7 @@ export default function TravelSite() {
                     ) : (
                       <p className="mt-1 text-sm text-white/75">{day.stay}</p>
                     )}
-                    {"links" in day && day.links && day.stay === "Mila Grand Cruise" && (
+                    {"links" in day && day.links && day.stay === "Aime’e Cruise" && (
                       <div className="mt-3 flex flex-wrap gap-2">
                         {day.links.map((link) => (
                           <a key={link.href} href={link.href} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center rounded-full border border-[#F6C65B]/35 bg-[#F6C65B]/10 px-4 py-2 text-xs uppercase tracking-[0.14em] text-[#F6C65B] transition hover:border-[#F6C65B]/60 hover:bg-[#F6C65B]/15">
@@ -3102,7 +3112,7 @@ export default function TravelSite() {
     const okinawaDashboardDates: Record<string, string> = {
       "Xenia & David & Naomi (3)": "Nov 27 - Dec 6 2026",
       "Dave & Christina & Xixi (2)": "Nov 28 - Dec 6 2026",
-      "Heather & Jack & Aizen (8) & Kaien (3) & Norma": "Nov 26 - Dec 4 2026",
+      "Heather & Jack & Aizen (8) & Kaien (3)": "Nov 26 - Dec 4 2026",
       "Steven Wang": "Nov 25 - Dec 3 2026",
       "Mark Wang": "Nov 25 - Nov 30 2026",
       "Mei & Emilia (8)": "Nov 29 - Dec 6 2026",
@@ -4419,9 +4429,9 @@ export default function TravelSite() {
                 {guestName === "Mei & Emilia (8) & ChaoMa" && <CountrySegmentButtons segments={[{ label: "Dec 7–8 · NorthEast Taipei", page: "northeasttaipei", color: TAIWAN_GOLD }, { label: "Dec 9–12 · Yilan", page: "yilan", color: "#72E49A" }, { label: "Dec 19–25 · Somewhere in Taiwan", page: "taiwanlate", color: TAIWAN_GOLD }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Steven Wang" && <CountrySegmentButtons segments={[{ label: "Nov 25–27 · Naha + Okinawa World", page: "nahaearly", color: BABY_BLUE }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–3 · Nanjo", page: "nanjo", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Dave & Christina & Xixi (2)" && <CountrySegmentButtons segments={[{ label: "Dec 7–8 · NorthEast Taipei", page: "northeasttaipei", color: TAIWAN_GOLD }, { label: "Dec 9–12 · Yilan", page: "yilan", color: "#72E49A" }, { label: "Dec 13–17 · Central Taipei", page: "taipei", color: TAIWAN_GOLD }, { label: "Dec 19–25 · Somewhere in Taiwan", page: "taiwanlate", color: TAIWAN_GOLD }, { label: "Nov 28–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
-                {guestName === "Heather & Jack & Aizen (8) & Kaien (3) & Norma" && <CountrySegmentButtons segments={[{ label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
+                {guestName === "Heather & Jack & Aizen (8) & Kaien (3)" && <CountrySegmentButtons segments={[{ label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Julie & Adrian & Ethan (4) & Tyrell (1)" && <CountrySegmentButtons segments={[{ label: "Dec 14–17 · Central Taipei", page: "taipei", color: TAIWAN_GOLD }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
-                {guestName !== "Guest" && !["Xenia & David & Naomi (3)", "Jim", "Mark Wang", "Anthony & Christine & Mona (1)", "Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Mei & Emilia (8)", "Mei & Emilia (8) & ChaoMa", "Steven Wang", "Dave & Christina & Xixi (2)", "Heather & Jack & Aizen (8) & Kaien (3) & Norma", "Julie & Adrian & Ethan (4) & Tyrell (1)"].includes(guestName) && (
+                {guestName !== "Guest" && !["Xenia & David & Naomi (3)", "Jim", "Mark Wang", "Anthony & Christine & Mona (1)", "Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Mei & Emilia (8)", "Mei & Emilia (8) & ChaoMa", "Steven Wang", "Dave & Christina & Xixi (2)", "Heather & Jack & Aizen (8) & Kaien (3)", "Julie & Adrian & Ethan (4) & Tyrell (1)"].includes(guestName) && (
                   <div className="mt-5 rounded-2xl border border-amber-300/20 bg-amber-300/5 p-4">
                     <p className="text-sm leading-6 text-amber-100/80">
                       No trip segment found, please confirm your trip with Xenia ASAP.
@@ -4491,9 +4501,9 @@ export default function TravelSite() {
     taiwanlate: [["Xenia & David & Naomi (3)", "Dec 19 – Dec 25 · Somewhere in Taiwan"], ["Dave & Christina & Xixi (2)", "Dec 19 – Dec 25 · Somewhere in Taiwan"], ["Mei & Emilia (8) & ChaoMa", "Dec 19 – Dec 25 · Somewhere in Taiwan"]],
     yilan: [["Xenia & David & Naomi (3)", "Dec 9 – Dec 12 · Yilan"], ["Mei & Emilia (8) & ChaoMa", "Dec 9 – Dec 12 · Yilan"], ["Dave & Christina & Xixi (2)", "Dec 9 – Dec 12 · Yilan"]],
     xiaoliuqiu: [["Anthony & Christine & Mona (1)", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Mark Wang", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Jim", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Xenia & David & Naomi (3)", "Nov 21 – Nov 23 · Xiaoliuqiu"], ["Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Nov 21 – Nov 23 · Xiaoliuqiu"]],
-    onna: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 28 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 3 · Okinawa"], ["Mark Wang", "Nov 25 – Nov 30 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Jack & Aizen (8) & Kaien (3) & Norma", "Nov 26 – Dec 4 · Okinawa"]],
-    nago: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 28 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 3 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Jack & Aizen (8) & Kaien (3) & Norma", "Nov 26 – Dec 4 · Okinawa"]],
-    nanjo: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 28 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 3 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Jack & Aizen (8) & Kaien (3) & Norma", "Nov 26 – Dec 4 · Okinawa"]],
+    onna: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 28 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 3 · Okinawa"], ["Mark Wang", "Nov 25 – Nov 30 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Jack & Aizen (8) & Kaien (3)", "Nov 26 – Dec 4 · Okinawa"]],
+    nago: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 28 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 3 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Jack & Aizen (8) & Kaien (3)", "Nov 26 – Dec 4 · Okinawa"]],
+    nanjo: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 28 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 3 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Jack & Aizen (8) & Kaien (3)", "Nov 26 – Dec 4 · Okinawa"]],
     naha: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 28 – Dec 6 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"]],
     nahaearly: [["Steven Wang", "Nov 25 – Dec 3 · Okinawa"], ["Mark Wang", "Nov 25 – Nov 30 · Okinawa"]],
   };
