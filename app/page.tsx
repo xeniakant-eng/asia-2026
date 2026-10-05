@@ -1778,7 +1778,7 @@ export default function TravelSite() {
       "Anthony & Christine & Mona (1)": ["xiaoliuqiu"],
       "Jenn & Hiroshi & Masashi (6) & Miyari (3)": ["xiaoliuqiu"],
       "Heather & Jack & Aizen (8) & Kaien (3)": ["onna", "nago", "nanjo"],
-      "Steven Wang": ["nahaearly", "onna", "nago", "nanjo"],
+      "Steven Wang": ["nahaearly", "onna"],
       "Mark Wang": ["xiaoliuqiu", "nahaearly", "onna"],
       "Mei & Emilia (8)": ["nago", "nanjo", "naha"],
       "Mei & Emilia (8) & ChaoMa": ["northeasttaipei", "yilan", "taiwanlate"],
@@ -3113,7 +3113,7 @@ export default function TravelSite() {
       "Xenia & David & Naomi (3)": "Nov 27 - Dec 6 2026",
       "Dave & Christina & Xixi (2)": "Nov 28 - Dec 6 2026",
       "Heather & Jack & Aizen (8) & Kaien (3)": "Nov 26 - Dec 4 2026",
-      "Steven Wang": "Nov 25 - Dec 3 2026",
+      "Steven Wang": "Nov 25 - Nov 30 2026",
       "Mark Wang": "Nov 25 - Nov 30 2026",
       "Mei & Emilia (8)": "Nov 29 - Dec 6 2026",
       Guest: "Nov 25 - Dec 6 2026",
@@ -4427,7 +4427,7 @@ export default function TravelSite() {
                 {guestName === "Jenn & Hiroshi & Masashi (6) & Miyari (3)" && <CountrySegmentButtons segments={[{ label: "Nov 21–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Mei & Emilia (8)" && <CountrySegmentButtons segments={[{ label: "Nov 29–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Mei & Emilia (8) & ChaoMa" && <CountrySegmentButtons segments={[{ label: "Dec 7–8 · NorthEast Taipei", page: "northeasttaipei", color: TAIWAN_GOLD }, { label: "Dec 9–12 · Yilan", page: "yilan", color: "#72E49A" }, { label: "Dec 19–25 · Somewhere in Taiwan", page: "taiwanlate", color: TAIWAN_GOLD }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
-                {guestName === "Steven Wang" && <CountrySegmentButtons segments={[{ label: "Nov 25–27 · Naha + Okinawa World", page: "nahaearly", color: BABY_BLUE }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–3 · Nanjo", page: "nanjo", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
+                {guestName === "Steven Wang" && <CountrySegmentButtons segments={[{ label: "Nov 25–27 · Naha + Okinawa World", page: "nahaearly", color: BABY_BLUE }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Dave & Christina & Xixi (2)" && <CountrySegmentButtons segments={[{ label: "Dec 7–8 · NorthEast Taipei", page: "northeasttaipei", color: TAIWAN_GOLD }, { label: "Dec 9–12 · Yilan", page: "yilan", color: "#72E49A" }, { label: "Dec 13–17 · Central Taipei", page: "taipei", color: TAIWAN_GOLD }, { label: "Dec 19–25 · Somewhere in Taiwan", page: "taiwanlate", color: TAIWAN_GOLD }, { label: "Nov 28–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Heather & Jack & Aizen (8) & Kaien (3)" && <CountrySegmentButtons segments={[{ label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Julie & Adrian & Ethan (4) & Tyrell (1)" && <CountrySegmentButtons segments={[{ label: "Dec 14–17 · Central Taipei", page: "taipei", color: TAIWAN_GOLD }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
@@ -4501,11 +4501,11 @@ export default function TravelSite() {
     taiwanlate: [["Xenia & David & Naomi (3)", "Dec 19 – Dec 25 · Somewhere in Taiwan"], ["Dave & Christina & Xixi (2)", "Dec 19 – Dec 25 · Somewhere in Taiwan"], ["Mei & Emilia (8) & ChaoMa", "Dec 19 – Dec 25 · Somewhere in Taiwan"]],
     yilan: [["Xenia & David & Naomi (3)", "Dec 9 – Dec 12 · Yilan"], ["Mei & Emilia (8) & ChaoMa", "Dec 9 – Dec 12 · Yilan"], ["Dave & Christina & Xixi (2)", "Dec 9 – Dec 12 · Yilan"]],
     xiaoliuqiu: [["Anthony & Christine & Mona (1)", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Mark Wang", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Jim", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Xenia & David & Naomi (3)", "Nov 21 – Nov 23 · Xiaoliuqiu"], ["Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Nov 21 – Nov 23 · Xiaoliuqiu"]],
-    onna: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 28 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 3 · Okinawa"], ["Mark Wang", "Nov 25 – Nov 30 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Jack & Aizen (8) & Kaien (3)", "Nov 26 – Dec 4 · Okinawa"]],
-    nago: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 28 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 3 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Jack & Aizen (8) & Kaien (3)", "Nov 26 – Dec 4 · Okinawa"]],
-    nanjo: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 28 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Dec 3 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Jack & Aizen (8) & Kaien (3)", "Nov 26 – Dec 4 · Okinawa"]],
+    onna: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 28 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Nov 30 · Okinawa"], ["Mark Wang", "Nov 25 – Nov 30 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Jack & Aizen (8) & Kaien (3)", "Nov 26 – Dec 4 · Okinawa"]],
+    nago: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 28 – Dec 6 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Jack & Aizen (8) & Kaien (3)", "Nov 26 – Dec 4 · Okinawa"]],
+    nanjo: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 28 – Dec 6 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Jack & Aizen (8) & Kaien (3)", "Nov 26 – Dec 4 · Okinawa"]],
     naha: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 28 – Dec 6 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"]],
-    nahaearly: [["Steven Wang", "Nov 25 – Dec 3 · Okinawa"], ["Mark Wang", "Nov 25 – Nov 30 · Okinawa"]],
+    nahaearly: [["Steven Wang", "Nov 25 – Nov 30 · Okinawa"], ["Mark Wang", "Nov 25 – Nov 30 · Okinawa"]],
   };
 
   const renderChapter = (chapter: PageName, eyebrow: string, title: string, album: string, month: string, nights: string, hotel: React.ReactNode, region: Region, accentColor: string, children: React.ReactNode) => (
@@ -5041,6 +5041,7 @@ function XiaoliuqiuContent({ card }: { card: (children: React.ReactNode) => Reac
         {card(
           <>
             <p>🍳 Breakfast · <a href="https://maps.google.com/?q=琉浪日嚐+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">琉浪日嚐</a></p>
+            <p>🛵 還機車三台</p>
             <p>⛴ Everyone leaving Xiaoliuqiu · 12:50 PM boat</p>
             <p>🍣 Lunch · 東港漁市場</p>
             <p>🚄 Afternoon · 左營 → 台北</p>
@@ -5247,7 +5248,7 @@ function NanjoContent({ card }: { card: (children: React.ReactNode) => React.Rea
         )}
       </DayArticle>
       <DayArticle date="Thursday, December 3, 2026" rentalCarDate="2026-12-03" title="Nanjo · Okinawa World + Gangala Valley">
-        {card(<><p>🍳 Breakfast · Hotel buffet</p><p>🚕 Steven takes taxi to Naha Airport on his own</p></>)}
+        {card(<p>🍳 Breakfast · Hotel buffet</p>)}
         {card(
           <>
             <p>🌏 <a href="https://maps.google.com/?q=Okinawa+World" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Okinawa World 沖繩世界（玉泉洞）</a> · FunPass · ~10 min drive from hotel</p>
@@ -5277,7 +5278,7 @@ function NanjoContent({ card }: { card: (children: React.ReactNode) => React.Rea
 }
 
 function NahaEarlyContent({ card, linkedImage }: { card: (children: React.ReactNode) => React.ReactNode; linkedImage: (src: string, alt: string) => React.ReactNode }) {
-  return <><DayArticle date="Wednesday, November 25, 2026" rentalCarDate="2026-11-25" title="Morning Arrival · Naha">{card(<><p>✈ EVA Air BR112 · Arrive 9:15 AM at Naha Airport</p><p>🚗 Pick up rental car</p></>)}{card(<><p>🕛 Lunch · <a href="https://okinawa.letsgojp.com/archives/405500/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Senaga Island · Umikaji Terrace</a></p><p>如果天氣好 + 飛機準時，可前往瀨長島散步。</p><p>🍔 MKCafe · Ocean view & Mackerel Bitter Melon Burger</p></>)}{card(<><p>🏯 Shuri Castle if reopened</p><p>🛍 Kokusai dori 國際通 · Calbee Okinawa · 御果子御殿 · Tsuboya Pottery Street</p><img src="/shop.png" alt="Naha Shopping" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)} </DayArticle><DayArticle date="Thursday, November 26, 2026" rentalCarDate="2026-11-26" title="Okinawa World + Gangala Valley">{card(<><p>🐟 10:00 AM · Tomari Iyumachi Fish Market Brunch</p></>)}{card(<><p>🌏 <a href="https://maps.google.com/?q=Okinawa+World" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">沖繩世界（玉泉洞） Okinawa World</a> · Fun Pass</p><ul className="ml-5 list-disc text-white/65"><li>玉泉洞鐘乳石洞</li><li>琉球文化村</li><li>太鼓舞表演</li></ul><img src="/cave.png" alt="Okinawa World Cave" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}{card(<><p>🌿 Gangala之谷</p><p>導航可搜尋「Cave Cafe」或「Gangala之谷」，附免費停車場。</p><p className="text-white/60">沖繩南部熱門自然景點，以鐘乳石洞穴崩塌形成的森林山谷聞名。</p><p className="text-white/60">導覽需事先預約，每人約 2,500 日圓。</p><a href="https://book.gangala.com/?lng=zh-TW" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Gangala Valley Reservation</a><img src="/gangala.png" alt="Gangala Valley" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}{card(<p>🍽 Dinner · TBD</p>)} </DayArticle></>;
+  return <><DayArticle date="Wednesday, November 25, 2026" rentalCarDate="2026-11-25" title="Arrivals · Naha">{card(<><p>✈ Mark · EVA Air BR112 · Arrive 9:15 AM at Naha Airport</p><p>✈ Steven · Japan Airlines JL925 · Arrive 10:35 PM at Naha Airport</p><p>🚗 Pick up rental car</p></>)}{card(<><p>🕛 Lunch · <a href="https://okinawa.letsgojp.com/archives/405500/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Senaga Island · Umikaji Terrace</a></p><p>如果天氣好 + 飛機準時，可前往瀨長島散步。</p><p>🍔 MKCafe · Ocean view & Mackerel Bitter Melon Burger</p></>)}{card(<><p>🏯 Shuri Castle if reopened</p><p>🛍 Kokusai dori 國際通 · Calbee Okinawa · 御果子御殿 · Tsuboya Pottery Street</p><img src="/shop.png" alt="Naha Shopping" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)} </DayArticle><DayArticle date="Thursday, November 26, 2026" rentalCarDate="2026-11-26" title="Okinawa World + Gangala Valley">{card(<><p>🐟 10:00 AM · Tomari Iyumachi Fish Market Brunch</p></>)}{card(<><p>🌏 <a href="https://maps.google.com/?q=Okinawa+World" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">沖繩世界（玉泉洞） Okinawa World</a> · Fun Pass</p><ul className="ml-5 list-disc text-white/65"><li>玉泉洞鐘乳石洞</li><li>琉球文化村</li><li>太鼓舞表演</li></ul><img src="/cave.png" alt="Okinawa World Cave" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}{card(<><p>🌿 Gangala之谷</p><p>導航可搜尋「Cave Cafe」或「Gangala之谷」，附免費停車場。</p><p className="text-white/60">沖繩南部熱門自然景點，以鐘乳石洞穴崩塌形成的森林山谷聞名。</p><p className="text-white/60">導覽需事先預約，每人約 2,500 日圓。</p><a href="https://book.gangala.com/?lng=zh-TW" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Gangala Valley Reservation</a><img src="/gangala.png" alt="Gangala Valley" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)}{card(<p>🍽 Dinner · TBD</p>)} </DayArticle></>;
 }
 
 function NahaContent({ card }: { card: (children: React.ReactNode) => React.ReactNode }) {
