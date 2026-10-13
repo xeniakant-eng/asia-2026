@@ -611,6 +611,10 @@ export default function TravelSite() {
   const [showVietnamItinerary, setShowVietnamItinerary] = useState(false);
   const [showVietnamRouteMap, setShowVietnamRouteMap] = useState(false);
   const [showVietnamFlightSummary, setShowVietnamFlightSummary] = useState(false);
+  const [showVietnamToday, setShowVietnamToday] = useState(false);
+  const [vietnamTodayIndex, setVietnamTodayIndex] = useState(0);
+  const [showOkinawaToday, setShowOkinawaToday] = useState(false);
+  const [okinawaTodayIndex, setOkinawaTodayIndex] = useState(0);
   const [showTaipeiMrtMap, setShowTaipeiMrtMap] = useState(false);
   const [showTaipeiFoodieList, setShowTaipeiFoodieList] = useState(false);
   const [showOkinawaBudget, setShowOkinawaBudget] = useState(false);
@@ -861,6 +865,7 @@ export default function TravelSite() {
   ];
   const vietnamItineraryDays = [
     {
+      dateKey: "2026-11-12",
       date: "Thu Nov 12",
       location: "Hanoi",
       title: "Arrival in Hanoi",
@@ -874,6 +879,7 @@ export default function TravelSite() {
       stayImage: { src: "/hanoiairbnb.png", alt: "Heart of Hoan Kiem Homestay Airbnb in Hanoi" },
     },
     {
+      dateKey: "2026-11-13",
       date: "Fri Nov 13",
       location: "Hanoi",
       title: "Hanoi City Day",
@@ -890,6 +896,7 @@ export default function TravelSite() {
       stay: "Heart of Hoan Kiem Homestay Airbnb, 23C Phố Tông Đản, Hoàn Kiếm, Hà Nội",
     },
     {
+      dateKey: "2026-11-14",
       date: "Sat Nov 14",
       location: "Aime’e Cruise",
       title: "Ha Long Bay Aime’e Cruise",
@@ -918,6 +925,7 @@ export default function TravelSite() {
       stayImage: { src: "/halongbaycruise.png?v=aimee-20261002", alt: "Aime’e Cruise on Ha Long Bay" },
     },
     {
+      dateKey: "2026-11-15",
       date: "Sun Nov 15",
       location: "Ninh Binh",
       title: "Check-in Ninh Binh",
@@ -937,6 +945,7 @@ export default function TravelSite() {
       stayImage: { src: "/ninbinh.png", alt: "Ninh Binh countryside near Xuan Son Lakeside Bungalow" },
     },
     {
+      dateKey: "2026-11-16",
       date: "Mon Nov 16",
       location: "Ninh Binh",
       title: "Grottoes & Mountains & Architectures",
@@ -952,6 +961,7 @@ export default function TravelSite() {
       stay: "Xuan Son Lakeside Bungalow",
     },
     {
+      dateKey: "2026-11-17",
       date: "Tue Nov 17",
       location: "Ho Chi Minh City",
       title: "North to South",
@@ -976,6 +986,7 @@ export default function TravelSite() {
       stayImage: { src: "/hcmairbnb2.png", alt: "Entire Home by Bui Vien in Ho Chi Minh City" },
     },
     {
+      dateKey: "2026-11-18",
       date: "Wed Nov 18",
       location: "Ho Chi Minh City",
       title: "Saigon City Tour",
@@ -1001,6 +1012,7 @@ export default function TravelSite() {
       stay: "Entire Home by Bui Vien",
     },
     {
+      dateKey: "2026-11-19",
       date: "Thu Nov 19",
       location: "Ho Chi Minh City",
       title: "Ben Tre Mekong Tour",
@@ -1022,6 +1034,7 @@ export default function TravelSite() {
       stay: "Entire Home by Bui Vien",
     },
     {
+      dateKey: "2026-11-20",
       date: "Fri Nov 20",
       location: "Ho Chi Minh City",
       title: "Cu Chi Tunnels",
@@ -1043,6 +1056,7 @@ export default function TravelSite() {
       stay: "Entire Home by Bui Vien",
     },
     {
+      dateKey: "2026-11-21",
       date: "Sat Nov 21",
       location: "Depart",
       title: "Ho Chi Minh City to Kaohsiung",
@@ -1050,6 +1064,108 @@ export default function TravelSite() {
         "Leave hotel around 4:30-5:00 AM.",
         "VietJet VJ886 Ho Chi Minh City (SGN) to Kaohsiung (KHH), 7:35 AM-11:45 AM, nonstop.",
       ],
+    },
+  ];
+  const okinawaTodayDays: Array<{
+    dateKey: string;
+    date: string;
+    chapter: PageName;
+    location: string;
+    title: string;
+    items: string[];
+    stay: string;
+    stayHref?: string;
+    links?: Array<{ label: string; href: string }>;
+    parties?: string[];
+  }> = [
+    {
+      dateKey: "2026-11-25", date: "Wed Nov 25", chapter: "nahaearly", location: "Naha", title: "Arrivals · Naha",
+      items: ["Mark · EVA Air BR112 · Arrive 9:15 AM at Naha Airport.", "Steven · Japan Airlines JL925 · Arrive 10:35 PM at Naha Airport.", "Pick up rental car.", "Lunch at Senaga Island · Umikaji Terrace.", "Shuri Castle if reopened, then Kokusai Dori and Tsuboya Pottery Street."],
+      stay: "Hotel Strata Naha", stayHref: "https://maps.google.com/?q=Hotel+Strata+Naha",
+      links: [{ label: "Senaga Island", href: "https://okinawa.letsgojp.com/archives/405500/" }],
+    },
+    {
+      dateKey: "2026-11-26", date: "Thu Nov 26", chapter: "nahaearly", location: "Southern Okinawa", title: "Okinawa World + Gangala Valley",
+      items: ["10:00 AM · Tomari Iyumachi Fish Market brunch.", "Okinawa World · Gyokusendo Cave, Ryukyu Culture Village, and Eisa drum performance.", "Gangala Valley guided tour · advance reservation required.", "Dinner TBD."],
+      stay: "Hotel Strata Naha", stayHref: "https://maps.google.com/?q=Hotel+Strata+Naha",
+      links: [{ label: "Okinawa World", href: "https://maps.google.com/?q=Okinawa+World" }, { label: "Gangala Reservation", href: "https://book.gangala.com/?lng=zh-TW" }],
+    },
+    {
+      dateKey: "2026-11-26", date: "Thu Nov 26", chapter: "onna", location: "Okinawa", title: "Heather's Party Arrival Day",
+      items: ["Arrival and transportation details TBD.", "Settle in and prepare for the Onna resort chapter."],
+      stay: "Hotel Monterey Okinawa", stayHref: "https://www.hotelmonterey.co.jp/en/okinawa/",
+      parties: ["Heather & Jack & Aizen (8) & Kaien (3)"],
+    },
+    {
+      dateKey: "2026-11-27", date: "Fri Nov 27", chapter: "onna", location: "Naha → Onna", title: "Arrival + Resort Transfer",
+      items: ["Xenia, David & Naomi · EVA Air BR112 · Arrive 9:15 AM at Naha Airport.", "Pick up ORIX rental car · reservation RC32461319200023608 · confirmation H3J63XYi.", "Lunch and stroll at Senaga Island · Umikaji Terrace.", "Afternoon options · PARCO City and Minatogawa, or Araha Beach Park and Aeon Mall Rycom.", "Drive to Hotel Monterey Okinawa · approximately 45 minutes."],
+      stay: "Hotel Monterey Okinawa", stayHref: "https://www.hotelmonterey.co.jp/en/okinawa/",
+      links: [{ label: "ORIX Pickup", href: "https://travel.rakuten.com/cars/default/en-us/shop/6409" }, { label: "Rental Site Map", href: "https://www.google.com/maps/search/1-1174+Toyosaki,+Tomigusuku" }],
+      parties: ["Xenia & David & Naomi (3)", "Heather & Jack & Aizen (8) & Kaien (3)", "Steven Wang", "Mark Wang"],
+    },
+    {
+      dateKey: "2026-11-28", date: "Sat Nov 28", chapter: "onna", location: "Onna", title: "Resort Day · Blue Cave",
+      items: ["Hotel breakfast buffet.", "Blue Cave dive and snorkel · weather dependent.", "Ryukyu Mura with FunPass.", "Dave, Christina & Xixi · ANA NH1273 · Arrive 2:40 PM.", "Resort and beach activities.", "Dinner TBD."],
+      stay: "Hotel Monterey Okinawa", stayHref: "https://www.hotelmonterey.co.jp/en/okinawa/",
+      links: [{ label: "Ryukyu Mura", href: "https://www.ryukyumura.co.jp/" }, { label: "Resort Activities", href: "https://www.hotelmonterey.co.jp/en/okinawa/activity/" }],
+    },
+    {
+      dateKey: "2026-11-29", date: "Sun Nov 29", chapter: "onna", location: "Onna", title: "Albert & Quinn Wedding Day",
+      items: ["Hotel breakfast buffet.", "11:00 AM · Wedding ceremony at Hotel Monterey Chapel.", "12:30-1:30 PM · Cocktail hour and hors d'oeuvres.", "1:30-3:30 PM · Wedding lunch reception.", "7:30 PM · After party.", "Mei & Emilia · EVA Air BR186 · Arrive 7:10 PM."],
+      stay: "Hotel Monterey Okinawa", stayHref: "https://www.hotelmonterey.co.jp/en/okinawa/",
+      parties: ["Xenia & David & Naomi (3)", "Dave & Christina & Xixi (2)", "Heather & Jack & Aizen (8) & Kaien (3)", "Steven Wang", "Mark Wang", "Mei & Emilia (8)"],
+    },
+    {
+      dateKey: "2026-11-30", date: "Mon Nov 30", chapter: "nago", location: "Onna → Nago", title: "Cape Manzamo + Busena + Orion",
+      items: ["Hotel breakfast and 10:00 AM checkout.", "Cape Manzamo quick stop · approximately 40-minute drive.", "Busena Marine Park · underwater observatory and glass boat.", "Lunch near Onna or Nago.", "2:00-4:00 PM · Orion Happy Park reserved tour.", "Dinner at Yakiniku Kochan · optional MEGA Don Quijote Nago."],
+      stay: "Hotel Yugaf Inn Okinawa", stayHref: "https://maps.google.com/?q=Hotel+Yugaf+Inn+Okinawa",
+      links: [{ label: "Cape Manzamo", href: "https://maps.google.com/?q=Cape+Manzamo+Okinawa" }, { label: "Orion Happy Park", href: "https://maps.google.com/?q=Orion+Happy+Park+Nago" }],
+      parties: ["Xenia & David & Naomi (3)", "Dave & Christina & Xixi (2)", "Heather & Jack & Aizen (8) & Kaien (3)", "Mei & Emilia (8)"],
+    },
+    {
+      dateKey: "2026-11-30", date: "Mon Nov 30", chapter: "onna", location: "Okinawa", title: "Steven & Mark · Final Day",
+      items: ["Departure-day timing and transportation details TBD."],
+      stay: "Departure day",
+      parties: ["Steven Wang", "Mark Wang"],
+    },
+    {
+      dateKey: "2026-12-01", date: "Tue Dec 1", chapter: "nago", location: "Northern Okinawa", title: "Aquarium + Kouri Island",
+      items: ["7:30 AM · Hotel breakfast buffet.", "8:45 AM · Leave Nago hotel.", "9:30 AM-1:00 PM · Churaumi Aquarium · FunPass.", "Lunch at Ocean Blue Cafe · join the waitlist upon arrival.", "2:00-3:00 PM · Bise Fukugi Tree Road.", "3:30-5:00 PM · Kouri Island, beach walk, cafe, and sunset.", "Dinner at Restaurant Flipper."],
+      stay: "Hotel Yugaf Inn Okinawa", stayHref: "https://maps.google.com/?q=Hotel+Yugaf+Inn+Okinawa",
+      links: [{ label: "Churaumi Aquarium", href: "https://maps.google.com/?q=Okinawa+Churaumi+Aquarium" }, { label: "Kouri Island", href: "https://maps.google.com/?q=Kouri+Island+Okinawa" }],
+    },
+    {
+      dateKey: "2026-12-02", date: "Wed Dec 2", chapter: "nanjo", location: "Nago → Nanjo", title: "Family Parks + American Village",
+      items: ["Morning option · Junglia Park for ages 4+ and adults.", "Toddler option · Nago Pineapple Park or Neo Park Zoo.", "Afternoon · Miyagi Coast and American Village.", "Blue Seal Ice Cream, Zhyvago Coffee, or Chatan Burger Base Atabii's.", "Dinner at Taco Rice Cafe Kijimuna.", "Evening drive to Yuinchi Hotel Nanjo."],
+      stay: "Yuinchi Hotel Nanjo", stayHref: "https://www.yuinchi.jp/heal/hot-spring/",
+      links: [{ label: "Junglia Park", href: "https://junglia.jp/en" }, { label: "American Village", href: "https://maps.google.com/?q=American+Village+Okinawa" }],
+    },
+    {
+      dateKey: "2026-12-03", date: "Thu Dec 3", chapter: "nanjo", location: "Nanjo", title: "Okinawa World + Gangala Valley",
+      items: ["Hotel breakfast buffet.", "Okinawa World · FunPass · approximately 10 minutes from hotel.", "Gangala Valley guided tour · advance reservation required.", "Hotel Japanese dinner buffet or private Observation Lounge event.", "Optional evening stop at Costco Nanjo."],
+      stay: "Yuinchi Hotel Nanjo", stayHref: "https://www.yuinchi.jp/heal/hot-spring/",
+      links: [{ label: "Okinawa World", href: "https://maps.google.com/?q=Okinawa+World" }, { label: "Gangala Reservation", href: "https://book.gangala.com/?lng=zh-TW" }],
+    },
+    {
+      dateKey: "2026-12-04", date: "Fri Dec 4", chapter: "nanjo", location: "Okinawa", title: "Heather's Party · Final Day",
+      items: ["Departure-day timing and transportation details TBD."],
+      stay: "Departure day",
+      parties: ["Heather & Jack & Aizen (8) & Kaien (3)"],
+    },
+    {
+      dateKey: "2026-12-04", date: "Fri Dec 4", chapter: "naha", location: "Nanjo → Naha", title: "Final Naha Chapter",
+      items: ["9:00 AM · Checkout hotel.", "Drive from Nanjo to Naha · approximately 30 minutes.", "11:00 AM · Tomari Iyumachi Fish Market brunch.", "Shuri Castle if reopened.", "Kokusai Dori, Calbee Okinawa, Okashigoten, and Tsuboya Pottery Street."],
+      stay: "Hotel Grand Consort Naha", stayHref: "https://maps.google.com/?q=Hotel+Grand+Consort+Naha",
+    },
+    {
+      dateKey: "2026-12-05", date: "Sat Dec 5", chapter: "naha", location: "Naha", title: "Shopping + Aquarium Day",
+      items: ["Hotel breakfast buffet.", "Itoman Fish Market.", "Ashibinaa Outlet.", "DMM Kariyushi Aquarium.", "6:30 PM · Return rental car to ORIX Rent-A-Car."],
+      stay: "Hotel Grand Consort Naha", stayHref: "https://maps.google.com/?q=Hotel+Grand+Consort+Naha",
+    },
+    {
+      dateKey: "2026-12-06", date: "Sun Dec 6", chapter: "naha", location: "Naha Airport", title: "Departure Day",
+      items: ["6:30-7:15 AM · Hotel breakfast buffet.", "7:00 AM · Hotel checkout.", "Travel to Naha Airport for baggage check-in and boarding passes.", "Dave, Christina & Xixi · Tigerair Taiwan IT231 · OKA 9:45 AM → TPE.", "Xenia and Mei's groups · EVA Air BR113 · OKA 10:15 AM → TPE 10:55 AM."],
+      stay: "Departure day",
     },
   ];
   type VietnamBookingCost = { category: string; detail: string | string[]; amountCad: number | null };
@@ -1311,6 +1427,55 @@ export default function TravelSite() {
     setShowVietnamRouteMap(false);
     setShowVietnamFlightSummary(false);
     setBrowserRoute(buildTripUrl(selectedTrip, { guest: guestName || "Guest", view: nextView }), replace);
+  };
+
+  const getVietnamDateKey = (date: Date) => {
+    const parts = new Intl.DateTimeFormat("en-US", {
+      timeZone: "Asia/Ho_Chi_Minh",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).formatToParts(date);
+    const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+    return `${values.year}-${values.month}-${values.day}`;
+  };
+
+  const openVietnamToday = () => {
+    const vietnamDateKey = getVietnamDateKey(new Date());
+    const matchingIndex = vietnamItineraryDays.findIndex((day) => day.dateKey === vietnamDateKey);
+    const nextIndex = matchingIndex >= 0
+      ? matchingIndex
+      : vietnamDateKey < vietnamItineraryDays[0].dateKey
+        ? 0
+        : vietnamItineraryDays.length - 1;
+    setVietnamTodayIndex(nextIndex);
+    setShowVietnamToday(true);
+  };
+
+  const getOkinawaDateKey = (date: Date) => {
+    const parts = new Intl.DateTimeFormat("en-US", {
+      timeZone: "Asia/Tokyo",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).formatToParts(date);
+    const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+    return `${values.year}-${values.month}-${values.day}`;
+  };
+
+  const getOkinawaTodayDaysForGuest = (guest: string) => {
+    const allowedChapters = getGuestChapterOrder(guest);
+    return okinawaTodayDays.filter((day) => day.parties ? day.parties.includes(guest) : allowedChapters.includes(day.chapter));
+  };
+
+  const openOkinawaToday = () => {
+    const partyDays = getOkinawaTodayDaysForGuest(guestName);
+    if (!partyDays.length) return;
+    const okinawaDateKey = getOkinawaDateKey(new Date());
+    const matchingIndex = partyDays.findIndex((day) => day.dateKey === okinawaDateKey);
+    const nextIndex = matchingIndex >= 0 ? matchingIndex : okinawaDateKey < partyDays[0].dateKey ? 0 : partyDays.length - 1;
+    setOkinawaTodayIndex(nextIndex);
+    setShowOkinawaToday(true);
   };
 
   const openChapterPage = (chapter: PageName, replace = false) => {
@@ -2054,7 +2219,11 @@ export default function TravelSite() {
             <button type="button" onClick={() => setShowOkinawaReservationChecklist(true)} className={actionClass} style={actionStyle}><span className="text-xl">📋</span><span className="text-xs font-light uppercase tracking-[0.16em]">Reservation Checklist</span></button>
           </>
         )}
-        <button type="button" disabled className={`${actionClass} cursor-not-allowed opacity-45`} style={actionStyle}><span className="text-xl">☀️</span><span className="text-xs font-light uppercase tracking-[0.16em]">What's Today?</span></button>
+        {selectedTrip === "okinawaJapan" ? (
+          <button type="button" onClick={openOkinawaToday} className={actionClass} style={actionStyle}><span className="text-xl">☀️</span><span className="text-xs font-light uppercase tracking-[0.16em]">What's Today?</span></button>
+        ) : (
+          <button type="button" disabled className={`${actionClass} cursor-not-allowed opacity-45`} style={actionStyle}><span className="text-xl">☀️</span><span className="text-xs font-light uppercase tracking-[0.16em]">What's Today?</span></button>
+        )}
         <button type="button" onClick={() => openMoroccoCostTracker(selectedTrip)} className={actionClass} style={actionStyle}><span className="text-xl">💰</span><span className="text-xs font-light uppercase tracking-[0.16em]">BillTab</span></button>
         {selectedTrip === "taiwan" ? (
           <MemoryMaker albumKey="taiwanDecember" albumName="Taiwan December" accentColor={accentColor} guestName={guestName} returnChapter="taipei" onViewAlbum={openAlbumPopup} inlineButtons solidButtons />
@@ -3125,6 +3294,47 @@ export default function TravelSite() {
     const splitTripDashboardHero = selectedTrip === "xiaoliuqiuTaiwan" ? "/xiaoliuqiu-dashboard-hero.webp" : selectedTrip === "taiwan" ? "/taiwan-dashboard-hero.webp" : "/okinawa-dashboard-hero.webp";
     const vietnamDashboardBudgetCosts = getVietnamBookingCostsForGuest(guestName);
     const vietnamDashboardBudgetTotal = vietnamDashboardBudgetCosts.reduce((total, cost) => total + (cost.amountCad ?? 0), 0);
+    const vietnamDateKey = getVietnamDateKey(now);
+    const vietnamTripStartKey = vietnamItineraryDays[0].dateKey;
+    const vietnamTripEndKey = vietnamItineraryDays[vietnamItineraryDays.length - 1].dateKey;
+    const isVietnamBeforeTrip = vietnamDateKey < vietnamTripStartKey;
+    const isVietnamAfterTrip = vietnamDateKey > vietnamTripEndKey;
+    const vietnamSelectedDay = vietnamItineraryDays[vietnamTodayIndex] || vietnamItineraryDays[0];
+    const vietnamTomorrowDay = vietnamItineraryDays[vietnamTodayIndex + 1];
+    const vietnamDaysUntilTrip = Math.max(0, Math.ceil((Date.parse(`${vietnamTripStartKey}T00:00:00Z`) - Date.parse(`${vietnamDateKey}T00:00:00Z`)) / 86400000));
+    const vietnamTodayStatus = isVietnamBeforeTrip
+      ? `${vietnamDaysUntilTrip} day${vietnamDaysUntilTrip === 1 ? "" : "s"} until Vietnam · Preview mode`
+      : isVietnamAfterTrip
+        ? "Trip complete · Browse any trip day"
+        : "Today in Vietnam";
+    const getVietnamDashboardItemLink = (day: (typeof vietnamItineraryDays)[number], item: string) => "itemLinks" in day ? day.itemLinks?.[item as keyof typeof day.itemLinks] : undefined;
+    const renderVietnamDashboardItemText = (day: (typeof vietnamItineraryDays)[number], item: string) => {
+      const itemLink = getVietnamDashboardItemLink(day, item);
+      if (!itemLink || !item.includes(itemLink.text)) return <span>{item}</span>;
+      const [before, ...afterParts] = item.split(itemLink.text);
+      return <span>{before}<a href={itemLink.href} target="_blank" rel="noreferrer" className="text-[#F6C65B] underline decoration-[#F6C65B]/35 underline-offset-4">{itemLink.text}</a>{afterParts.join(itemLink.text)}</span>;
+    };
+    const getVietnamStayMap = (stay: string) => {
+      if (stay.startsWith("Heart of Hoan Kiem Homestay Airbnb")) return { label: "23C Phố Tông Đản, Hoàn Kiếm, Hà Nội", href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent("23C Phố Tông Đản, Hoàn Kiếm, Hà Nội")}` };
+      if (stay === "Xuan Son Lakeside Bungalow") return { label: "479 B, Ninh Binh, Vietnam, Hoa Lu, VN", href: "https://www.google.com/maps/search/?api=1&query=20.2564344083601,105.929744980567" };
+      if (stay === "Entire Home by Bui Vien") return { label: "353/12/2 Duong Pham Ngu Lao, Ho Chi Minh City", href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent("353/12/2 Duong Pham Ngu Lao, Ho Chi Minh City, Ho Chi Minh 700000, Vietnam")}` };
+      return null;
+    };
+    const vietnamSelectedStayMap = vietnamSelectedDay.stay ? getVietnamStayMap(vietnamSelectedDay.stay) : null;
+    const okinawaDashboardDays = selectedTrip === "okinawaJapan" ? getOkinawaTodayDaysForGuest(guestName) : [];
+    const okinawaDateKey = getOkinawaDateKey(now);
+    const okinawaTripStartKey = okinawaDashboardDays[0]?.dateKey || "2026-11-25";
+    const okinawaTripEndKey = okinawaDashboardDays[okinawaDashboardDays.length - 1]?.dateKey || "2026-12-06";
+    const isOkinawaBeforeTrip = okinawaDateKey < okinawaTripStartKey;
+    const isOkinawaAfterTrip = okinawaDateKey > okinawaTripEndKey;
+    const okinawaSelectedDay = okinawaDashboardDays[okinawaTodayIndex] || okinawaDashboardDays[0];
+    const okinawaTomorrowDay = okinawaDashboardDays[okinawaTodayIndex + 1];
+    const okinawaDaysUntilTrip = Math.max(0, Math.ceil((Date.parse(`${okinawaTripStartKey}T00:00:00Z`) - Date.parse(`${okinawaDateKey}T00:00:00Z`)) / 86400000));
+    const okinawaTodayStatus = isOkinawaBeforeTrip
+      ? `${okinawaDaysUntilTrip} day${okinawaDaysUntilTrip === 1 ? "" : "s"} until Okinawa · Preview mode`
+      : isOkinawaAfterTrip
+        ? "Trip complete · Browse your trip days"
+        : "Today in Okinawa";
     return (
       <div className="flex min-h-screen items-center justify-center bg-black px-6 text-white">
         <div className={`w-full max-w-md rounded-[2rem] border border-white/10 text-center backdrop-blur-xl ${isConfirmedTripAppCard || isMainSubmenu ? "flex h-[min(760px,calc(100dvh-2rem))] flex-col overflow-hidden" : ""} ${isPosterHeroSelection ? `overflow-hidden ${isTaiwanStyleTrip || selectedTrip === "morocco" || selectedTrip === "vietnam" ? "bg-black" : "bg-[#020B18]"} shadow-[0_0_44px_rgba(158,220,255,0.16)]` : isMainSubmenu ? "bg-black shadow-[0_0_44px_rgba(255,255,255,0.1)]" : "bg-white/[0.04] p-8 shadow-[0_0_40px_rgba(255,255,255,0.06)]"}`}>
@@ -3424,7 +3634,7 @@ export default function TravelSite() {
                           <button type="button" onClick={() => openTripView("itinerary")} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#F6C65B]/55 bg-[#100D08]/45 px-4 py-3 text-center backdrop-blur-md transition hover:border-[#F6C65B]/75 hover:bg-[#19140B]/55 sm:col-span-2"><span className="text-xl">🗓️</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#F6C65B]">Trip Itinerary</span></button>
                           <button type="button" onClick={() => setShowMoroccoChecklist(true)} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#F6C65B]/55 bg-[#100D08]/45 px-4 py-3 text-center backdrop-blur-md transition hover:border-[#F6C65B]/75 hover:bg-[#19140B]/55"><span className="text-xl">🎒</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#F6C65B]">Packing List</span></button>
                           <button type="button" onClick={() => setShowMoroccoBudget(true)} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#F6C65B]/55 bg-[#100D08]/45 px-4 py-3 text-center backdrop-blur-md transition hover:border-[#F6C65B]/75 hover:bg-[#19140B]/55"><span className="text-xl">🧾</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#F6C65B]">Budget</span></button>
-                          <button type="button" disabled className="flex min-h-14 cursor-not-allowed items-center justify-center gap-3 rounded-2xl border border-[#F6C65B]/45 bg-[#100D08]/35 px-4 py-3 text-center backdrop-blur-md opacity-45"><span className="text-xl">☀️</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#F6C65B]">What's Today?</span></button>
+                          <button type="button" onClick={openVietnamToday} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#F6C65B]/55 bg-[#100D08]/45 px-4 py-3 text-center backdrop-blur-md transition hover:border-[#F6C65B]/75 hover:bg-[#19140B]/55"><span className="text-xl">☀️</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#F6C65B]">What's Today?</span></button>
                           <button type="button" onClick={() => openMoroccoCostTracker("vietnam")} className="flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-[#F6C65B]/55 bg-[#100D08]/45 px-4 py-3 text-center backdrop-blur-md transition hover:border-[#F6C65B]/75 hover:bg-[#19140B]/55"><span className="text-xl">💰</span><span className="text-xs font-light uppercase tracking-[0.16em] text-[#F6C65B]">BillTab</span></button>
                         </div>
                         <MemoryMaker albumKey="vietnamNovember" albumName="Vietnam" accentColor={VIETNAM_GOLD} guestName={guestName} returnChapter="vietnam" onViewAlbum={openAlbumPopup} compact solidButtons />
@@ -3499,6 +3709,78 @@ export default function TravelSite() {
                     </div>
                   </section>
                 </div>
+              )}
+              {showGuestActions && guestName !== "Guest" && showVietnamToday && (
+                <ViewportPortal>
+                  <div className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden bg-black/85 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-[max(0.5rem,env(safe-area-inset-top))] backdrop-blur-sm sm:p-4" role="dialog" aria-modal="true" aria-label="Vietnam today's itinerary">
+                    <section className="flex h-[calc(100dvh-1rem)] max-h-[760px] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] text-left shadow-2xl sm:h-[min(760px,calc(100dvh-2rem))]">
+                      <div className="flex shrink-0 items-start justify-between gap-4 border-b border-white/10 px-4 py-3 sm:px-6 sm:py-5">
+                        <div className="min-w-0">
+                          <p className="text-xs uppercase tracking-[0.22em] text-[#F6C65B]">{vietnamTodayStatus}</p>
+                          <h2 className="mt-2 text-xl font-light text-white sm:text-2xl">What's Today?</h2>
+                          <p className="mt-1 truncate text-xs text-white/45">{guestName}</p>
+                        </div>
+                        <button type="button" onClick={() => setShowVietnamToday(false)} aria-label="Close today's itinerary" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">×</button>
+                      </div>
+
+                      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-6">
+                        <label className="mb-2 block text-[10px] uppercase tracking-[0.18em] text-white/35" htmlFor="vietnam-today-day">Trip day</label>
+                        <select id="vietnam-today-day" value={vietnamTodayIndex} onChange={(event) => setVietnamTodayIndex(Number(event.target.value))} className="mb-4 w-full rounded-xl border border-white/15 bg-black/40 px-4 py-3 text-sm text-white outline-none transition focus:border-[#F6C65B]/60">
+                          {vietnamItineraryDays.map((day, index) => <option key={day.dateKey} value={index}>{day.date} · {day.location}</option>)}
+                        </select>
+
+                        <article className="rounded-2xl border border-[#F6C65B]/25 bg-[#F6C65B]/[0.07] p-4 sm:p-5">
+                          <p className="text-xs uppercase tracking-[0.2em] text-[#F6C65B]">{vietnamSelectedDay.date}</p>
+                          <h3 className="mt-2 text-2xl font-light text-white">{vietnamSelectedDay.title}</h3>
+                          <p className="mt-1 text-xs uppercase tracking-[0.16em] text-white/40">{vietnamSelectedDay.location}</p>
+
+                          {"links" in vietnamSelectedDay && vietnamSelectedDay.links && (
+                            <div className="mt-4 flex flex-wrap gap-2">
+                              {vietnamSelectedDay.links.map((link) => <a key={link.href} href={link.href} target="_blank" rel="noreferrer" className="rounded-full border border-[#F6C65B]/35 bg-[#F6C65B]/10 px-3 py-2 text-[10px] uppercase tracking-[0.12em] text-[#F6C65B]">{link.label}</a>)}
+                            </div>
+                          )}
+
+                          <ul className="mt-5 space-y-3 text-sm leading-6 text-white/75">
+                            {vietnamSelectedDay.items.map((item) => <li key={item} className="flex gap-2"><span className="shrink-0 text-[#F6C65B]">•</span>{renderVietnamDashboardItemText(vietnamSelectedDay, item)}</li>)}
+                          </ul>
+                        </article>
+
+                        {vietnamSelectedDay.stay && (
+                          <article className="mt-3 rounded-xl border border-white/10 bg-white/[0.04] p-4">
+                            <p className="text-[10px] uppercase tracking-[0.18em] text-white/40">Tonight's stay</p>
+                            <p className="mt-2 text-sm text-white/80">{vietnamSelectedDay.stay}</p>
+                            {vietnamSelectedStayMap && <a href={vietnamSelectedStayMap.href} target="_blank" rel="noreferrer" className="mt-2 block text-sm text-[#F6C65B] underline decoration-[#F6C65B]/35 underline-offset-4">{vietnamSelectedStayMap.label} · Open in Google Maps</a>}
+                          </article>
+                        )}
+
+                        <div className="mt-3 grid grid-cols-2 gap-3">
+                          <div className="rounded-xl border border-white/10 bg-white/[0.04] p-3">
+                            <p className="text-[10px] uppercase tracking-[0.16em] text-white/35">Weather guide</p>
+                            <p className="mt-2 text-sm text-white/75">22-31°C · November range</p>
+                          </div>
+                          <div className="rounded-xl border border-white/10 bg-white/[0.04] p-3">
+                            <p className="text-[10px] uppercase tracking-[0.16em] text-white/35">Vietnam time</p>
+                            <p className="mt-2 text-sm text-white/75">{new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Ho_Chi_Minh", hour: "numeric", minute: "2-digit", hour12: true }).format(now)}</p>
+                          </div>
+                        </div>
+
+                        {vietnamTomorrowDay && (
+                          <article className="mt-3 rounded-xl border border-white/10 bg-black/25 p-4">
+                            <p className="text-[10px] uppercase tracking-[0.18em] text-white/35">Tomorrow</p>
+                            <p className="mt-2 text-sm text-white/80">{vietnamTomorrowDay.date} · {vietnamTomorrowDay.title}</p>
+                            <p className="mt-1 text-xs text-white/45">{vietnamTomorrowDay.location}</p>
+                          </article>
+                        )}
+                      </div>
+
+                      <div className="grid shrink-0 grid-cols-3 gap-2 border-t border-white/10 bg-[#111] p-3 sm:p-4">
+                        <button type="button" disabled={vietnamTodayIndex === 0} onClick={() => setVietnamTodayIndex((index) => Math.max(0, index - 1))} className="rounded-xl border border-white/15 px-3 py-2.5 text-xs text-white/65 transition disabled:cursor-not-allowed disabled:opacity-30">← Previous</button>
+                        <button type="button" onClick={() => { setShowVietnamToday(false); openTripView("itinerary"); }} className="rounded-xl border border-[#F6C65B]/40 bg-[#F6C65B]/10 px-3 py-2.5 text-xs text-[#F6C65B]">Full Itinerary</button>
+                        <button type="button" disabled={vietnamTodayIndex === vietnamItineraryDays.length - 1} onClick={() => setVietnamTodayIndex((index) => Math.min(vietnamItineraryDays.length - 1, index + 1))} className="rounded-xl border border-white/15 px-3 py-2.5 text-xs text-white/65 transition disabled:cursor-not-allowed disabled:opacity-30">Next →</button>
+                      </div>
+                    </section>
+                  </div>
+                </ViewportPortal>
               )}
               {showVietnamRouteMap && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-3 backdrop-blur-sm sm:p-4" role="dialog" aria-modal="true" aria-label="Vietnam route map">
@@ -4444,6 +4726,73 @@ export default function TravelSite() {
             </>
           )}
         </div>
+        {showGuestActions && selectedTrip === "okinawaJapan" && guestName !== "Guest" && showOkinawaToday && okinawaSelectedDay && (
+          <ViewportPortal>
+            <div className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden bg-black/85 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-[max(0.5rem,env(safe-area-inset-top))] backdrop-blur-sm sm:p-4" role="dialog" aria-modal="true" aria-label="Okinawa today's itinerary">
+              <section className="flex h-[calc(100dvh-1rem)] max-h-[760px] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#071018] text-left shadow-2xl sm:h-[min(760px,calc(100dvh-2rem))]">
+                <div className="flex shrink-0 items-start justify-between gap-4 border-b border-white/10 px-4 py-3 sm:px-6 sm:py-5">
+                  <div className="min-w-0">
+                    <p className="text-xs uppercase tracking-[0.22em] text-[#9EDCFF]">{okinawaTodayStatus}</p>
+                    <h2 className="mt-2 text-xl font-light text-white sm:text-2xl">What's Today?</h2>
+                    <p className="mt-1 truncate text-xs text-white/45">{guestName}</p>
+                  </div>
+                  <button type="button" onClick={() => setShowOkinawaToday(false)} aria-label="Close today's itinerary" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">×</button>
+                </div>
+
+                <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-6">
+                  <label className="mb-2 block text-[10px] uppercase tracking-[0.18em] text-white/35" htmlFor="okinawa-today-day">Your trip day</label>
+                  <select id="okinawa-today-day" value={okinawaTodayIndex} onChange={(event) => setOkinawaTodayIndex(Number(event.target.value))} className="mb-4 w-full rounded-xl border border-white/15 bg-black/40 px-4 py-3 text-sm text-white outline-none transition focus:border-[#9EDCFF]/60">
+                    {okinawaDashboardDays.map((day, index) => <option key={`${day.dateKey}-${day.chapter}-${day.title}`} value={index}>{day.date} · {day.location}</option>)}
+                  </select>
+
+                  <article className="rounded-2xl border border-[#9EDCFF]/25 bg-[#9EDCFF]/[0.07] p-4 sm:p-5">
+                    <p className="text-xs uppercase tracking-[0.2em] text-[#9EDCFF]">{okinawaSelectedDay.date}</p>
+                    <h3 className="mt-2 text-2xl font-light text-white">{okinawaSelectedDay.title}</h3>
+                    <p className="mt-1 text-xs uppercase tracking-[0.16em] text-white/40">{okinawaSelectedDay.location}</p>
+                    {okinawaSelectedDay.links && (
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {okinawaSelectedDay.links.map((link) => <a key={link.href} href={link.href} target="_blank" rel="noreferrer" className="rounded-full border border-[#9EDCFF]/35 bg-[#9EDCFF]/10 px-3 py-2 text-[10px] uppercase tracking-[0.12em] text-[#9EDCFF]">{link.label}</a>)}
+                      </div>
+                    )}
+                    <ul className="mt-5 space-y-3 text-sm leading-6 text-white/75">
+                      {okinawaSelectedDay.items.map((item) => <li key={item} className="flex gap-2"><span className="shrink-0 text-[#9EDCFF]">•</span><span>{item}</span></li>)}
+                    </ul>
+                  </article>
+
+                  <article className="mt-3 rounded-xl border border-white/10 bg-white/[0.04] p-4">
+                    <p className="text-[10px] uppercase tracking-[0.18em] text-white/40">Tonight's stay</p>
+                    {okinawaSelectedDay.stayHref ? <a href={okinawaSelectedDay.stayHref} target="_blank" rel="noreferrer" className="mt-2 block text-sm text-[#9EDCFF] underline decoration-[#9EDCFF]/35 underline-offset-4">{okinawaSelectedDay.stay} · Open details</a> : <p className="mt-2 text-sm text-white/80">{okinawaSelectedDay.stay}</p>}
+                  </article>
+
+                  <div className="mt-3 grid grid-cols-2 gap-3">
+                    <div className="rounded-xl border border-white/10 bg-white/[0.04] p-3">
+                      <p className="text-[10px] uppercase tracking-[0.16em] text-white/35">Weather guide</p>
+                      <p className="mt-2 text-sm text-white/75">18-24°C · Seasonal range</p>
+                    </div>
+                    <div className="rounded-xl border border-white/10 bg-white/[0.04] p-3">
+                      <p className="text-[10px] uppercase tracking-[0.16em] text-white/35">Okinawa time</p>
+                      <p className="mt-2 text-sm text-white/75">{new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Tokyo", hour: "numeric", minute: "2-digit", hour12: true }).format(now)}</p>
+                    </div>
+                  </div>
+
+                  {okinawaTomorrowDay && (
+                    <article className="mt-3 rounded-xl border border-white/10 bg-black/25 p-4">
+                      <p className="text-[10px] uppercase tracking-[0.18em] text-white/35">Your next trip day</p>
+                      <p className="mt-2 text-sm text-white/80">{okinawaTomorrowDay.date} · {okinawaTomorrowDay.title}</p>
+                      <p className="mt-1 text-xs text-white/45">{okinawaTomorrowDay.location}</p>
+                    </article>
+                  )}
+                </div>
+
+                <div className="grid shrink-0 grid-cols-3 gap-2 border-t border-white/10 bg-[#071018] p-3 sm:p-4">
+                  <button type="button" disabled={okinawaTodayIndex === 0} onClick={() => setOkinawaTodayIndex((index) => Math.max(0, index - 1))} className="rounded-xl border border-white/15 px-2 py-2.5 text-xs text-white/65 transition disabled:cursor-not-allowed disabled:opacity-30">← Previous</button>
+                  <button type="button" onClick={() => { setShowOkinawaToday(false); openChapterPage(okinawaSelectedDay.chapter); }} className="rounded-xl border border-[#9EDCFF]/40 bg-[#9EDCFF]/10 px-2 py-2.5 text-xs text-[#9EDCFF]">Open Chapter</button>
+                  <button type="button" disabled={okinawaTodayIndex === okinawaDashboardDays.length - 1} onClick={() => setOkinawaTodayIndex((index) => Math.min(okinawaDashboardDays.length - 1, index + 1))} className="rounded-xl border border-white/15 px-2 py-2.5 text-xs text-white/65 transition disabled:cursor-not-allowed disabled:opacity-30">Next →</button>
+                </div>
+              </section>
+            </div>
+          </ViewportPortal>
+        )}
         {albumPopup}
         {okinawaBudgetPopup}
         {okinawaReservationChecklistPopup}
@@ -5282,5 +5631,5 @@ function NahaEarlyContent({ card, linkedImage }: { card: (children: React.ReactN
 }
 
 function NahaContent({ card }: { card: (children: React.ReactNode) => React.ReactNode }) {
-  return <><DayArticle date="Friday, December 4, 2026" rentalCarDate="2026-12-04" title="Nanjo → Naha">{card(<><p>🧳 9:00 AM · Checkout hotel</p><p>🚗 Drive from Nanjo → Naha · approximately 30 min</p></>)}{card(<><p>🐟 11:00 AM · Tomari Iyumachi Fish Market Brunch</p></>)}{card(<><p>🏯 Shuri Castle if reopened</p><p>🛍 Kokusai dori 國際通 · Calbee Okinawa · 御果子御殿 · Tsuboya Pottery Street</p><img src="/shop.png" alt="Kokusai Dori Shopping" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)} </DayArticle><DayArticle date="Saturday, December 5, 2026" rentalCarDate="2026-12-05" title="Shopping + Aquarium Day">{card(<><p>🍳 Hotel breakfast buffet</p><p>🐟 Itoman Fish Market · Ashibinaa Outlet · DMM Kariyushi Aquarium</p><p>🚗 6:30 PM · Return rental car to ORIX Rent-A-Car</p></>)}</DayArticle><DayArticle date="Sunday, December 6, 2026" title="Departure Day">{card(<><p>🍳 Hotel breakfast buffet · 6:30 AM - 7:15 AM</p><p>🧳 Hotel checkout · 7:30 AM</p><p>🚕 Travel to Naha Airport for baggage check-in and boarding passes.</p><p>✈️ Dave, Christina &amp; Xixi · IT231 · OKA 9:45 AM → TPE</p><p>✈️ Xenia &amp; Mei's groups · EVA Air BR113 · OKA 10:15 → TPE 10:55</p></>)}</DayArticle></>;
+  return <><DayArticle date="Friday, December 4, 2026" rentalCarDate="2026-12-04" title="Nanjo → Naha">{card(<><p>🧳 9:00 AM · Checkout hotel</p><p>🚗 Drive from Nanjo → Naha · approximately 30 min</p></>)}{card(<><p>🐟 11:00 AM · Tomari Iyumachi Fish Market Brunch</p></>)}{card(<><p>🏯 Shuri Castle if reopened</p><p>🛍 Kokusai dori 國際通 · Calbee Okinawa · 御果子御殿 · Tsuboya Pottery Street</p><img src="/shop.png" alt="Kokusai Dori Shopping" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)} </DayArticle><DayArticle date="Saturday, December 5, 2026" rentalCarDate="2026-12-05" title="Shopping + Aquarium Day">{card(<><p>🍳 Hotel breakfast buffet</p><p>🐟 Itoman Fish Market · Ashibinaa Outlet · DMM Kariyushi Aquarium</p><p>🚗 6:30 PM · Return rental car to ORIX Rent-A-Car</p></>)}</DayArticle><DayArticle date="Sunday, December 6, 2026" title="Departure Day">{card(<><p>🍳 Hotel breakfast buffet · 6:30 AM - 7:15 AM</p><p>🧳 Hotel checkout · 7:00 AM</p><p>🚕 Travel to Naha Airport for baggage check-in and boarding passes.</p><p>✈️ Dave, Christina &amp; Xixi · IT231 · OKA 9:45 AM → TPE</p><p>✈️ Xenia &amp; Mei's groups · EVA Air BR113 · OKA 10:15 → TPE 10:55</p></>)}</DayArticle></>;
 }
