@@ -615,6 +615,8 @@ export default function TravelSite() {
   const [vietnamTodayIndex, setVietnamTodayIndex] = useState(0);
   const [showOkinawaToday, setShowOkinawaToday] = useState(false);
   const [okinawaTodayIndex, setOkinawaTodayIndex] = useState(0);
+  const [showTaiwanToday, setShowTaiwanToday] = useState(false);
+  const [taiwanTodayIndex, setTaiwanTodayIndex] = useState(0);
   const [showTaipeiMrtMap, setShowTaipeiMrtMap] = useState(false);
   const [showTaipeiFoodieList, setShowTaipeiFoodieList] = useState(false);
   const [showOkinawaBudget, setShowOkinawaBudget] = useState(false);
@@ -1168,6 +1170,111 @@ export default function TravelSite() {
       stay: "Departure day",
     },
   ];
+  const taiwanCoreParties = ["Xenia & David & Naomi (3)", "Dave & Christina & Xixi (2)"];
+  const taiwanNorthEastParties = [...taiwanCoreParties, "Mei & Emilia (8) & ChaoMa"];
+  const taiwanCentralParties = [...taiwanCoreParties, "Julie & Adrian & Ethan (4) & Tyrell (1)"];
+  const taiwanLateParties = [...taiwanCoreParties, "Mei & Emilia (8) & ChaoMa"];
+  const taiwanTodayDays: Array<{
+    dateKey: string;
+    date: string;
+    chapter: PageName;
+    location: string;
+    title: string;
+    items: string[];
+    stay: string;
+    links?: Array<{ label: string; href: string }>;
+    parties: string[];
+  }> = [
+    {
+      dateKey: "2026-12-07", date: "Mon Dec 7", chapter: "northeasttaipei", location: "Taipei", title: "台北東區 · Taipei City East",
+      items: ["松山文創園區 · Songshan Cultural and Creative Park.", "國父紀念館 · Sun Yat-sen Memorial Hall.", "Taipei 101.", "象山步道 · Xiangshan Trail."],
+      stay: "Shangri-La / Marriott / 內湖家", parties: taiwanNorthEastParties,
+    },
+    {
+      dateKey: "2026-12-08", date: "Tue Dec 8", chapter: "northeasttaipei", location: "NorthEast Taipei", title: "野柳 & 九份",
+      items: ["野柳地質公園 · Yehliu Geopark.", "金瓜石 · Gold Falls, Yin Yang Sea, and Gold Museum.", "九份老街 · Jiufen Old Street."],
+      stay: "Shangri-La / Marriott / 內湖家", parties: taiwanNorthEastParties,
+    },
+    {
+      dateKey: "2026-12-09", date: "Wed Dec 9", chapter: "yilan", location: "Taipei → Jiaoxi", title: "台北 → 礁溪",
+      items: ["8:00 AM · Meet at Nangang Bus Station.", "8:20 AM · Kuo-Kuang Bus 1881A to Jiaoxi, about 60 minutes.", "9:30 AM · Leave luggage at 冠翔泉旅.", "10:00 AM · 大塭休閒農場 day activity.", "4:00 PM · Jiaoxi Hot Spring Park or 二龍之心親子公園.", "Dinner · TBD."],
+      stay: "冠翔泉旅", links: [{ label: "冠翔泉旅", href: "https://www.crownshine.com.tw/" }, { label: "大塭休閒農場", href: "https://www.dawen.com.tw/dawen/index.php" }], parties: taiwanNorthEastParties,
+    },
+    {
+      dateKey: "2026-12-10", date: "Thu Dec 10", chapter: "yilan", location: "Yilan & Luodong", title: "宜蘭 & 羅東（包車）",
+      items: ["Breakfast · 冠翔泉旅 hotel buffet.", "11:00 AM-1:00 PM · 宜蘭幾米廣場.", "1:00-2:00 PM · 南方澳觀景台 if weather permits.", "2:00-5:00 PM · 蠟藝蠟筆城堡.", "5:00 PM · Check in at 宜蘭傳統藝術園區."],
+      stay: "煙波花時間 宜蘭傳藝", links: [{ label: "蠟藝蠟筆城堡", href: "https://luckyart.com.tw/art/guide" }, { label: "煙波花時間", href: "https://yilan-arts.lakeshore.com.tw/" }], parties: taiwanNorthEastParties,
+    },
+    {
+      dateKey: "2026-12-11", date: "Fri Dec 11", chapter: "yilan", location: "Yilan", title: "宜蘭傳統藝術園區",
+      items: ["Breakfast · Hotel buffet.", "10:00 AM-Lunch · 鴨寮故事館 Duck Shack Museum.", "Afternoon · 赫蒂法莊園, 虎牌米粉觀光工廠, or return to the arts centre.", "Evening · 宜蘭傳統藝術園區 program.", "Dinner · TBD."],
+      stay: "煙波花時間 宜蘭傳藝", parties: taiwanNorthEastParties,
+    },
+    {
+      dateKey: "2026-12-12", date: "Sat Dec 12", chapter: "yilan", location: "Yilan → Taipei", title: "農場 & 龍潭湖，回台北",
+      items: ["Daytime transportation · Chartered vehicle.", "Morning · 張美阿嬤農場.", "Afternoon · 龍潭湖風景區.", "Evening · Train from Yilan Station to Nangang Station.", "Mei's party continues to Taichung; Dave's party and Xenia's party return to Taipei."],
+      stay: "Taipei", links: [{ label: "張美阿嬤農場", href: "https://zhangmeiama.weebly.com/" }], parties: taiwanNorthEastParties,
+    },
+    {
+      dateKey: "2026-12-13", date: "Sun Dec 13", chapter: "taipei", location: "Taipei", title: "貓空 & 台北市立動物園",
+      items: ["台北市立動物園 · Taipei Zoo.", "貓空纜車 · Maokong Gondola.", "Tea houses and city views."],
+      stay: "Dave's party · Taipei Airbnb; Xenia's party · 內湖家", parties: taiwanCoreParties,
+    },
+    {
+      dateKey: "2026-12-14", date: "Mon Dec 14", chapter: "taipei", location: "Central Taipei", title: "台北市西區",
+      items: ["中正紀念堂.", "龍山寺.", "西門町 and 台北車站.", "總統府.", "華山文創園區."],
+      stay: "Taipei Airbnb / 雙連 Airbnb", parties: taiwanCentralParties,
+    },
+    {
+      dateKey: "2026-12-15", date: "Tue Dec 15", chapter: "taipei", location: "Central Taipei", title: "兒童新樂園 & 士林夜市",
+      items: ["台北市兒童新樂園 · Taipei Children's Amusement Park.", "士林夜市 · Shilin Night Market."],
+      stay: "Taipei Airbnb / 雙連 Airbnb", parties: taiwanCentralParties,
+    },
+    {
+      dateKey: "2026-12-16", date: "Wed Dec 16", chapter: "taipei", location: "Beitou & Tamsui", title: "北投 & 淡水",
+      items: ["北投溫泉 and 地熱谷.", "硫磺谷.", "淡水老街.", "漁人碼頭 and 紅毛城."],
+      stay: "Taipei Airbnb / 雙連 Airbnb", parties: taiwanCentralParties,
+    },
+    {
+      dateKey: "2026-12-17", date: "Thu Dec 17", chapter: "taipei", location: "Taipei", title: "Julie's Party Departure",
+      items: ["Julie, Adrian, Ethan, and Tyrell depart Taipei.", "Dave's party remains at the Taipei Airbnb.", "Xenia's party returns to 內湖家."],
+      stay: "Taipei Airbnb / 內湖家", parties: taiwanCentralParties,
+    },
+    {
+      dateKey: "2026-12-18", date: "Fri Dec 18", chapter: "taiwanlate", location: "Taiwan", title: "Open Day",
+      items: ["No fixed itinerary is scheduled yet.", "Use this day for rest, family time, or flexible plans."],
+      stay: "Accommodation TBD", parties: taiwanLateParties,
+    },
+    {
+      dateKey: "2026-12-19", date: "Sat Dec 19", chapter: "taiwanlate", location: "Taiwan", title: "Sanrio Train Trip · Day 1",
+      items: ["Sanrio train trip itinerary details to come."], stay: "Accommodation TBD", parties: taiwanLateParties,
+    },
+    {
+      dateKey: "2026-12-20", date: "Sun Dec 20", chapter: "taiwanlate", location: "Taiwan", title: "Sanrio Train Trip · Day 2",
+      items: ["Sanrio train trip itinerary details to come."], stay: "Accommodation TBD", parties: taiwanLateParties,
+    },
+    {
+      dateKey: "2026-12-21", date: "Mon Dec 21", chapter: "taiwanlate", location: "Taiwan", title: "Sanrio Train Trip · Day 3",
+      items: ["Sanrio train trip itinerary details to come."], stay: "Accommodation TBD", parties: taiwanLateParties,
+    },
+    {
+      dateKey: "2026-12-22", date: "Tue Dec 22", chapter: "taiwanlate", location: "Taiwan", title: "行程待定 · Plans TBD",
+      items: ["Travel plans will be added later."], stay: "Accommodation TBD", parties: taiwanLateParties,
+    },
+    {
+      dateKey: "2026-12-23", date: "Wed Dec 23", chapter: "taiwanlate", location: "Taiwan", title: "行程待定 · Plans TBD",
+      items: ["Travel plans will be added later."], stay: "Accommodation TBD", parties: taiwanLateParties,
+    },
+    {
+      dateKey: "2026-12-24", date: "Thu Dec 24", chapter: "taiwanlate", location: "Taiwan", title: "行程待定 · Plans TBD",
+      items: ["Travel plans will be added later."], stay: "Accommodation TBD", parties: taiwanLateParties,
+    },
+    {
+      dateKey: "2026-12-25", date: "Fri Dec 25", chapter: "taiwanlate", location: "Taipei", title: "Dave's Family Departure",
+      items: ["Dave, Christina, and Xixi depart TPE for SFO.", "United Airlines UA872 · 11:10 AM departure."],
+      stay: "Departure day", parties: taiwanLateParties,
+    },
+  ];
   type VietnamBookingCost = { category: string; detail: string | string[]; amountCad: number | null };
   const vietnamFlightSummary = [
     {
@@ -1476,6 +1583,29 @@ export default function TravelSite() {
     const nextIndex = matchingIndex >= 0 ? matchingIndex : okinawaDateKey < partyDays[0].dateKey ? 0 : partyDays.length - 1;
     setOkinawaTodayIndex(nextIndex);
     setShowOkinawaToday(true);
+  };
+
+  const getTaiwanDateKey = (date: Date) => {
+    const parts = new Intl.DateTimeFormat("en-US", {
+      timeZone: "Asia/Taipei",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).formatToParts(date);
+    const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+    return `${values.year}-${values.month}-${values.day}`;
+  };
+
+  const getTaiwanTodayDaysForGuest = (guest: string) => taiwanTodayDays.filter((day) => day.parties.includes(guest));
+
+  const openTaiwanToday = () => {
+    const partyDays = getTaiwanTodayDaysForGuest(guestName);
+    if (!partyDays.length) return;
+    const taiwanDateKey = getTaiwanDateKey(new Date());
+    const matchingIndex = partyDays.findIndex((day) => day.dateKey === taiwanDateKey);
+    const nextIndex = matchingIndex >= 0 ? matchingIndex : taiwanDateKey < partyDays[0].dateKey ? 0 : partyDays.length - 1;
+    setTaiwanTodayIndex(nextIndex);
+    setShowTaiwanToday(true);
   };
 
   const openChapterPage = (chapter: PageName, replace = false) => {
@@ -2219,11 +2349,7 @@ export default function TravelSite() {
             <button type="button" onClick={() => setShowOkinawaReservationChecklist(true)} className={actionClass} style={actionStyle}><span className="text-xl">📋</span><span className="text-xs font-light uppercase tracking-[0.16em]">Reservation Checklist</span></button>
           </>
         )}
-        {selectedTrip === "okinawaJapan" ? (
-          <button type="button" onClick={openOkinawaToday} className={actionClass} style={actionStyle}><span className="text-xl">☀️</span><span className="text-xs font-light uppercase tracking-[0.16em]">What's Today?</span></button>
-        ) : (
-          <button type="button" disabled className={`${actionClass} cursor-not-allowed opacity-45`} style={actionStyle}><span className="text-xl">☀️</span><span className="text-xs font-light uppercase tracking-[0.16em]">What's Today?</span></button>
-        )}
+        <button type="button" onClick={selectedTrip === "taiwan" ? openTaiwanToday : openOkinawaToday} className={actionClass} style={actionStyle}><span className="text-xl">☀️</span><span className="text-xs font-light uppercase tracking-[0.16em]">What's Today?</span></button>
         <button type="button" onClick={() => openMoroccoCostTracker(selectedTrip)} className={actionClass} style={actionStyle}><span className="text-xl">💰</span><span className="text-xs font-light uppercase tracking-[0.16em]">BillTab</span></button>
         {selectedTrip === "taiwan" ? (
           <MemoryMaker albumKey="taiwanDecember" albumName="Taiwan December" accentColor={accentColor} guestName={guestName} returnChapter="taipei" onViewAlbum={openAlbumPopup} inlineButtons solidButtons />
@@ -3335,6 +3461,20 @@ export default function TravelSite() {
       : isOkinawaAfterTrip
         ? "Trip complete · Browse your trip days"
         : "Today in Okinawa";
+    const taiwanDashboardDays = selectedTrip === "taiwan" ? getTaiwanTodayDaysForGuest(guestName) : [];
+    const taiwanDateKey = getTaiwanDateKey(now);
+    const taiwanTripStartKey = taiwanDashboardDays[0]?.dateKey || "2026-12-07";
+    const taiwanTripEndKey = taiwanDashboardDays[taiwanDashboardDays.length - 1]?.dateKey || "2026-12-25";
+    const isTaiwanBeforeTrip = taiwanDateKey < taiwanTripStartKey;
+    const isTaiwanAfterTrip = taiwanDateKey > taiwanTripEndKey;
+    const taiwanSelectedDay = taiwanDashboardDays[taiwanTodayIndex] || taiwanDashboardDays[0];
+    const taiwanTomorrowDay = taiwanDashboardDays[taiwanTodayIndex + 1];
+    const taiwanDaysUntilTrip = Math.max(0, Math.ceil((Date.parse(`${taiwanTripStartKey}T00:00:00Z`) - Date.parse(`${taiwanDateKey}T00:00:00Z`)) / 86400000));
+    const taiwanTodayStatus = isTaiwanBeforeTrip
+      ? `${taiwanDaysUntilTrip} day${taiwanDaysUntilTrip === 1 ? "" : "s"} until Taiwan · Preview mode`
+      : isTaiwanAfterTrip
+        ? "Trip complete · Browse your trip days"
+        : "Today in Taiwan";
     return (
       <div className="flex min-h-screen items-center justify-center bg-black px-6 text-white">
         <div className={`w-full max-w-md rounded-[2rem] border border-white/10 text-center backdrop-blur-xl ${isConfirmedTripAppCard || isMainSubmenu ? "flex h-[min(760px,calc(100dvh-2rem))] flex-col overflow-hidden" : ""} ${isPosterHeroSelection ? `overflow-hidden ${isTaiwanStyleTrip || selectedTrip === "morocco" || selectedTrip === "vietnam" ? "bg-black" : "bg-[#020B18]"} shadow-[0_0_44px_rgba(158,220,255,0.16)]` : isMainSubmenu ? "bg-black shadow-[0_0_44px_rgba(255,255,255,0.1)]" : "bg-white/[0.04] p-8 shadow-[0_0_40px_rgba(255,255,255,0.06)]"}`}>
@@ -4726,6 +4866,72 @@ export default function TravelSite() {
             </>
           )}
         </div>
+        {showGuestActions && selectedTrip === "taiwan" && guestName !== "Guest" && showTaiwanToday && taiwanSelectedDay && (
+          <ViewportPortal>
+            <div className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden bg-black/85 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-[max(0.5rem,env(safe-area-inset-top))] backdrop-blur-sm sm:p-4" role="dialog" aria-modal="true" aria-label="Taiwan today's itinerary">
+              <section className="flex h-[calc(100dvh-1rem)] max-h-[760px] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#07110B] text-left shadow-2xl sm:h-[min(760px,calc(100dvh-2rem))]">
+                <div className="flex shrink-0 items-start justify-between gap-4 border-b border-white/10 px-4 py-3 sm:px-6 sm:py-5">
+                  <div className="min-w-0">
+                    <p className="text-xs uppercase tracking-[0.22em] text-[#72E49A]">{taiwanTodayStatus}</p>
+                    <h2 className="mt-2 text-xl font-light text-white sm:text-2xl">What&apos;s Today?</h2>
+                    <p className="mt-1 truncate text-xs text-white/45">{guestName}</p>
+                  </div>
+                  <button type="button" onClick={() => setShowTaiwanToday(false)} aria-label="Close today's itinerary" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">×</button>
+                </div>
+
+                <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-6">
+                  <label className="mb-2 block text-[10px] uppercase tracking-[0.18em] text-white/35" htmlFor="taiwan-today-day">Your trip day</label>
+                  <select id="taiwan-today-day" value={taiwanTodayIndex} onChange={(event) => setTaiwanTodayIndex(Number(event.target.value))} className="mb-4 w-full rounded-xl border border-white/15 bg-black/40 px-4 py-3 text-sm text-white outline-none transition focus:border-[#72E49A]/60">
+                    {taiwanDashboardDays.map((day, index) => <option key={`${day.dateKey}-${day.chapter}`} value={index}>{day.date} · {day.location}</option>)}
+                  </select>
+
+                  <article className="rounded-2xl border border-[#72E49A]/25 bg-[#72E49A]/[0.07] p-4 sm:p-5">
+                    <p className="text-xs uppercase tracking-[0.2em] text-[#72E49A]">{taiwanSelectedDay.date}</p>
+                    <h3 className="mt-2 text-2xl font-light text-white">{taiwanSelectedDay.title}</h3>
+                    <p className="mt-1 text-sm text-white/45">{taiwanSelectedDay.location}</p>
+                    <ul className="mt-5 space-y-3 text-sm leading-relaxed text-white/75">
+                      {taiwanSelectedDay.items.map((item) => <li key={item} className="flex gap-3"><span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#72E49A]" /><span>{item}</span></li>)}
+                    </ul>
+                    <div className="mt-5 border-t border-white/10 pt-4">
+                      <p className="text-[10px] uppercase tracking-[0.18em] text-white/35">Stay</p>
+                      <p className="mt-1 text-sm text-white/75">{taiwanSelectedDay.stay}</p>
+                    </div>
+                    {taiwanSelectedDay.links?.length ? (
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {taiwanSelectedDay.links.map((link) => <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer" className="rounded-full border border-[#72E49A]/35 bg-[#72E49A]/10 px-3 py-1.5 text-xs text-[#72E49A] transition hover:border-[#72E49A]/65">{link.label}</a>)}
+                      </div>
+                    ) : null}
+                  </article>
+
+                  <div className="mt-3 grid grid-cols-2 gap-3">
+                    <div className="rounded-xl border border-white/10 bg-white/[0.04] p-3">
+                      <p className="text-[10px] uppercase tracking-[0.16em] text-white/35">Weather guide</p>
+                      <p className="mt-2 text-sm text-white/75">15-22°C · December range</p>
+                    </div>
+                    <div className="rounded-xl border border-white/10 bg-white/[0.04] p-3">
+                      <p className="text-[10px] uppercase tracking-[0.16em] text-white/35">Taiwan time</p>
+                      <p className="mt-2 text-sm text-white/75">{new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Taipei", hour: "numeric", minute: "2-digit", hour12: true }).format(now)}</p>
+                    </div>
+                  </div>
+
+                  {taiwanTomorrowDay && (
+                    <article className="mt-3 rounded-xl border border-white/10 bg-black/25 p-4">
+                      <p className="text-[10px] uppercase tracking-[0.18em] text-white/35">Your next trip day</p>
+                      <p className="mt-2 text-sm text-white/75">{taiwanTomorrowDay.date} · {taiwanTomorrowDay.title}</p>
+                      <p className="mt-1 text-xs text-white/45">{taiwanTomorrowDay.location}</p>
+                    </article>
+                  )}
+                </div>
+
+                <div className="grid shrink-0 grid-cols-3 gap-2 border-t border-white/10 bg-[#07110B] p-3 sm:p-4">
+                  <button type="button" disabled={taiwanTodayIndex === 0} onClick={() => setTaiwanTodayIndex((index) => Math.max(0, index - 1))} className="rounded-xl border border-white/15 px-2 py-2.5 text-xs text-white/65 transition disabled:cursor-not-allowed disabled:opacity-30">← Previous</button>
+                  <button type="button" onClick={() => { setShowTaiwanToday(false); openChapterPage(taiwanSelectedDay.chapter); }} className="rounded-xl border border-[#72E49A]/40 bg-[#72E49A]/10 px-2 py-2.5 text-xs text-[#72E49A]">Open Chapter</button>
+                  <button type="button" disabled={taiwanTodayIndex === taiwanDashboardDays.length - 1} onClick={() => setTaiwanTodayIndex((index) => Math.min(taiwanDashboardDays.length - 1, index + 1))} className="rounded-xl border border-white/15 px-2 py-2.5 text-xs text-white/65 transition disabled:cursor-not-allowed disabled:opacity-30">Next →</button>
+                </div>
+              </section>
+            </div>
+          </ViewportPortal>
+        )}
         {showGuestActions && selectedTrip === "okinawaJapan" && guestName !== "Guest" && showOkinawaToday && okinawaSelectedDay && (
           <ViewportPortal>
             <div className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden bg-black/85 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-[max(0.5rem,env(safe-area-inset-top))] backdrop-blur-sm sm:p-4" role="dialog" aria-modal="true" aria-label="Okinawa today's itinerary">
