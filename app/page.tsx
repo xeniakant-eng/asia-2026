@@ -4509,22 +4509,27 @@ export default function TravelSite() {
                 </div>
               )}
               {showAlaskaTodoList && guestName && guestName !== "Guest" && (
-                <div className="fixed inset-0 z-50 flex items-stretch justify-center bg-black/80 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-[max(0.5rem,env(safe-area-inset-top))] backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-label={`${guestName} Alaska Cruise do to list`}>
+                <div className="fixed inset-0 z-50 flex items-stretch justify-center bg-black/80 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-[max(0.5rem,env(safe-area-inset-top))] backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-label={`${guestName} Alaska Cruise to do list`}>
                   <section className="flex h-[calc(100dvh-1rem)] max-h-[calc(100dvh-1rem)] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] text-left shadow-2xl sm:h-[88dvh] sm:max-h-[760px]">
-                    <div className="flex shrink-0 items-start justify-between gap-4 border-b border-white/10 px-4 py-3 sm:px-7 sm:py-4">
+                    <div className="flex shrink-0 items-start justify-between gap-4 border-b border-white/10 px-4 py-3 sm:px-7 sm:py-5">
                       <div>
                         <p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: ALASKA_BLUE }}>Alaska Cruise 2027</p>
                         <h2 className="text-xl font-light text-white sm:text-2xl">To Do List</h2>
-                        <p className="mt-1 text-xs text-white/45 sm:mt-2 sm:text-sm">Cruise planning tasks</p>
+                        <p className="mt-1 text-xs text-white/45 sm:mt-2 sm:text-sm">{guestName}</p>
                       </div>
-                      <button type="button" onClick={() => setShowAlaskaTodoList(false)} aria-label="Close Alaska Cruise do to list" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">x</button>
+                      <button type="button" onClick={() => setShowAlaskaTodoList(false)} aria-label="Close Alaska Cruise to do list" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">×</button>
                     </div>
-                    <div className="min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-contain p-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-7">
-                      {alaskaTodoItems.map((item) => {
-                        const key = `AlaskaCruise-${guestName}-To Do List-${item}`;
-                        const checked = Boolean(checkedPackingItems[key]);
-                        return <button key={key} type="button" onClick={() => togglePackingItem(key, checked)} className={`flex items-center gap-3 rounded-xl border px-3 py-2 text-left text-sm transition sm:py-2.5 ${checked ? "border-[#8FD8FF]/55 bg-[#8FD8FF]/10 text-white" : "border-white/10 bg-black/20 text-white/70 hover:border-white/25"}`}><span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-xs ${checked ? "border-[#8FD8FF] bg-[#8FD8FF] text-black" : "border-white/25 text-transparent"}`}>?</span><span className={checked ? "text-white line-through decoration-[#8FD8FF]/70" : "text-white/75"}>{item}</span></button>;
-                      })}
+                    <div className="min-h-0 flex-1 touch-pan-y space-y-3 overflow-y-auto overscroll-contain p-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:space-y-4 sm:p-7" style={{ WebkitOverflowScrolling: "touch" }}>
+                      <article className="rounded-xl border border-white/10 bg-white/[0.04] p-3 sm:p-4">
+                        <h3 className="mb-3 text-base font-light text-white sm:mb-4 sm:text-lg">Planning Tasks</h3>
+                        <div className="grid gap-2">
+                          {alaskaTodoItems.map((item) => {
+                            const key = `AlaskaCruise-${guestName}-To Do List-${item}`;
+                            const checked = Boolean(checkedPackingItems[key]);
+                            return <button key={key} type="button" onClick={() => togglePackingItem(key, checked)} className={`flex items-center gap-3 rounded-xl border px-3 py-2 text-left text-sm transition sm:py-2.5 ${checked ? "border-[#8FD8FF]/55 bg-[#8FD8FF]/10 text-white" : "border-white/10 bg-black/20 text-white/70 hover:border-white/25"}`}><span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-xs ${checked ? "border-[#8FD8FF] bg-[#8FD8FF] text-black" : "border-white/25 text-transparent"}`}>✓</span><span className={checked ? "text-white line-through decoration-[#8FD8FF]/70" : "text-white/75"}>{item}</span></button>;
+                          })}
+                        </div>
+                      </article>
                     </div>
                   </section>
                 </div>
