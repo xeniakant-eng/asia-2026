@@ -841,6 +841,8 @@ export default function TravelSite() {
     "Xenia & David & Naomi",
     "Jeff & Irene",
     "Dylan & Sharon",
+    "Mei & Yi-Tsai",
+    "CK & Ratna",
   ];
   const alaskaTodoItems = [
     "Book Arrival Flight -> Vancouver YVR",
@@ -4540,20 +4542,23 @@ export default function TravelSite() {
                     </div>
                     <div className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain p-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-6">
                       {[
-                        { price: "$6,111.48 CAD", booking: "ML8X7Q", room: "D225", guests: [{ title: "Mr", first: "Kuo-Hsiung", last: "Yen" }, { title: "Mrs", first: "Shu-Li", last: "Chin" }, { title: "Mr", first: "Ko-Ming", last: "Yen" }] },
-                        { price: "$3,309.29 CAD", booking: "MW2W4R", room: "B702", guests: [{ title: "Mr", first: "Yu-Ting David", last: "Wu" }, { title: "Mrs", first: "I-Ling Xenia", last: "Kant" }, { title: "Miss", first: "Naomi Ya-Rong", last: "Wu" }] },
-                        { price: "$2,898.28 CAD", booking: "MW2WGL", room: "B723", guests: [{ title: "Mr", first: "Tzu-Fu", last: "Yuan" }, { title: "Mrs", first: "Ting-Jeng", last: "Kuo" }] },
-                        { price: "$2,898.28 CAD", booking: "MW2L2W", room: "C723", guests: [{ title: "Mrs", first: "Yu-Ting Judy", last: "Yen" }, { title: "Mr", first: "Tein-Kong", last: "Kant" }] },
-                        { price: "$2,898.28 CAD", booking: "MW2L8K", room: "C727", guests: [{ title: "Mr", first: "Ko-Chun", last: "Yen" }, { title: "Miss", first: "Chun-Cheng", last: "Hsieh" }] },
-                        { price: "$2,898.28 CAD", booking: "MW2LGR", room: "C731", guests: [{ title: "Mrs", first: "Shu-Li", last: "Lin" }, { title: "Mr", first: "Ming-Che", last: "Hsieh" }] },
-                        { price: "$2,898.28 CAD", booking: "MKWRWV", room: "C739", guests: [{ title: "Mrs", first: "Shu-Chen", last: "Lin" }, { title: "Mr", first: "Hui-Ming", last: "Fan" }] },
-                        { price: "$2,898.28 CAD", booking: "MKWKXN", room: "C743", guests: [{ title: "Mrs", first: "Shu-Ching", last: "Lin" }, { title: "Miss", first: "Hui-Chu", last: "Sung" }] },
+                        { price: "$3,309.29 CAD", booking: "MW2W4R", room: "B702", deck: "Deck 11", guests: [{ title: "Mr", first: "Yu-Ting David", last: "Wu" }, { title: "Mrs", first: "I-Ling Xenia", last: "Kant" }, { title: "Miss", first: "Naomi Ya-Rong", last: "Wu" }] },
+                        { price: "$2,898.28 CAD", booking: "MW2WGL", room: "B723", deck: "Deck 11", guests: [{ title: "Mr", first: "Tzu-Fu", last: "Yuan" }, { title: "Mrs", first: "Ting-Jeng", last: "Kuo" }] },
+                        { price: "$1,778.48 CAD", obc: "US$100 OBC", booking: "MX7LVQ", room: "C229", deck: "Deck 10", guests: [{ title: "Mr", first: "Cheng-Kai", last: "Chao" }, { title: "Mrs", first: "Ratna Dewi", last: "Tjan" }] },
+                        { price: "$2,898.28 CAD", booking: "MW2L2W", room: "C723", deck: "Deck 10", guests: [{ title: "Mrs", first: "Yu-Ting Judy", last: "Yen" }, { title: "Mr", first: "Tein-Kong", last: "Kant" }] },
+                        { price: "$2,898.28 CAD", booking: "MW2L8K", room: "C727", deck: "Deck 10", guests: [{ title: "Mr", first: "Ko-Chun", last: "Yen" }, { title: "Miss", first: "Chun-Cheng", last: "Hsieh" }] },
+                        { price: "$2,898.28 CAD", booking: "MW2LGR", room: "C731", deck: "Deck 10", guests: [{ title: "Mrs", first: "Shu-Li", last: "Lin" }, { title: "Mr", first: "Ming-Che", last: "Hsieh" }] },
+                        { price: "$2,898.28 CAD", booking: "MKWRWV", room: "C739", deck: "Deck 10", guests: [{ title: "Mrs", first: "Shu-Chen", last: "Lin" }, { title: "Mr", first: "Hui-Ming", last: "Fan" }] },
+                        { price: "$2,898.28 CAD", booking: "MKWKXN", room: "C743", deck: "Deck 10", guests: [{ title: "Mrs", first: "Shu-Ching", last: "Lin" }, { title: "Miss", first: "Hui-Chu", last: "Sung" }] },
+                        { price: "$5,999.62 CAD", obc: "US$100 OBC", booking: "MX5DCK", room: "D217", deck: "Deck 9", guests: [{ title: "Mrs", first: "Mei-Hsuan", last: "Chao" }, { title: "Mrs", first: "Yi-Tsai", last: "Tang" }] },
+                        { price: "$6,111.48 CAD", booking: "ML8X7Q", room: "D225", deck: "Deck 9", guests: [{ title: "Mr", first: "Kuo-Hsiung", last: "Yen" }, { title: "Mrs", first: "Shu-Li", last: "Chin" }, { title: "Mr", first: "Ko-Ming", last: "Yen" }] },
                       ].map((cabin) => (
                         <article key={cabin.booking} className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
                           <div className="grid gap-3 border-b border-white/10 pb-3 text-sm sm:grid-cols-3">
                             <div>
                               <p className="text-[10px] uppercase tracking-[0.18em] text-white/35">Cabin CAD</p>
                               <p className="mt-1 font-medium text-white">{cabin.price}</p>
+                              {cabin.obc && <p className="mt-1 text-xs text-[#8FD8FF]">{cabin.obc}</p>}
                             </div>
                             <div>
                               <p className="text-[10px] uppercase tracking-[0.18em] text-white/35">Booking #</p>
@@ -4562,6 +4567,7 @@ export default function TravelSite() {
                             <div>
                               <p className="text-[10px] uppercase tracking-[0.18em] text-white/35">Room</p>
                               <p className="mt-1 font-medium text-white">{cabin.room}</p>
+                              {cabin.deck && <p className="mt-1 text-xs text-white/45">{cabin.deck}</p>}
                             </div>
                           </div>
                           <div className="mt-3 space-y-2">
