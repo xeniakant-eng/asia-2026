@@ -40,7 +40,8 @@ const TRIP_PATHS: Record<TripKey, string> = {
 const TRIP_KEYS_BY_PATH = Object.fromEntries(Object.entries(TRIP_PATHS).map(([key, path]) => [path, key])) as Record<string, TripKey>;
 
 const GUEST_NAME_ALIASES: Record<string, string> = {
-  "Heather & Jack & Aizen (8) & Kaien (3) & Norma": "Heather & Jack & Aizen (8) & Kaien (3)",
+  "Heather & Jack & Aizen (8) & Kaien (3) & Norma": "Heather & Kaien (3)",
+  "Heather & Jack & Aizen (8) & Kaien (3)": "Heather & Kaien (3)",
 };
 
 function ViewportPortal({ children }: { children: React.ReactNode }) {
@@ -825,7 +826,7 @@ export default function TravelSite() {
     "Jim",
     "Anthony & Christine & Mona (1)",
     "Jenn & Hiroshi & Masashi (6) & Miyari (3)",
-    "Heather & Jack & Aizen (8) & Kaien (3)",
+    "Heather & Kaien (3)",
     "Steven Wang",
     "Mark Wang",
     "Mei & Emilia (8)",
@@ -1098,14 +1099,14 @@ export default function TravelSite() {
       dateKey: "2026-11-26", date: "Thu Nov 26", chapter: "onna", location: "Okinawa", title: "Heather's Party Arrival Day",
       items: ["Arrival and transportation details TBD.", "Settle in and prepare for the Onna resort chapter."],
       stay: "Hotel Monterey Okinawa", stayHref: "https://www.hotelmonterey.co.jp/en/okinawa/",
-      parties: ["Heather & Jack & Aizen (8) & Kaien (3)"],
+      parties: ["Heather & Kaien (3)"],
     },
     {
       dateKey: "2026-11-27", date: "Fri Nov 27", chapter: "onna", location: "Naha → Onna", title: "Arrival + Resort Transfer",
       items: ["Xenia, David & Naomi · EVA Air BR112 · Arrive 9:15 AM at Naha Airport.", "Pick up ORIX rental car · reservation RC32461319200023608 · confirmation H3J63XYi.", "Lunch and stroll at Senaga Island · Umikaji Terrace.", "Afternoon options · PARCO City and Minatogawa, or Araha Beach Park and Aeon Mall Rycom.", "Drive to Hotel Monterey Okinawa · approximately 45 minutes."],
       stay: "Hotel Monterey Okinawa", stayHref: "https://www.hotelmonterey.co.jp/en/okinawa/",
       links: [{ label: "ORIX Pickup", href: "https://travel.rakuten.com/cars/default/en-us/shop/6409" }, { label: "Rental Site Map", href: "https://www.google.com/maps/search/1-1174+Toyosaki,+Tomigusuku" }],
-      parties: ["Xenia & David & Naomi (3)", "Heather & Jack & Aizen (8) & Kaien (3)", "Steven Wang", "Mark Wang"],
+      parties: ["Xenia & David & Naomi (3)", "Heather & Kaien (3)", "Steven Wang", "Mark Wang"],
     },
     {
       dateKey: "2026-11-28", date: "Sat Nov 28", chapter: "onna", location: "Onna", title: "Resort Day · Blue Cave",
@@ -1117,14 +1118,14 @@ export default function TravelSite() {
       dateKey: "2026-11-29", date: "Sun Nov 29", chapter: "onna", location: "Onna", title: "Albert & Quinn Wedding Day",
       items: ["Hotel breakfast buffet.", "11:00 AM · Wedding ceremony at Hotel Monterey Chapel.", "12:30-1:30 PM · Cocktail hour and hors d'oeuvres.", "1:30-3:30 PM · Wedding lunch reception.", "7:30 PM · After party.", "Mei & Emilia · EVA Air BR186 · Arrive 7:10 PM."],
       stay: "Hotel Monterey Okinawa", stayHref: "https://www.hotelmonterey.co.jp/en/okinawa/",
-      parties: ["Xenia & David & Naomi (3)", "Dave & Christina & Xixi (2)", "Heather & Jack & Aizen (8) & Kaien (3)", "Steven Wang", "Mark Wang", "Mei & Emilia (8)"],
+      parties: ["Xenia & David & Naomi (3)", "Dave & Christina & Xixi (2)", "Heather & Kaien (3)", "Steven Wang", "Mark Wang", "Mei & Emilia (8)"],
     },
     {
       dateKey: "2026-11-30", date: "Mon Nov 30", chapter: "nago", location: "Onna → Nago", title: "Cape Manzamo + Busena + Orion",
       items: ["Hotel breakfast and 10:00 AM checkout.", "Cape Manzamo quick stop · approximately 40-minute drive.", "Busena Marine Park · underwater observatory and glass boat.", "Lunch near Onna or Nago.", "2:00-4:00 PM · Orion Happy Park reserved tour.", "Dinner at Yakiniku Kochan · optional MEGA Don Quijote Nago."],
       stay: "Hotel Yugaf Inn Okinawa", stayHref: "https://maps.google.com/?q=Hotel+Yugaf+Inn+Okinawa",
       links: [{ label: "Cape Manzamo", href: "https://maps.google.com/?q=Cape+Manzamo+Okinawa" }, { label: "Orion Happy Park", href: "https://maps.google.com/?q=Orion+Happy+Park+Nago" }],
-      parties: ["Xenia & David & Naomi (3)", "Dave & Christina & Xixi (2)", "Heather & Jack & Aizen (8) & Kaien (3)", "Mei & Emilia (8)"],
+      parties: ["Xenia & David & Naomi (3)", "Dave & Christina & Xixi (2)", "Heather & Kaien (3)", "Mei & Emilia (8)"],
     },
     {
       dateKey: "2026-11-30", date: "Mon Nov 30", chapter: "onna", location: "Okinawa", title: "Steven & Mark · Final Day",
@@ -1151,10 +1152,10 @@ export default function TravelSite() {
       links: [{ label: "Okinawa World", href: "https://maps.google.com/?q=Okinawa+World" }, { label: "Gangala Reservation", href: "https://book.gangala.com/?lng=zh-TW" }],
     },
     {
-      dateKey: "2026-12-04", date: "Fri Dec 4", chapter: "nanjo", location: "Okinawa", title: "Heather's Party · Final Day",
+      dateKey: "2026-12-02", date: "Wed Dec 2", chapter: "nago", location: "Okinawa", title: "Heather's Party · Final Day",
       items: ["Departure-day timing and transportation details TBD."],
       stay: "Departure day",
-      parties: ["Heather & Jack & Aizen (8) & Kaien (3)"],
+      parties: ["Heather & Kaien (3)"],
     },
     {
       dateKey: "2026-12-04", date: "Fri Dec 4", chapter: "naha", location: "Nanjo → Naha", title: "Final Naha Chapter",
@@ -1420,7 +1421,7 @@ export default function TravelSite() {
     return true;
   }).sort((firstGuest, secondGuest) => {
     if (selectedTrip === "okinawaJapan") {
-      const okinawaPartyOrder = ["Xenia & David & Naomi (3)", "Dave & Christina & Xixi (2)", "Heather & Jack & Aizen (8) & Kaien (3)", "Steven Wang", "Mark Wang", "Mei & Emilia (8)"];
+      const okinawaPartyOrder = ["Xenia & David & Naomi (3)", "Dave & Christina & Xixi (2)", "Heather & Kaien (3)", "Steven Wang", "Mark Wang", "Mei & Emilia (8)"];
       return okinawaPartyOrder.indexOf(firstGuest) - okinawaPartyOrder.indexOf(secondGuest);
     }
     if (selectedTrip !== "taiwan" && selectedTrip !== "xiaoliuqiuTaiwan") return 0;
@@ -1437,7 +1438,7 @@ export default function TravelSite() {
     if (previousSelectedTrip === trip) return getVisibleGuestOptions();
     return guestOptions.filter((guest) => {
       if (guest === "I am just a random Guest") return false;
-      if (trip === "taiwan") return !["Steven Wang", "Heather & Jack & Aizen (8) & Kaien (3)", "Mei & Emilia (8)"].includes(guest);
+      if (trip === "taiwan") return !["Steven Wang", "Heather & Kaien (3)", "Mei & Emilia (8)"].includes(guest);
       return !["Jim", "Anthony & Christine & Mona (1)", "Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Julie & Adrian & Ethan (4) & Tyrell (1)", "Mei & Emilia (8) & ChaoMa"].includes(guest);
     });
   };
@@ -2074,7 +2075,7 @@ export default function TravelSite() {
       "Jim": ["xiaoliuqiu"],
       "Anthony & Christine & Mona (1)": ["xiaoliuqiu"],
       "Jenn & Hiroshi & Masashi (6) & Miyari (3)": ["xiaoliuqiu"],
-      "Heather & Jack & Aizen (8) & Kaien (3)": ["onna", "nago", "nanjo"],
+      "Heather & Kaien (3)": ["onna", "nago"],
       "Steven Wang": ["nahaearly", "onna"],
       "Mark Wang": ["xiaoliuqiu", "nahaearly", "onna"],
       "Mei & Emilia (8)": ["nago", "nanjo", "naha"],
@@ -2221,7 +2222,7 @@ export default function TravelSite() {
     if (guest === "Xenia & David & Naomi (3)") {
       return { title: `${guest} Packing Checklist`, sections: [...sectionsWithEssentials([okinawaFunPassThree]), { title: "Okinawa Segment", items: okinawaSegment }, { title: "Baby / Toddler Items", items: babyToddlerItems }] };
     }
-    if (guest === "Heather & Jack & Aizen (8) & Kaien (3)") {
+    if (guest === "Heather & Kaien (3)") {
       return { title: `${guest} Packing Checklist`, sections: [...sectionsWithEssentials([okinawaFunPassFour]), { title: "Okinawa Segment", items: okinawaSegment }, { title: "Baby / Toddler Items", items: babyToddlerItems }] };
     }
     if (guest === "Mei & Emilia (8)") {
@@ -3409,7 +3410,7 @@ export default function TravelSite() {
     const okinawaDashboardDates: Record<string, string> = {
       "Xenia & David & Naomi (3)": "Nov 27 - Dec 6 2026",
       "Dave & Christina & Xixi (2)": "Nov 28 - Dec 6 2026",
-      "Heather & Jack & Aizen (8) & Kaien (3)": "Nov 26 - Dec 4 2026",
+      "Heather & Kaien (3)": "Nov 26 - Dec 2 2026",
       "Steven Wang": "Nov 25 - Nov 30 2026",
       "Mark Wang": "Nov 25 - Nov 30 2026",
       "Mei & Emilia (8)": "Nov 29 - Dec 6 2026",
@@ -4862,9 +4863,9 @@ export default function TravelSite() {
                 {guestName === "Mei & Emilia (8) & ChaoMa" && <CountrySegmentButtons segments={[{ label: "Dec 7–8 · NorthEast Taipei", page: "northeasttaipei", color: TAIWAN_GOLD }, { label: "Dec 9–12 · Yilan", page: "yilan", color: "#72E49A" }, { label: "Dec 19–25 · Somewhere in Taiwan", page: "taiwanlate", color: TAIWAN_GOLD }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Steven Wang" && <CountrySegmentButtons segments={[{ label: "Nov 25–27 · Naha + Okinawa World", page: "nahaearly", color: BABY_BLUE }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Dave & Christina & Xixi (2)" && <CountrySegmentButtons segments={[{ label: "Dec 7–8 · NorthEast Taipei", page: "northeasttaipei", color: TAIWAN_GOLD }, { label: "Dec 9–12 · Yilan", page: "yilan", color: "#72E49A" }, { label: "Dec 13–17 · Central Taipei", page: "taipei", color: TAIWAN_GOLD }, { label: "Dec 19–25 · Somewhere in Taiwan", page: "taiwanlate", color: TAIWAN_GOLD }, { label: "Nov 28–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
-                {guestName === "Heather & Jack & Aizen (8) & Kaien (3)" && <CountrySegmentButtons segments={[{ label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
+                {guestName === "Heather & Kaien (3)" && <CountrySegmentButtons segments={[{ label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Julie & Adrian & Ethan (4) & Tyrell (1)" && <CountrySegmentButtons segments={[{ label: "Dec 14–17 · Central Taipei", page: "taipei", color: TAIWAN_GOLD }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
-                {guestName !== "Guest" && !["Xenia & David & Naomi (3)", "Jim", "Mark Wang", "Anthony & Christine & Mona (1)", "Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Mei & Emilia (8)", "Mei & Emilia (8) & ChaoMa", "Steven Wang", "Dave & Christina & Xixi (2)", "Heather & Jack & Aizen (8) & Kaien (3)", "Julie & Adrian & Ethan (4) & Tyrell (1)"].includes(guestName) && (
+                {guestName !== "Guest" && !["Xenia & David & Naomi (3)", "Jim", "Mark Wang", "Anthony & Christine & Mona (1)", "Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Mei & Emilia (8)", "Mei & Emilia (8) & ChaoMa", "Steven Wang", "Dave & Christina & Xixi (2)", "Heather & Kaien (3)", "Julie & Adrian & Ethan (4) & Tyrell (1)"].includes(guestName) && (
                   <div className="mt-5 rounded-2xl border border-amber-300/20 bg-amber-300/5 p-4">
                     <p className="text-sm leading-6 text-amber-100/80">
                       No trip segment found, please confirm your trip with Xenia ASAP.
@@ -5067,9 +5068,9 @@ export default function TravelSite() {
     taiwanlate: [["Xenia & David & Naomi (3)", "Dec 19 – Dec 25 · Somewhere in Taiwan"], ["Dave & Christina & Xixi (2)", "Dec 19 – Dec 25 · Somewhere in Taiwan"], ["Mei & Emilia (8) & ChaoMa", "Dec 19 – Dec 25 · Somewhere in Taiwan"]],
     yilan: [["Xenia & David & Naomi (3)", "Dec 9 – Dec 12 · Yilan"], ["Mei & Emilia (8) & ChaoMa", "Dec 9 – Dec 12 · Yilan"], ["Dave & Christina & Xixi (2)", "Dec 9 – Dec 12 · Yilan"]],
     xiaoliuqiu: [["Anthony & Christine & Mona (1)", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Mark Wang", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Jim", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Xenia & David & Naomi (3)", "Nov 21 – Nov 23 · Xiaoliuqiu"], ["Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Nov 21 – Nov 23 · Xiaoliuqiu"]],
-    onna: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 28 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Nov 30 · Okinawa"], ["Mark Wang", "Nov 25 – Nov 30 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Jack & Aizen (8) & Kaien (3)", "Nov 26 – Dec 4 · Okinawa"]],
-    nago: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 28 – Dec 6 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Jack & Aizen (8) & Kaien (3)", "Nov 26 – Dec 4 · Okinawa"]],
-    nanjo: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 28 – Dec 6 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Jack & Aizen (8) & Kaien (3)", "Nov 26 – Dec 4 · Okinawa"]],
+    onna: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 28 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Nov 30 · Okinawa"], ["Mark Wang", "Nov 25 – Nov 30 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Kaien (3)", "Nov 26 – Dec 2 · Okinawa"]],
+    nago: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 28 – Dec 6 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Kaien (3)", "Nov 26 – Dec 2 · Okinawa"]],
+    nanjo: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 28 – Dec 6 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"]],
     naha: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 28 – Dec 6 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"]],
     nahaearly: [["Steven Wang", "Nov 25 – Nov 30 · Okinawa"], ["Mark Wang", "Nov 25 – Nov 30 · Okinawa"]],
   };
@@ -5654,7 +5655,7 @@ function OnnaContent({ card, linkedImage }: { card: (children: React.ReactNode) 
           </>
         )}
       </DayArticle>
-      <DayArticle date="Saturday, November 28, 2026" rentalCarDate="2026-11-28" title="Resort Day · Beach / Culture / Blue Cave">{card(<p>🍳 Breakfast · Hotel buffet</p>)}{card(<><p>🤿 Blue Cave dive & snorkel 青之洞窟潛水</p><p className="text-white/50">Weather dependent</p><p className="mt-3 text-[var(--chapter-accent)]">Headcount · 6</p><ul className="mt-2 ml-5 list-disc space-y-1 text-white/65"><li>Xenia</li><li>David</li><li>Steven</li><li>Mark</li><li>Christine</li><li>Heather · Discovery Dive</li></ul>{linkedImage("/bluecave.png", "Blue Cave Okinawa")}</>)}{card(<a href="https://www.ryukyumura.co.jp/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🏯 Ryukyu Mura with FunPass</a>)}{card(<><p>✈ Dave, Christina & Xixi arrive in Okinawa</p><p className="mt-2 text-white/60">ANA NH1273 · Arrive at 2:40 PM</p></>)}{card(<><a href="https://www.hotelmonterey.co.jp/en/okinawa/activity/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🏖 Resort & Beach Activities</a>{linkedImage("/hotel.png", "Hotel Monterey Okinawa")}</>)}{card(<p>🍽 Dinner · TBD</p>)}</DayArticle>
+      <DayArticle date="Saturday, November 28, 2026" rentalCarDate="2026-11-28" title="Resort Day · Beach / Culture / Blue Cave">{card(<p>🍳 Breakfast · Hotel buffet</p>)}{card(<><p>🤿 Blue Cave dive & snorkel 青之洞窟潛水</p><p className="text-white/50">Weather dependent</p><p className="mt-3 text-[var(--chapter-accent)]">Headcount · 4</p><ul className="mt-2 ml-5 list-disc space-y-1 text-white/65"><li>David</li><li>Steven</li><li>Mark</li><li>Christine</li></ul>{linkedImage("/bluecave.png", "Blue Cave Okinawa")}</>)}{card(<a href="https://www.ryukyumura.co.jp/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🏯 Ryukyu Mura with FunPass</a>)}{card(<><p>✈ Dave, Christina & Xixi arrive in Okinawa</p><p className="mt-2 text-white/60">ANA NH1273 · Arrive at 2:40 PM</p></>)}{card(<><a href="https://www.hotelmonterey.co.jp/en/okinawa/activity/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🏖 Resort & Beach Activities</a>{linkedImage("/hotel.png", "Hotel Monterey Okinawa")}</>)}{card(<p>🍽 Dinner · TBD</p>)}</DayArticle>
       <DayArticle date="Sunday, November 29, 2026" rentalCarDate="2026-11-29" title="Albert & Quinn Wedding Day">{card(<><p>🍳 Breakfast · Hotel buffet</p><p>💍 11:00 AM · Albert & Quinn Wedding Ceremony at Hotel Monterey Chapel</p><p>🥂 12:30 PM - 1:30 PM · Cocktail Hour &amp; Hors d&apos;Oeuvres</p><p>🍽 1:30 PM - 3:30 PM · Wedding Lunch Reception</p><p>🎉 7:30 PM · After Party</p>{linkedImage("/chapel.png", "Wedding Chapel Okinawa")}</>)}{card(<><p>✈ Mei & Emilia arrive in Okinawa</p><p className="mt-2 text-white/60">EVA Air BR186 · Arrive at 7:10 PM</p></>)}</DayArticle>
     </>
   );

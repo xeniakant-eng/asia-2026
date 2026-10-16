@@ -52,7 +52,6 @@ from (
     ('2026-11-30'::date, 'carD', 'Jack', 'Heather & Jack & Aizen (8) & Kaien (3)', 'passenger', 2),
     ('2026-11-30'::date, 'carD', 'Aizen', 'Heather & Jack & Aizen (8) & Kaien (3)', 'passenger', 3),
     ('2026-11-30'::date, 'carD', 'Kaien', 'Heather & Jack & Aizen (8) & Kaien (3)', 'passenger', 4),
-    ('2026-11-30'::date, 'carD', 'Steven', 'Steven Wang', 'passenger', 5),
 
     ('2026-12-01'::date, 'carB', 'David', 'Xenia & David & Naomi (3)', 'driver', 1),
     ('2026-12-01'::date, 'carB', 'Xenia', 'Xenia & David & Naomi (3)', 'passenger', 2),
@@ -66,7 +65,6 @@ from (
     ('2026-12-01'::date, 'carD', 'Jack', 'Heather & Jack & Aizen (8) & Kaien (3)', 'passenger', 2),
     ('2026-12-01'::date, 'carD', 'Aizen', 'Heather & Jack & Aizen (8) & Kaien (3)', 'passenger', 3),
     ('2026-12-01'::date, 'carD', 'Kaien', 'Heather & Jack & Aizen (8) & Kaien (3)', 'passenger', 4),
-    ('2026-12-01'::date, 'carD', 'Steven', 'Steven Wang', 'passenger', 5),
 
     ('2026-12-02'::date, 'carB', 'David', 'Xenia & David & Naomi (3)', 'driver', 1),
     ('2026-12-02'::date, 'carB', 'Xenia', 'Xenia & David & Naomi (3)', 'passenger', 2),
@@ -80,7 +78,6 @@ from (
     ('2026-12-02'::date, 'carD', 'Jack', 'Heather & Jack & Aizen (8) & Kaien (3)', 'passenger', 2),
     ('2026-12-02'::date, 'carD', 'Aizen', 'Heather & Jack & Aizen (8) & Kaien (3)', 'passenger', 3),
     ('2026-12-02'::date, 'carD', 'Kaien', 'Heather & Jack & Aizen (8) & Kaien (3)', 'passenger', 4),
-    ('2026-12-02'::date, 'carD', 'Steven', 'Steven Wang', 'passenger', 5),
 
     ('2026-12-03'::date, 'carB', 'David', 'Xenia & David & Naomi (3)', 'driver', 1),
     ('2026-12-03'::date, 'carB', 'Xenia', 'Xenia & David & Naomi (3)', 'passenger', 2),

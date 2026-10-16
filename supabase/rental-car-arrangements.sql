@@ -70,12 +70,11 @@ values
   ('2026-11-26', 'carA', null, 1),
   ('2026-11-27', 'carA', null, 1),
   ('2026-11-27', 'carB', null, 2),
-  ('2026-11-27', 'carC', null, 3),
   ('2026-11-27', 'carD', null, 4),
   ('2026-11-28', 'carA', 'Blue Cave', 1),
-  ('2026-11-28', 'carB', 'Blue Cave', 2),
-  ('2026-11-28', 'carC', 'Ryukyu Mura', 3),
-  ('2026-11-28', 'carD', 'Spare car', 4)
+  ('2026-11-28', 'carB', 'Spare car', 2),
+  ('2026-11-28', 'carC', null, 3),
+  ('2026-11-28', 'carD', null, 4)
 on conflict (trip_date, car_key) do update set
   notes = excluded.notes,
   sort_order = excluded.sort_order;
@@ -94,26 +93,21 @@ from (
     ('2026-11-27'::date, 'carB', 'David', 'Xenia & David & Naomi (3)', 'driver', 1),
     ('2026-11-27'::date, 'carB', 'Xenia', 'Xenia & David & Naomi (3)', 'passenger', 2),
     ('2026-11-27'::date, 'carB', 'Naomi', 'Xenia & David & Naomi (3)', 'passenger', 3),
-    ('2026-11-27'::date, 'carC', 'Christina', 'Dave & Christina & Xixi (2)', 'driver', 1),
-    ('2026-11-27'::date, 'carC', 'Dave', 'Dave & Christina & Xixi (2)', 'passenger', 2),
-    ('2026-11-27'::date, 'carC', 'Xixi', 'Dave & Christina & Xixi (2)', 'passenger', 3),
-    ('2026-11-27'::date, 'carD', 'Heather', 'Heather & Jack & Aizen (8) & Kaien (3)', 'driver', 1),
-    ('2026-11-27'::date, 'carD', 'Jack', 'Heather & Jack & Aizen (8) & Kaien (3)', 'passenger', 2),
-    ('2026-11-27'::date, 'carD', 'Aizen', 'Heather & Jack & Aizen (8) & Kaien (3)', 'passenger', 3),
-    ('2026-11-27'::date, 'carD', 'Kaien', 'Heather & Jack & Aizen (8) & Kaien (3)', 'passenger', 4),
+    ('2026-11-27'::date, 'carB', 'Christine Liu', 'Christine Liu', 'passenger', 4),
+    ('2026-11-27'::date, 'carD', 'Heather', 'Heather & Kaien (3)', 'driver', 1),
+    ('2026-11-27'::date, 'carD', 'Kaien', 'Heather & Kaien (3)', 'passenger', 2),
 
     ('2026-11-28'::date, 'carA', 'Mark', 'Mark Wang', 'driver', 1),
     ('2026-11-28'::date, 'carA', 'Steven', 'Steven Wang', 'passenger', 2),
-    ('2026-11-28'::date, 'carA', 'Christine', 'Anthony & Christine & Mona (1)', 'passenger', 3),
-    ('2026-11-28'::date, 'carB', 'David', 'Xenia & David & Naomi (3)', 'driver', 1),
-    ('2026-11-28'::date, 'carB', 'Xenia', 'Xenia & David & Naomi (3)', 'passenger', 2),
-    ('2026-11-28'::date, 'carB', 'Heather', 'Heather & Jack & Aizen (8) & Kaien (3)', 'passenger', 3),
-    ('2026-11-28'::date, 'carB', 'Aizen', 'Heather & Jack & Aizen (8) & Kaien (3)', 'passenger', 4),
+    ('2026-11-28'::date, 'carA', 'Christine Liu', 'Christine Liu', 'passenger', 3),
+    ('2026-11-28'::date, 'carA', 'David', 'Xenia & David & Naomi (3)', 'passenger', 4),
     ('2026-11-28'::date, 'carC', 'Christina', 'Dave & Christina & Xixi (2)', 'driver', 1),
     ('2026-11-28'::date, 'carC', 'Dave', 'Dave & Christina & Xixi (2)', 'passenger', 2),
     ('2026-11-28'::date, 'carC', 'Xixi', 'Dave & Christina & Xixi (2)', 'passenger', 3),
-    ('2026-11-28'::date, 'carC', 'Jack', 'Heather & Jack & Aizen (8) & Kaien (3)', 'passenger', 4),
-    ('2026-11-28'::date, 'carC', 'Kaien', 'Heather & Jack & Aizen (8) & Kaien (3)', 'passenger', 5)
+    ('2026-11-28'::date, 'carD', 'Heather', 'Heather & Kaien (3)', 'driver', 1),
+    ('2026-11-28'::date, 'carD', 'Kaien', 'Heather & Kaien (3)', 'passenger', 2),
+    ('2026-11-28'::date, 'carD', 'Xenia', 'Xenia & David & Naomi (3)', 'passenger', 3),
+    ('2026-11-28'::date, 'carD', 'Naomi', 'Xenia & David & Naomi (3)', 'passenger', 4)
 ) as occupant(trip_date, car_key, person_name, party_name, role, sort_order)
 join public.rental_car_daily_assignments assignment
   on assignment.trip_date = occupant.trip_date
