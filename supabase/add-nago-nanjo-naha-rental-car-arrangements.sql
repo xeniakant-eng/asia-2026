@@ -33,8 +33,8 @@ values
   ('2026-12-04', 'carC', null, 2),
   ('2026-12-05', 'carB', null, 1),
   ('2026-12-05', 'carC', null, 2),
-  ('2026-12-06', 'carB', 'Return rental at Naha Airport', 1),
-  ('2026-12-06', 'carC', 'Return rental at Naha Airport', 2);
+  ('2026-12-06', 'carB', 'Return to HV Rent-A-Car Naha Airport Office at 8:00 AM', 1),
+  ('2026-12-06', 'carC', 'Return to HV Rent-A-Car Naha Airport Office at 8:00 AM', 2);
 
 insert into public.rental_car_occupants (assignment_id, person_name, party_name, role, sort_order)
 select assignment.id, occupant.person_name, occupant.party_name, occupant.role, occupant.sort_order

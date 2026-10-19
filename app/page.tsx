@@ -1103,9 +1103,9 @@ export default function TravelSite() {
     },
     {
       dateKey: "2026-11-27", date: "Fri Nov 27", chapter: "onna", location: "Naha → Onna", title: "Arrival + Resort Transfer",
-      items: ["Xenia, David & Naomi · EVA Air BR112 · Arrive 9:15 AM at Naha Airport.", "Pick up ORIX rental car · reservation RC32461319200023608 · confirmation H3J63XYi.", "Lunch and stroll at Senaga Island · Umikaji Terrace.", "Afternoon options · PARCO City and Minatogawa, or Araha Beach Park and Aeon Mall Rycom.", "Drive to Hotel Monterey Okinawa · approximately 45 minutes."],
+      items: ["Xenia, David & Naomi · EVA Air BR112 · Arrive 9:15 AM at Naha Airport.", "10:30 AM · Pick up HV Rent-A-Car · reservation RC72461330174756563 · confirmation MiV3jhie.", "Lunch and stroll at Senaga Island · Umikaji Terrace.", "Afternoon options · PARCO City and Minatogawa, or Araha Beach Park and Aeon Mall Rycom.", "Drive to Hotel Monterey Okinawa · approximately 45 minutes."],
       stay: "Hotel Monterey Okinawa", stayHref: "https://www.hotelmonterey.co.jp/en/okinawa/",
-      links: [{ label: "ORIX Pickup", href: "https://travel.rakuten.com/cars/default/en-us/shop/6409" }, { label: "Rental Site Map", href: "https://www.google.com/maps/search/1-1174+Toyosaki,+Tomigusuku" }],
+      links: [{ label: "HV Rent-A-Car", href: "https://travel.rakuten.com/cars/default/en-us/shop/15219" }, { label: "Rental Office Map", href: "https://www.google.com/maps/search/?api=1&query=3-8-14+Kinjo+Naha+Okinawa" }],
       parties: ["Xenia & David & Naomi (3)", "Heather & Kaien (3)", "Steven Wang", "Mark Wang"],
     },
     {
@@ -1164,12 +1164,12 @@ export default function TravelSite() {
     },
     {
       dateKey: "2026-12-05", date: "Sat Dec 5", chapter: "naha", location: "Naha", title: "Shopping + Aquarium Day",
-      items: ["Hotel breakfast buffet.", "Itoman Fish Market.", "Ashibinaa Outlet.", "DMM Kariyushi Aquarium.", "6:30 PM · Return rental car to ORIX Rent-A-Car."],
+      items: ["Hotel breakfast buffet.", "Itoman Fish Market.", "Ashibinaa Outlet.", "DMM Kariyushi Aquarium."],
       stay: "Hotel Grand Consort Naha", stayHref: "https://maps.google.com/?q=Hotel+Grand+Consort+Naha",
     },
     {
       dateKey: "2026-12-06", date: "Sun Dec 6", chapter: "naha", location: "Naha Airport", title: "Departure Day",
-      items: ["6:30-7:15 AM · Hotel breakfast buffet.", "7:00 AM · Hotel checkout.", "Travel to Naha Airport for baggage check-in and boarding passes.", "Dave, Christina & Xixi · Tigerair Taiwan IT231 · OKA 9:45 AM → TPE.", "Xenia and Mei's groups · EVA Air BR113 · OKA 10:15 AM → TPE 10:55 AM."],
+      items: ["6:30-7:15 AM · Hotel breakfast buffet.", "7:00 AM · Hotel checkout.", "8:00 AM · Return the rental car to HV Rent-A-Car at the same Naha Airport Office.", "Use the airport transfer service for baggage check-in and boarding passes.", "Dave, Christina & Xixi · Tigerair Taiwan IT231 · OKA 9:45 AM → TPE.", "Xenia and Mei's groups · EVA Air BR113 · OKA 10:15 AM → TPE 10:55 AM."],
       stay: "Departure day",
     },
   ];
@@ -2967,16 +2967,16 @@ export default function TravelSite() {
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <p className="text-xs uppercase tracking-[0.14em] text-white/40">Car Rental</p>
-                  <p className="mt-1 text-sm text-white/75">Okinawa group rental car</p>
+                  <p className="mt-1 text-sm text-white/75">HV Rent-A-Car · in-store payment</p>
                 </div>
-                <p className="shrink-0 text-sm font-medium text-white">¥108,200</p>
+                <p className="shrink-0 text-sm font-medium text-white">¥52,800</p>
               </div>
             </div>
           </div>
           <div className="rounded-2xl border border-[#9EDCFF]/20 bg-[#9EDCFF]/10 p-4">
             <div className="flex items-center justify-between gap-3">
               <p className="text-xs uppercase tracking-[0.18em]" style={{ color: BABY_BLUE }}>Known Total</p>
-              <p className="text-sm font-medium text-white">¥310,362</p>
+              <p className="text-sm font-medium text-white">¥254,962</p>
             </div>
           </div>
         </div>
@@ -5623,7 +5623,7 @@ function OnnaContent({ card, linkedImage }: { card: (children: React.ReactNode) 
   return (
     <>
       <DayArticle date="Friday, November 27, 2026" rentalCarDate="2026-11-27" title="Morning Arrival · Naha">
-        {card(<><p>✈ Xenia, David & Naomi · EVA Air BR112 · Arrive 9:15 AM at Naha Airport</p><div className="mt-4 border-t border-white/10 pt-4"><p className="text-[var(--chapter-accent)]">🚗 ORIX Rent-A-Car</p><ul className="mt-3 space-y-2 text-white/65"><li><span className="text-white/40">Reservation Number:</span> RC32461319200023608</li><li><span className="text-white/40">Confirmation Key:</span> H3J63XYi</li><li><span className="text-white/40">Pickup:</span> <a href="https://travel.rakuten.com/cars/default/en-us/shop/6409" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Naha Airport Rental Site</a></li><li><span className="text-white/40">Address:</span> <a href="https://www.google.com/maps/search/1-1174+Toyosaki,+Tomigusuku?entry=gmail&source=g" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">1-1174 Toyosaki, Tomigusuku</a></li><li><span className="text-white/40">Phone:</span> <a href="tel:+81988510543" className="text-[var(--chapter-accent)] hover:underline">098-851-0543</a></li></ul></div></>)}
+        {card(<><p>✈ Xenia, David & Naomi · EVA Air BR112 · Arrive 9:15 AM at Naha Airport</p><div className="mt-4 border-t border-white/10 pt-4"><p className="text-[var(--chapter-accent)]">🚗 HV Rent-A-Car</p><ul className="mt-3 space-y-2 text-white/65"><li><span className="text-white/40">Reservation Number:</span> RC72461330174756563</li><li><span className="text-white/40">Confirmation Key:</span> MiV3jhie</li><li><span className="text-white/40">Total Fee:</span> ¥52,800 · in-store payment</li><li><span className="text-white/40">Pickup:</span> Friday, Nov 27 at 10:30 AM (JST)</li><li><span className="text-white/40">Office:</span> <a href="https://travel.rakuten.com/cars/default/en-us/shop/15219" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Naha Airport Office · airport pickup available</a></li><li><span className="text-white/40">Address:</span> <a href="https://www.google.com/maps/search/?api=1&query=3-8-14+Kinjo+Naha+Okinawa" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">3-8-14 Kinjo, Naha City, Okinawa</a></li><li><span className="text-white/40">Phone:</span> <a href="tel:+81988595588" className="text-[var(--chapter-accent)] hover:underline">098-859-5588</a></li><li><span className="text-white/40">Return:</span> Sunday, Dec 6 at 8:00 AM (JST) · same location</li></ul></div></>)}
         {card(
           <>
             <p className="text-[var(--chapter-accent)]">🕛 Lunch · <a href="https://okinawa.letsgojp.com/archives/405500/" target="_blank" rel="noopener noreferrer" className="hover:underline">Senaga Island</a></p>
@@ -5849,5 +5849,5 @@ function NahaEarlyContent({ card, linkedImage }: { card: (children: React.ReactN
 }
 
 function NahaContent({ card }: { card: (children: React.ReactNode) => React.ReactNode }) {
-  return <><DayArticle date="Friday, December 4, 2026" rentalCarDate="2026-12-04" title="Nanjo → Naha">{card(<><p>🧳 9:00 AM · Checkout hotel</p><p>🚗 Drive from Nanjo → Naha · approximately 30 min</p></>)}{card(<><p>🐟 11:00 AM · Tomari Iyumachi Fish Market Brunch</p></>)}{card(<><p>🏯 Shuri Castle if reopened</p><p>🛍 Kokusai dori 國際通 · Calbee Okinawa · 御果子御殿 · Tsuboya Pottery Street</p><img src="/shop.png" alt="Kokusai Dori Shopping" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)} </DayArticle><DayArticle date="Saturday, December 5, 2026" rentalCarDate="2026-12-05" title="Shopping + Aquarium Day">{card(<><p>🍳 Hotel breakfast buffet</p><p>🐟 Itoman Fish Market · Ashibinaa Outlet · DMM Kariyushi Aquarium</p><p>🚗 6:30 PM · Return rental car to ORIX Rent-A-Car</p></>)}</DayArticle><DayArticle date="Sunday, December 6, 2026" title="Departure Day">{card(<><p>🍳 Hotel breakfast buffet · 6:30 AM - 7:15 AM</p><p>🧳 Hotel checkout · 7:00 AM</p><p>🚕 Travel to Naha Airport for baggage check-in and boarding passes.</p><p>✈️ Dave, Christina &amp; Xixi · IT231 · OKA 9:45 AM → TPE</p><p>✈️ Xenia &amp; Mei's groups · EVA Air BR113 · OKA 10:15 → TPE 10:55</p></>)}</DayArticle></>;
+  return <><DayArticle date="Friday, December 4, 2026" rentalCarDate="2026-12-04" title="Nanjo → Naha">{card(<><p>🧳 9:00 AM · Checkout hotel</p><p>🚗 Drive from Nanjo → Naha · approximately 30 min</p></>)}{card(<><p>🐟 11:00 AM · Tomari Iyumachi Fish Market Brunch</p></>)}{card(<><p>🏯 Shuri Castle if reopened</p><p>🛍 Kokusai dori 國際通 · Calbee Okinawa · 御果子御殿 · Tsuboya Pottery Street</p><img src="/shop.png" alt="Kokusai Dori Shopping" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" /></>)} </DayArticle><DayArticle date="Saturday, December 5, 2026" rentalCarDate="2026-12-05" title="Shopping + Aquarium Day">{card(<><p>🍳 Hotel breakfast buffet</p><p>🐟 Itoman Fish Market · Ashibinaa Outlet · DMM Kariyushi Aquarium</p></>)}</DayArticle><DayArticle date="Sunday, December 6, 2026" rentalCarDate="2026-12-06" title="Departure Day">{card(<><p>🍳 Hotel breakfast buffet · 6:30 AM - 7:15 AM</p><p>🧳 Hotel checkout · 7:00 AM</p><p>🚗 Return rental car to <a href="https://travel.rakuten.com/cars/default/en-us/shop/15219" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">HV Rent-A-Car Naha Airport Office</a> · 8:00 AM</p><p>🚌 Use the airport transfer service for baggage check-in and boarding passes.</p><p>✈️ Dave, Christina &amp; Xixi · IT231 · OKA 9:45 AM → TPE</p><p>✈️ Xenia &amp; Mei's groups · EVA Air BR113 · OKA 10:15 → TPE 10:55</p></>)}</DayArticle></>;
 }
