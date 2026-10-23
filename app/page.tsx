@@ -973,7 +973,8 @@ export default function TravelSite() {
       title: "North Hanoi to South HCM City",
       items: [
         "8:00 AM: Depart from Ninh Binh to Hanoi Airport by hotel-prearranged transport (2.5 hr ride). Ask the hotel to arrange this transfer in advance.",
-        "VietJet VJ157 nonstop flight Hanoi (HAN) to Ho Chi Minh City (SGN), 12:55 PM-3:05 PM, 2 hr 10 min. Fare shown: CA$84.",
+        "Xenia, David & Naomi: VietJet VJ157 nonstop flight Hanoi (HAN) to Ho Chi Minh City (SGN), 12:55 PM-3:05 PM, 2 hr 10 min. Fare shown: CA$84.",
+        "Jennifer, Hiroshi, Masashi & Miyari: VietJet VJ187 nonstop flight Hanoi (HAN) to Ho Chi Minh City (SGN), 1:10 PM-3:20 PM, 2 hr 10 min.",
         "After arrival: Take Grab from Ho Chi Minh City Airport to the Airbnb (about 25-30 min, approximately US$10 per car).",
         "Afternoon: Bánh Mì Huỳnh Hoa.",
         "Stroll along Saigon Central Park.",
@@ -1276,7 +1277,14 @@ export default function TravelSite() {
       route: "Hanoi to Ho Chi Minh City",
       airline: "VietJet VJ157",
       time: "12:55 PM - 3:05 PM",
-      notes: "Nonstop HAN to SGN, 2 hr 10 min.",
+      notes: "Xenia, David & Naomi. Nonstop HAN to SGN, 2 hr 10 min.",
+    },
+    {
+      date: "Tue Nov 17, 2026",
+      route: "Hanoi to Ho Chi Minh City",
+      airline: "VietJet VJ187",
+      time: "1:10 PM - 3:20 PM",
+      notes: "Jennifer, Hiroshi, Masashi & Miyari. Nonstop HAN to SGN, 2 hr 10 min.",
     },
     {
       date: "Fri Nov 20, 2026",
@@ -1303,7 +1311,7 @@ export default function TravelSite() {
           category: "Flights (3 flights)",
           detail: [
             "Nov 12 Vietnam Airlines Taipei to Hanoi: $177 CAD x 4 people = $708 CAD.",
-            "Nov 17 VietJet VJ157 Hanoi to Ho Chi Minh City: $84 CAD x 4 people = $336 CAD.",
+            "Nov 17 VietJet VJ187 Hanoi to Ho Chi Minh City: $84 CAD x 4 people = $336 CAD.",
             "Nov 20 VietJet VJ886 Ho Chi Minh City to Kaohsiung: $180 CAD x 4 people = $720 CAD.",
           ],
           amountCad: 1764.00,
@@ -3944,7 +3952,7 @@ export default function TravelSite() {
                     </div>
                     <div className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain p-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-6">
                       {vietnamFlightSummary.map((flight) => (
-                        <article key={`${flight.date}-${flight.route}`} className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
+                        <article key={`${flight.date}-${flight.route}-${flight.airline}`} className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
                           <p className="text-xs uppercase tracking-[0.18em] text-white/40">{flight.date}</p>
                           <h3 className="mt-2 text-lg font-light text-white">{flight.route}</h3>
                           <div className="mt-3 grid gap-2 text-sm leading-6 text-white/65">
