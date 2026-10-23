@@ -970,23 +970,25 @@ export default function TravelSite() {
       dateKey: "2026-11-17",
       date: "Tue Nov 17",
       location: "Ho Chi Minh City",
-      title: "North to South",
+      title: "North Hanoi to South HCM City",
       items: [
         "8:00 AM: Depart from Ninh Binh to Hanoi Airport by hotel-prearranged transport (2.5 hr ride). Ask the hotel to arrange this transfer in advance.",
         "VietJet VJ157 nonstop flight Hanoi (HAN) to Ho Chi Minh City (SGN), 12:55 PM-3:05 PM, 2 hr 10 min. Fare shown: CA$84.",
         "After arrival: Take Grab from Ho Chi Minh City Airport to the Airbnb (about 25-30 min, approximately US$10 per car).",
+        "Afternoon: Bánh Mì Huỳnh Hoa.",
         "Stroll along Saigon Central Park.",
-        "Eat at Pho Viet Nam.",
         "Visit Cho Ben Thanh Market.",
         "Shopping at KKV / Saigon Centre.",
         "Viet head washing / massage (Jenn & Xenia).",
+        "Dinner: Pho Viet Nam.",
         "Finish the night with Nguyen Hue Walking Street.",
         "Optional: Cafe Apartment / Coffee Building.",
         "Optional: Saigon Skydeck.",
         "Grab or walk back to Airbnb, about 2 km.",
       ],
       itemLinks: {
-        "Eat at Pho Viet Nam.": { text: "Pho Viet Nam", href: "https://www.google.com/maps/search/?api=1&query=Pho%20Viet%20Nam%20Ho%20Chi%20Minh%20City" },
+        "Dinner: Pho Viet Nam.": { text: "Pho Viet Nam", href: "https://www.google.com/maps/search/?api=1&query=Pho%20Viet%20Nam%20Ho%20Chi%20Minh%20City" },
+        "Afternoon: Bánh Mì Huỳnh Hoa.": { text: "Bánh Mì Huỳnh Hoa", href: "https://maps.app.goo.gl/xFd5yRKbsEXZ2vmD7" },
       },
       stay: "Entire Home by Bui Vien",
       stayImage: { src: "/hcmairbnb2.png", alt: "Entire Home by Bui Vien in Ho Chi Minh City" },
@@ -995,26 +997,29 @@ export default function TravelSite() {
       dateKey: "2026-11-18",
       date: "Wed Nov 18",
       location: "Ho Chi Minh City",
-      title: "Saigon City Tour",
+      title: "Saigon City + Cu Chi Tunnels",
       items: [
-        "Breakfast: Banh Mi Huynh Hoa.",
-        "War Remnants Museum.",
-        "Independence Palace.",
-        "Lunch: Quan Ngon Sai Gon.",
+        "8:00 AM pickup for the Cu Chi Tunnels tour at 3 Beans Hotel, 283/26 Pham Ngu Lao, District 1, Ho Chi Minh City, Vietnam (about 350 m from our Airbnb). Booking reference: BR-1459204843.",
+        "3:00 PM: Cu Chi Tunnels tour ends and returns to Ho Chi Minh City.",
         "Notre Dame Cathedral of Saigon, may still be under construction.",
         "Central Post Office & Saigon Book Street.",
         "Vincom Center Dong Khoi.",
-        "Dinner TBD.",
+        "Dinner: Quán Ngon Sài Gòn.",
         "Bui Vien Walking Street.",
         "Viet head washing / massage (Hiroshi & David).",
       ],
       itemImages: {
         "Central Post Office & Saigon Book Street.": { src: "/saigon.png", alt: "Central Post Office and Saigon Book Street in Ho Chi Minh City" },
+        "8:00 AM pickup for the Cu Chi Tunnels tour at 3 Beans Hotel, 283/26 Pham Ngu Lao, District 1, Ho Chi Minh City, Vietnam (about 350 m from our Airbnb). Booking reference: BR-1459204843.": { src: "/cuchi.png", alt: "Cu Chi Tunnels tour" },
       },
       itemLinks: {
-        "Breakfast: Banh Mi Huynh Hoa.": { text: "Banh Mi Huynh Hoa", href: "https://maps.app.goo.gl/xFd5yRKbsEXZ2vmD7" },
-        "Lunch: Quan Ngon Sai Gon.": { text: "Quan Ngon Sai Gon", href: "https://maps.app.goo.gl/XBaxREFcys8FrWJy8" },
+        "Dinner: Quán Ngon Sài Gòn.": { text: "Quán Ngon Sài Gòn", href: "https://maps.app.goo.gl/XBaxREFcys8FrWJy8" },
+        "8:00 AM pickup for the Cu Chi Tunnels tour at 3 Beans Hotel, 283/26 Pham Ngu Lao, District 1, Ho Chi Minh City, Vietnam (about 350 m from our Airbnb). Booking reference: BR-1459204843.": { text: "3 Beans Hotel", href: "https://www.google.com/maps/search/?api=1&query=3+Beans+Hotel+283%2F26+Pham+Ngu+Lao+District+1+Ho+Chi+Minh+City+Vietnam" },
       },
+      links: [
+        { label: "Cu Chi Tunnels Tour · Booking BR-1459204843", href: "https://www.viator.com/account/booking/1459204843/travel-companion-invitation?code=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlIjoiQlItMTQ1OTIwNDg0MyIsInQiOjE3OTI3OTMzNTQsInAiOiJUUkFWRUxfQ09NUEFOSU9OIn0.uu59YxjrH8SpLZWxwg4fLEbjGiFhcCIkScq9BPPX7WmIvrkvjnMPvlXK0fXXXPT4_bkm732tpy2js0sCNJ63mQ" },
+      ],
+      linksPosition: "top",
       stay: "Entire Home by Bui Vien",
     },
     {
@@ -1042,32 +1047,10 @@ export default function TravelSite() {
     {
       dateKey: "2026-11-20",
       date: "Fri Nov 20",
-      location: "Ho Chi Minh City",
-      title: "Cu Chi Tunnels",
-      items: [
-        "9:00 AM meet up for Cu Chi Tunnels shared tour by minibus, 15 people max, with English guide. Booking reference: BR-1441381263.",
-        "Flexible afternoon for any last-minute shopping or visiting.",
-        "Dinner TBD.",
-        "Viet head washing / massage (Hiroshi & David).",
-        "Pack and sleep early.",
-      ],
-      itemImages: {
-        "9:00 AM meet up for Cu Chi Tunnels shared tour by minibus, 15 people max, with English guide. Booking reference: BR-1441381263.": { src: "/cuchi.png", alt: "Cu Chi Tunnels tour" },
-      },
-      links: [
-        { label: "Cu Chi Tunnels Tour", href: "https://www.viator.com/tours/Ho-Chi-Minh-City/Small-Group-Half-Day-Cu-Chi-Tunnels-Tour-from-Ho-Chi-Minh-City/d352-8640P14" },
-        { label: "Booking Reference BR-1441381263", href: "https://www.viator.com/account/booking/1441381263/travel-companion-invitation?code=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlIjoiQlItMTQ0MTM4MTI2MyIsInQiOjE3ODc4NjgzMDIsInAiOiJUUkFWRUxfQ09NUEFOSU9OIn0.kQ5X8--n_5cNQ7LL6C37Wb3i4YeOxH0iSArridDYhko9eeLTGxd3xmq6Q5LhOaDfp6F8UYsPQ2NntWdInp3qbA" },
-      ],
-      linksPosition: "top",
-      stay: "Entire Home by Bui Vien",
-    },
-    {
-      dateKey: "2026-11-21",
-      date: "Sat Nov 21",
       location: "Depart",
       title: "Ho Chi Minh City to Kaohsiung",
       items: [
-        "Leave hotel around 4:30-5:00 AM.",
+        "Leave Airbnb around 4:30-5:00 AM.",
         "VietJet VJ886 Ho Chi Minh City (SGN) to Kaohsiung (KHH), 7:35 AM-11:45 AM, nonstop.",
       ],
     },
@@ -1296,23 +1279,23 @@ export default function TravelSite() {
       notes: "Nonstop HAN to SGN, 2 hr 10 min.",
     },
     {
-      date: "Sat Nov 21, 2026",
+      date: "Fri Nov 20, 2026",
       route: "Ho Chi Minh City to Kaohsiung",
       airline: "VietJet VJ886",
       time: "7:35 AM - 11:45 AM",
-      notes: "Nonstop flight. Leave hotel around 4:30-5:00 AM.",
+      notes: "Nonstop flight. Leave Airbnb around 4:30-5:00 AM.",
     },
   ];
   const getVietnamBookingCostsForGuest = (guest: string): VietnamBookingCost[] => {
     if (guest.startsWith("Jenn")) {
       return [
         {
-          category: "Accommodations (10 nights)",
+          category: "Accommodations (8 nights)",
           detail: [
             "Nov 12-14 Hanoi stay at Heart of Hoan Kiem Homestay Airbnb (reserved): Total = $258.30 CAD, Half = $129.15 CAD.",
             "Nov 14-15 Aime’e Cruise 2-day, 1-night fare for Jenn's family, 2 adults + 2 kids: $446 USD x 1.02 = $455 USD (approx. $623.35 CAD).",
             "Nov 15-17 Ninh Binh stay at Xuan Son Lakeside Bungalow: Total = $171 CAD.",
-            "Nov 17-21 Ho Chi Minh City stay at Entire Home by Bui Vien: Total = $410.48 CAD, Half = $205.24 CAD.",
+            "Nov 17-20 Ho Chi Minh City stay at Entire Home by Bui Vien: Total = $410.48 CAD, Half = $205.24 CAD.",
           ],
           amountCad: 1128.74,
         },
@@ -1321,7 +1304,7 @@ export default function TravelSite() {
           detail: [
             "Nov 12 Vietnam Airlines Taipei to Hanoi: $177 CAD x 4 people = $708 CAD.",
             "Nov 17 VietJet VJ157 Hanoi to Ho Chi Minh City: $84 CAD x 4 people = $336 CAD.",
-            "Nov 21 VietJet VJ886 Ho Chi Minh City to Kaohsiung: $180 CAD x 4 people = $720 CAD.",
+            "Nov 20 VietJet VJ886 Ho Chi Minh City to Kaohsiung: $180 CAD x 4 people = $720 CAD.",
           ],
           amountCad: 1764.00,
         },
@@ -1331,10 +1314,10 @@ export default function TravelSite() {
             "Nov 13 Hanoi city sights: TBD.",
             "Nov 16 Ninh Binh activities: TBD.",
             "Nov 18 Ho Chi Minh City sights: TBD.",
+            "Nov 18 Cu Chi Tunnels tour: $100 CAD.",
             "Nov 19 Mekong Delta Small Group Tour: $118.06 CAD.",
-            "Nov 20 Cu Chi Tunnels tour: $130.10 CAD.",
           ],
-          amountCad: 248.16,
+          amountCad: 218.06,
         },
         {
           category: "Transfers",
@@ -1342,7 +1325,7 @@ export default function TravelSite() {
             "Nov 12 pre-booked 16-seater shuttle from HAN to Airbnb: Total = $30 CAD, Half = $15 CAD.",
             "Nov 14 Hanoi to Ha Long pickup and Nov 15 Ha Long to Ninh Binh drop-off: $235 USD total, split equally, plus 2% fee. Jenn's share = $235 / 2 x 1.02 = $119.85 USD, rounded to $120 USD (approx. $164.40 CAD).",
             "Nov 17 Ninh Binh to Hanoi airport transfer: TBD.",
-            "Nov 21 Ho Chi Minh City Airbnb to airport transfer: TBD.",
+            "Nov 20 Ho Chi Minh City Airbnb to airport transfer: TBD.",
           ],
           amountCad: 179.40,
         },
@@ -1352,12 +1335,12 @@ export default function TravelSite() {
     if (guest.startsWith("Xenia")) {
       return [
         {
-          category: "Accommodations (10 nights)",
+          category: "Accommodations (8 nights)",
           detail: [
             "Nov 12-14 Hanoi stay at Heart of Hoan Kiem Homestay Airbnb (reserved): Total = $258.30 CAD, Half = $129.15 CAD.",
             "Nov 14-15 Aime’e Cruise 2-day, 1-night fare for Xenia's family, 2 adults + 1 kid: $380 USD x 1.02 = $387.60 USD (approx. $531.01 CAD).",
             "Nov 15-17 Ninh Binh stay at Xuan Son Lakeside Bungalow: Total = $140 CAD.",
-            "Nov 17-21 Ho Chi Minh City stay at Entire Home by Bui Vien: Total = $410.48 CAD, Half = $205.24 CAD.",
+            "Nov 17-20 Ho Chi Minh City stay at Entire Home by Bui Vien: Total = $410.48 CAD, Half = $205.24 CAD.",
           ],
           amountCad: 1005.40,
         },
@@ -1366,7 +1349,7 @@ export default function TravelSite() {
           detail: [
             "Nov 12 Vietnam Airlines Taipei to Hanoi: Total = $451.20 CAD.",
             "Nov 17 VietJet VJ157 Hanoi to Ho Chi Minh City: $85 CAD x 3 people = $255 CAD.",
-            "Nov 21 VietJet VJ886 Ho Chi Minh City to Kaohsiung: $191 CAD x 3 people + $111 CAD for 2 checked bags = $684 CAD.",
+            "Nov 20 VietJet VJ886 Ho Chi Minh City to Kaohsiung: $191 CAD x 3 people + $111 CAD for 2 checked bags = $684 CAD.",
           ],
           amountCad: 1390.20,
         },
@@ -1376,10 +1359,10 @@ export default function TravelSite() {
             "Nov 13 Hanoi city sights: TBD.",
             "Nov 16 Ninh Binh activities: TBD.",
             "Nov 18 Ho Chi Minh City sights: TBD.",
+            "Nov 18 Cu Chi Tunnels tour: $76 CAD.",
             "Nov 19 Mekong Delta Small Group Tour: $85 CAD.",
-            "Nov 20 Cu Chi Tunnels tour: $100 CAD.",
           ],
-          amountCad: 185.00,
+          amountCad: 161.00,
         },
         {
           category: "Transfers",
@@ -1387,7 +1370,7 @@ export default function TravelSite() {
             "Nov 12 pre-booked 16-seater shuttle from HAN to Airbnb: Total = $30 CAD, Half = $15 CAD.",
             "Nov 14 Hanoi to Ha Long pickup and Nov 15 Ha Long to Ninh Binh drop-off: $235 USD total, split equally, plus 2% fee. Xenia's share = $235 / 2 x 1.02 = $119.85 USD, rounded to $120 USD (approx. $164.40 CAD).",
             "Nov 17 Ninh Binh to Hanoi airport transfer: TBD.",
-            "Nov 21 Ho Chi Minh City Airbnb to airport transfer: TBD.",
+            "Nov 20 Ho Chi Minh City Airbnb to airport transfer: TBD.",
           ],
           amountCad: 179.40,
         },
@@ -3224,7 +3207,7 @@ export default function TravelSite() {
         <main className="mx-auto max-w-5xl">
           <p className="mb-3 text-sm uppercase tracking-[0.35em]" style={{ color: VIETNAM_GOLD }}>Vietnam · North & South</p>
           <h1 className="mb-3 text-4xl font-light tracking-wide md:text-6xl">Trip Itinerary</h1>
-          <p className="mb-6 text-sm text-white/45">Nov 12 - Nov 21 2026</p>
+          <p className="mb-6 text-sm text-white/45">Nov 12 - Nov 20 2026</p>
           <section className="mb-10 grid grid-cols-2 gap-3 md:grid-cols-4">
             <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:text-2xl">💵</p><p className="text-[10px] text-gray-400 md:text-xs">Currency</p><p className="mt-1 text-xs font-medium md:text-sm">1 CAD ≈ {cadToVnd} VND</p><p className="mt-1 text-xs text-gray-400">Live exchange rate</p></div>
             <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center md:p-4"><p className="mb-1 text-xl md:text-2xl">🌤️</p><p className="text-[10px] text-gray-400 md:text-xs">November Temp</p><p className="mt-1 text-xs font-medium md:text-sm">22-31°C</p><p className="mt-1 text-[9px] text-gray-500">Live forecast once trip begins</p></div>
@@ -3424,7 +3407,7 @@ export default function TravelSite() {
       "Mei & Emilia (8)": "Nov 29 - Dec 6 2026",
       Guest: "Nov 25 - Dec 6 2026",
     };
-    const selectedTripDashboardDate = selectedTrip === "xiaoliuqiuTaiwan" ? "Nov 20 - Nov 23 2026" : selectedTrip === "taiwan" ? "Dec 7 - Dec 25 2026" : selectedTrip === "okinawaJapan" ? okinawaDashboardDates[guestName] || "Nov 25 - Dec 6 2026" : selectedTrip === "vietnam" ? "Nov 12 - Nov 21 2026" : "Sept 4 - Sept 16 2026";
+    const selectedTripDashboardDate = selectedTrip === "xiaoliuqiuTaiwan" ? "Nov 20 - Nov 23 2026" : selectedTrip === "taiwan" ? "Dec 7 - Dec 25 2026" : selectedTrip === "okinawaJapan" ? okinawaDashboardDates[guestName] || "Nov 25 - Dec 6 2026" : selectedTrip === "vietnam" ? "Nov 12 - Nov 20 2026" : "Sept 4 - Sept 16 2026";
     const isTaiwanStyleTrip = selectedTrip === "taiwan" || selectedTrip === "xiaoliuqiuTaiwan";
     const splitTripPosterSrc = selectedTrip === "xiaoliuqiuTaiwan" ? "/xiaoliuqiu-dashboard-hero.webp" : selectedTrip === "taiwan" ? "/taiwan-2026-poster.png" : "/okinawa-2026-poster.png";
     const splitTripPosterAlt = selectedTrip === "xiaoliuqiuTaiwan" ? "XiaoLiuQiu Taiwan coastal travel hero" : selectedTrip === "taiwan" ? "Taiwan 2026 travel poster" : "Okinawa Japan 2026 travel poster";
@@ -3501,7 +3484,7 @@ export default function TravelSite() {
                   </>
                   </h1>
                   <div className="space-y-3">
-                    <TripButton location="Vietnam" date="Nov 12 - Nov 21 2026" status="Confirmed" onClick={() => openTripPage("vietnam")} />
+                    <TripButton location="Vietnam" date="Nov 12 - Nov 20 2026" status="Confirmed" onClick={() => openTripPage("vietnam")} />
                     <TripButton location="XiaoLiuQiu Taiwan" date="Nov 20 - Nov 23 2026" status="Confirmed" onClick={() => openTripPage("xiaoliuqiuTaiwan")} />
                     <TripButton location="Okinawa Japan" date="Nov 25 - Dec 6 2026" status="Confirmed" onClick={() => openTripPage("okinawaJapan")} />
                     <TripButton location="Taiwan" date="Dec 7 - Dec 25 2026" status="Confirmed" onClick={() => openTripPage("taiwan")} />
@@ -3772,7 +3755,7 @@ export default function TravelSite() {
                     <div>
                       <p className="text-xs uppercase tracking-[0.28em]" style={{ color: VIETNAM_GOLD }}>Vietnam 2026</p>
                       <h2 className="mt-2 text-3xl font-light tracking-wide text-white">Hello {guestName}</h2>
-                      <p className="mt-2 text-sm text-white/45">Nov 12 - Nov 21 2026</p>
+                      <p className="mt-2 text-sm text-white/45">Nov 12 - Nov 20 2026</p>
                     </div>
                     {guestName === "Guest" ? (
                       <div className="grid gap-3 sm:grid-cols-2">
@@ -4862,11 +4845,11 @@ export default function TravelSite() {
                 </div>
                 {renderTripDashboardActions()}
                 {selectedTrip !== "xiaoliuqiuTaiwan" && <>
-                {guestName === "Xenia & David & Naomi (3)" && <CountrySegmentButtons segments={[{ label: "Nov 21–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }, { label: "Dec 7–8 · NorthEast Taipei", page: "northeasttaipei", color: TAIWAN_GOLD }, { label: "Dec 9–12 · Yilan", page: "yilan", color: "#72E49A" }, { label: "Dec 13–17 · Central Taipei", page: "taipei", color: TAIWAN_GOLD }, { label: "Dec 19–25 · Somewhere in Taiwan", page: "taiwanlate", color: TAIWAN_GOLD }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
+                {guestName === "Xenia & David & Naomi (3)" && <CountrySegmentButtons segments={[{ label: "Nov 20–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }, { label: "Dec 7–8 · NorthEast Taipei", page: "northeasttaipei", color: TAIWAN_GOLD }, { label: "Dec 9–12 · Yilan", page: "yilan", color: "#72E49A" }, { label: "Dec 13–17 · Central Taipei", page: "taipei", color: TAIWAN_GOLD }, { label: "Dec 19–25 · Somewhere in Taiwan", page: "taiwanlate", color: TAIWAN_GOLD }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }, { label: "Nov 30–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Jim" && <CountrySegmentButtons segments={[{ label: "Nov 20–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Mark Wang" && <CountrySegmentButtons segments={[{ label: "Nov 20–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }, { label: "Nov 25–27 · Naha + Okinawa World", page: "nahaearly", color: BABY_BLUE }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Anthony & Christine & Mona (1)" && <CountrySegmentButtons segments={[{ label: "Nov 20–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
-                {guestName === "Jenn & Hiroshi & Masashi (6) & Miyari (3)" && <CountrySegmentButtons segments={[{ label: "Nov 21–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
+                {guestName === "Jenn & Hiroshi & Masashi (6) & Miyari (3)" && <CountrySegmentButtons segments={[{ label: "Nov 20–23 · Xiaoliuqiu", page: "xiaoliuqiu", color: TAIWAN_GOLD }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Mei & Emilia (8)" && <CountrySegmentButtons segments={[{ label: "Nov 29–Dec 2 · Nago", page: "nago", color: BABY_BLUE }, { label: "Dec 2–4 · Nanjo", page: "nanjo", color: BABY_BLUE }, { label: "Dec 4–6 · Naha", page: "naha", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Mei & Emilia (8) & ChaoMa" && <CountrySegmentButtons segments={[{ label: "Dec 7–8 · NorthEast Taipei", page: "northeasttaipei", color: TAIWAN_GOLD }, { label: "Dec 9–12 · Yilan", page: "yilan", color: "#72E49A" }, { label: "Dec 19–25 · Somewhere in Taiwan", page: "taiwanlate", color: TAIWAN_GOLD }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
                 {guestName === "Steven Wang" && <CountrySegmentButtons segments={[{ label: "Nov 25–27 · Naha + Okinawa World", page: "nahaearly", color: BABY_BLUE }, { label: "Nov 27–30 · Onna", page: "onna", color: BABY_BLUE }]} setIsGuestConfirmed={setIsGuestConfirmed} setPage={setPage} />}
@@ -5076,7 +5059,7 @@ export default function TravelSite() {
     taipei: [["Xenia & David & Naomi (3)", "Dec 13 – Dec 17 · Central Taipei"], ["Dave & Christina & Xixi (2)", "Dec 13 – Dec 17 · Central Taipei"], ["Julie & Adrian & Ethan (4) & Tyrell (1)", "Dec 14 – Dec 17 · Central Taipei"]],
     taiwanlate: [["Xenia & David & Naomi (3)", "Dec 19 – Dec 25 · Somewhere in Taiwan"], ["Dave & Christina & Xixi (2)", "Dec 19 – Dec 25 · Somewhere in Taiwan"], ["Mei & Emilia (8) & ChaoMa", "Dec 19 – Dec 25 · Somewhere in Taiwan"]],
     yilan: [["Xenia & David & Naomi (3)", "Dec 9 – Dec 12 · Yilan"], ["Mei & Emilia (8) & ChaoMa", "Dec 9 – Dec 12 · Yilan"], ["Dave & Christina & Xixi (2)", "Dec 9 – Dec 12 · Yilan"]],
-    xiaoliuqiu: [["Anthony & Christine & Mona (1)", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Mark Wang", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Jim", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Xenia & David & Naomi (3)", "Nov 21 – Nov 23 · Xiaoliuqiu"], ["Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Nov 21 – Nov 23 · Xiaoliuqiu"]],
+    xiaoliuqiu: [["Anthony & Christine & Mona (1)", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Mark Wang", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Jim", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Xenia & David & Naomi (3)", "Nov 20 – Nov 23 · Xiaoliuqiu"], ["Jenn & Hiroshi & Masashi (6) & Miyari (3)", "Nov 20 – Nov 23 · Xiaoliuqiu"]],
     onna: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 28 – Dec 6 · Okinawa"], ["Steven Wang", "Nov 25 – Nov 30 · Okinawa"], ["Mark Wang", "Nov 25 – Nov 30 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Kaien (3)", "Nov 26 – Dec 2 · Okinawa"], ["Christine Liu", "Nov 27 – Dec 2 · Okinawa"]],
     nago: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 28 – Dec 6 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"], ["Heather & Kaien (3)", "Nov 26 – Dec 2 · Okinawa"], ["Christine Liu", "Nov 27 – Dec 2 · Okinawa"]],
     nanjo: [["Xenia & David & Naomi (3)", "Nov 27 – Dec 6 · Okinawa"], ["Dave & Christina & Xixi (2)", "Nov 28 – Dec 6 · Okinawa"], ["Mei & Emilia (8)", "Nov 29 – Dec 6 · Okinawa"]],
@@ -5541,6 +5524,15 @@ function XiaoliuqiuContent({ card }: { card: (children: React.ReactNode) => Reac
         )}
         {card(
           <>
+            <p>⛴ Xenia, David, Naomi, Jenn, Hiroshi, Masashi & Miyari arriving Xiaoliuqiu</p>
+            <p className="mt-2 text-white/50">
+              高雄小港機場 11:45 AM → 包車接送 → 2:45 PM 東港琉球碼頭 → 3:20 PM <a href="https://www.leucosapphire.com/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">藍白船班</a>（最後一班 4:50 PM）→ 跟大家碼頭集合
+            </p>
+            <p className="mt-2 text-white/70">🛵 Jennifer 租機車一台</p>
+          </>
+        )}
+        {card(
+          <>
             <p>🤿 Open Water Lesson · Christine & Mark</p>
             <ul className="ml-5 list-disc space-y-1 text-white/65">
               <li>裝備組裝介紹</li>
@@ -5554,7 +5546,7 @@ function XiaoliuqiuContent({ card }: { card: (children: React.ReactNode) => Reac
       <DayArticle date="Saturday, November 21, 2026" title="Open Water Dive Day">
         {card(
           <>
-            <p>🌊 Open Water Lesson</p>
+            <p>🌊 Open Water Lesson · Christine & Mark</p>
             <ul className="ml-5 list-disc space-y-1 text-white/65">
               <li>Morning: Close Water Dive #1</li>
               <li>Afternoon: Open Water Dive #2 & #3</li>
@@ -5562,17 +5554,16 @@ function XiaoliuqiuContent({ card }: { card: (children: React.ReactNode) => Reac
             </ul>
           </>
         )}
+        {card(<p>🤿 Toddler Group · Snorkeling Tour</p>)}
         {card(
           <>
-            <p>⛴ Xenia, David, Naomi, Jenn, Hiroshi, Masashi & Miyari arriving Xiaoliuqiu</p>
-            <p className="mt-2 text-white/70">🛵 Jennifer 租機車一台</p>
-            <p className="mt-2 text-sm font-medium text-white/80">Southern Xiaoliuqiu Exploration</p>
+            <p>🌅 Northern Xiaoliuqiu Visits</p>
             <div className="mt-4 flex flex-col gap-4 md:flex-row">
-              <ul className="ml-5 flex-1 list-disc space-y-1 text-white/65">
-                <li><a href="https://maps.google.com/?q=琉行綠色隧道+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">琉行綠色隧道</a></li>
-                <li><a href="https://maps.google.com/?q=烏鬼洞+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">烏鬼洞</a></li>
-                <li><a href="https://maps.google.com/?q=落日亭+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">落日亭 Sunset View</a></li>
-                <li>Dessert · <a href="https://maps.google.com/?q=海找冰+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">海找冰</a></li>
+              <ul className="ml-5 flex-1 list-disc space-y-2 text-white/65">
+                <li><a href="https://maps.google.com/?q=美人洞+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">美人洞</a></li>
+                <li><a href="https://maps.google.com/?q=花瓶岩+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">花瓶岩</a></li>
+                <li><a href="https://maps.google.com/?q=龍蝦洞+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">龍蝦洞</a></li>
+                <li><a href="https://maps.google.com/?q=琉球共融公園+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">琉球共融公園</a></li>
               </ul>
               <img src="/xlqmap.png" alt="Xiaoliuqiu map" className="h-auto w-full rounded-2xl object-contain bg-black/20 p-2 md:w-1/2" />
             </div>
@@ -5581,7 +5572,7 @@ function XiaoliuqiuContent({ card }: { card: (children: React.ReactNode) => Reac
         {card(<p>🍽 Dinner · <a href="https://maps.google.com/?q=夏味鮮+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">夏味鮮</a></p>)}
       </DayArticle>
 
-      <DayArticle date="Sunday, November 22, 2026" title="Dive + Northern Island Day">
+      <DayArticle date="Sunday, November 22, 2026" title="Dive + Southern Island Day">
         {card(
           <>
             <p>🤿 Open Water Lesson</p>
@@ -5601,12 +5592,12 @@ function XiaoliuqiuContent({ card }: { card: (children: React.ReactNode) => Reac
         {card(<p>👶 Toddler Group 小琉球海洋館</p>)}
         {card(
           <>
-            <p>🌅 Northern Xiaoliuqiu Visits</p>
-            <ul className="mt-4 ml-5 list-disc space-y-2 text-white/65">
-              <li><a href="https://maps.google.com/?q=美人洞+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">美人洞</a></li>
-              <li><a href="https://maps.google.com/?q=花瓶岩+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">花瓶岩</a></li>
-              <li><a href="https://maps.google.com/?q=龍蝦洞+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">龍蝦洞</a></li>
-              <li><a href="https://maps.google.com/?q=琉球共融公園+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">琉球共融公園</a></li>
+            <p className="text-sm font-medium text-white/80">Southern Xiaoliuqiu Exploration</p>
+            <ul className="mt-4 ml-5 list-disc space-y-1 text-white/65">
+              <li><a href="https://maps.google.com/?q=琉行綠色隧道+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">琉行綠色隧道</a></li>
+              <li><a href="https://maps.google.com/?q=烏鬼洞+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">烏鬼洞</a></li>
+              <li><a href="https://maps.google.com/?q=落日亭+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">落日亭 Sunset View</a></li>
+              <li>Dessert · <a href="https://maps.google.com/?q=海找冰+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">海找冰</a></li>
             </ul>
           </>
         )}
