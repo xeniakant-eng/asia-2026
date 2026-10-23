@@ -3941,8 +3941,8 @@ export default function TravelSite() {
                 </div>
               )}
               {showVietnamFlightSummary && (
-                <div className="fixed inset-0 z-50 flex items-stretch justify-center bg-black/80 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-[max(0.5rem,env(safe-area-inset-top))] backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-label="Vietnam flight summary">
-                  <section className="flex h-[calc(100dvh-1rem)] max-h-[calc(100dvh-1rem)] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] text-left shadow-2xl sm:h-auto sm:max-h-[82dvh]">
+                <div className="fixed inset-0 z-50 box-border flex h-[100dvh] max-h-[100dvh] items-stretch justify-center overflow-hidden bg-black/80 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-[max(0.5rem,env(safe-area-inset-top))] backdrop-blur-sm sm:items-start sm:p-4 sm:pt-6" role="dialog" aria-modal="true" aria-label="Vietnam flight summary">
+                  <section className="flex h-full min-h-0 w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] text-left shadow-2xl sm:h-[82dvh] sm:max-h-[760px]">
                     <div className="flex shrink-0 items-start justify-between gap-4 border-b border-white/10 px-4 py-3 sm:px-6 sm:py-5">
                       <div>
                         <p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: VIETNAM_GOLD }}>Vietnam 2026</p>
@@ -3950,7 +3950,7 @@ export default function TravelSite() {
                       </div>
                       <button type="button" onClick={() => setShowVietnamFlightSummary(false)} aria-label="Close Vietnam flight summary" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">×</button>
                     </div>
-                    <div className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain p-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-6">
+                    <div className="min-h-0 flex-1 touch-pan-y space-y-3 overflow-y-scroll overscroll-contain p-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-6" style={{ WebkitOverflowScrolling: "touch" }}>
                       {vietnamFlightSummary.map((flight) => (
                         <article key={`${flight.date}-${flight.route}-${flight.airline}`} className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
                           <p className="text-xs uppercase tracking-[0.18em] text-white/40">{flight.date}</p>
