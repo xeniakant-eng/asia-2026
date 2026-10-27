@@ -878,6 +878,7 @@ export default function TravelSite() {
       items: [
         "Vietnam Airlines VN577 flight from Taipei (TPE) to Hanoi (HAN), 1:25 PM-3:40 PM.",
         "Transfer from airport to Airbnb (40 min ride) booked with KKday. Booking #26KK265514944. Local company: Thang Long Transport, +84 917681818. 16-seater shuttle bus. Total pre-paid amount: $30 CAD.",
+        "Reminder: Exchange 15,000,000 VND to pay the remaining cruise fee on Nov 14.",
         "Dinner TBD.",
         "Viet headwashing / massage (Jenn & Xenia).",
       ],
@@ -907,7 +908,7 @@ export default function TravelSite() {
       location: "Aime’e Cruise",
       title: "Ha Long Bay Aime’e Cruise",
       items: [
-        "8:00-8:30 AM: Pre-arranged shuttle pickup from the Hanoi Airbnb, with a 20-minute refreshment stop en route.",
+        "7:45-8:15 AM: Pre-arranged shuttle pickup from the Hanoi Airbnb, with a 20-minute refreshment stop en route.",
         "11:30-11:45 AM: Arrive at Ha Long International Harbor.",
         "12:15 PM: Embark by tender, check in, enjoy welcome drinks, and attend the cruise briefing.",
         "1:00 PM: Lunch while cruising through Ha Long Bay.",
@@ -1095,7 +1096,7 @@ export default function TravelSite() {
     },
     {
       dateKey: "2026-11-28", date: "Sat Nov 28", chapter: "onna", location: "Onna", title: "Resort Day · Blue Cave",
-      items: ["Hotel breakfast buffet.", "Blue Cave dive and snorkel · weather dependent.", "Ryukyu Mura with FunPass.", "Dave, Christina & Xixi · ANA NH1273 · Arrive 2:40 PM.", "Resort and beach activities.", "Dinner TBD."],
+      items: ["Hotel breakfast buffet.", "Blue Cave free dive · David, Steven, Mark & Christine · weather dependent.", "Blue Cave snorkel · Xenia, Heather, Naomi & Kaien · weather dependent.", "Ryukyu Mura with FunPass.", "Dave, Christina & Xixi · ANA NH1273 · Arrive 2:40 PM.", "Resort and beach activities.", "Dinner TBD."],
       stay: "Hotel Monterey Okinawa", stayHref: "https://www.hotelmonterey.co.jp/en/okinawa/",
       links: [{ label: "Ryukyu Mura", href: "https://www.ryukyumura.co.jp/" }, { label: "Resort Activities", href: "https://www.hotelmonterey.co.jp/en/okinawa/activity/" }],
     },
@@ -5663,7 +5664,7 @@ function OnnaContent({ card, linkedImage }: { card: (children: React.ReactNode) 
           </>
         )}
       </DayArticle>
-      <DayArticle date="Saturday, November 28, 2026" rentalCarDate="2026-11-28" title="Resort Day · Beach / Culture / Blue Cave">{card(<p>🍳 Breakfast · Hotel buffet</p>)}{card(<><p>🤿 Blue Cave dive & snorkel 青之洞窟潛水</p><p className="text-white/50">Weather dependent</p><p className="mt-3 text-[var(--chapter-accent)]">Headcount · 4</p><ul className="mt-2 ml-5 list-disc space-y-1 text-white/65"><li>David</li><li>Steven</li><li>Mark</li><li>Christine</li></ul>{linkedImage("/bluecave.png", "Blue Cave Okinawa")}</>)}{card(<a href="https://www.ryukyumura.co.jp/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🏯 Ryukyu Mura with FunPass</a>)}{card(<><p>✈ Dave, Christina & Xixi arrive in Okinawa</p><p className="mt-2 text-white/60">ANA NH1273 · Arrive at 2:40 PM</p></>)}{card(<><a href="https://www.hotelmonterey.co.jp/en/okinawa/activity/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🏖 Resort & Beach Activities</a>{linkedImage("/hotel.png", "Hotel Monterey Okinawa")}</>)}{card(<p>🍽 Dinner · TBD</p>)}</DayArticle>
+      <DayArticle date="Saturday, November 28, 2026" rentalCarDate="2026-11-28" title="Resort Day · Beach / Culture / Blue Cave">{card(<p>🍳 Breakfast · Hotel buffet</p>)}{card(<><p>🤿 Blue Cave free dive & snorkel · 青之洞窟</p><p className="text-white/50">Weather dependent</p><p className="mt-3 text-[var(--chapter-accent)]">Free Dive · Headcount 4</p><ul className="mt-2 ml-5 list-disc space-y-1 text-white/65"><li>David</li><li>Steven</li><li>Mark</li><li>Christine</li></ul><p className="mt-4 text-[var(--chapter-accent)]">Snorkel · Headcount 4</p><ul className="mt-2 ml-5 list-disc space-y-1 text-white/65"><li>Xenia</li><li>Heather</li><li>Naomi</li><li>Kaien</li></ul>{linkedImage("/bluecave.png", "Blue Cave Okinawa")}</>)}{card(<a href="https://www.ryukyumura.co.jp/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🏯 Ryukyu Mura with FunPass</a>)}{card(<><p>✈ Dave, Christina & Xixi arrive in Okinawa</p><p className="mt-2 text-white/60">ANA NH1273 · Arrive at 2:40 PM</p></>)}{card(<><a href="https://www.hotelmonterey.co.jp/en/okinawa/activity/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🏖 Resort & Beach Activities</a>{linkedImage("/hotel.png", "Hotel Monterey Okinawa")}</>)}{card(<p>🍽 Dinner · TBD</p>)}</DayArticle>
       <DayArticle date="Sunday, November 29, 2026" rentalCarDate="2026-11-29" title="Albert & Quinn Wedding Day">{card(<><p>🍳 Breakfast · Hotel buffet</p><p>💍 11:00 AM · Albert & Quinn Wedding Ceremony at Hotel Monterey Chapel</p><p>🥂 12:30 PM - 1:30 PM · Cocktail Hour &amp; Hors d&apos;Oeuvres</p><p>🍽 1:30 PM - 3:30 PM · Wedding Lunch Reception</p><p>🎉 7:30 PM · After Party</p>{linkedImage("/chapel.png", "Wedding Chapel Okinawa")}</>)}{card(<><p>✈ Mei & Emilia arrive in Okinawa</p><p className="mt-2 text-white/60">EVA Air BR186 · Arrive at 7:10 PM</p></>)}</DayArticle>
     </>
   );
