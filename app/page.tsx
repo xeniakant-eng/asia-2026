@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import VietnamTodayTools, { SaveVietnamDayButton } from "./vietnam-today-tools";
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
 const BABY_BLUE = "#9EDCFF";
@@ -3856,9 +3857,12 @@ export default function TravelSite() {
                   <div className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden bg-black/85 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-[max(0.5rem,env(safe-area-inset-top))] backdrop-blur-sm sm:p-4" role="dialog" aria-modal="true" aria-label="Vietnam today's itinerary">
                     <section className="flex h-[calc(100dvh-1rem)] max-h-[760px] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] text-left shadow-2xl sm:h-[min(760px,calc(100dvh-2rem))]">
                       <div className="flex shrink-0 items-start justify-between gap-4 border-b border-white/10 px-4 py-3 sm:px-6 sm:py-5">
-                        <div className="min-w-0">
+                        <div className="min-w-0 flex-1">
                           <p className="text-xs uppercase tracking-[0.22em] text-[#F6C65B]">{vietnamTodayStatus}</p>
-                          <h2 className="mt-2 text-xl font-light text-white sm:text-2xl">What's Today?</h2>
+                          <div className="mt-2 flex items-center justify-between gap-2">
+                            <h2 className="text-xl font-light text-white sm:text-2xl">What's Today?</h2>
+                            <SaveVietnamDayButton day={vietnamSelectedDay} address={vietnamSelectedStayMap?.label} />
+                          </div>
                           <p className="mt-1 truncate text-xs text-white/45">{guestName}</p>
                         </div>
                         <button type="button" onClick={() => setShowVietnamToday(false)} aria-label="Close today's itinerary" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65 transition hover:border-white/35 hover:text-white">×</button>
@@ -3869,6 +3873,8 @@ export default function TravelSite() {
                         <select id="vietnam-today-day" value={vietnamTodayIndex} onChange={(event) => setVietnamTodayIndex(Number(event.target.value))} className="mb-4 w-full rounded-xl border border-white/15 bg-black/40 px-4 py-3 text-sm text-white outline-none transition focus:border-[#F6C65B]/60">
                           {vietnamItineraryDays.map((day, index) => <option key={day.dateKey} value={index}>{day.date} · {day.location}</option>)}
                         </select>
+
+                        <VietnamTodayTools day={vietnamSelectedDay} party={guestName} />
 
                         <article className="rounded-2xl border border-[#F6C65B]/25 bg-[#F6C65B]/[0.07] p-4 sm:p-5">
                           <p className="text-xs uppercase tracking-[0.2em] text-[#F6C65B]">{vietnamSelectedDay.date}</p>
@@ -3893,17 +3899,6 @@ export default function TravelSite() {
                             {vietnamSelectedStayMap && <a href={vietnamSelectedStayMap.href} target="_blank" rel="noreferrer" className="mt-2 block text-sm text-[#F6C65B] underline decoration-[#F6C65B]/35 underline-offset-4">{vietnamSelectedStayMap.label} · Open in Google Maps</a>}
                           </article>
                         )}
-
-                        <div className="mt-3 grid grid-cols-2 gap-3">
-                          <div className="rounded-xl border border-white/10 bg-white/[0.04] p-3">
-                            <p className="text-[10px] uppercase tracking-[0.16em] text-white/35">Weather guide</p>
-                            <p className="mt-2 text-sm text-white/75">22-31°C · November range</p>
-                          </div>
-                          <div className="rounded-xl border border-white/10 bg-white/[0.04] p-3">
-                            <p className="text-[10px] uppercase tracking-[0.16em] text-white/35">Vietnam time</p>
-                            <p className="mt-2 text-sm text-white/75">{new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Ho_Chi_Minh", hour: "numeric", minute: "2-digit", hour12: true }).format(now)}</p>
-                          </div>
-                        </div>
 
                         {vietnamTomorrowDay && (
                           <article className="mt-3 rounded-xl border border-white/10 bg-black/25 p-4">
