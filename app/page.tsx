@@ -1299,9 +1299,9 @@ export default function TravelSite() {
             "Nov 12-14 Hanoi stay at Heart of Hoan Kiem Homestay Airbnb (reserved): Total = $258.30 CAD, Half = $129.15 CAD.",
             "Nov 14-15 Aime’e Cruise 2-day, 1-night fare for Jenn's family, 2 adults + 2 kids: $446 USD x 1.02 = $455 USD (approx. $623.35 CAD).",
             "Nov 15-17 Ninh Binh stay at Xuan Son Lakeside Bungalow: Total = $171 CAD.",
-            "Nov 17-20 Ho Chi Minh City stay at Entire Home by Bui Vien: Total = $410.48 CAD, Half = $205.24 CAD.",
+            "Nov 17-20 Ho Chi Minh City stay at Entire Home by Bui Vien: Total = $307.86 CAD, Half = $153.93 CAD.",
           ],
-          amountCad: 1128.74,
+          amountCad: 1077.43,
         },
         {
           category: "Flights (3 flights)",
@@ -1344,9 +1344,9 @@ export default function TravelSite() {
             "Nov 12-14 Hanoi stay at Heart of Hoan Kiem Homestay Airbnb (reserved): Total = $258.30 CAD, Half = $129.15 CAD.",
             "Nov 14-15 Aime’e Cruise 2-day, 1-night fare for Xenia's family, 2 adults + 1 kid: $380 USD x 1.02 = $387.60 USD (approx. $531.01 CAD).",
             "Nov 15-17 Ninh Binh stay at Xuan Son Lakeside Bungalow: Total = $140 CAD.",
-            "Nov 17-20 Ho Chi Minh City stay at Entire Home by Bui Vien: Total = $410.48 CAD, Half = $205.24 CAD.",
+            "Nov 17-20 Ho Chi Minh City stay at Entire Home by Bui Vien: Total = $307.86 CAD, Half = $153.93 CAD.",
           ],
-          amountCad: 1005.40,
+          amountCad: 954.09,
         },
         {
           category: "Flights (3 flights)",
@@ -5583,7 +5583,7 @@ function XiaoliuqiuContent({ card }: { card: (children: React.ReactNode) => Reac
             </div>
           </>
         )}
-        {card(<p>🍽 Dinner · <a href="https://maps.google.com/?q=夏味鮮+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">夏味鮮</a></p>)}
+        {card(<p>🍽 Dinner · <a href="https://maps.google.com/?q=蜜仔琉部餐館+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">密仔琉部</a></p>)}
       </DayArticle>
 
       <DayArticle date="Sunday, November 22, 2026" title="Dive + Southern Island Day">
@@ -5615,7 +5615,7 @@ function XiaoliuqiuContent({ card }: { card: (children: React.ReactNode) => Reac
             </ul>
           </>
         )}
-        {card(<p>🍽 Dinner · <a href="https://maps.google.com/?q=蜜仔琉部餐館+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">蜜仔琉部 餐館</a></p>)}
+        {card(<p>🍽 Dinner · 7:00 PM · <a href="https://maps.google.com/?q=夏味鮮+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">夏味鮮</a></p>)}
       </DayArticle>
 
       <DayArticle date="Monday, November 23, 2026" title="Departure to Taipei">
