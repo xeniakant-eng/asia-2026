@@ -2791,10 +2791,15 @@ export default function TravelSite() {
   const filteredBillTabExpenses = moroccoExpenses.filter((expense) =>
     !billTabPartyFilter || expense.paidBy === billTabPartyFilter ||
     getExpensePaidForParties(expense).includes(billTabPartyFilter));
-  const filteredBillTabSettlements = billTabSettlements.filter((settlement) =>
-    !billTabPartyFilter || settlement.from === billTabPartyFilter || settlement.to === billTabPartyFilter);
-  const filteredBillTabBalances = billTabBalances.filter((party) =>
-    !billTabPartyFilter || party.name === billTabPartyFilter);
+  const getSettlementItems = (from: string, to: string) =>
+    moroccoExpenses.flatMap((expense) => {
+      const participants = getExpensePaidForParties(expense);
+      const amountCad = expense.convertedAmountCad ?? expense.amountCad ?? 0;
+      const isForward = expense.paidBy === to && participants.includes(from);
+      const isReverse = expense.paidBy === from && participants.includes(to);
+      if (!amountCad || !participants.length || (!isForward && !isReverse)) return [];
+      return [{ expense, shareCad: amountCad / participants.length, isForward, count: participants.length }];
+    });
   const renderBillTabPartyFilter = () => (
     <label className="mb-5 grid gap-2 text-xs text-white/55">
       Filter by party
@@ -2834,7 +2839,6 @@ export default function TravelSite() {
           </div>
         </div>
         <div className="min-h-0 overflow-y-auto p-5 sm:p-7">
-          {renderBillTabPartyFilter()}
           <form onSubmit={(event) => { event.preventDefault(); addMoroccoExpense(); }} className="mb-6 grid gap-3 sm:grid-cols-2">
             <label className="grid gap-1.5 text-xs text-white/45 sm:col-span-2">
               Expense Item
@@ -2863,6 +2867,7 @@ export default function TravelSite() {
               {moroccoEditingExpenseId && <button type="button" onClick={cancelMoroccoExpenseEdit} className="text-xs text-white/40 transition hover:text-white/70">Cancel Edit</button>}
             </div>
           </form>
+          {renderBillTabPartyFilter()}
           {moroccoExpenseMessage && <p className="mb-4 text-sm text-white/50">{moroccoExpenseMessage}</p>}
           <div className="space-y-3">
             {filteredBillTabExpenses.map((expense) => <div key={expense.id} className={`flex items-start justify-between gap-4 rounded-xl border bg-white/[0.04] px-4 py-3 ${moroccoEditingExpenseId === expense.id ? "" : "border-white/10"}`} style={moroccoEditingExpenseId === expense.id ? { borderColor: `${activeBillTabConfig.accent}99` } : undefined}><div className="min-w-0"><p className="truncate text-sm text-white/80">{expense.description}</p><p className="mt-1 text-xs text-white/40">{new Intl.DateTimeFormat("en-CA", { year: "numeric", month: "short", day: "numeric" }).format(new Date(expense.createdAt))} · Paid By {expense.paidBy} · Paid For {expense.paidFor || "Everyone"}</p>{expense.exchangeRateToCad !== null && expense.amountCad === null && <p className="mt-1 text-[11px] text-white/30">1 {expense.amountUsd !== null ? "USD" : activeBillTabConfig.localLabel} = {expense.exchangeRateToCad.toFixed(4)} CAD</p>}</div><div className="shrink-0 text-right"><p className="text-sm font-medium" style={{ color: activeBillTabConfig.accent }}>{expense.amountCad !== null ? `$${expense.amountCad.toFixed(2)} CAD` : expense.amountUsd !== null ? `$${expense.amountUsd.toFixed(2)} USD` : `${activeBillTabConfig.localSymbol}${expense.amountLocal?.toFixed(2)} ${activeBillTabConfig.localLabel}`}</p>{expense.convertedAmountCad !== null && expense.amountCad === null && <p className="mt-1 text-xs text-white/40">≈ ${expense.convertedAmountCad.toFixed(2)} CAD</p>}<div className="mt-2 flex justify-end gap-3"><button type="button" onClick={() => editMoroccoExpense(expense)} className="text-[10px] uppercase tracking-[0.12em] transition" style={{ color: activeBillTabConfig.accent }}>Edit</button><button type="button" onClick={() => deleteMoroccoExpense(expense)} className="text-[10px] uppercase tracking-[0.12em] text-red-300/60 transition hover:text-red-300">Delete</button></div></div></div>)}
@@ -2881,30 +2886,44 @@ export default function TravelSite() {
           <button type="button" onClick={() => setShowMoroccoAccountingSummary(false)} aria-label="Close accounting summary" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65">x</button>
         </div>
         <div className="min-h-0 overflow-y-auto p-6">
-          {renderBillTabPartyFilter()}
           {!moroccoExpenses.length ? (
             <p className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-8 text-center text-sm leading-6 text-white/40">No shared expenses yet. Add expenses in BillTab to generate settlement suggestions.</p>
           ) : (
             <div className="space-y-5">
               <section>
-                <h3 className="mb-3 text-xs uppercase tracking-[0.2em] text-white/45">Suggested Payments</h3>
-                {filteredBillTabSettlements.length ? (
+                <h3 className="mb-3 text-xs uppercase tracking-[0.2em] text-white/45">Settlements</h3>
+                {billTabSettlements.length ? (
                   <div className="space-y-2">
-                    {filteredBillTabSettlements.map((settlement) => (
-                      <div key={`${settlement.from}-${settlement.to}-${settlement.amount}`} className="rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3">
-                        <p className="text-sm text-white/75"><span className="text-white">{settlement.from}</span> pays <span className="text-white">{settlement.to}</span></p>
-                        <p className="mt-1 text-sm font-medium" style={{ color: activeBillTabConfig.accent }}>${settlement.amount.toFixed(2)} CAD</p><p className="mt-1 text-xs text-white/50">≈ {formatBillTabLocalAmount(settlement.amount)}</p>
-                      </div>
+                    {billTabSettlements.map((settlement) => (
+                      <details key={JSON.stringify([settlement.from, settlement.to])} className="rounded-xl border border-white/10 bg-white/[0.04]">
+                        <summary className="cursor-pointer px-4 py-3 text-sm text-white/75">
+                          <span className="text-white">{settlement.from}</span> pays <span className="text-white">{settlement.to}</span>
+                          <span className="mt-1 block font-medium" style={{ color: activeBillTabConfig.accent }}>${settlement.amount.toFixed(2)} CAD</span>
+                          <span className="mt-1 block text-xs text-white/50">≈ {formatBillTabLocalAmount(settlement.amount)}</span>
+                        </summary>
+                        <ul className="space-y-3 border-t border-white/10 px-4 py-3">
+                          {getSettlementItems(settlement.from, settlement.to).map(({ expense, shareCad, isForward, count }) => (
+                            <li key={expense.id} className="text-sm">
+                              <p className="break-words text-white/85">{expense.description}</p>
+                              <p className="mt-1 text-xs text-white/50">Paid by {expense.paidBy} · Shared by {count} {count === 1 ? "party" : "parties"}</p>
+                              <p className={isForward ? "mt-1 text-xs text-white/75" : "mt-1 text-xs text-emerald-200/80"}>
+                                {isForward ? "+" : "−"}${shareCad.toFixed(2)} CAD · {isForward ? "Owed to" : "Offset paid by"} {settlement.to}
+                              </p>
+                              <p className="mt-1 text-xs text-white/45">≈ {formatBillTabLocalAmount(shareCad)}</p>
+                            </li>
+                          ))}
+                        </ul>
+                      </details>
                     ))}
                   </div>
                 ) : (
-                  <p className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-5 text-sm text-white/45">No payments are due for this selection.</p>
+                  <p className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-5 text-sm text-white/45">No payments are due based on the current entries.</p>
                 )}
               </section>
               <section>
                 <h3 className="mb-3 text-xs uppercase tracking-[0.2em] text-white/45">Party Balances</h3>
                 <div className="space-y-2">
-                  {filteredBillTabBalances.map((party) => (
+                  {billTabBalances.map((party) => (
                     <div key={party.name} className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm">
                       <span className="min-w-0 truncate text-white/70">{party.name}</span>
                       <div className="shrink-0 text-right"><p className={party.balance >= 0 ? "text-emerald-200/80" : "text-rose-200/80"}>{party.balance >= 0 ? "+" : "-"}${Math.abs(party.balance).toFixed(2)} CAD</p><p className="mt-1 text-xs text-white/50">≈ {party.balance >= 0 ? "+" : "-"}{formatBillTabLocalAmount(Math.abs(party.balance))}</p></div>
