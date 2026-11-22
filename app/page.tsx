@@ -631,6 +631,7 @@ export default function TravelSite() {
   const [showMoroccoCostTracker, setShowMoroccoCostTracker] = useState(false);
   const [activeBillTabTrip, setActiveBillTabTrip] = useState<"morocco" | "taiwan" | "xiaoliuqiuTaiwan" | "okinawaJapan" | "vietnam" | "alaskaCruise">("morocco");
   const [showMoroccoAccountingSummary, setShowMoroccoAccountingSummary] = useState(false);
+  const [billTabPartyFilter, setBillTabPartyFilter] = useState("");
   const [moroccoExpenses, setMoroccoExpenses] = useState<MoroccoExpense[]>([]);
   const [moroccoExpenseDescription, setMoroccoExpenseDescription] = useState("");
   const [moroccoExpenseAmount, setMoroccoExpenseAmount] = useState("");
@@ -1092,7 +1093,7 @@ export default function TravelSite() {
     },
     {
       dateKey: "2026-11-28", date: "Sat Nov 28", chapter: "onna", location: "Onna", title: "Resort Day · Blue Cave",
-      items: ["Hotel breakfast buffet.", "Blue Cave free dive · David, Steven, Mark & Christine · weather dependent.", "Blue Cave snorkel · Xenia, Heather, Naomi & Kaien · weather dependent.", "Ryukyu Mura with FunPass.", "Dave, Christina & Xixi · ANA NH1273 · Arrive 2:40 PM.", "Resort and beach activities.", "Dinner TBD."],
+      items: ["Hotel breakfast buffet.", "Blue Cave snorkeling with Pink Mermaid Okinawa · all 8 people: David, Steven, Mark, Christine, Xenia, Heather, Naomi & Kaien · weather dependent.", "Ryukyu Mura with FunPass.", "Dave, Christina & Xixi · ANA NH1273 · Arrive 2:40 PM.", "Resort and beach activities.", "Dinner TBD."],
       stay: "Hotel Monterey Okinawa", stayHref: "https://www.hotelmonterey.co.jp/en/okinawa/",
       links: [{ label: "Ryukyu Mura", href: "https://www.ryukyumura.co.jp/" }, { label: "Resort Activities", href: "https://www.hotelmonterey.co.jp/en/okinawa/activity/" }],
     },
@@ -2623,6 +2624,15 @@ export default function TravelSite() {
 
   const activeBillTabConfig = getBillTabConfig(activeBillTabTrip);
   const activeBillTabParties = activeBillTabConfig.parties;
+  const billTabLocalRate = Number(({
+    TWD: cadToTwd, JPY: cadToJpy, VND: cadToVnd, USD: cadToUsd, MAD: cadToMad,
+  }[activeBillTabConfig.localCurrency]).replace(/,/g, ""));
+  const formatBillTabLocalAmount = (amountCad: number) =>
+    new Intl.NumberFormat("en-CA", {
+      style: "currency",
+      currency: activeBillTabConfig.localCurrency,
+      currencyDisplay: "code",
+    }).format(amountCad * billTabLocalRate);
   const billTabCurrencyOptions = Array.from(new Set(["CAD", activeBillTabConfig.localCurrency, "USD"])) as Array<"CAD" | "MAD" | "JPY" | "TWD" | "VND" | "USD">;
   const moroccoSelectedPaidForParties = moroccoExpensePaidFor.includes("Everyone")
     ? activeBillTabParties
@@ -2646,6 +2656,7 @@ export default function TravelSite() {
   const openMoroccoCostTracker = async (trip: "morocco" | "taiwan" | "xiaoliuqiuTaiwan" | "okinawaJapan" | "vietnam" | "alaskaCruise" = "morocco") => {
     const config = getBillTabConfig(trip);
     setActiveBillTabTrip(trip);
+    setBillTabPartyFilter("");
     setShowMoroccoCostTracker(true);
     setMoroccoExpenseCurrency(config.localCurrency);
     setMoroccoExpensePaidBy((current) => config.parties.includes(current) ? current : guestName && config.parties.includes(guestName) ? guestName : config.parties[0] || "");
@@ -2744,34 +2755,56 @@ export default function TravelSite() {
   };
   const billTabBalances = activeBillTabParties.map((name) => ({ name, balance: 0 }));
   const billTabBalanceByName = new Map(billTabBalances.map((party) => [party.name, party]));
+  const billTabDebts = new Map<string, Map<string, number>>();
   moroccoExpenses.forEach((expense) => {
     const amountCad = expense.convertedAmountCad ?? expense.amountCad ?? 0;
     if (!amountCad) return;
     const paidForParties = getExpensePaidForParties(expense);
-    if (!paidForParties.length) return;
     const payer = billTabBalanceByName.get(expense.paidBy);
-    if (payer) payer.balance += amountCad;
+    if (!paidForParties.length || !payer) return;
+    payer.balance += amountCad;
     const share = amountCad / paidForParties.length;
     paidForParties.forEach((partyName) => {
       const party = billTabBalanceByName.get(partyName);
       if (party) party.balance -= share;
+      if (partyName === expense.paidBy) return;
+      const debts = billTabDebts.get(partyName) ?? new Map<string, number>();
+      debts.set(expense.paidBy, (debts.get(expense.paidBy) ?? 0) + share);
+      billTabDebts.set(partyName, debts);
     });
   });
   const billTabSettlements: { from: string; to: string; amount: number }[] = [];
-  const billTabDebtors = billTabBalances.filter((party) => party.balance < -0.01).map((party) => ({ name: party.name, amount: -party.balance }));
-  const billTabCreditors = billTabBalances.filter((party) => party.balance > 0.01).map((party) => ({ name: party.name, amount: party.balance }));
-  let debtorIndex = 0;
-  let creditorIndex = 0;
-  while (debtorIndex < billTabDebtors.length && creditorIndex < billTabCreditors.length) {
-    const debtor = billTabDebtors[debtorIndex];
-    const creditor = billTabCreditors[creditorIndex];
-    const amount = Math.min(debtor.amount, creditor.amount);
-    if (amount > 0.01) billTabSettlements.push({ from: debtor.name, to: creditor.name, amount });
-    debtor.amount -= amount;
-    creditor.amount -= amount;
-    if (debtor.amount <= 0.01) debtorIndex += 1;
-    if (creditor.amount <= 0.01) creditorIndex += 1;
-  }
+  activeBillTabParties.forEach((first, index) => {
+    activeBillTabParties.slice(index + 1).forEach((second) => {
+      const net = (billTabDebts.get(first)?.get(second) ?? 0)
+        - (billTabDebts.get(second)?.get(first) ?? 0);
+      const amount = Math.round(Math.abs(net) * 100) / 100;
+      if (amount > 0) {
+        billTabSettlements.push({
+          from: net > 0 ? first : second,
+          to: net > 0 ? second : first,
+          amount,
+        });
+      }
+    });
+  });
+  const filteredBillTabExpenses = moroccoExpenses.filter((expense) =>
+    !billTabPartyFilter || expense.paidBy === billTabPartyFilter ||
+    getExpensePaidForParties(expense).includes(billTabPartyFilter));
+  const filteredBillTabSettlements = billTabSettlements.filter((settlement) =>
+    !billTabPartyFilter || settlement.from === billTabPartyFilter || settlement.to === billTabPartyFilter);
+  const filteredBillTabBalances = billTabBalances.filter((party) =>
+    !billTabPartyFilter || party.name === billTabPartyFilter);
+  const renderBillTabPartyFilter = () => (
+    <label className="mb-5 grid gap-2 text-xs text-white/55">
+      Filter by party
+      <select value={billTabPartyFilter} onChange={(event) => setBillTabPartyFilter(event.target.value)}
+        className="w-full rounded-xl border border-white/15 bg-[#111] px-3 py-3 text-sm text-white">
+        <option value="">All</option>
+        {activeBillTabParties.map((party) => <option key={party} value={party}>{party}</option>)}
+      </select>
+    </label>
+  );
   const renderMoroccoPaidForSelector = () => (
     <fieldset className="grid gap-2 text-xs text-white/45 sm:col-span-2">
       <legend>Paid For</legend>
@@ -2801,6 +2834,7 @@ export default function TravelSite() {
           </div>
         </div>
         <div className="min-h-0 overflow-y-auto p-5 sm:p-7">
+          {renderBillTabPartyFilter()}
           <form onSubmit={(event) => { event.preventDefault(); addMoroccoExpense(); }} className="mb-6 grid gap-3 sm:grid-cols-2">
             <label className="grid gap-1.5 text-xs text-white/45 sm:col-span-2">
               Expense Item
@@ -2831,8 +2865,8 @@ export default function TravelSite() {
           </form>
           {moroccoExpenseMessage && <p className="mb-4 text-sm text-white/50">{moroccoExpenseMessage}</p>}
           <div className="space-y-3">
-            {moroccoExpenses.map((expense) => <div key={expense.id} className={`flex items-start justify-between gap-4 rounded-xl border bg-white/[0.04] px-4 py-3 ${moroccoEditingExpenseId === expense.id ? "" : "border-white/10"}`} style={moroccoEditingExpenseId === expense.id ? { borderColor: `${activeBillTabConfig.accent}99` } : undefined}><div className="min-w-0"><p className="truncate text-sm text-white/80">{expense.description}</p><p className="mt-1 text-xs text-white/40">{new Intl.DateTimeFormat("en-CA", { year: "numeric", month: "short", day: "numeric" }).format(new Date(expense.createdAt))} · Paid By {expense.paidBy} · Paid For {expense.paidFor || "Everyone"}</p>{expense.exchangeRateToCad !== null && expense.amountCad === null && <p className="mt-1 text-[11px] text-white/30">1 {expense.amountUsd !== null ? "USD" : activeBillTabConfig.localLabel} = {expense.exchangeRateToCad.toFixed(4)} CAD</p>}</div><div className="shrink-0 text-right"><p className="text-sm font-medium" style={{ color: activeBillTabConfig.accent }}>{expense.amountCad !== null ? `$${expense.amountCad.toFixed(2)} CAD` : expense.amountUsd !== null ? `$${expense.amountUsd.toFixed(2)} USD` : `${activeBillTabConfig.localSymbol}${expense.amountLocal?.toFixed(2)} ${activeBillTabConfig.localLabel}`}</p>{expense.convertedAmountCad !== null && expense.amountCad === null && <p className="mt-1 text-xs text-white/40">≈ ${expense.convertedAmountCad.toFixed(2)} CAD</p>}<div className="mt-2 flex justify-end gap-3"><button type="button" onClick={() => editMoroccoExpense(expense)} className="text-[10px] uppercase tracking-[0.12em] transition" style={{ color: activeBillTabConfig.accent }}>Edit</button><button type="button" onClick={() => deleteMoroccoExpense(expense)} className="text-[10px] uppercase tracking-[0.12em] text-red-300/60 transition hover:text-red-300">Delete</button></div></div></div>)}
-            {!moroccoExpenses.length && !moroccoExpenseMessage && <p className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-8 text-center text-sm text-white/40">No shared expenses yet. Add the first expense above when the trip starts.</p>}
+            {filteredBillTabExpenses.map((expense) => <div key={expense.id} className={`flex items-start justify-between gap-4 rounded-xl border bg-white/[0.04] px-4 py-3 ${moroccoEditingExpenseId === expense.id ? "" : "border-white/10"}`} style={moroccoEditingExpenseId === expense.id ? { borderColor: `${activeBillTabConfig.accent}99` } : undefined}><div className="min-w-0"><p className="truncate text-sm text-white/80">{expense.description}</p><p className="mt-1 text-xs text-white/40">{new Intl.DateTimeFormat("en-CA", { year: "numeric", month: "short", day: "numeric" }).format(new Date(expense.createdAt))} · Paid By {expense.paidBy} · Paid For {expense.paidFor || "Everyone"}</p>{expense.exchangeRateToCad !== null && expense.amountCad === null && <p className="mt-1 text-[11px] text-white/30">1 {expense.amountUsd !== null ? "USD" : activeBillTabConfig.localLabel} = {expense.exchangeRateToCad.toFixed(4)} CAD</p>}</div><div className="shrink-0 text-right"><p className="text-sm font-medium" style={{ color: activeBillTabConfig.accent }}>{expense.amountCad !== null ? `$${expense.amountCad.toFixed(2)} CAD` : expense.amountUsd !== null ? `$${expense.amountUsd.toFixed(2)} USD` : `${activeBillTabConfig.localSymbol}${expense.amountLocal?.toFixed(2)} ${activeBillTabConfig.localLabel}`}</p>{expense.convertedAmountCad !== null && expense.amountCad === null && <p className="mt-1 text-xs text-white/40">≈ ${expense.convertedAmountCad.toFixed(2)} CAD</p>}<div className="mt-2 flex justify-end gap-3"><button type="button" onClick={() => editMoroccoExpense(expense)} className="text-[10px] uppercase tracking-[0.12em] transition" style={{ color: activeBillTabConfig.accent }}>Edit</button><button type="button" onClick={() => deleteMoroccoExpense(expense)} className="text-[10px] uppercase tracking-[0.12em] text-red-300/60 transition hover:text-red-300">Delete</button></div></div></div>)}
+            {!filteredBillTabExpenses.length && !moroccoExpenseMessage && <p className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-8 text-center text-sm text-white/40">No expenses match this party filter.</p>}
           </div>
         </div>
       </section>
@@ -2843,36 +2877,37 @@ export default function TravelSite() {
     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label={`${activeBillTabConfig.label} accounting summary`}>
       <section className="flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] shadow-2xl">
         <div className="flex items-start justify-between gap-5 border-b border-white/10 p-6">
-          <div><p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: activeBillTabConfig.accent }}>{activeBillTabConfig.label}</p><h2 className="text-2xl font-light">Accounting Summary</h2><p className="mt-3 text-sm leading-6 text-white/45">Approximate settlement based on each expense's converted CAD value.</p></div>
+          <div><p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: activeBillTabConfig.accent }}>{activeBillTabConfig.label}</p><h2 className="text-2xl font-light">Accounting Summary</h2><p className="mt-3 text-sm leading-6 text-white/45">Payments show what each pair of parties owes after offsetting their shared expenses in CAD. Local equivalents are approximate.</p><p className="mt-1 text-xs text-white/40">1 CAD ≈ {billTabLocalRate.toLocaleString("en-CA", { maximumFractionDigits: 4 })} {activeBillTabConfig.localLabel}</p></div>
           <button type="button" onClick={() => setShowMoroccoAccountingSummary(false)} aria-label="Close accounting summary" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65">x</button>
         </div>
         <div className="min-h-0 overflow-y-auto p-6">
+          {renderBillTabPartyFilter()}
           {!moroccoExpenses.length ? (
             <p className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-8 text-center text-sm leading-6 text-white/40">No shared expenses yet. Add expenses in BillTab to generate settlement suggestions.</p>
           ) : (
             <div className="space-y-5">
               <section>
                 <h3 className="mb-3 text-xs uppercase tracking-[0.2em] text-white/45">Suggested Payments</h3>
-                {billTabSettlements.length ? (
+                {filteredBillTabSettlements.length ? (
                   <div className="space-y-2">
-                    {billTabSettlements.map((settlement) => (
+                    {filteredBillTabSettlements.map((settlement) => (
                       <div key={`${settlement.from}-${settlement.to}-${settlement.amount}`} className="rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3">
                         <p className="text-sm text-white/75"><span className="text-white">{settlement.from}</span> pays <span className="text-white">{settlement.to}</span></p>
-                        <p className="mt-1 text-sm font-medium" style={{ color: activeBillTabConfig.accent }}>${settlement.amount.toFixed(2)} CAD</p>
+                        <p className="mt-1 text-sm font-medium" style={{ color: activeBillTabConfig.accent }}>${settlement.amount.toFixed(2)} CAD</p><p className="mt-1 text-xs text-white/50">≈ {formatBillTabLocalAmount(settlement.amount)}</p>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <p className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-5 text-sm text-white/45">Everyone is settled based on the current entries.</p>
+                  <p className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-5 text-sm text-white/45">No payments are due for this selection.</p>
                 )}
               </section>
               <section>
                 <h3 className="mb-3 text-xs uppercase tracking-[0.2em] text-white/45">Party Balances</h3>
                 <div className="space-y-2">
-                  {billTabBalances.map((party) => (
+                  {filteredBillTabBalances.map((party) => (
                     <div key={party.name} className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm">
                       <span className="min-w-0 truncate text-white/70">{party.name}</span>
-                      <span className={party.balance >= 0 ? "text-emerald-200/80" : "text-rose-200/80"}>{party.balance >= 0 ? "+" : "-"}${Math.abs(party.balance).toFixed(2)} CAD</span>
+                      <div className="shrink-0 text-right"><p className={party.balance >= 0 ? "text-emerald-200/80" : "text-rose-200/80"}>{party.balance >= 0 ? "+" : "-"}${Math.abs(party.balance).toFixed(2)} CAD</p><p className="mt-1 text-xs text-white/50">≈ {party.balance >= 0 ? "+" : "-"}{formatBillTabLocalAmount(Math.abs(party.balance))}</p></div>
                     </div>
                   ))}
                 </div>
@@ -3003,7 +3038,7 @@ export default function TravelSite() {
                 return (
                   <button key={item} type="button" onClick={() => toggleReservationItem("okinawaJapan", item, checked)} className={`flex items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition ${checked ? "border-[#9EDCFF]/45 bg-[#9EDCFF]/10 text-white" : "border-white/10 bg-black/20 text-white/75 hover:border-white/25"}`}>
                     <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-[10px] ${checked ? "border-[#9EDCFF] bg-[#9EDCFF] text-black" : "border-white/20 text-transparent"}`}>✓</span>
-                    <span className={checked ? "text-sm text-white line-through decoration-[#9EDCFF]/70" : "text-sm text-white/75"}>{item}</span>
+                    <span className={checked ? "text-sm text-white line-through decoration-[#9EDCFF]/70" : "text-sm text-white/75"}>{item === "11/28 Blue Cave Scuba/Snorkel Booking" ? "11/28 Pink Mermaid Okinawa Snorkeling · 8 people" : item}</span>
                   </button>
                 );
               })}
@@ -3055,64 +3090,8 @@ export default function TravelSite() {
             </section>
           </div>
         )}
-        {showMoroccoCostTracker && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Morocco BillTab">
-            <section className="flex max-h-[92vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#111] shadow-2xl">
-              <div className="flex items-start justify-between gap-5 border-b border-white/10 px-5 py-5 sm:px-7">
-                <div><p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: MOROCCO_BROWN }}>Morocco 2026</p><h2 className="text-2xl font-light">BillTab</h2><p className="mt-2 text-sm text-white/45">Converted total: ${moroccoExpenseTotal.toFixed(2)} CAD</p></div>
-                <div className="flex items-center gap-2">
-                  <button type="button" onClick={() => setShowMoroccoAccountingSummary(true)} className="rounded-full border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-3 py-2 text-[10px] uppercase tracking-[0.12em] text-[#D6B48C] transition hover:border-[#D6B48C]/60">Accounting Summary</button>
-                  <button type="button" onClick={() => setShowMoroccoCostTracker(false)} aria-label="Close BillTab" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65">×</button>
-                </div>
-              </div>
-              <div className="min-h-0 overflow-y-auto p-5 sm:p-7">
-                <form onSubmit={(event) => { event.preventDefault(); addMoroccoExpense(); }} className="mb-6 grid gap-3 sm:grid-cols-2">
-                  <label className="grid gap-1.5 text-xs text-white/45 sm:col-span-2">
-                    Expense Item
-                    <input value={moroccoExpenseDescription} onChange={(event) => setMoroccoExpenseDescription(event.target.value)} placeholder="Expense description" className="rounded-xl border border-white/15 bg-black/30 px-4 py-3 text-sm text-white outline-none focus:border-[#D6B48C]/60" />
-                  </label>
-                  <label className="grid gap-1.5 text-xs text-white/45">
-                    Amount
-                    <input value={moroccoExpenseAmount} onChange={(event) => setMoroccoExpenseAmount(event.target.value)} type="number" min="0.01" step="0.01" placeholder="0.00" className="rounded-xl border border-white/15 bg-black/30 px-4 py-3 text-sm text-white outline-none focus:border-[#D6B48C]/60" />
-                  </label>
-                  <fieldset className="grid gap-1.5 text-xs text-white/45">
-                    <legend className="mb-1.5">Currency</legend>
-                    <div className="grid grid-cols-3 rounded-xl border border-white/15 bg-black/30 p-1">
-                      {(["CAD", "MAD", "USD"] as const).map((currency) => <button key={currency} type="button" onClick={() => setMoroccoExpenseCurrency(currency)} className={`rounded-lg px-3 py-2 text-sm transition ${moroccoExpenseCurrency === currency ? "bg-[#D6B48C] text-black" : "text-white/55 hover:text-white"}`}>{currency}</button>)}
-                    </div>
-                  </fieldset>
-                  {renderMoroccoPaidForSelector()}
-                  <label className="grid gap-1.5 text-xs text-white/45">
-                    Paid By
-                    <select value={moroccoExpensePaidBy} onChange={(event) => setMoroccoExpensePaidBy(event.target.value)} className="rounded-xl border border-white/15 bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-[#D6B48C]/60">
-                      <option value="" disabled>Select a party</option>
-                      {moroccoInterestedNames.map((name) => <option key={name} value={name}>{name}</option>)}
-                    </select>
-                  </label>
-                  <div className="grid gap-2 sm:self-end">
-                    <button type="submit" className="rounded-xl border border-[#D6B48C]/35 bg-[#D6B48C]/10 px-5 py-3 text-sm uppercase tracking-[0.16em] text-[#D6B48C]">{moroccoEditingExpenseId ? "Save Changes" : "Add Expense"}</button>
-                    {moroccoEditingExpenseId && <button type="button" onClick={cancelMoroccoExpenseEdit} className="text-xs text-white/40 transition hover:text-white/70">Cancel Edit</button>}
-                  </div>
-                </form>
-                {moroccoExpenseMessage && <p className="mb-4 text-sm text-white/50">{moroccoExpenseMessage}</p>}
-                <div className="space-y-3">
-                  {moroccoExpenses.map((expense) => <div key={expense.id} className={`flex items-start justify-between gap-4 rounded-xl border bg-white/[0.04] px-4 py-3 ${moroccoEditingExpenseId === expense.id ? "border-[#D6B48C]/60" : "border-white/10"}`}><div className="min-w-0"><p className="truncate text-sm text-white/80">{expense.description}</p><p className="mt-1 text-xs text-white/40">{new Intl.DateTimeFormat("en-CA", { year: "numeric", month: "short", day: "numeric" }).format(new Date(expense.createdAt))} · Paid By {expense.paidBy} · Paid For {expense.paidFor || "Everyone"}</p>{expense.exchangeRateToCad !== null && expense.amountCad === null && <p className="mt-1 text-[11px] text-white/30">1 {expense.amountUsd !== null ? "USD" : "MAD"} = {expense.exchangeRateToCad.toFixed(4)} CAD</p>}</div><div className="shrink-0 text-right"><p className="text-sm font-medium" style={{ color: MOROCCO_BROWN }}>{expense.amountCad !== null ? `$${expense.amountCad.toFixed(2)} CAD` : expense.amountUsd !== null ? `$${expense.amountUsd.toFixed(2)} USD` : `${expense.amountLocal?.toFixed(2)} MAD`}</p>{expense.convertedAmountCad !== null && expense.amountCad === null && <p className="mt-1 text-xs text-white/40">≈ ${expense.convertedAmountCad.toFixed(2)} CAD</p>}<div className="mt-2 flex justify-end gap-3"><button type="button" onClick={() => editMoroccoExpense(expense)} className="text-[10px] uppercase tracking-[0.12em] text-[#D6B48C]/75 transition hover:text-[#D6B48C]">Edit</button><button type="button" onClick={() => deleteMoroccoExpense(expense)} className="text-[10px] uppercase tracking-[0.12em] text-red-300/60 transition hover:text-red-300">Delete</button></div></div></div>)}
-                  {!moroccoExpenses.length && !moroccoExpenseMessage && <p className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-8 text-center text-sm text-white/40">No shared expenses yet. Add the first expense above when the trip starts.</p>}
-                </div>
-              </div>
-            </section>
-          </div>
-        )}
-        {showMoroccoAccountingSummary && (
-          <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Morocco accounting summary">
-            <section className="w-full max-w-lg rounded-2xl border border-white/15 bg-[#111] p-6 shadow-2xl">
-              <div className="flex items-start justify-between gap-5">
-                <div><p className="mb-2 text-xs uppercase tracking-[0.24em]" style={{ color: MOROCCO_BROWN }}>Morocco 2026</p><h2 className="text-2xl font-light">Accounting Summary</h2><p className="mt-3 text-sm leading-6 text-white/45">Who owes whom and settlement amounts will appear here once expense-sharing rules are added.</p></div>
-                <button type="button" onClick={() => setShowMoroccoAccountingSummary(false)} aria-label="Close accounting summary" title="Close" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-lg text-white/65">×</button>
-              </div>
-            </section>
-          </div>
-        )}
+        {moroccoCostTrackerPopup}
+        {moroccoAccountingSummaryPopup}
         {albumPopup}
       </div>
     );
@@ -5669,7 +5648,7 @@ function OnnaContent({ card, linkedImage }: { card: (children: React.ReactNode) 
           </>
         )}
       </DayArticle>
-      <DayArticle date="Saturday, November 28, 2026" rentalCarDate="2026-11-28" title="Resort Day · Beach / Culture / Blue Cave">{card(<p>🍳 Breakfast · Hotel buffet</p>)}{card(<><p>🤿 Blue Cave free dive & snorkel · 青之洞窟</p><p className="text-white/50">Weather dependent</p><p className="mt-3 text-[var(--chapter-accent)]">Free Dive · Headcount 4</p><ul className="mt-2 ml-5 list-disc space-y-1 text-white/65"><li>David</li><li>Steven</li><li>Mark</li><li>Christine</li></ul><p className="mt-4 text-[var(--chapter-accent)]">Snorkel · Headcount 4</p><ul className="mt-2 ml-5 list-disc space-y-1 text-white/65"><li>Xenia</li><li>Heather</li><li>Naomi</li><li>Kaien</li></ul>{linkedImage("/bluecave.png", "Blue Cave Okinawa")}</>)}{card(<a href="https://www.ryukyumura.co.jp/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🏯 Ryukyu Mura with FunPass</a>)}{card(<><p>✈ Dave, Christina & Xixi arrive in Okinawa</p><p className="mt-2 text-white/60">ANA NH1273 · Arrive at 2:40 PM</p></>)}{card(<><a href="https://www.hotelmonterey.co.jp/en/okinawa/activity/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🏖 Resort & Beach Activities</a>{linkedImage("/hotel.png", "Hotel Monterey Okinawa")}</>)}{card(<p>🍽 Dinner · TBD</p>)}</DayArticle>
+      <DayArticle date="Saturday, November 28, 2026" rentalCarDate="2026-11-28" title="Resort Day · Beach / Culture / Blue Cave">{card(<p>🍳 Breakfast · Hotel buffet</p>)}{card(<><p>🤿 Blue Cave snorkeling · 青之洞窟</p><p className="mt-2 text-white/70">Pink Mermaid Okinawa dive shop</p><p className="text-white/50">Weather dependent</p><p className="mt-3 text-[var(--chapter-accent)]">Snorkeling · Headcount 8</p><ul className="mt-2 ml-5 list-disc space-y-1 text-white/65"><li>David</li><li>Steven</li><li>Mark</li><li>Christine</li><li>Xenia</li><li>Heather</li><li>Naomi</li><li>Kaien</li></ul>{linkedImage("/bluecave.png", "Blue Cave Okinawa")}</>)}{card(<a href="https://www.ryukyumura.co.jp/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🏯 Ryukyu Mura with FunPass</a>)}{card(<><p>✈ Dave, Christina & Xixi arrive in Okinawa</p><p className="mt-2 text-white/60">ANA NH1273 · Arrive at 2:40 PM</p></>)}{card(<><a href="https://www.hotelmonterey.co.jp/en/okinawa/activity/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🏖 Resort & Beach Activities</a>{linkedImage("/hotel.png", "Hotel Monterey Okinawa")}</>)}{card(<p>🍽 Dinner · TBD</p>)}</DayArticle>
       <DayArticle date="Sunday, November 29, 2026" rentalCarDate="2026-11-29" title="Albert & Quinn Wedding Day">{card(<><p>🍳 Breakfast · Hotel buffet</p><p>💍 11:00 AM · Albert & Quinn Wedding Ceremony at Hotel Monterey Chapel</p><p>🥂 12:30 PM - 1:30 PM · Cocktail Hour &amp; Hors d&apos;Oeuvres</p><p>🍽 1:30 PM - 3:30 PM · Wedding Lunch Reception</p><p>🎉 7:30 PM · After Party</p>{linkedImage("/chapel.png", "Wedding Chapel Okinawa")}</>)}{card(<><p>✈ Mei & Emilia arrive in Okinawa</p><p className="mt-2 text-white/60">EVA Air BR186 · Arrive at 7:10 PM</p></>)}</DayArticle>
     </>
   );
