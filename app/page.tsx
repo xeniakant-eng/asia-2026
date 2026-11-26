@@ -2,6 +2,10 @@
 
 import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import GangalaBookingReminder from "./gangala-booking-reminder";
+import PinkMermaidBooking from "./pink-mermaid-booking";
+import OkinawaDinnerReminder from "./okinawa-dinner-reminder";
+import { useSettlementProgress } from "./settlement-progress";
 import VietnamTodayTools, { SaveVietnamDayButton } from "./vietnam-today-tools";
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
@@ -631,6 +635,7 @@ export default function TravelSite() {
   const [showMoroccoCostTracker, setShowMoroccoCostTracker] = useState(false);
   const [activeBillTabTrip, setActiveBillTabTrip] = useState<"morocco" | "taiwan" | "xiaoliuqiuTaiwan" | "okinawaJapan" | "vietnam" | "alaskaCruise">("morocco");
   const [showMoroccoAccountingSummary, setShowMoroccoAccountingSummary] = useState(false);
+  const settlementProgress = useSettlementProgress(activeBillTabTrip, showMoroccoAccountingSummary);
   const [billTabPartyFilter, setBillTabPartyFilter] = useState("");
   const [moroccoExpenses, setMoroccoExpenses] = useState<MoroccoExpense[]>([]);
   const [moroccoExpenseDescription, setMoroccoExpenseDescription] = useState("");
@@ -1093,7 +1098,7 @@ export default function TravelSite() {
     },
     {
       dateKey: "2026-11-28", date: "Sat Nov 28", chapter: "onna", location: "Onna", title: "Resort Day · Blue Cave",
-      items: ["Hotel breakfast buffet.", "Blue Cave snorkeling with Pink Mermaid Okinawa · all 8 people: David, Steven, Mark, Christine, Xenia, Heather, Naomi & Kaien · weather dependent.", "Ryukyu Mura with FunPass.", "Dave, Christina & Xixi · ANA NH1273 · Arrive 2:40 PM.", "Resort and beach activities.", "Dinner TBD."],
+      items: ["Hotel breakfast buffet.", "10:45 AM · Blue Cave boat snorkeling with Pink Mermaid · all 8 people: David, Steven, Mark, Christine, Xenia, Heather, Naomi & Kaien · weather dependent.", "Ryukyu Mura with FunPass.", "Dave, Christina & Xixi · ANA NH1273 · Arrive 2:40 PM.", "Resort and beach activities.", "Dinner TBD."],
       stay: "Hotel Monterey Okinawa", stayHref: "https://www.hotelmonterey.co.jp/en/okinawa/",
       links: [{ label: "Ryukyu Mura", href: "https://www.ryukyumura.co.jp/" }, { label: "Resort Activities", href: "https://www.hotelmonterey.co.jp/en/okinawa/activity/" }],
     },
@@ -1118,7 +1123,7 @@ export default function TravelSite() {
     },
     {
       dateKey: "2026-12-01", date: "Tue Dec 1", chapter: "nago", location: "Northern Okinawa", title: "Aquarium + Kouri Island",
-      items: ["7:30 AM · Hotel breakfast buffet.", "8:45 AM · Leave Nago hotel.", "9:30 AM-1:00 PM · Churaumi Aquarium · FunPass.", "Lunch at Ocean Blue Cafe · join the waitlist upon arrival.", "2:00-3:00 PM · Bise Fukugi Tree Road.", "3:30-5:00 PM · Kouri Island, beach walk, cafe, and sunset.", "Dinner at Restaurant Flipper."],
+      items: ["7:30 AM · Hotel breakfast buffet.", "8:45 AM · Leave Nago hotel.", "9:30 AM-1:00 PM · Churaumi Aquarium · FunPass.", "Lunch at Ocean Blue Cafe · join the waitlist upon arrival.", "2:00-3:00 PM · Bise Fukugi Tree Road.", "3:30-5:00 PM · Kouri Island, beach walk, cafe, and sunset.", "Dinner at Restaurant Flipper · walk-in only; no reservations available. Closed Wednesdays."],
       stay: "Hotel Yugaf Inn Okinawa", stayHref: "https://maps.google.com/?q=Hotel+Yugaf+Inn+Okinawa",
       links: [{ label: "Churaumi Aquarium", href: "https://maps.google.com/?q=Okinawa+Churaumi+Aquarium" }, { label: "Kouri Island", href: "https://maps.google.com/?q=Kouri+Island+Okinawa" }],
     },
@@ -2800,6 +2805,10 @@ export default function TravelSite() {
       if (!amountCad || !participants.length || (!isForward && !isReverse)) return [];
       return [{ expense, shareCad: amountCad / participants.length, isForward, count: participants.length }];
     });
+  const getSettlementProgressKey = (from: string, to: string) =>
+    JSON.stringify([activeBillTabTrip, from, to, getSettlementItems(from, to)
+      .map(({ expense, shareCad, isForward }) => [expense.id, shareCad, isForward])
+      .sort((a, b) => String(a[0]).localeCompare(String(b[0])))]);
   const renderBillTabPartyFilter = () => (
     <label className="mb-5 grid gap-2 text-xs text-white/55">
       Filter by party
@@ -2892,31 +2901,44 @@ export default function TravelSite() {
             <div className="space-y-5">
               <section>
                 <h3 className="mb-3 text-xs uppercase tracking-[0.2em] text-white/45">Settlements</h3>
+                {settlementProgress.error && <p role="status" className="mb-3 text-sm text-red-300">{settlementProgress.error}</p>}
                 {billTabSettlements.length ? (
                   <div className="space-y-2">
-                    {billTabSettlements.map((settlement) => (
-                      <details key={JSON.stringify([settlement.from, settlement.to])} className="rounded-xl border border-white/10 bg-white/[0.04]">
-                        <summary className="cursor-pointer px-4 py-3 text-sm text-white/75">
-                          <span className="text-white">{settlement.from}</span> pays <span className="text-white">{settlement.to}</span>
-                          <span className="mt-1 block font-medium" style={{ color: activeBillTabConfig.accent }}>${settlement.amount.toFixed(2)} CAD</span>
-                          <span className="mt-1 block text-xs text-white/50">≈ {formatBillTabLocalAmount(settlement.amount)}</span>
-                        </summary>
-                        <ul className="space-y-3 border-t border-white/10 px-4 py-3">
-                          {getSettlementItems(settlement.from, settlement.to).map(({ expense, shareCad, isForward, count }) => (
-                            <li key={expense.id} className="text-sm">
-                              <p className="break-words text-white/85">{expense.description}</p>
-                              <p className="mt-1 text-xs text-white/50">Paid by {expense.paidBy} · Shared by {count} {count === 1 ? "party" : "parties"}</p>
-                              <p className={isForward ? "mt-1 text-xs text-white/75" : "mt-1 text-xs text-emerald-200/80"}>
-                                {isForward ? "+" : "−"}${shareCad.toFixed(2)} CAD · {isForward ? "Owed to" : "Offset paid by"} {settlement.to}
-                              </p>
-                              <p className="mt-1 text-xs text-white/45">≈ {formatBillTabLocalAmount(shareCad)}</p>
-                            </li>
-                          ))}
-                        </ul>
-                      </details>
-                    ))}
-                  </div>
-                ) : (
+                    {billTabSettlements.map((settlement) => {
+                      const statusKey = getSettlementProgressKey(settlement.from, settlement.to);
+                      return (
+                        <div key={JSON.stringify([settlement.from, settlement.to])} className="rounded-xl border border-white/10 bg-white/[0.04]">
+                          <label className="flex cursor-pointer items-center gap-2 px-4 pt-3 text-sm text-white/75">
+                            <input type="checkbox" checked={Boolean(settlementProgress.progress[statusKey])}
+                              disabled={!settlementProgress.ready || settlementProgress.pending !== null}
+                              onChange={(event) => void settlementProgress.toggle(statusKey, event.target.checked)}
+                              aria-label={`Mark settlement from ${settlement.from} to ${settlement.to} as settled`}
+                              className="h-4 w-4 accent-emerald-400" />
+                            {settlementProgress.progress[statusKey] ? "Settled" : "Mark as settled"}
+                          </label>
+                          <details>
+                            <summary className="cursor-pointer px-4 py-3 text-sm text-white/75">
+                              <span className="text-white">{settlement.from}</span> pays <span className="text-white">{settlement.to}</span>
+                              <span className="mt-1 block font-medium" style={{ color: activeBillTabConfig.accent }}>${settlement.amount.toFixed(2)} CAD</span>
+                              <span className="mt-1 block text-xs text-white/50">≈ {formatBillTabLocalAmount(settlement.amount)}</span>
+                            </summary>
+                            <ul className="space-y-3 border-t border-white/10 px-4 py-3">
+                              {getSettlementItems(settlement.from, settlement.to).map(({ expense, shareCad, isForward, count }) => (
+                                <li key={expense.id} className="text-sm">
+                                  <p className="break-words text-white/85">{expense.description}</p>
+                                  <p className="mt-1 text-xs text-white/50">Paid by {expense.paidBy} · Shared by {count} {count === 1 ? "party" : "parties"}</p>
+                                  <p className={isForward ? "mt-1 text-xs text-white/75" : "mt-1 text-xs text-emerald-200/80"}>
+                                    {isForward ? "+" : "−"}${shareCad.toFixed(2)} CAD · {isForward ? "Owed to" : "Offset paid by"} {settlement.to}
+                                  </p>
+                                  <p className="mt-1 text-xs text-white/45">≈ {formatBillTabLocalAmount(shareCad)}</p>
+                                </li>
+                              ))}
+                            </ul>
+                          </details>
+                        </div>
+                      );
+                    })}
+                  </div>                ) : (
                   <p className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-5 text-sm text-white/45">No payments are due based on the current entries.</p>
                 )}
               </section>
@@ -2961,7 +2983,6 @@ export default function TravelSite() {
     "11/30 - 12/2 Nago Hotel",
     "11/30 Orion Happy Park Admission Reservation",
     "11/30 Yakiniku Kochan Dinner Reservation",
-    "12/1 Restaurant Flipper Dinner Reservation",
     "12/2 - 12/4 Nanjo Hotel",
     "12/3 Gangala Cave Tour Reservation",
     "12/3 Dinner Private Event Arrangement at the Hotel",
@@ -4968,6 +4989,9 @@ export default function TravelSite() {
                     <ul className="mt-5 space-y-3 text-sm leading-6 text-white/75">
                       {okinawaSelectedDay.items.map((item) => <li key={item} className="flex gap-2"><span className="shrink-0 text-[#9EDCFF]">•</span><span>{item}</span></li>)}
                     </ul>
+                    {okinawaSelectedDay.dateKey === "2026-11-28" && <div className="mt-4"><PinkMermaidBooking /></div>}
+                    {okinawaSelectedDay.dateKey === "2026-11-30" && okinawaSelectedDay.chapter === "nago" && <div className="mt-4"><GangalaBookingReminder /></div>}
+                    {okinawaSelectedDay.dateKey === "2026-11-27" && <div className="mt-4"><OkinawaDinnerReminder /></div>}
                   </article>
 
                   <article className="mt-3 rounded-xl border border-white/10 bg-white/[0.04] p-4">
@@ -5555,7 +5579,7 @@ function XiaoliuqiuContent({ card }: { card: (children: React.ReactNode) => Reac
         {card(<p>🍽 Dinner · <a href="https://maps.google.com/?q=岩石二館+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">岩石二館</a></p>)}
       </DayArticle>
 
-      <DayArticle date="Saturday, November 21, 2026" title="Open Water Dive Day">
+      <DayArticle date="Saturday, November 21, 2026" title="Dive + Southern Island Day">
         {card(
           <>
             <p>🌊 Open Water Lesson · Christine & Mark</p>
@@ -5569,22 +5593,19 @@ function XiaoliuqiuContent({ card }: { card: (children: React.ReactNode) => Reac
         {card(<p>🤿 Toddler Group · Snorkeling Tour</p>)}
         {card(
           <>
-            <p>🌅 Northern Xiaoliuqiu Visits</p>
-            <div className="mt-4 flex flex-col gap-4 md:flex-row">
-              <ul className="ml-5 flex-1 list-disc space-y-2 text-white/65">
-                <li><a href="https://maps.google.com/?q=美人洞+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">美人洞</a></li>
-                <li><a href="https://maps.google.com/?q=花瓶岩+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">花瓶岩</a></li>
-                <li><a href="https://maps.google.com/?q=龍蝦洞+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">龍蝦洞</a></li>
-                <li><a href="https://maps.google.com/?q=琉球共融公園+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">琉球共融公園</a></li>
-              </ul>
-              <img src="/xlqmap.png" alt="Xiaoliuqiu map" className="h-auto w-full rounded-2xl object-contain bg-black/20 p-2 md:w-1/2" />
-            </div>
+            <p className="text-sm font-medium text-white/80">Southern Xiaoliuqiu Exploration</p>
+            <ul className="mt-4 ml-5 list-disc space-y-1 text-white/65">
+              <li><a href="https://maps.google.com/?q=琉行綠色隧道+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">琉行綠色隧道</a></li>
+              <li><a href="https://maps.google.com/?q=烏鬼洞+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">烏鬼洞</a></li>
+              <li><a href="https://maps.google.com/?q=落日亭+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">落日亭 Sunset View</a></li>
+              <li>Dessert · <a href="https://maps.google.com/?q=海找冰+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">海找冰</a></li>
+            </ul>
           </>
         )}
         {card(<p>🍽 Dinner · <a href="https://maps.google.com/?q=蜜仔琉部餐館+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">密仔琉部</a></p>)}
       </DayArticle>
 
-      <DayArticle date="Sunday, November 22, 2026" title="Dive + Southern Island Day">
+      <DayArticle date="Sunday, November 22, 2026" title="Dive + Northern Island Day">
         {card(
           <>
             <p>🤿 Open Water Lesson</p>
@@ -5604,13 +5625,16 @@ function XiaoliuqiuContent({ card }: { card: (children: React.ReactNode) => Reac
         {card(<p>👶 Toddler Group 小琉球海洋館</p>)}
         {card(
           <>
-            <p className="text-sm font-medium text-white/80">Southern Xiaoliuqiu Exploration</p>
-            <ul className="mt-4 ml-5 list-disc space-y-1 text-white/65">
-              <li><a href="https://maps.google.com/?q=琉行綠色隧道+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">琉行綠色隧道</a></li>
-              <li><a href="https://maps.google.com/?q=烏鬼洞+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">烏鬼洞</a></li>
-              <li><a href="https://maps.google.com/?q=落日亭+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">落日亭 Sunset View</a></li>
-              <li>Dessert · <a href="https://maps.google.com/?q=海找冰+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">海找冰</a></li>
-            </ul>
+            <p>🌅 Northern Xiaoliuqiu Visits</p>
+            <div className="mt-4 flex flex-col gap-4 md:flex-row">
+              <ul className="ml-5 flex-1 list-disc space-y-2 text-white/65">
+                <li><a href="https://maps.google.com/?q=美人洞+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">美人洞</a></li>
+                <li><a href="https://maps.google.com/?q=花瓶岩+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">花瓶岩</a></li>
+                <li><a href="https://maps.google.com/?q=龍蝦洞+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">龍蝦洞</a></li>
+                <li><a href="https://maps.google.com/?q=琉球共融公園+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">琉球共融公園</a></li>
+              </ul>
+              <img src="/xlqmap.png" alt="Xiaoliuqiu map" className="h-auto w-full rounded-2xl object-contain bg-black/20 p-2 md:w-1/2" />
+            </div>
           </>
         )}
         {card(<p>🍽 Dinner · 7:00 PM · <a href="https://maps.google.com/?q=夏味鮮+小琉球" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">夏味鮮</a></p>)}
@@ -5666,8 +5690,9 @@ function OnnaContent({ card, linkedImage }: { card: (children: React.ReactNode) 
             </ul>
           </>
         )}
+        {card(<OkinawaDinnerReminder />)}
       </DayArticle>
-      <DayArticle date="Saturday, November 28, 2026" rentalCarDate="2026-11-28" title="Resort Day · Beach / Culture / Blue Cave">{card(<p>🍳 Breakfast · Hotel buffet</p>)}{card(<><p>🤿 Blue Cave snorkeling · 青之洞窟</p><p className="mt-2 text-white/70">Pink Mermaid Okinawa dive shop</p><p className="text-white/50">Weather dependent</p><p className="mt-3 text-[var(--chapter-accent)]">Snorkeling · Headcount 8</p><ul className="mt-2 ml-5 list-disc space-y-1 text-white/65"><li>David</li><li>Steven</li><li>Mark</li><li>Christine</li><li>Xenia</li><li>Heather</li><li>Naomi</li><li>Kaien</li></ul>{linkedImage("/bluecave.png", "Blue Cave Okinawa")}</>)}{card(<a href="https://www.ryukyumura.co.jp/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🏯 Ryukyu Mura with FunPass</a>)}{card(<><p>✈ Dave, Christina & Xixi arrive in Okinawa</p><p className="mt-2 text-white/60">ANA NH1273 · Arrive at 2:40 PM</p></>)}{card(<><a href="https://www.hotelmonterey.co.jp/en/okinawa/activity/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🏖 Resort & Beach Activities</a>{linkedImage("/hotel.png", "Hotel Monterey Okinawa")}</>)}{card(<p>🍽 Dinner · TBD</p>)}</DayArticle>
+      <DayArticle date="Saturday, November 28, 2026" rentalCarDate="2026-11-28" title="Resort Day · Beach / Culture / Blue Cave">{card(<p>🍳 Breakfast · Hotel buffet</p>)}{card(<><p>🤿 Blue Cave snorkeling · 青之洞窟</p><div className="mt-3"><PinkMermaidBooking /></div><p className="text-white/50">Weather dependent</p><p className="mt-3 text-[var(--chapter-accent)]">Snorkeling · Headcount 8</p><ul className="mt-2 ml-5 list-disc space-y-1 text-white/65"><li>David</li><li>Steven</li><li>Mark</li><li>Christine</li><li>Xenia</li><li>Heather</li><li>Naomi</li><li>Kaien</li></ul>{linkedImage("/bluecave.png", "Blue Cave Okinawa")}</>)}{card(<a href="https://www.ryukyumura.co.jp/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🏯 Ryukyu Mura with FunPass</a>)}{card(<><p>✈ Dave, Christina & Xixi arrive in Okinawa</p><p className="mt-2 text-white/60">ANA NH1273 · Arrive at 2:40 PM</p></>)}{card(<><a href="https://www.hotelmonterey.co.jp/en/okinawa/activity/" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">🏖 Resort & Beach Activities</a>{linkedImage("/hotel.png", "Hotel Monterey Okinawa")}</>)}{card(<p>🍽 Dinner · TBD</p>)}</DayArticle>
       <DayArticle date="Sunday, November 29, 2026" rentalCarDate="2026-11-29" title="Albert & Quinn Wedding Day">{card(<><p>🍳 Breakfast · Hotel buffet</p><p>💍 11:00 AM · Albert & Quinn Wedding Ceremony at Hotel Monterey Chapel</p><p>🥂 12:30 PM - 1:30 PM · Cocktail Hour &amp; Hors d&apos;Oeuvres</p><p>🍽 1:30 PM - 3:30 PM · Wedding Lunch Reception</p><p>🎉 7:30 PM · After Party</p>{linkedImage("/chapel.png", "Wedding Chapel Okinawa")}</>)}{card(<><p>✈ Mei & Emilia arrive in Okinawa</p><p className="mt-2 text-white/60">EVA Air BR186 · Arrive at 7:10 PM</p></>)}</DayArticle>
     </>
   );
@@ -5722,6 +5747,7 @@ function NagoContent({ card, linkedImage }: { card: (children: React.ReactNode) 
             <p className="mt-4">🛍 還有精神的可以去 <a href="https://maps.google.com/?q=MEGA+Don+Quijote+Nago" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">MEGA Don Quijote Nago 唐吉訶德名護店</a> 瞎拚採買。</p>
           </>
         )}
+        {card(<GangalaBookingReminder />)}
       </DayArticle>
       <DayArticle date="Tuesday, December 1, 2026" rentalCarDate="2026-12-01" title="Aquarium + Kouri Island">
         {card(<><p>🍽 7:30 Breakfast buffet at hotel</p><p>🚗 8:45 Leave Nago Hotel · drive ~35-40 min</p></>)}
@@ -5763,7 +5789,7 @@ function NagoContent({ card, linkedImage }: { card: (children: React.ReactNode) 
             {linkedImage("/kouri.png", "Kouri Island")}
           </>
         )}
-        {card(<><p>🍽 Dinner · <a href="https://share.google/nhtDdtE6vYP48ws81" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Restaurant Flipper</a></p><p className="mt-2 text-white/60">Okinawa-style steaks with garlic butter & house sauce. Closed Wednesday.</p></>)}
+        {card(<><p>🍽 Dinner · <a href="https://share.google/nhtDdtE6vYP48ws81" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Restaurant Flipper</a></p><p className="mt-2 text-white/60">Okinawa-style steaks with garlic butter & house sauce. Walk-in only; no reservations available. Closed Wednesdays.</p></>)}
       </DayArticle>
     </>
   );

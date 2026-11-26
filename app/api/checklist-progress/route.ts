@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Guest access is read-only." }, { status: 403 });
     }
 
-    const response = await fetch(`${config.url}/rest/v1/checklist_progress`, {
+    const response = await fetch(`${config.url}/rest/v1/checklist_progress?on_conflict=guest,item_key`, {
       method: "POST",
       headers: {
         apikey: config.key,
