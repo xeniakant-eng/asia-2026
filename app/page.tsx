@@ -1129,7 +1129,7 @@ export default function TravelSite() {
     },
     {
       dateKey: "2026-12-02", date: "Wed Dec 2", chapter: "nanjo", location: "Nago → Nanjo", title: "Family Parks + American Village",
-      items: ["Morning option · Junglia Park for ages 4+ and adults.", "Toddler option · Nago Pineapple Park or Neo Park Zoo.", "Afternoon · Miyagi Coast and American Village.", "Blue Seal Ice Cream, Zhyvago Coffee, or Chatan Burger Base Atabii's.", "Dinner at Taco Rice Cafe Kijimuna.", "Evening drive to Yuinchi Hotel Nanjo."],
+      items: ["Morning option · Junglia Park for ages 4+ and adults.", "Toddler option · Nago Pineapple Park or Neo Park Zoo.", "Afternoon · Miyagi Coast and American Village.", "Blue Seal Ice Cream, Zhyvago Coffee, or Chatan Burger Base Atabii's.", "Dinner at Taco Rice Cafe Kijimuna · walk-in only.", "Evening drive to Yuinchi Hotel Nanjo."],
       stay: "Yuinchi Hotel Nanjo", stayHref: "https://www.yuinchi.jp/heal/hot-spring/",
       links: [{ label: "Junglia Park", href: "https://junglia.jp/en" }, { label: "American Village", href: "https://maps.google.com/?q=American+Village+Okinawa" }],
     },
@@ -5847,7 +5847,7 @@ function NanjoContent({ card }: { card: (children: React.ReactNode) => React.Rea
             </ul>
             <img src="/america.png" alt="American Village Okinawa" className="mt-4 h-56 w-full rounded-2xl object-cover object-center" />
             <p className="mt-4">🍽 Dinner · <a href="https://maps.app.goo.gl/PXMBGjZ1AsTNkSVT9" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Taco Rice Cafe Kijimuna</a></p>
-            <p className="mt-2 text-white/60">Famous for Omutaco（蛋包塔可飯）— taco rice topped with a fluffy omelet, usually a big hit with kids.</p>
+            <p className="mt-2 text-white/60">Walk-in only. Famous for Omutaco（蛋包塔可飯）— taco rice topped with a fluffy omelet, usually a big hit with kids.</p>
             <p className="mt-4">🚗 Evening drive to hotel · <a href="https://maps.google.com/?q=Yuinchi+Hotel+Nanjo" target="_blank" rel="noopener noreferrer" className="text-[var(--chapter-accent)] hover:underline">Yuinchi Hotel Nanjo</a></p>
           </>
         )}
